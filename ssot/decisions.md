@@ -2,6 +2,16 @@
 
 ## ADR Index
 
+### ADR-0040: AI Evaluation Accuracy Target
+**Date**: 2026-07-11
+**Status**: Resolved
+**Related**: ADR-0035, ADR-0036
+
+### ADR-0039: Implementation Sequence (Writing Wedge E)
+**Date**: 2026-07-11
+**Status**: Resolved
+**Related**: ADR-0034, ADR-0035
+
 ### ADR-0038: Sandbox Strategy
 **Date**: 2026-07-11
 **Status**: Resolved
@@ -332,6 +342,158 @@ Create utility functions for band score calculation and JSON response parsing.
 - ✅ All test cases pass
 - ✅ Edge cases handled
 - ✅ Integration working
+
+---
+
+## ADR-0040: AI Evaluation Accuracy Target
+
+### Context
+Need realistic accuracy target for AI evaluation in Writing wedge to balance quality and development velocity.
+
+### Decision
+- **Target**: 90% accuracy on official IELTS samples (formative feedback phase)
+- **Upgrade**: Raise to 95% when real user data available
+- **Baseline**: 100 official IELTS samples for initial calibration
+- **Iterative improvement**: A/B test different prompts, models, calibration data
+
+**Key choices**:
+- 90% as MVP baseline (acceptable for formative feedback)
+- 95% target for production grade (after real user data validation)
+- 100 official samples for calibration (comprehensive coverage)
+
+**Why this choice?**
+- 90% is realistic for MVP (industry standard for AI evaluation)
+- 95% achievable with real user data and iterative improvement
+- 100 official samples provides solid baseline without over-engineering
+- Allows progressive improvement rather than perfect from start
+
+### Consequences
+
+**Positive (benefits)**:
+- Realistic MVP timeline (avoid perfectionism trap)
+- Clear quality threshold for release
+- Progressive improvement (formative → production grade)
+- Data-driven optimization (real user data > official samples)
+
+**Negative (drawbacks)**:
+- Initial accuracy may feel low to stakeholders
+- May need re-calibration as real user data comes in
+- Trust building requires evidence collection
+
+**Neutral (unaffected)**:
+- Evaluation quality monitored continuously
+- User feedback collected for improvement
+- Error tracking in place for debugging
+
+### Observable Signal (migration gate)
+
+**Signal**: Accuracy reaches 90% on official samples OR real user data collected
+
+**Trigger**:
+- If signal → A: Release MVP with 90% accuracy
+- If signal → B: Add more calibration samples, iterate prompts
+- If signal → C: Collect real user data, target 95%
+
+**Rationale**: Real user data provides more meaningful accuracy than official samples alone.
+
+### Rollback Plan
+
+1. Step 1: Increase calibration samples to 200
+2. Step 2: Test alternative prompt strategies
+3. Step 3: Re-evaluate accuracy target
+
+**Cost of rollback**: low (additive data, no code changes)
+
+### References
+
+- Related decisions: [[ADR-0035]], [[ADR-0036]]
+- Source material: IELTS evaluation research, industry AI evaluation standards
+
+---
+
+## ADR-0039: Implementation Sequence (Writing Wedge E)
+
+### Context
+Need clear implementation sequence for Writing wedge to ensure dependencies are satisfied and timeline is realistic.
+
+### Decision
+**Priority Order**:
+1. **Identity Service** (3-5 days) - Foundation, must be first
+2. **Band Score Utilities** (1-2 days) - Core calculation logic, independent
+3. **AI Service - Basic Evaluation** (4-6 days) - Core evaluation, depends on utilities
+4. **Progress Service - Writing Integration** (2-3 days) - Progress tracking, depends on AI service
+5. **[Blocked] Writing Service** (3-4 days) - Domain logic, blocked until AI stable
+6. **[Blocked] Media Service** (2-3 days) - Upload support, can parallelize partially
+7. **[Blocked] Notification Service** (2-3 days) - Email support, blocked until AI ready
+
+**Critical Path**: Identity → Band Score → AI → Progress → [blocked services]
+
+**Total Critical Path**: 10-16 days
+**Overall Timeline**: 4-6 weeks (including parallel work)
+
+**Dependencies**:
+- Identity Service → All services (no users = no features)
+- Band Score → AI Service (evaluation needs scoring)
+- AI Service → Progress Service (evaluation data)
+- AI Service → Writing Service (evaluation output)
+- AI Service → Notification Service (result delivery)
+
+### Key Choices
+
+- **Identity first**: Authentication is foundational, nothing works without users
+- **Band Score utilities**: Independent, high value, blocks AI evaluation
+- **AI Service core**: Primary feature, determines MVP quality
+- **Progress Service secondaries**: Track evaluation results, clear dependency
+- **Parallel work**: Media Service can do basic uploads while AI is being built
+
+**Why this choice?**
+- Minimizes blocking dependencies
+- Clear critical path for timeline estimation
+- Allows parallel work where possible (Media Service)
+- Ensures core quality (AI evaluation) is validated first
+- Progressive build (formative feedback → production grade)
+
+### Consequences
+
+**Positive (benefits)**:
+- Clear implementation order (no bottlenecks)
+- Realistic timeline (10-16 days core)
+- Parallel work efficiency (Media Service can start early)
+- Quality-first approach (AI evaluation validated first)
+
+**Negative (drawbacks)**:
+- Slower overall timeline (4-6 weeks)
+- Services blocked until dependencies satisfied
+- Need careful coordination for parallel work
+
+**Neutral (unaffected)**:
+- User experience: No changes
+- Feature completeness: Core features only (formative feedback)
+- Documentation: Already complete from Phase 4
+
+### Observable Signal (migration gate)
+
+**Signal**: Identity Service functional with users created and authenticated
+
+**Trigger**:
+- If signal → A: Proceed to Band Score utilities
+- If signal → B: Delay, fix authentication issues
+- If signal → C: Re-evaluate implementation sequence
+
+**Rationale**: Identity is the foundation; nothing works without users.
+
+### Rollback Plan
+
+1. Step 1: Shuffle sequence (e.g., Media Service first)
+2. Step 2: Remove parallel work constraint
+3. Step 3: Simplify to critical path only
+
+**Cost of rollback**: low (sequence changes, no code impact)
+
+### References
+
+- Related decisions: [[ADR-0034]] (Band Score), [[ADR-0035]] (AI), [[ADR-0036]] (Model Selection)
+- Source material: Phase 4 implementation planning research
 
 ---
 
