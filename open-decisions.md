@@ -482,7 +482,7 @@ Review if any services overlap:
 ## Implementation Details (Deferred)
 
 ### ID-001: File Storage Provider
-**Status**: Deferred to implementation
+**Status**: ✅ RESOLVED - ADR-0041
 **Context**: Media Service needs storage provider.
 
 **Options**:
@@ -491,12 +491,12 @@ Review if any services overlap:
 - MinIO (self-hosted)
 - Cloudflare R2
 
-**Decision**: TBD during implementation
+**Decision**: Skip in MVP, implement in Phase 2 with Media Service (ADR-0041)
 
 ---
 
 ### ID-002: Email Provider
-**Status**: Deferred to implementation
+**Status**: ✅ RESOLVED - ADR-0037
 **Context**: Email Service needs provider.
 
 **Options**:
@@ -505,12 +505,12 @@ Review if any services overlap:
 - Postmark
 - Amazon SES
 
-**Decision**: TBD during implementation
+**Decision**: Resend (ADR-0037)
 
 ---
 
 ### ID-003: Search Engine
-**Status**: Deferred to implementation
+**Status**: ✅ RESOLVED - GPD-004
 **Context**: Search Service needs search engine.
 
 **Options**:
@@ -519,12 +519,12 @@ Review if any services overlap:
 - Algolia
 - Typesense
 
-**Decision**: TBD during implementation
+**Decision**: TBD during implementation (deferred, not critical for MVP)
 
 ---
 
 ### ID-004: AI Evaluation Accuracy Baseline
-**Status**: Deferred to implementation
+**Status**: ✅ RESOLVED - ADR-0040
 **Context**: Need to establish baseline accuracy before launch.
 
 **Action**:
@@ -534,7 +534,9 @@ Review if any services overlap:
 - Set target accuracy (e.g., 85%)
 - Iteratively improve
 
-**Observable Signal**: AI accuracy matches or exceeds target
+**Decision**: 90% accuracy on official samples (ADR-0040)
+
+---
 
 ---
 
@@ -570,23 +572,23 @@ Review if any services overlap:
 ## Priority Order for Resolution
 
 ### Phase 1: Critical Gaps (P1)
-1. GPD-001: File Service (blocks Media Service)
-2. GPD-002: Email Service (blocks Notification Service)
-3. GPD-003: Push Service (blocks Notification Service)
-4. GPD-004: Search Index Service (blocks Search Service)
-5. GPD-005: Database strategy (affects all services)
-6. GPD-006: AI model selection (affects AI Service)
+1. ✅ **GPD-001: File Service** - RESOLVED via ADR-0041 (deferred to Phase 2)
+2. ✅ **GPD-002: Email Service** - RESOLVED via ADR-0037 (Resend)
+3. ✅ **GPD-003: Push Service** - DEFERRED to Phase 2 (not critical for MVP)
+4. ✅ **GPD-004: Search Index Service** - DEFERRED to Phase 2 (not critical for MVP)
+5. ✅ **GPD-005: Database strategy** - RESOLVED via ADR-0043 (embedded feedback)
+6. ✅ **GPD-006: AI model selection** - RESOLVED via ADR-0035/ADR-0036 (Z.ai GLM-4.5-Flash)
 
 ### Phase 2: Secondary Gaps (P2)
-1. GPD-007: Message queue (optional)
-2. GPD-008: CDN provider (performance)
-3. GPD-009: Error tracking (observability)
-4. GPD-010: Admin dashboard (operations)
+1. ✅ **GPD-007: Message queue** - DEFERRED (optional, not critical)
+2. ✅ **GPD-008: CDN provider** - DEFERRED (performance optimization)
+3. ✅ **GPD-009: Error tracking** - DEFERRED (observability)
+4. ✅ **GPD-010: Admin dashboard** - DEFERRED (operations)
 
 ### Phase 3: Tertiary Gaps (P3)
-1. GPD-011: Analytics database (optimization)
-2. GPD-012: Payment gateway (business)
-3. GPD-013: Real-time capabilities (nice to have)
+1. ✅ **GPD-011: Analytics database** - DEFERRED (optimization)
+2. ✅ **GPD-012: Payment gateway** - DEFERRED (business)
+3. ✅ **GPD-013: Real-time capabilities** - DEFERRED (nice to have)
 
 ---
 

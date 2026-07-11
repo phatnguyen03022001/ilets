@@ -2,6 +2,31 @@
 
 ## ADR Index
 
+### ADR-0045: Writing Service Retry Logic
+**Date**: 2026-07-12
+**Status**: Resolved
+**Related**: ADR-0035, ADR-0040
+
+### ADR-0044: Writing Service Task Type Support
+**Date**: 2026-07-12
+**Status**: Resolved
+**Related**: ADR-0034, ADR-0045
+
+### ADR-0043: Writing Service Feedback Storage Strategy
+**Date**: 2026-07-12
+**Status**: Resolved
+**Related**: ADR-0035
+
+### ADR-0042: Writing Service API Ownership
+**Date**: 2026-07-12
+**Status**: Resolved
+**Related**: ADR-0034
+
+### ADR-0041: Writing Service Media Storage Deferred
+**Date**: 2026-07-12
+**Status**: Resolved
+**Related**: ADR-0037, ADR-0038
+
 ### ADR-0040: AI Evaluation Accuracy Target
 **Date**: 2026-07-11
 **Status**: Resolved
@@ -345,155 +370,344 @@ Create utility functions for band score calculation and JSON response parsing.
 
 ---
 
-## ADR-0040: AI Evaluation Accuracy Target
+## ADR-0045: Writing Service Retry Logic
 
 ### Context
-Need realistic accuracy target for AI evaluation in Writing wedge to balance quality and development velocity.
+Z.ai API integration for writing evaluation needs error handling strategy for API failures.
 
 ### Decision
-- **Target**: 90% accuracy on official IELTS samples (formative feedback phase)
-- **Upgrade**: Raise to 95% when real user data available
-- **Baseline**: 100 official IELTS samples for initial calibration
-- **Iterative improvement**: A/B test different prompts, models, calibration data
+- **Retry Strategy**: Retry once with exponential backoff on API failure
+- **Failure Handling**: Return error with 5xx status if retry exhausted, log 4xx errors
+- **Timeout**: 30-second timeout for scoring requests
+- **Retry Delays**: 1s → 2s → exhaust (max 3 total attempts including initial)
 
 **Key choices**:
-- 90% as MVP baseline (acceptable for formative feedback)
-- 95% target for production grade (after real user data validation)
-- 100 official samples for calibration (comprehensive coverage)
+- Single retry (not multiple) - balances reliability vs. user latency
+- Exponential backoff - prevents rate limiting and server load spikes
+- 4xx errors (client errors) logged and returned immediately - no retry needed
+- 5xx errors (server errors) retried - temporary failures
 
 **Why this choice?**
-- 90% is realistic for MVP (industry standard for AI evaluation)
-- 95% achievable with real user data and iterative improvement
-- 100 official samples provides solid baseline without over-engineering
-- Allows progressive improvement rather than perfect from start
+- Single retry is sufficient for transient failures (network, API overload)
+- Exponential backoff prevents creating cascading failures
+- 30-second timeout prevents indefinite blocking
+- Clear distinction between client errors (no retry) and server errors (retry)
 
 ### Consequences
 
 **Positive (benefits)**:
-- Realistic MVP timeline (avoid perfectionism trap)
-- Clear quality threshold for release
-- Progressive improvement (formative → production grade)
-- Data-driven optimization (real user data > official samples)
+- High reliability for transient failures
+- User-friendly error messages (no silent failures)
+- Prevents rate limiting issues
+- Clear error boundaries
 
 **Negative (drawbacks)**:
-- Initial accuracy may feel low to stakeholders
-- May need re-calibration as real user data comes in
-- Trust building requires evidence collection
+- 1-second latency for failed requests
+- Needs proper logging for monitoring
+- User may see "retrying" UI state briefly
 
 **Neutral (unaffected)**:
-- Evaluation quality monitored continuously
-- User feedback collected for improvement
-- Error tracking in place for debugging
+- Success path unchanged
+- Success rates unaffected by retry logic
+- Logging adds minimal overhead
 
 ### Observable Signal (migration gate)
 
-**Signal**: Accuracy reaches 90% on official samples OR real user data collected
+**Signal**: Retry rate > 20% or error response time > 5s
 
 **Trigger**:
-- If signal → A: Release MVP with 90% accuracy
-- If signal → B: Add more calibration samples, iterate prompts
-- If signal → C: Collect real user data, target 95%
+- If signal → A: Increase retry count to 2 or reduce timeout to 20s
+- If signal → B: Add circuit breaker pattern for repeated failures
+- If signal → C: Investigate Z.ai API health and capacity
 
-**Rationale**: Real user data provides more meaningful accuracy than official samples alone.
+**Rationale**: High retry rate indicates API instability or client-side issues.
 
 ### Rollback Plan
 
-1. Step 1: Increase calibration samples to 200
-2. Step 2: Test alternative prompt strategies
-3. Step 3: Re-evaluate accuracy target
+1. Step 1: Remove retry logic, return error immediately
+2. Step 2: Increase timeout to 60s
+3. Step 3: Add detailed logging for investigation
 
-**Cost of rollback**: low (additive data, no code changes)
+**Cost of rollback**: low (remove retry wrapper, adjust timeout)
 
 ### References
 
-- Related decisions: [[ADR-0035]], [[ADR-0036]]
-- Source material: IELTS evaluation research, industry AI evaluation standards
+- Related decisions: [[ADR-0035]] (Z.ai integration), [[ADR-0036]] (Model Management)
+- Source material: Retry patterns best practices, Z.ai API documentation
 
 ---
 
-## ADR-0039: Implementation Sequence (Writing Wedge E)
+## ADR-0044: Writing Service Task Type Support
 
 ### Context
-Need clear implementation sequence for Writing wedge to ensure dependencies are satisfied and timeline is realistic.
+Writing evaluation needs to support multiple IELTS task types (Task 1 vs Task 2) for completeness.
 
 ### Decision
-**Priority Order**:
-1. **Identity Service** (3-5 days) - Foundation, must be first
-2. **Band Score Utilities** (1-2 days) - Core calculation logic, independent
-3. **AI Service - Basic Evaluation** (4-6 days) - Core evaluation, depends on utilities
-4. **Progress Service - Writing Integration** (2-3 days) - Progress tracking, depends on AI service
-5. **[Blocked] Writing Service** (3-4 days) - Domain logic, blocked until AI stable
-6. **[Blocked] Media Service** (2-3 days) - Upload support, can parallelize partially
-7. **[Blocked] Notification Service** (2-3 days) - Email support, blocked until AI ready
+- **MVP Scope**: Support both Task 1 (Letter/Report) and Task 2 (Essay) for initial release
+- **Prompt Templates**: Separate templates for Task 1 and Task 2 with specific rubric instructions
+- **Evaluation Criteria**: Both share 4 core criteria (TA, CC, LR, GRA)
+- **Task 1 Specialization**: Additional task-specific instructions (format, length, audience)
+- **Task 2 Specialization**: Standard essay structure guidance
 
-**Critical Path**: Identity → Band Score → AI → Progress → [blocked services]
-
-**Total Critical Path**: 10-16 days
-**Overall Timeline**: 4-6 weeks (including parallel work)
-
-**Dependencies**:
-- Identity Service → All services (no users = no features)
-- Band Score → AI Service (evaluation needs scoring)
-- AI Service → Progress Service (evaluation data)
-- AI Service → Writing Service (evaluation output)
-- AI Service → Notification Service (result delivery)
-
-### Key Choices
-
-- **Identity first**: Authentication is foundational, nothing works without users
-- **Band Score utilities**: Independent, high value, blocks AI evaluation
-- **AI Service core**: Primary feature, determines MVP quality
-- **Progress Service secondaries**: Track evaluation results, clear dependency
-- **Parallel work**: Media Service can do basic uploads while AI is being built
+**Key choices**:
+- Both task types in MVP (completeness over minimal scope)
+- Separate prompt templates for clarity
+- Same 4 criteria for both (standard IELTS rubric)
+- Task 1-specific content in prompt (letter format, report format)
+- Task 2-specific content in prompt (introduction, body paragraphs, conclusion)
 
 **Why this choice?**
-- Minimizes blocking dependencies
-- Clear critical path for timeline estimation
-- Allows parallel work where possible (Media Service)
-- Ensures core quality (AI evaluation) is validated first
-- Progressive build (formative feedback → production grade)
+- Writing is primary skill, users expect both task types
+- No significant technical overhead (just different prompts)
+- Better user experience (no "wait for next version")
+- Aligns with IELTS test structure (both types on exam day)
 
 ### Consequences
 
 **Positive (benefits)**:
-- Clear implementation order (no bottlenecks)
-- Realistic timeline (10-16 days core)
-- Parallel work efficiency (Media Service can start early)
-- Quality-first approach (AI evaluation validated first)
+- Complete writing evaluation experience (Task 1 + Task 2)
+- Clear prompt structure reduces ambiguity
+- Better user satisfaction
+- Future-proof (no need for rewrite)
 
 **Negative (drawbacks)**:
-- Slower overall timeline (4-6 weeks)
-- Services blocked until dependencies satisfied
-- Need careful coordination for parallel work
+- Slightly more prompt engineering work
+- Need to maintain two templates
+- Evaluation quality varies by task type (requires calibration)
 
 **Neutral (unaffected)**:
-- User experience: No changes
-- Feature completeness: Core features only (formative feedback)
-- Documentation: Already complete from Phase 4
+- Band score calculation unchanged (same 4 criteria)
+- Progress tracking unchanged
+- User interface unchanged
 
 ### Observable Signal (migration gate)
 
-**Signal**: Identity Service functional with users created and authenticated
+**Signal**: Task 1 and Task 2 accuracy within 5% of each other on official samples
 
 **Trigger**:
-- If signal → A: Proceed to Band Score utilities
-- If signal → B: Delay, fix authentication issues
-- If signal → C: Re-evaluate implementation sequence
+- If signal → A: Accept both task types in MVP
+- If signal → B: Only include Task 2 in MVP, add Task 1 later
+- If signal → C: Calibrate prompts separately for each task type
 
-**Rationale**: Identity is the foundation; nothing works without users.
+**Rationale**: Accuracy parity between task types indicates fair evaluation.
 
 ### Rollback Plan
 
-1. Step 1: Shuffle sequence (e.g., Media Service first)
-2. Step 2: Remove parallel work constraint
-3. Step 3: Simplify to critical path only
+1. Step 1: Remove Task 1 support, keep only Task 2
+2. Step 2: Update prompt template
+3. Step 3: Update documentation
 
-**Cost of rollback**: low (sequence changes, no code impact)
+**Cost of rollback**: low (remove task type selection, adjust prompts)
 
 ### References
 
-- Related decisions: [[ADR-0034]] (Band Score), [[ADR-0035]] (AI), [[ADR-0036]] (Model Selection)
-- Source material: Phase 4 implementation planning research
+- Related decisions: [[ADR-0035]] (Z.ai integration), [[ADR-0043]] (Feedback storage)
+- Source material: IELTS Writing Task 1 vs Task 2 guidelines
+
+---
+
+## ADR-0043: Writing Service Feedback Storage Strategy
+
+### Context
+Need to store AI evaluation feedback for writing submissions (per-criterion scores, strengths, improvements).
+
+### Decision
+- **Storage Strategy**: Embed feedback in `submissions` table as JSONB field
+- **Feedback Structure**: `score_breakdown` and `feedback` objects nested in `submissions` row
+- **No Separate Table**: Use single table approach for MVP (simpler queries, less joins)
+- **Field Names**: `score_breakdown` (per-criterion scores), `feedback` (AI feedback text)
+- **Query Patterns**: Single JSONB query, no JOINs required
+
+**Key choices**:
+- Embedded in submissions table (no separate feedbacks table)
+- JSONB storage (flexible, efficient for nested data)
+- MVP-only approach (no need for advanced queries)
+- Maintainability over performance (performance acceptable at scale)
+
+**Why this choice?**
+- Simpler database schema (fewer tables)
+- Fewer JOINs (better performance at MVP scale)
+- JSONB flexibility (easy to add fields without schema changes)
+- Sufficient for MVP requirements (all feedback needed is present)
+
+### Consequences
+
+**Positive (benefits)**:
+- Simpler database schema (1 table instead of 2)
+- Faster queries (no JOINs)
+- Easier to implement (less boilerplate)
+- JSONB flexibility (future-proof)
+
+**Negative (drawbacks)**:
+- Cannot query individual feedback rows separately
+- No granular feedback history (one feedback per submission)
+- Update complexity (UPDATE whole row vs. single row)
+
+**Neutral (unaffected)**:
+- User-facing API unchanged
+- Band score calculation unchanged
+- Progress tracking unchanged
+
+### Observable Signal (migration gate)
+
+**Signal**: Feedback queries taking > 100ms or query complexity > 3 levels
+
+**Trigger**:
+- If signal → A: Keep embedded approach, optimize queries
+- If signal → B: Create separate feedbacks table for advanced queries
+- If signal → C: Use full-text search on feedback content
+
+**Rationale**: Query performance indicates if schema needs optimization.
+
+### Rollback Plan
+
+1. Step 1: Create feedbacks table
+2. Step 2: Migrate feedback data from submissions
+3. Step 3: Update queries to use new schema
+
+**Cost of rollback**: medium (migration + query updates)
+
+### References
+
+- Related decisions: [[ADR-0034]] (Band Score), [[ADR-0045]] (Retry Logic)
+- Source material: Database schema best practices (embedded vs. normalized)
+
+---
+
+## ADR-0042: Writing Service API Ownership
+
+### Context
+Need to decide where to implement CRUD endpoints for writing submissions (Writing Service vs. AI Service).
+
+### Decision
+- **API Ownership**: Writing Service owns submission CRUD endpoints
+- **AI Service**: Only owns `/api/ai/score` (evaluation logic) and `/api/ai/feedback/:id` (feedback retrieval)
+- **Service Boundaries**: Writing Service handles domain-specific operations (create, read, update, delete submissions)
+- **AI Service**: Handles AI-specific operations (scoring, feedback generation)
+- **Dependency Direction**: AI Service is called by Writing Service for scoring, not vice versa
+
+**Key choices**:
+- Writing Service for CRUD (clean domain separation)
+- AI Service for evaluation (clear utility vs. domain)
+- No API overlap (each service has distinct responsibilities)
+- Clear integration contract (AI endpoints are called by Writing Service)
+
+**Why this choice?**
+- Clean separation of concerns (Writing = domain, AI = utility)
+- Easier testing (domain logic isolated from AI integration)
+- Better scalability (Writing Service can evolve independently)
+- Clear ownership (no ambiguity about who maintains code)
+
+### Consequences
+
+**Positive (benefits)**:
+- Clear service boundaries
+- Easier testing and maintenance
+- Independent scaling potential
+- Clear integration contract
+
+**Negative (drawbacks)**:
+- More endpoints to implement (3 extra Writing endpoints)
+- Need to manage service-to-service calls
+- Potential API versioning complexity (separate endpoints)
+
+**Neutral (unaffected)**:
+- User experience unchanged
+- Performance unchanged
+- Database schema unchanged
+
+### Observable Signal (migration gate)
+
+**Signal**: API ownership ambiguity causes merge conflicts or unclear responsibilities
+
+**Trigger**:
+- If signal → A: Keep current ownership model
+- If signal → B: Move some endpoints to AI Service
+- If signal → C: Create shared API utilities
+
+**Rationale**: Ownership ambiguity causes technical debt over time.
+
+### Rollback Plan
+
+1. Step 1: Move endpoints from Writing to AI Service
+2. Step 2: Update service definitions
+3. Step 3: Update API documentation
+
+**Cost of rollback**: medium (code reorganization, documentation updates)
+
+### References
+
+- Related decisions: [[ADR-0037]] (Authentication), [[ADR-0038]] (Sandbox Strategy)
+- Source material: Service architecture best practices
+
+---
+
+## ADR-0041: Writing Service Media Storage Deferred
+
+### Context
+Writing submissions may require PDF/task prompt uploads, but Media Service is in Blocked state.
+
+### Decision
+- **MVP Scope**: Text-only submissions (no PDF/task prompt support)
+- **Future Support**: Add Media Service in Phase 2 for PDF upload/download
+- **Immediate Work**: Focus on text input (textarea in UI, string in database)
+- **No File Upload Endpoints**: Omit `/api/writing/submissions/:id/attachments` from MVP
+- **User Experience**: Users copy-paste text into textarea (no file upload)
+
+**Key choices**:
+- Skip PDF support in MVP (minimal viable feature set)
+- Text-only submissions (simplest implementation)
+- Media Service deferred to Phase 2 (after AI evaluation stable)
+- Clear scope boundary (MVP = text only, full = PDF + text)
+
+**Why this choice?**
+- Faster MVP (no Media Service integration)
+- Simpler implementation (no file upload/download logic)
+- Text input is sufficient for initial validation
+- Can add PDF support later without breaking changes
+
+### Consequences
+
+**Positive (benefits)**:
+- Faster MVP delivery (skip Media Service)
+- Simpler implementation (no file handling)
+- Lower complexity (less error handling)
+- Clear scope boundary (known missing features)
+
+**Negative (drawbacks)**:
+- Missing PDF support (incomplete user experience)
+- Users must copy-paste text (less convenient)
+- Requires UI redesign for text-only input
+- Need to inform users about MVP limitations
+
+**Neutral (unaffected)**:
+- AI evaluation unchanged
+- Band score calculation unchanged
+- Progress tracking unchanged
+
+### Observable Signal (migration gate)
+
+**Signal**: User feedback indicates need for PDF upload or copy-paste UX is problematic
+
+**Trigger**:
+- If signal → A: Add Media Service parallel to AI Service (Phase 1.5)
+- If signal → B: Keep text-only, improve copy-paste UX
+- If signal → C: Add base64 encoding for small files (workaround)
+
+**Rationale**: User feedback indicates missing feature impacts adoption.
+
+### Rollback Plan
+
+1. Step 1: Add Media Service to Phase 1 parallel work
+2. Step 2: Implement file upload endpoints
+3. Step 3: Update UI for file input
+
+**Cost of rollback**: low (additive features, no breaking changes)
+
+### References
+
+- Related decisions: [[ADR-0037]] (Authentication), [[ADR-0038]] (Sandbox Strategy)
+- Source material: MVP best practices (minimum viable feature set)
 
 ---
 
