@@ -1,51 +1,47 @@
 # Principles
 
-## 1. Documentation-First
-- Write documentation before code
-- Documents make decisions explicit
-- Code implements decisions
+## Core Design Principles
 
-## 2. SSOT as Source of Truth
-- Single point of truth for all architectural decisions
-- No concurrent truth sources
-- All work must reference SSOT
+### Simple over Clever
+Prefer simple, maintainable code over clever, complex solutions.
+- Clear code > clever code
+- Readability > cleverness
+- Maintainability > cleverness
 
-## 3. Evolution Over Revolution
-- Incremental changes based on observable signals
-- Big architectural changes only when pain thresholds are hit
-- Maintain backward compatibility whenever possible
+### Explicit over Implicit
+Make assumptions explicit, document them, don't hide them.
+- Explicit requirements > hidden assumptions
+- Documented decisions > implicit knowledge
+- Self-documenting code > clever tricks
 
-## 4. Convention Over Configuration
-- Establish clear naming conventions
-- Default behaviors for common patterns
-- Minimize custom configuration
+### Domain before Technology
+Design around domain first, technology second.
+- Domain problems first > tech solutions first
+- Business logic > technical abstraction
+- User needs > technology trends
 
-## 5. Observability First
-- Every decision must have observable signals
-- Metrics before features
-- Measurable outcomes
+### Evolution over Prediction
+Evolve based on real usage, not predicted needs.
+- Measure before optimize
+- Ship early, iterate based on data
+- Predictions → evidence → iteration
 
-## 6. User Value First
-- Every feature must deliver clear user value
-- No technical debt without user benefit
-- Ship-criterion must be met before scaling
+### One Question → One Document → One Authority
+Each question needs one document, each document has one authority.
+- Question → Single answer document
+- Document → Single source of truth
+- Authority → Single owner
 
-## 7. Pragmatism Over Perfection
-- Good enough now is better than perfect later
-- Working solutions over elegant abstractions
-- Evidence-based decisions
+## Protocols
 
-## 8. Learning as Currency
-- Track metrics rigorously
-- Learn from every deployment
-- Iterate based on data
+### Gap Protocol
+1. **DETECT** - Detect a gap: Implementation needs Authority but doesn't have one
+2. **RECORD** - Record gap in open-decisions.md with classification
+3. **STOP** - STOP implementation immediately
+4. **RESUME** - Await Founder/Vision Assistant approval before resuming
 
-## 9. Security By Default
-- Privacy-first design
-- Minimal data collection
-- Explicit consent models
-
-## 10. Sustainability
-- No service that cannot be maintained by one person
-- Clear documentation for all systems
-- Avoid vendor lock-in where possible
+### Loop Protocol
+1. **IDENTIFY** - Identify a pattern or issue during implementation
+2. **UPDATE** - Update Authority file to reflect findings
+3. **VERIFY** - Verify update doesn't violate any Core Laws
+4. **RECORD** - Record decision as ADR if it's architectural

@@ -17,6 +17,15 @@
 - **GRA**: Grammatical Range and Accuracy (writing criterion)
 - **Band Score**: 0-9 scale for IELTS assessment
 - **Redraft**: Improved version after feedback
+- **Essay**: Type 2 writing task requiring argumentative structure
+- **Submission**: User's written work submitted for evaluation
+- **Feedback**: AI-generated assessment with strengths, improvements, and scores
+- **Learner**: User taking IELTS preparation course
+- **Micro-skill**: Specific sub-skill within a major skill (e.g., verb tense in grammar)
+- **Learning Method**: Strategy for learning and practicing (e.g., spaced repetition, rote memorization)
+- **Progress**: Measurable improvement over time (scores, completion rate, skill acquisition)
+- **Magic Link**: Passwordless login via email verification
+- **Session**: Active authenticated period (JWT token validity)
 
 ### Technical Terms
 - **SSOT**: Single Source of Truth
