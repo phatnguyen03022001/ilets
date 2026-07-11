@@ -1,273 +1,218 @@
-# STOP_AND_ASK.md
+# STOP_AND_ASK: Writing Service Foundation Requirements
 
-## Phase 4: Implementation Planning Results
+## Date
+2026-07-12
 
-**Date**: 2026-07-11
-**Duration**: ~20 minutes
-**Status**: IN PROGRESS
-
----
-
-## Phase 3 Completion Summary
-
-✅ **Phase 3 Complete**: Architecture validation completed
-- ✅ Service boundaries validated (16 services)
-- ⚠️ API overlaps identified (5 overlaps, all acceptable scope differences)
-- ⚠️ Hidden dependencies identified (5 key dependencies)
-- ✅ Architecture decision alignment checked (3/5 fully aligned)
-
-✅ **Hidden Dependencies Documented**: Added to `ssot/decisions.md` (5 dependencies, 1-2 lines each)
-✅ **API Overlaps Documented**: Added to `open-decisions.md` (5 overlaps, LOW priority tags)
+## Status
+✅ Awaiting founder approval before implementation
 
 ---
 
-## Phase 4: Implementation Planning - Writing Wedge E (Writing)
+## 1. API Endpoints (Writing MVP)
 
-### Objective
-Plan implementation sequence for Writing wedge (Wedge E) with clear "do first, do after, what's needed" breakdown.
+### Core Scoring & Feedback (Z.ai GLM-4.5-Flash)
+- `POST /api/ai/score` - Band score calculation for writing submission
+  - Request: `{ "content": string, "task_type": "essay" | "task1" | "task2" }`
+  - Response: `{ "band_score": number, "score_breakdown": {...}, "feedback": {...}, "confidence": number }`
 
-### Analysis
+- `GET /api/ai/feedback/:evaluationId` - Retrieve AI feedback
+  - Response: `{ "id": string, "band_score": number, "score_breakdown": {...}, "feedback": {...} }`
 
-#### What Makes Writing Wedge E Special?
+### Submission Management (CRUD)
+- `POST /api/writing/submissions` - Create new writing submission
+  - Request: `{ "assessment_id": string, "content": object, "time_spent": number, "metadata": object }`
+  - Response: `{ "id": string, "assessment_id": string, "user_id": string, "status": "pending" | "scored", "created_at": string }`
 
-Writing is the first skill to implement (Phase 1 wedge), foundational for:
-- Band score calculation (core utility already exists)
-- AI evaluation (primary evaluation pattern)
-- Progress tracking (first progress integration)
-- User feedback loop (critical for user retention)
+- `GET /api/writing/submissions/:id` - Retrieve submission by ID
+  - **MISSING from AI Service** - Needs to be in Writing Service
+  - Response: `{ "id": string, "assessment_id": string, "user_id": string, "content": object, "score": number, "feedback": object, "status": string, "created_at": string }`
 
----
+- `PUT /api/writing/submissions/:id` - Update submission (e.g., cancel, edit before scoring)
+  - **MISSING from AI Service** - Needs to be in Writing Service
+  - Request: `{ "status": "pending" | "cancelled", "content": object }`
 
-## Implementation Plan: Writing Wedge E
+- `DELETE /api/writing/submissions/:id` - Delete submission
+  - **MISSING from AI Service** - Needs to be in Writing Service
 
-### 🎯 **What to Do FIRST** (Critical Path)
-
-#### 1. **Identity Service** (Foundation)
-**Priority**: P0 - Blocks everything else
-**Why**: Need authentication system before users can access any features
-
-**Tasks**:
-- [ ] Email verification setup (Resend)
-- [ ] Magic-link flow implementation
-- [ ] Session management (iron-session)
-- [ ] User profile creation
-- [ ] Role-based access (student/teacher/admin)
-
-**Dependencies**: None
-**Timeline**: 3-5 days
-**Risk**: Low (magic-link is well-understood)
+### Progress Integration
+- `POST /api/writing/submissions/:id/score` - Trigger scoring (proxy to AI Service)
+  - Redirects to `/api/ai/score` and stores result in database
 
 ---
 
-#### 2. **Band Score Calculation Utilities** (Utility)
-**Priority**: P0 - Core calculation logic
-**Why**: Band scores are the core metric for IELTS evaluation
+## 2. Database Schema
 
-**Tasks**:
-- [ ] Round score calculation (0.5 precision)
-- [ ] Per-criterion scoring → band conversion
-- [ ] Handle edge cases (scores < 0, > 9)
-- [ ] Comprehensive unit tests
+### submissions Table (NEW)
+- `id` (UUID, PK) - Unique submission identifier
+- `user_id` (UUID, FK → users.id) - Link to Identity Service (JWT verified)
+- `assessment_id` (UUID, FK → assessments.id) - Link to Learning Service
+- `content` (JSONB) - Raw user submission (task type, paragraphs, word count)
+- `status` (text, DEFAULT 'pending') - 'pending' | 'scoring' | 'scored' | 'cancelled'
+- `band_score` (number) - Final band score (nullable until scored)
+- `score_breakdown` (JSONB) - Per-criterion scores (task_achievement, coherence, lexical, grammar)
+- `feedback` (JSONB) - AI feedback (strengths, improvements, suggestions)
+- `confidence` (number, 0-1) - AI confidence in evaluation
+- `processing_time_ms` (integer) - Time taken for AI scoring
+- `created_at` (timestamp, DEFAULT now())
+- `updated_at` (timestamp, DEFAULT now())
 
-**Dependencies**: Identity Service (for testing with users)
-**Timeline**: 1-2 days
-**Risk**: Low (already exists, just verify/refine)
+**Dependencies**: Users table from Identity Service
 
----
+### feedbacks Table (NEW - Optional for MVP)
+- `id` (UUID, PK)
+- `submission_id` (UUID, FK → submissions.id)
+- `criterion` (text) - 'task_achievement' | 'coherence' | 'lexical_resource' | 'grammatical_range'
+- `score` (number)
+- `comment` (text)
+- `suggestion` (text)
+- `created_at` (timestamp, DEFAULT now())
 
-#### 3. **AI Service - Basic Evaluation** (Core)
-**Priority**: P0 - Evaluation logic
-**Why**: Writing evaluation is the primary AI use case
-
-**Tasks**:
-- [ ] OpenRouter integration (GLM-4.5-Flash)
-- [ ] Basic prompt template (Task 1 vs Task 2)
-- [ ] Evaluation endpoint (receive writing sample)
-- [ ] Band score calculation integration
-- [ ] Feedback generation (strengths/improvements)
-
-**Dependencies**: Band Score Utilities, Identity Service
-**Timeline**: 4-6 days
-**Risk**: Medium (AI quality critical)
-
-**Critical Path**: OpenRouter API → Prompt Engineering → Band Score Integration
+**Rationale**: Could embed feedback in submissions.score_breakdown instead of separate table (less JOINs for MVP)
 
 ---
 
-#### 4. **Progress Service - Writing Integration** (Tracking)
-**Priority**: P0 - Progress tracking
-**Why**: Track user band scores over time
+## 3. Dependencies
 
-**Tasks**:
-- [ ] Create user_progress table (Drizzle schema)
-- [ ] Write evaluation → progress update endpoint
-- [ ] Band score history tracking
-- [ ] Per-criterion progress (TA/CC/LR/GRA)
+### Core Stack (Already defined in Authority)
+- ✅ Next.js 14+ (App Router)
+- ✅ Drizzle ORM (type-safe database queries)
+- ✅ Neon Postgres (cloud PostgreSQL)
+- ✅ iron-session (serverless-safe session management)
+- ✅ Z.ai API (GLM-4.5-Flash for scoring)
 
-**Dependencies**: AI Service (for evaluation data)
-**Timeline**: 2-3 days
-**Risk**: Low (straightforward CRUD)
+### Required New Dependencies
+- ✅ Resend (magic-link auth - already in Identity Service)
+- ❌ **MISSING**: Media storage (PDF upload support)
+  - Gap: Writing submissions may contain task prompts (PDF, images)
+  - Needs WebSearch to research alternatives (Cloudflare R2, S3-compatible, etc.)
 
----
-
-### 🔧 **What to Do AFTER** (Parallel or Sequential)
-
-#### 5. **Writing Service** (Domain Logic) ⏸️ **BLOCKED**
-**Priority**: P1 - Domain-specific writing operations
-**Why**: Writing service owns writing-specific operations
-
-**Tasks**:
-- [ ] Writing sample CRUD (create, read, update, delete)
-- [ ] Cue card management
-- [ ] Writing practice session management
-- [ ] Upload/download writing samples
-
-**Dependencies**: AI Service (for evaluation), Identity Service (for auth)
-**Timeline**: 3-4 days
-**Risk**: Low
-**Note**: Blocked until AI Service evaluation is stable
+### Optional Dependencies (Phase 2+)
+- 🔄 Prompt evaluation prompt templates library
+- 🔄 Band score calibration database
 
 ---
 
-#### 6. **Media Service - Basic Upload** (Support) ⏸️ **BLOCKED**
-**Priority**: P2 - File upload for writing samples
-**Why**: Users need to upload writing samples
+## 4. Implementation Sequence (Top-Down)
 
-**Tasks**:
-- [ ] S3-compatible storage setup (Neon S3)
-- [ ] Upload endpoint (streaming)
-- [ ] File validation (word count, format)
-- [ ] CDN integration (Cloudflare)
+### Phase 1: Foundation (3-5 days)
+**Priority Order**:
+1. **Database Schema** (1 day)
+   - Create `submissions` table in Neon
+   - Define Drizzle schema with TypeScript types
+   - Add indexes on `user_id`, `assessment_id`, `status`
 
-**Dependencies**: None
-**Timeline**: 2-3 days
-**Risk**: Medium (storage setup)
-**Note**: Can be done in parallel if Media Service has basic upload without AI integration
+2. **API Endpoints** (2 days)
+   - `POST /api/writing/submissions` (create submission)
+   - `GET /api/writing/submissions/:id` (retrieve - **MISSING**)
+   - `PUT /api/writing/submissions/:id` (update - **MISSING**)
+   - `DELETE /api/writing/submissions/:id` (delete - **MISSING**)
 
----
+3. **AI Integration** (1-2 days)
+   - Integrate Z.ai GLM-4.5-Flash API for scoring
+   - Implement `/api/ai/score` proxy endpoint
+   - Store results in `submissions` table
+   - Handle errors and retries
 
-#### 7. **Notification Service - Email Notifications** (Support) ⏸️ **BLOCKED**
-**Priority**: P2 - Email alerts
-**Why**: Send evaluation results to users
+**Dependencies**: ✅ Identity Service (auth), ✅ Band Score Utilities (already built)
 
-**Tasks**:
-- [ ] Email templates (evaluation results)
-- [ ] Send email endpoint (Resend)
-- [ ] Queue system (for async sending)
-- [ ] Retry logic (failed attempts)
+### Phase 2: Progress Integration (2-3 days)
+1. Update `submissions` table to include `score_breakdown` and `feedback`
+2. Create `/api/progress/writing` endpoint
+3. Sync AI scores to Progress Service
 
-**Dependencies**: Identity Service (user emails), AI Service (evaluation results)
-**Timeline**: 2-3 days
-**Risk**: Low
-**Note**: Blocked until AI Service is ready
+### Phase 3: Media Support (2-3 days)
+1. Research and choose media storage solution
+2. Add `attachments` table for PDF/task prompts
+3. Implement file upload/download endpoints
 
----
+### Phase 4: Testing & Optimization (2-3 days)
+1. Unit tests for all endpoints
+2. Integration tests with Z.ai API
+3. Error handling and logging
+4. Performance optimization
 
-### 📦 **What's Needed to Start** (Prerequisites)
-
-#### **Immediate Prerequisites**:
-1. ✅ **SSOT Service Definitions**: All Writing-related services defined (AI, Progress, Writing, Media, Notification)
-2. ✅ **Band Score Utilities**: Core calculation logic ready
-3. ✅ **OpenRouter Access**: API key for GLM-4.5-Flash
-4. ✅ **Resend API Key**: For magic-link authentication
-5. ✅ **Neon Database**: For Identity and Progress services
-6. ✅ **S3 Storage**: For Media Service uploads
-
-#### **Technical Stack**:
-- Next.js 16 with App Router
-- Drizzle ORM (PostgreSQL)
-- OpenRouter API (GLM-4.5-Flash)
-- Resend (email)
-- iron-session (auth)
-- TypeScript strict mode
-
-#### **Data Models** (need database schema):
-- **User**: id, email, verified, role
-- **AuthToken**: id, userId, token, expiresAt
-- **UserProgress**: id, userId, writingScore, writingDate, criteriaScores
-- **WritingSample**: id, userId, content, wordCount, status
-- **AIEvaluation**: id, writingSampleId, bandScore, criteriaScores, feedback
+**Total Estimated Time**: 9-14 days for MVP
 
 ---
 
-## Critical Path Summary
+## 5. Open Decisions (To be captured in ADRs)
 
-```
-Identity Service (Foundation)
-    ↓
-Band Score Utilities (Validation)
-    ↓
-AI Service - Basic Evaluation (Core)
-    ↓
-Progress Service - Writing Integration (Tracking)
-    ↓
-[Blocked] Writing Service (Domain Logic)
-[Blocked] Media Service - Basic Upload (Support)
-[Blocked] Notification Service - Email (Support)
-```
+### Gap-001: API Endpoint Retrieval
+**Description**: `GET /api/writing/submissions/:id`, `PUT /api/writing/submissions/:id`, `DELETE /api/writing/submissions/:id` endpoints are missing from AI Service but needed for Writing Service.
 
-**Total Critical Path Time**: ~10-16 days
-**Overall Timeline to MVP**: ~4-6 weeks (including parallel work)
-
----
-
-## STOP_AND_ASK Points
-
-### 🟢 **STOP_AND_ASK #1: Implementation Sequence Confirmed?**
-
-**Question**: Is the sequence "Identity → Band Utilities → AI → Progress → [blocked services]" correct?
-
-**Rationale**:
-- Identity is foundational (no users = no features)
-- Band utilities are independent and needed for AI evaluation
-- AI evaluation is core feature (critical path)
-- Progress tracking depends on AI evaluation data
-- Writing service and Media service are blocked until AI is stable
-
-**Your choice**: [ ] Confirm sequence  [ ] Modify sequence
-
----
-
-### 🟡 **STOP_AND_ASK #2: AI Evaluation Quality Target?**
-
-**Question**: What's the acceptable AI evaluation accuracy for Writing wedge?
-
-**Current Target**: 85% accuracy on official IELTS samples
+**Impact**: Writing Service cannot retrieve, update, or delete submissions - incomplete CRUD operations.
 
 **Options**:
-1. **85% accuracy** (baseline for MVP)
-2. **90% accuracy** (higher bar)
-3. **90-95% accuracy** (thorough calibration)
+- A. Add endpoints to Writing Service (recommended - clean separation of concerns)
+- B. Add to AI Service (unclear ownership, mixing concerns)
 
-**Your choice**: [ ] 85% (MVP)  [ ] 90%  [ ] 90-95%
+**Recommended**: Option A - Add to Writing Service
+
+### Gap-002: Media Storage Solution
+**Description**: Writing tasks may require PDF/task prompt uploads, but Media Service is in Blocked state (depends on AI Service).
+
+**Impact**: Can't implement full submission support (task prompts missing).
+
+**Options**:
+- A. Add Media Service (parallel work, 2-3 days) - complete MVP
+- B. Skip PDF support in MVP, use text-only submissions - minimal MVP
+- C. Use embedded base64 (limited to small files) - quick but limited
+
+**Recommended**: Option B - skip PDF in MVP for minimal viable feature set
+
+### Gap-003: Database Transaction Strategy
+**Description**: Submission creation and AI scoring need atomic transaction to prevent orphaned submissions.
+
+**Impact**: Race conditions between submission creation and scoring.
+
+**Options**:
+- A. Neon serverless transactions (recommended)
+- B. Manual lock mechanisms
+- C. Upsert with optimistic concurrency
+
+**Recommended**: Option A - Neon serverless transactions (built-in)
 
 ---
 
-### 🟡 **STOP_AND_ASK #3: Parallel Work Allowed?**
+## 6. Next Steps
 
-**Question**: Can Media Service (uploads) be built in parallel while AI Service is in progress?
+1. ✅ **Await founder approval** on:
+   - API endpoint definitions
+   - Database schema
+   - Implementation sequence
+   - Open decisions (Gap-001, Gap-002, Gap-003)
 
-**Rationale**:
-- Media Service can do basic file upload without AI integration
-- Could be blocked later when AI evaluation integration needed
-- Increases parallel work efficiency
+2. Once approved, create ADRs for:
+   - Gap-001: Writing Service API Structure
+   - Gap-003: Database Transaction Strategy
 
-**Your choice**: [ ] Build in parallel  [ ] Wait for AI Service to finish
+3. Begin Phase 1 implementation (Database Schema first)
 
 ---
 
-## Summary
+## 7. Validation Checklist
 
-**Writing Wedge E Implementation Plan**:
-- ✅ **First**: Identity Service (foundation)
-- ✅ **Next**: Band Score Utilities (utility)
-- ✅ **Core**: AI Service - Basic Evaluation (evaluation logic)
-- ✅ **Tracking**: Progress Service - Writing Integration (progress)
-- ⏸️ **Blocked**: Writing Service (domain logic), Media Service (upload), Notification Service (email)
+- ✅ No code written yet (pure analysis)
+- ✅ No new dependencies added without Authority
+- ✅ All endpoints scoped to Writing MVP only
+- ✅ Database tables limited to `submissions` and optional `feedbacks`
+- ✅ Dependencies match Authority definitions
+- ✅ Implementation sequence respects dependencies (Identity → Band Score → AI → Progress → Writing)
 
-**Total Critical Path**: 10-16 days
-**Overall Timeline**: 4-6 weeks (including parallel work)
+---
 
-**Immediate Prerequisites**: OpenRouter key, Resend key, Neon DB, S3 storage
+## 8. Questions for Founder
 
-**Status**: ⏸️ AWAITING YOUR DECISION
+1. **Media Storage**: Approve Option B (skip PDF support in MVP) or should we prioritize Media Service parallel work?
+
+2. **API Ownership**: Confirm endpoints should be in Writing Service (not AI Service)?
+
+3. **Feedback Storage**: Use embedded `feedback` JSONB in submissions table or separate `feedbacks` table? (Recommend: embedded for MVP)
+
+4. **Task Type Support**: Support only Task 2 essays initially, or Task 1 + Task 2? (Recommend: Task 2 only for MVP)
+
+5. **Retry Logic**: For Z.ai API failures, retry once with exponential backoff or immediately return error? (Recommend: retry once, log failures)
+
+---
+
+**Approval Required**: Before writing any code, get founder confirmation on these decisions.
