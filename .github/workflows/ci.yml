@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Build does not connect to a DB; placeholders satisfy strict env validation.
+      DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+      ZAI_API_KEY: ci-placeholder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: workspaces/web/.nvmrc
+          cache: npm
+      - run: npm ci
+      - run: cd workspaces/web && npm run typecheck
+      - run: cd workspaces/web && npm run lint
+      - run: cd workspaces/web && npm run build
