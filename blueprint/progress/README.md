@@ -12,13 +12,13 @@ Progress = **learner runtime state**. Certification is a *consequence of suffici
 - References canonical objects **by `id` only** (Band, Curriculum Node, Skill Leaf, Knowledge Object, Practice Type, Assessment Type). Never redefines a learning object.
 
 ## Status
-**Drafted (2026-07-16).** Model v1.0 (state schema + transitions). Next: consistency review verifying every transition is explainable via canonical objects; then the final Blueprint validation + freeze.
+**Complete (2026-07-16).** Model v1.0 (state schema + transitions) + [consistency-review.md](consistency-review.md). Pending Founder review → final Blueprint validation + freeze.
 
 ## Structure
 - [learner-state-schema.md](learner-state-schema.md) — Learner State schema v1.0.
 - [transitions.md](transitions.md) — transition rules + decisions.
 - [decisions.md](decisions.md) — PG-001.
-- [consistency-review.md](consistency-review.md) — transition traceability review (pending).
+- [consistency-review.md](consistency-review.md) ✅ — transition traceability review.
 
 ## Dependencies
 - **Consumes:** all canonical layers ([../bands/](../bands/), [../skills/](../skills/), [../knowledge/](../knowledge/), [../curriculum/](../curriculum/), [../practice/](../practice/), [../assessment/](../assessment/)) + learning decisions ([LD-001](../learning/decisions.md)/[004](../learning/decisions.md)/[005](../learning/decisions.md), [AM-003](../assessment/decisions.md) calibration defaults).
