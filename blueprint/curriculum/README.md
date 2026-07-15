@@ -10,12 +10,13 @@ A pathway of **Curriculum Nodes** ([curriculum-node-schema.md](curriculum-node-s
 Within a band phase: **knowledge before the skill that needs it**; prerequisites before dependents; cognitive/load ascending; mastery gates each node. The recommended order is the Blueprint default — adaptive sequencing is runtime, in `../progress/`.
 
 ## Status
-**In progress.** Schema v1.1 ([CR-003](decisions.md): `expected_outcomes`, `typical_learning_duration`). Done: `band-3.md` (entry/foundation) + `band-5.md` (reference impl). Building: band-4, 6, 7, 8, 9 → then cross-band consistency review before `../practice/`.
+**Complete (2026-07-16).** All Band 3–9 pathways (44 nodes, schema v1.1) + [cross-band consistency review](consistency-review.md). Calibration deferred. Pending Founder review — the gate before `../practice/`.
 
 ## Structure
-- `band-3.md` ✅ · `band-5.md` ✅ · `band-4.md` / `band-6.md` / `band-7.md` / `band-8.md` / `band-9.md` (pending) — per-band pathway nodes (schema v1.1).
+- `band-3.md` ✅ `band-4.md` ✅ `band-5.md` ✅ `band-6.md` ✅ `band-7.md` ✅ `band-8.md` ✅ `band-9.md` ✅ — per-band pathway nodes (44 nodes, schema v1.1).
+- [consistency-review.md](consistency-review.md) — cross-band consistency review (calibration deferred).
 - [curriculum-node-schema.md](curriculum-node-schema.md) — canonical Curriculum Node schema v1.1.
-- [decisions.md](decisions.md) — CR-001 orchestration + sequencing; CR-002 node schema; CR-003 schema v1.1 refinements.
+- [decisions.md](decisions.md) — CR-001/002/003.
 
 ## Dependencies
 - **Consumes:** [../skills/](../skills/) (leaves + prereqs) + [../knowledge/](../knowledge/) (objects + `requires`) + [../bands/](../bands/) (exit criteria).
