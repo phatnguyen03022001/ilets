@@ -85,3 +85,4 @@ Non-foundational decisions live with their section and are indexed here:
 - [`bands/decisions.md`](../bands/decisions.md) — BD-001 bands structure & scope (per-skill docs; Bands 3–9 learning focus, 0–2 boundary-only); BD-002 hierarchical exit criteria (Task → Skill → band progression); BD-003 receptive-skills three-category evidence labeling.
 - [`skills/decisions.md`](../skills/decisions.md) — SK-001 decomposition rules (8 leaf criteria + stop); SK-002 atomic + common schema; SK-003 schema v1.1 refinements (`cognitive_level`, `typical_learning_load`, `assessment_strategy`).
 - [`knowledge/decisions.md`](../knowledge/decisions.md) — KK-001 Knowledge Graph rules; KK-002 Knowledge Object schema; KK-003 schema v1.1 (`common_misconceptions`, `examples`, atomicity refinement).
+- [`curriculum/decisions.md`](../curriculum/decisions.md) — CR-001 orchestration (reference by `id`, sequence by 5 factors, canonical pathway); CR-002 Curriculum Node schema.
