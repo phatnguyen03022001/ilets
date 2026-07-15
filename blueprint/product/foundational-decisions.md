@@ -81,11 +81,11 @@ Implementation begins only after the frozen Blueprint is merged into `main`.
 
 ## Section decision logs
 Non-foundational decisions live with their section and are indexed here:
-- [`learning/decisions.md`](../learning/decisions.md) — LD-001 progression (mastery-gated across bands, adaptive within); LD-002 AI-primary feedback; LD-003 stage-dependent feedback timing; LD-004 prerequisite classification (Required / Recommended / Independent); LD-005 Learning Progression vs Exam Preparation.
+- [`learning/decisions.md`](../learning/decisions.md) — LD-001 progression (mastery-gated across bands, adaptive within); LD-002 AI-primary feedback; LD-003 stage-dependent feedback timing; LD-004 prerequisite classification (Required / Recommended / Independent); LD-005 Learning Progression vs Exam Preparation; LD-006 canonical learning phases.
 - [`bands/decisions.md`](../bands/decisions.md) — BD-001 bands structure & scope (per-skill docs; Bands 3–9 learning focus, 0–2 boundary-only); BD-002 hierarchical exit criteria (Task → Skill → band progression); BD-003 receptive-skills three-category evidence labeling.
 - [`skills/decisions.md`](../skills/decisions.md) — SK-001 decomposition rules (8 leaf criteria + stop); SK-002 atomic + common schema; SK-003 schema v1.1 refinements (`cognitive_level`, `typical_learning_load`, `assessment_strategy`).
 - [`knowledge/decisions.md`](../knowledge/decisions.md) — KK-001 Knowledge Graph rules; KK-002 Knowledge Object schema; KK-003 schema v1.1 (`common_misconceptions`, `examples`, atomicity refinement).
 - [`curriculum/decisions.md`](../curriculum/decisions.md) — CR-001 orchestration (reference by `id`, sequence by 5 factors, canonical pathway); CR-002 Curriculum Node schema.
-- [`practice/decisions.md`](../practice/decisions.md) — PR-001 Practice Taxonomy rules (canonical layer, referenced by `id`, 7 attributes, architectural separation); PR-002 Practice Type schema.
+- [`practice/decisions.md`](../practice/decisions.md) — PR-001 Practice Taxonomy rules (canonical layer, referenced by `id`, 7 attributes, architectural separation); PR-002 Practice Type schema; PR-003 phase classification.
 - [`assessment/decisions.md`](../assessment/decisions.md) — AM-001 Assessment Model rules (canonical layer, independent from Practice, 8 questions, reference by `id`); AM-002 Assessment Type schema; AM-003 calibration defaults (≥0.80 confidence, ≥2 demonstrations — configurable).
 - [`progress/decisions.md`](../progress/decisions.md) — PG-001 Learner State Model (state + transitions + decisions; reference by `id`; runtime-vs-model separation).
