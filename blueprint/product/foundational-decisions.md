@@ -81,4 +81,5 @@ Implementation begins only after the frozen Blueprint is merged into `main`.
 
 ## Section decision logs
 Non-foundational decisions live with their section and are indexed here:
-- [`learning/decisions.md`](../learning/decisions.md) — LD-001 progression (mastery-gated across bands, adaptive within); LD-002 AI-primary feedback; LD-003 stage-dependent feedback timing; LD-004 prerequisite classification (Required / Recommended / Independent).
+- [`learning/decisions.md`](../learning/decisions.md) — LD-001 progression (mastery-gated across bands, adaptive within); LD-002 AI-primary feedback; LD-003 stage-dependent feedback timing; LD-004 prerequisite classification (Required / Recommended / Independent); LD-005 Learning Progression vs Exam Preparation.
+- [`bands/decisions.md`](../bands/decisions.md) — BD-001 bands structure & scope (per-skill docs; Bands 3–9 learning focus, 0–2 boundary-only; exit criteria in bands/).
