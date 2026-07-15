@@ -44,58 +44,84 @@ Criteria: **Task Achievement** (Task 1) / **Task Response** (Task 2), **Coherenc
 ---
 
 ## 2. Learning overlay (Bands 3–9) — DERIVED, not official
-Translates the official descriptors into learning prescriptions per CLAUDE.md Band Rules. This is **inference**, not official text. Exit criteria are the mastery signals for [LD-001](../learning/decisions.md) gating.
+Translates the official descriptors into learning prescriptions per CLAUDE.md Band Rules. This is **Blueprint Inference** (per [BD-003](decisions.md)), not official text. Exit criteria are **hierarchical** ([BD-002](decisions.md)): each band lists **Task 1** and **Task 2** (task-level) criteria; the **Writing Skill** (skill-level) certification rule is defined once in [its own section](#writing-skill-exit-criteria-skill-level) below.
 
 ### Band 3 — program entry point
 - **Required knowledge:** basic sentence forms; vocabulary for personal/familiar topics; the concept of a writing task and a prompt.
 - **Required skills (can-do):** produce attempted (if faulty) sentence forms; convey at least partial meaning on a topic.
-- **Exit criteria (mastery):** writes responses of adequate length; conveys partial meaning; shows awareness of the task (even if misunderstood); not wholly reliant on memorised chunks.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* attempted Task 1 of adequate length conveying partial meaning (task may be misunderstood).
+  - *Task 2:* attempted essay of adequate length with partial response to the prompt; partial meaning.
+  - *Skill (Writing):* both tasks attempted at adequate length, partial meaning, not wholly reliant on memorised language → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** frequent grammar/spelling errors; faulty sentence forms; severely limited vocabulary — all acceptable *at this floor*.
 - **Higher-band exclusions (do not introduce yet):** task fulfillment, overview/purpose, cohesion devices, complex sentences, paragraphing — reserved for Band 4+.
 
 ### Band 4
 - **Required knowledge:** simple + some compound sentences; basic cohesive devices (and, but, because, so); vocabulary for the specific task; awareness of key features (T1) / a position (T2).
 - **Required skills:** attempt key features (T1) / present a discernible position (T2); produce simple sentences with some accuracy; attempt paragraphing.
-- **Exit criteria:** response minimally addresses the task; some key features/position identifiable; meaning generally comes through despite frequent errors.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* some key features selected; task minimally addressed; meaning generally intelligible.
+  - *Task 2:* discernible position; prompt minimally/tangentially addressed; meaning generally intelligible.
+  - *Skill (Writing):* both tasks minimally address their prompts → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** frequent grammar/spelling errors; very limited/repetitive structures.
 - **Higher-band exclusions:** clear overview, logical organization, accurate complex structures, flexible vocabulary — reserved for Band 5+.
 
 ### Band 5
 - **Required knowledge:** simple + attempted complex sentences; basic cohesive devices (used with over/under-use); vocabulary minimally adequate for the task; paragraphing concept.
 - **Required skills:** address the main requirements generally; attempt an overview (T1) / express a position (T2); organize ideas with underlying coherence.
-- **Exit criteria:** task requirements generally covered; meaning clear despite errors; some organization evident.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* requirements generally addressed; key features selected but not adequately covered (mechanical detail).
+  - *Task 2:* position expressed but with limited development; main parts incompletely addressed.
+  - *Skill (Writing):* both tasks generally/incompletely address requirements with clear underlying meaning → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** noticeable spelling/grammar errors causing some difficulty; limited range; mechanical detail-recounting.
 - **Higher-band exclusions:** precise/flexible vocabulary, accurate complex structures, skilled cohesion, fully developed ideas — reserved for Band 6+.
 
 ### Band 6
 - **Required knowledge:** a range of complex structures (limited flexibility); cohesive devices; adequate topic vocabulary; paragraphing for organization.
 - **Required skills:** select & highlight key features with supporting data (T1) / present a relevant position with developed main ideas (T2); organize coherently with clear progression.
-- **Exit criteria:** requirements covered; relevant overview (T1) / clear position (T2); coherent overall progression; mix of simple and complex structures; meaning clear.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* requirements covered; relevant overview attempted with supporting data.
+  - *Task 2:* main parts addressed; relevant position with developed main ideas.
+  - *Skill (Writing):* both tasks cover requirements with coherent organization and a mix of simple/complex structures → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** some grammar/punctuation errors (rarely impede communication); some faulty/mechanical cohesion; restricted vocabulary range.
 - **Higher-band exclusions:** flexible/precise vocabulary, error-free complex structures, skillful cohesion — reserved for Band 7+.
 
 ### Band 7
 - **Required knowledge:** less common / idiomatic vocabulary; flexible cohesive devices (reference, substitution); varied complex structures; purposeful paragraphing.
 - **Required skills:** present a clear overview with main trends/differences (T1) / a clear, developed position (T2); logical organization with clear progression; use complex structures with some accuracy.
-- **Exit criteria:** clear overview (T1) / clear position (T2); logical organization; some flexible/precise vocabulary; frequent error-free sentences; complex structures used.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* clear overview; main trends/differences identified; key features covered and highlighted.
+  - *Task 2:* clear, developed position; main ideas extended and supported.
+  - *Skill (Writing):* both tasks show clear organization, some flexible/precise vocabulary, frequent error-free complex sentences → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** a few grammar errors (do not impede); some over/under-use of cohesive devices; occasional inappropriacies.
 - **Higher-band exclusions:** full flexibility, skillful cohesion management, wide accurate vocabulary, near-error-free grammar — reserved for Band 8+.
 
 ### Band 8
 - **Required knowledge:** wide vocabulary with precise/idiomatic use; wide range of complex structures; skillful cohesion; sophisticated paragraphing.
 - **Required skills:** skilfully select & highlight key features (T1) / present a well-developed position (T2); effortless coherence; flexible, accurate language.
-- **Exit criteria:** all requirements covered; wide, flexible vocabulary; majority of sentences error-free; skillful cohesion and paragraphing.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* all requirements covered; key features skilfully selected/highlighted/illustrated.
+  - *Task 2:* prompt appropriately and sufficiently addressed; clear, well-developed position.
+  - *Skill (Writing):* both tasks show wide flexible vocabulary, majority error-free sentences, skillful cohesion → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** occasional non-systematic errors/inaccuracies with minimal impact on communication.
 - **Higher-band exclusions:** full flexibility/control and extremely rare errors — reserved for Band 9.
 
 ### Band 9
 - **Required knowledge:** full, flexible, precise vocabulary; full range of structures; masterful cohesion/paragraphing.
 - **Required skills:** fully and appropriately satisfy all requirements; effortless communication; sophisticated control of lexical and grammatical features.
-- **Exit criteria:** all requirements fully and appropriately satisfied; full flexibility and precision; extremely rare, minimal-impact lapses only.
+- **Exit criteria** (hierarchical, [BD-002](decisions.md)):
+  - *Task 1:* all requirements fully and appropriately satisfied; extremely rare lapses.
+  - *Task 2:* prompt explored in depth; clear, fully developed position; ideas fully extended and supported.
+  - *Skill (Writing):* both tasks show full flexibility/precision and sophisticated control → [Writing Skill rule](#writing-skill-exit-criteria-skill-level).
 - **Acceptable residual errors:** extremely rare lapses in content or accuracy with minimal impact.
 - **Higher-band exclusions:** none (ceiling band).
 
 ---
+
+## Writing Skill Exit Criteria (skill-level)
+Skill-level mastery certifies overall Writing at a band. It is **non-duplicative** — it states the aggregation condition, not the task criteria:
+- **Writing mastery at Band N is certified** when the learner meets **both** the Task 1 and Task 2 exit criteria for Band N, **demonstrated reliably** (≥2 independent, time-boxed submissions per task), **sustained** over a short interval, with **no criterion falling below Band N−1**.
+- This is the *skill-level* gate. *Overall band progression* (across all four skills) is defined in `../progress/`, not here.
 
 ## Dependencies
 - Exit criteria → [../learning/mastery.md](../learning/mastery.md) + `../progress/` (referenced, not redefined).

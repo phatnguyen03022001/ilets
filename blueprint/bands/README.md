@@ -4,7 +4,7 @@
 Define the Band 3–9 descriptors — the spine that `skills/`, `assessment/`, `progress/`, and `curriculum/` implement. Per Founder directive: the band model *implements* the approved [learning model](../learning/README.md); it does not define it.
 
 ## Status
-**Scaffolded; content pending official-descriptor research.** The descriptors are official public facts (not synthesized). They will be transcribed **verbatim** from official sources with citations and independently verified before use.
+**In progress (2026-07-16).** `writing.md` complete — descriptors verified + Bands 3–9 overlay + hierarchical exit criteria ([BD-002](decisions.md)). `speaking.md` next, then the receptive skills (`listening.md`, `reading.md`) with three-category evidence labeling ([BD-003](decisions.md)).
 
 ## Scope
 - **Bands 3–9** are the learning focus (curriculum, learning paths, detailed requirements, exit criteria). **Bands 0–2 are documented as boundary definitions only** — to complete the assessment model and support diagnostics; no learning content for 0–2 (see [BD-001](decisions.md)). **Band 3 is the program entry point.** Half-bands (e.g. 6.5) are awarded by interpolation, not separate descriptors.
@@ -19,7 +19,7 @@ The overlay is always clearly labeled as inference, not official text.
 
 ## Planned structure
 - `README.md` (this file) — band model, scoring, half-bands, the two-layer model, Academic/GT handling.
-- `writing.md` — Task 1 (Academic) + Task 2 descriptors (TA / CC / LR / GRA), Bands 3–9 + overlay.
+- `writing.md` ✅ — Task 1 (Academic) + Task 2 descriptors (TA/CC/LR/GRA), bands 0–9 verified + Bands 3–9 overlay + hierarchical exit criteria ([BD-002](decisions.md)).
 - `speaking.md` — Fluency&Coherence / LR / GRA / Pronunciation descriptors, Bands 3–9 + overlay.
 - `listening.md` — Academic raw-score→band conversion, Bands 3–9 + overlay.
 - `reading.md` — Academic raw-score→band conversion, Bands 3–9 + overlay.
@@ -30,7 +30,9 @@ The overlay is always clearly labeled as inference, not official text.
 - **Feeds:** exit criteria → `../learning/mastery.md` + `../progress/`; descriptors → `../assessment/` + `../skills/`.
 
 ## Structure decisions
-Resolved per [BD-001](decisions.md) (2026-07-16): per-skill docs; Bands 3–9 learning focus with 0–2 as boundary-only; exit criteria in `bands/` (referenced by `../progress/`).
+- [BD-001](decisions.md): per-skill docs; Bands 3–9 learning focus with 0–2 as boundary-only; exit criteria in `bands/`.
+- [BD-002](decisions.md): hierarchical exit criteria — Task-level → Skill-level (non-duplicative) → overall band progression (in `../progress/`).
+- [BD-003](decisions.md): three-category evidence labeling (Official Evidence / Evidence-Based Interpretation / Blueprint Inference) for receptive skills.
 
 ## Open questions
 - [ ] (none structural) — content open questions will be tracked per band doc once descriptors are verified.
