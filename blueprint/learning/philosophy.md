@@ -2,33 +2,53 @@
 
 The canonical set of pedagogical principles that govern the entire Blueprint. Every subsequent section (`bands/`, `skills/`, `knowledge/`, `curriculum/`, `practice/`, `assessment/`, `progress/`) must implement and remain consistent with these.
 
-> **Status:** Principles are **Founder-decided** (2026-07-15). Per-principle evidence alignment is being synthesized from the learning-science research and will be filled in below. Where evidence **conflicts** with a principle, the conflict and trade-offs will be surfaced for a Founder decision — **not** resolved automatically (Founder meta-rule).
+> **Status:** Principles are **Founder-decided** (2026-07-15). Evidence alignment filled from the audited [learning-science-evidence-brief.md](learning-science-evidence-brief.md) (2026-07-15). Where evidence **conflicts** with a principle, the conflict and trade-offs are surfaced below for a Founder decision — **not** resolved automatically (Founder meta-rule).
 
 ## Founder meta-rule
 Research leads every major pedagogical decision. The principles below are honored **wherever evidence supports them**. If research conflicts with a principle: present the evidence, explain the trade-offs, and **ask the Founder** instead of choosing automatically.
 
-## Principles
-| # | Principle | Evidence alignment |
-|---|---|---|
-| 1 | **Learning is the product.** The product's value is learning outcomes, not features. | _Pending_ |
-| 2 | **Teach exactly what is required for the target band — no over-teaching, no under-teaching.** | _Pending_ (aligns with `CLAUDE.md` Band Rules) |
-| 3 | **Mastery-based progression.** Learners advance on demonstrated mastery, not time spent. | _Pending_ |
-| 4 | **Strong prerequisite enforcement.** Foundational knowledge/skill is secured before dependent content. | _Pending_ — *scrutinize: rigid vs. flexible prerequisites* |
-| 5 | **Deliberate practice over passive consumption.** Skill grows through focused, effortful practice with feedback. | _Pending_ — *scrutinize: effect size & critiques of the strong form* |
-| 6 | **Frequent formative assessment.** Low-stakes assessment drives learning throughout. | _Pending_ |
-| 7 | **Immediate, actionable feedback.** Feedback is timely and specific enough to act on. | _Pending_ — *scrutinize: immediate vs. delayed feedback for retention/transfer* |
-| 8 | **AI augments learning, never replaces thinking.** AI assists evaluation/guidance; the learner does the cognitive work. | _Pending_ — *aligns with the "assistance dilemma"* |
-| 9 | **Long-term retention via evidence-based review.** Spacing/retrieval used where appropriate. | _Pending_ |
-| 10 | **Minimize unnecessary cognitive load.** Remove extraneous load; preserve essential and generative load. | _Pending_ — *scrutinize: load vs. "desirable difficulties"* |
-| 11 | **Every learning activity has a clear objective and measurable outcome.** | _Pending_ |
+## Principles & evidence alignment
+Legend: ✅ supported · ◑ supported with nuance · ❓ limited/indirect evidence (no conflict) · ⚠ conflict to resolve.
 
-## Principles under active scrutiny (anticipated trade-offs)
-Anticipated from known literature; to be confirmed against the research brief. These are the primary candidates for Founder-decision surfacing:
-- **#4 Strong prerequisite enforcement** — strictly linear prerequisites can conflict with evidence on learner autonomy and are hard to validate empirically.
-- **#5 Deliberate practice** — supported, but the strong form (e.g. "10,000 hours") is overclaimed; practice explains meaningful but not all variance.
-- **#7 Immediate feedback** — immediate feedback benefits novices; delayed feedback can aid retention/transfer by forcing effortful retrieval. Optimal timing is task- and stage-dependent.
-- **#10 Cognitive load** — minimizing *extraneous* load is well-supported, but "desirable difficulties" intentionally increase load to boost long-term retention. "Unnecessary" in the principle is the key qualifier.
+| # | Principle | Alignment | Evidence (source in [brief](learning-science-evidence-brief.md)) |
+|---|---|---|---|
+| 1 | **Learning is the product.** Value = learning outcomes, not features. | ✅ (framing) | Consistent with criterion-referenced mastery (Bloom 1968; Black & Wiliam 1998). |
+| 2 | **Teach exactly what is required for the target band — no over/under-teaching.** | ✅ (framing) | Aligns with criterion-referenced assessment and efficiency of practice quality over volume (Ericsson 1993; Macnamara 2016). |
+| 3 | **Mastery-based progression.** Advance on demonstrated mastery, not time. | ✅ | Mastery learning: moderate positive effect (Bloom 1968; Kulik et al. 1990). |
+| 4 | **Strong prerequisite enforcement.** | ⚠ | Direct L2 evidence is `[OPEN]`; hierarchical prerequisites validated mainly in math. Bottleneck + circular-dependency risk → see conflict below. |
+| 5 | **Deliberate practice over passive consumption.** | ◑ | Supported (Ericsson 1993), but the strong "hours volume" form is overclaimed (Macnamara 2016: ~4% variance in education). |
+| 6 | **Frequent formative assessment.** | ✅ | Formative assessment raises achievement (Black & Wiliam 1998; Sortwell 2024). |
+| 7 | **Immediate, actionable feedback.** | ⚠ | Feedback is powerful (Hattie & Timperley 2007), but *immediate* vs *delayed* is stage/task-dependent → see conflict below. |
+| 8 | **AI augments learning, never replaces thinking.** | ✅ | Consistent with the "assistance dilemma"; ITS ≈ human tutoring, over-reliance erodes metacognition (VanLehn 2011). |
+| 9 | **Long-term retention via evidence-based review.** | ✅ | Spaced retrieval / expanding intervals (Cepeda 2008; Murre & Dros 2015). |
+| 10 | **Minimize unnecessary cognitive load.** | ◑ | Extraneous-load reduction supported (Sweller 2019), but "desirable difficulties" intentionally increase load → "unnecessary" is the key qualifier. |
+| 11 | **Every activity has a clear objective and measurable outcome.** | ✅ (framing) | Consistent with criterion-referenced goals and feed-up feedback (Hattie & Timperley 2007). |
+
+## Principle ↔ evidence conflicts to resolve (Founder decision required)
+Per the meta-rule, these are surfaced — **not** auto-resolved.
+
+### Conflict A — Principle #7 "Immediate feedback" vs. feedback-timing evidence
+- **Evidence:** immediate feedback aids novice/conceptual acquisition; **delayed** feedback can improve retention and transfer by forcing effortful retrieval (Hattie & Timperley 2007; timing evidence is `[CONTESTED]`).
+- **Trade-off:** pure-immediate maximizes novice correction and motivation; staged timing maximizes long-term retention/transfer.
+- **Proposed refinement (for Founder approval):** *stage-dependent* feedback timing — immediate during acquisition and for novices (Band 3–5); increasingly delayed / retrieval-first as the goal shifts to retention and transfer (Band 6+).
+- **Decision needed:** keep "immediate" as written, or adopt the stage-dependent refinement?
+
+### Conflict B — Principle #4 "Strong prerequisite enforcement" vs. limited evidence
+- **Evidence:** optimal L2 prerequisite structures are `[OPEN]`; hierarchical prerequisites are validated mainly in mathematics; over-specification creates bottlenecks and ignores adult heterogeneity.
+- **Trade-off:** strict enforcement guarantees foundations but risks demotivation and blocking; flexibility reduces risk but may allow fragile learning.
+- **Proposed refinement (for Founder approval):** enforce a **small, high-confidence core** of prerequisites (e.g., foundational vocab/grammar before dependent tasks); leave the rest adaptive rather than strictly gated.
+- **Decision needed:** strict enforcement everywhere, or core-enforced + adaptive elsewhere?
+
+### Conflict C — Principle #5 "Deliberate practice" framing
+- **Evidence:** deliberate practice is supported, but the "10,000-hour / volume" framing explains limited variance (Macnamara 2016).
+- **Not a conflict with the principle itself** — only with its common misreading.
+- **Proposed:** keep the principle; explicitly state it means *focused, feedback-driven quality practice*, not volume. (Likely non-controversial; flagged for transparency.)
+
+### Conflict D — Principle #10 "Cognitive load" vs. desirable difficulties
+- **Evidence:** reducing *extraneous* load is supported, but retrieval practice and interleaving (Principles #5, #9) intentionally *increase* productive load.
+- **Not a true conflict** — the principle already says "*unnecessary* cognitive load."
+- **Proposed:** keep as written; clarify the Blueprint preserves *generative/productive* load (retrieval, interleaving) while cutting *extraneous* load. (Flagged for transparency.)
 
 ## Open questions
-- [ ] Fill evidence alignment per principle (pending research brief).
-- [ ] For each scrutinized principle, decide: keep as-stated, refine, or add a documented exception (Founder decision where evidence conflicts).
+- [ ] Founder decisions on Conflict A (#7 timing) and Conflict B (#4 enforcement) — these change assessment/feedback and curriculum/progression design.
+- [ ] Confirm Conflict C (#5) and Conflict D (#10) clarifications are acceptable as documentation only.
