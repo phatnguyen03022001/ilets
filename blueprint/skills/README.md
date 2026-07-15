@@ -3,16 +3,11 @@
 ## Purpose
 Decompose every competency from [../bands/](../bands/) into teachable, assessable, traceable skills — the foundation for `../curriculum/`, `../practice/`, `../assessment/`, and adaptive learning. Per Founder directive: decompose until **every band requirement maps to a complete learning path**.
 
-## Decomposition model ([SK-001](decisions.md))
-A **skill hierarchy**: skill → component → … → **leaf**. A node is a leaf only when it satisfies all 8 leaf criteria. Decomposition **stops** when further subdivision no longer improves teaching / practice / assessment / personalization.
+## Decomposition model ([SK-001](decisions.md), [SK-002](decisions.md))
+A **skill hierarchy**: skill → component → … → **leaf**. Decomposition keeps the **official assessment criteria as the primary axis** and stops only when a node is a single **atomic** objective **and** is independently teachable / practiceable / assessable / **remediable** ([SK-002](decisions.md)). Optimize for atomic skills, not a target count.
 
-## Leaf record (every leaf carries)
-- **Objective** — a single learning objective.
-- **Mastery** — explicit criterion (feeds [../learning/mastery.md](../learning/mastery.md) + `../assessment/`).
-- **Prerequisites** — other skill IDs and/or `../knowledge/` items (if any).
-- **Bands** — which band(s) it belongs to (introduced → refined).
-- **Traces to** — the official IELTS requirement (cited from [../bands/](../bands/) descriptors).
-- *(Leaf invariant, verified per leaf: independently teachable / practiceable / assessable.)*
+## Leaf record (canonical schema)
+Every leaf conforms to the **Skill Leaf Schema** ([leaf-schema.md](leaf-schema.md) v1.0) — the single learning object referenced by `../curriculum/`, `../practice/`, `../assessment/`, AI tutoring, and personalization **by `id`**, with **no parallel representations** ([SK-002](decisions.md)). Core fields: `id`, `objective`, `bands`, `traces_to`, `prerequisites`, `mastery_criteria`, `common_errors`, `remediation`, `independence`. Consumer fields (`practice_item_types`, `assessment_evidence`) are owned by the leaf and populated later by the consuming section.
 
 ## Scope
 - The **four official skills**: writing, speaking, listening, reading — one doc each (mirrors [../bands/](../bands/)).
