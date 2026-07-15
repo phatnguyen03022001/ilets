@@ -55,3 +55,4 @@ Per [FD-001](product/foundational-decisions.md), shared content lives at the cat
 - **No duplication:** A concept is defined once; other documents link to it.
 - **Decision records:** Every non-trivial decision is recorded with rationale and indexed from [`product/foundational-decisions.md`](product/foundational-decisions.md).
 - **Open questions are first-class:** every section lists its open questions; unresolved items are never silently assumed.
+- **Repository lifecycle:** Blueprint work lives on the `blueprint` branch; `main` holds only the latest approved, frozen Blueprint. Implementation starts only after the frozen Blueprint is merged to `main`. See [FD-005](product/foundational-decisions.md).

@@ -19,7 +19,7 @@
 - **Kulik, Kulik & Bangert-Drowns (1990)**, *Review of Educational Research* 60(2) — mastery-learning meta-analysis (moderate positive effect).
 - **Roediger & Karpicke (2006)**, *Psychological Science* 17(3), 249–255 — testing / retrieval effect.
 - **Adesope, Trevisan & Sundararajan (2017)**, *Review of Educational Research* 87(3), 659–701 — practice-testing meta-analysis.
-- **Cepeda et al. (2008)**, *European Journal of Cognitive Psychology* 20(5), 715–731 — distributed practice / spacing.
+- **Cepeda, Vul, Rohrer, Wixted & Pashler (2008)**, *Psychological Science* 19(11), 1095–1102 — spacing (optimal gap ≈ 10–20% of retention interval). *(Meta-analysis: Cepeda et al. 2006, Psychological Bulletin 132(3), 354–380.)*
 - **Dunlosky et al. (2013)**, *Psychological Science in the Public Interest* 14(1), 4–58 — review of learning techniques.
 - **Sweller, van Merriënboer & Paas (2019)**, *Educational Psychology Review* 31(2) — cognitive load theory.
 - **Black & Wiliam (1998)**, *Phi Delta Kappan* 80(2), 139–148 — formative assessment ("Inside the Black Box").
@@ -44,6 +44,8 @@
 
 > Verbose citation counts and over-precise effect sizes carried from the subagent's draft are trimmed or flagged here. Before any external publication, every effect size should be checked against its primary source.
 
+> **Second-pass correction (2026-07-15).** The Cepeda 2008 venue was initially recorded here as *European Journal of Cognitive Psychology* 20(5), 715–731 — **incorrect** (a hallucination inherited from the subagent that the first audit missed, because it only spot-checked unfamiliar citations). Verified correct via PubMed: *Psychological Science* 19(11), 1095–1102 (the "ridgeline" paper). It was caught only because a redundant second brief the subagent also wrote happened to cite the correct venue. **Lesson: verify the venue of *every* citation, including canonical-looking ones.**
+
 ---
 
 ## 1. Learning Philosophy — `[CONSENSUS]`
@@ -62,7 +64,7 @@
 
 ## 3. Practice Model — `[CONSENSUS]`
 - **Retrieval practice / testing effect** (Roediger & Karpicke 2006; Adesope et al. 2017): retrieving > restudying for retention; moderate, robust effects.
-- **Spacing / distributed practice** (Cepeda et al. 2008): spaced > massed; optimal gap ~10–20% of the retention interval.
+- **Spacing / distributed practice** (Cepeda et al. 2008, *Psychological Science*): spaced > massed; optimal gap ~10–20% of the retention interval.
 - **Interleaving** (Dunlosky et al. 2013): mixed > blocked practice for transfer. *(Dunlosky rated classroom utility cautiously; later work is more positive.)*
 - **Worked examples / scaffolding** (Sweller et al. 2019; Barbieri et al. 2023, math): reduce load for novices; **expertise-reversal** — fade scaffolding as skill grows.
 - *IELTS relevance:* spaced retrieval of vocab/grammar; interleave task types; worked examples for Writing Task 2 → fade to independent practice; reduce scaffolding for Band 7+.
