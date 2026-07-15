@@ -40,3 +40,17 @@ Every **leaf node** in the hierarchy must satisfy **all** of:
 - `writing.md` is retro-fitted to schema v1.0 (reference implementation).
 - Consumer-specific fields (`practice_item_types`, `assessment_evidence`) are **owned by the leaf** and populated incrementally by `../practice/` and `../assessment/` — still the single representation.
 - `mastery_states` (the progress/personalization scale) is a fixed enum defined once in the schema, not repeated per leaf.
+
+---
+
+## SK-003 — Schema v1.1 refinements
+**Date:** 2026-07-16 · **Status:** Decided (Founder)
+
+**Decision.** Schema refined to **v1.1** ([leaf-schema.md](leaf-schema.md)):
+1. Add **`cognitive_level`** (Bloom: remember \| understand \| apply \| analyze \| evaluate \| create) — the cognitive operation the skill requires.
+2. Add **`typical_learning_load`** (low \| medium \| high) — relative expected effort / learning time (heuristic; calibrated empirically later).
+3. Rename **`assessment_evidence` → `assessment_strategy`** — the Blueprint defines *how* mastery is assessed (strategy, intrinsic); *learner evidence* (actual results/submissions) is **runtime** data in `../progress/`, not on the leaf.
+
+**Reaffirmed as core architectural rules:** (a) **strict separation** between Blueprint definition (intrinsic) and learner runtime state (`../progress/`); (b) **single representation** — one leaf object referenced by `id`, no parallel representations.
+
+**Implication.** Schema v1.1 is the canonical learning object for the rest of the Blueprint. `writing.md` retro-fitted; Speaking / Listening / Reading built to v1.1.
