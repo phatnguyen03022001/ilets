@@ -1,0 +1,62 @@
+# Foundational Decisions
+
+Foundational decisions that constrain the entire Blueprint. Each records the decision, its rationale, and its structural implications. New foundational decisions are appended here.
+
+---
+
+## FD-001 — Test variant scope: Academic first, General Training extensible
+**Date:** 2026-07-15 · **Status:** Decided (Founder) · **Type:** Product scope
+
+**Decision.** v1 of the Blueprint fully covers **Academic**. **General Training** is part of the long-term scope and is added later.
+
+**Constraints (binding).**
+- The Blueprint structure, domain models, learning/assessment/curriculum models must allow GT to be added **without restructuring existing artifacts**.
+- Shared concepts are **modeled once and reused**. Only variant-specific content (e.g. Academic vs. GT Reading passages; Writing Task 1 graph/diagram vs. letter) is separated.
+- Optimize for long-term completeness, maintainability, and educational correctness — **not** for minimizing v1 scope.
+
+**Implications.** Requires a shared-core / variant-overlay structure across `skills/`, `practice/`, `assessment/`. Variant-separation convention to be fixed when the first variant-specific section is authored (tracked in `review/`).
+
+---
+
+## FD-002 — Learner model: L1-agnostic canonical + optional localization
+**Date:** 2026-07-15 · **Status:** Decided (Founder) · **Type:** Product scope
+
+**Decision.** The Blueprint is **L1-agnostic**. All Blueprint documents are written in **English** as the canonical SSOT. Learning, assessment, curriculum, and knowledge models are independent of any native language.
+
+**Localization** (Vietnamese first; Chinese, Japanese, etc. later) is an **optional, separate layer** that maps onto the canonical Blueprint **without changing learning requirements**.
+
+**Implications.** A new top-level `localization/` category (justified in [`../README.md`](../README.md)). The knowledge layer (e.g. L1-transfer errors) is expressed generically in canonical form; L1-specific interference is a localization overlay, not a core requirement.
+
+---
+
+## FD-003 — Skill taxonomy: 4 official skills + Vocabulary/Grammar as knowledge
+**Date:** 2026-07-15 · **Status:** Decided (Founder) · **Type:** Structure
+
+**Decision.** The four official IELTS skills — **Listening, Reading, Writing, Speaking** — are first-class skills under `skills/`. **Vocabulary** and **Grammar** are **not** separate skills; they are enabling **knowledge** layers under `knowledge/` that feed all four skills.
+
+**Rationale.** Matches official IELTS structure (only four skills are scored) and the `CLAUDE.md` separation of `skills/` vs `knowledge/`.
+
+**Implications.** `skills/` has four sub-areas. `knowledge/` begins with Vocabulary and Grammar; other knowledge layers (e.g. pronunciation/phonology, discourse) are TBD during `knowledge/` discovery.
+
+---
+
+## FD-004 — Repository slate: salvage, then commit clean slate
+**Date:** 2026-07-15 · **Status:** Decided (Founder) · **Type:** Process
+
+**Decision.** Salvage still-valid product decisions from the prior (`ssot/`) direction into `product/`, then commit the clean-slate pivot.
+
+**Salvaged (carried into Blueprint).** mission, product principles, band/criteria references (TA/CC/LR/GRA), and domain terms.
+
+**Not salvaged (implementation-era; archived in git history `HEAD`).** The `ssot/` microservice architecture, OpenAPI contract, and ADRs 0034–0045 (auth, retry, sandbox, AI-model selection, DB, Z.ai round-trip). These are out of scope for the Blueprint phase. A small number are *learning-adjacent* (AI evaluation accuracy target, band-score calculation, Writing task-type support, Writing evaluation criteria) and may **inform** — but not constrain — the corresponding Blueprint sections (`assessment/`, `bands/`) when those are authored.
+
+**Implications.** This commit records the pivot. Prior artifacts remain recoverable via `git show HEAD:<path>`.
+
+---
+
+## Decision index
+| ID | Title | Status |
+|---|---|---|
+| FD-001 | Test variant scope (Academic first, GT extensible) | Decided |
+| FD-002 | Learner model (L1-agnostic + localization) | Decided |
+| FD-003 | Skill taxonomy (4 skills + knowledge) | Decided |
+| FD-004 | Repository slate (salvage + clean commit) | Decided |
