@@ -10,13 +10,13 @@ Assessment = **how mastery is measured** — distinct from Knowledge (known), Sk
 Every assessment type conforms to [assessment-type-schema.md](assessment-type-schema.md) v1.0 and answers: evidence produced, strategy, sufficiency, confidence required, AI reliability, confidence surfacing, kind (formative/summative/diagnostic), and alignment. Evidence-and-confidence rules in [evidence-and-confidence.md](evidence-and-confidence.md); types in [taxonomy.md](taxonomy.md).
 
 ## Status
-**Drafted (2026-07-16).** Model v1.0 (7 assessment types + evidence/confidence model). Next: bind — populate each Skill Leaf's `assessment_strategy` slot + map band-exit→evidence, node→culmination, practice-type→assessment-pathway, then coverage review.
+**Complete (2026-07-16).** Model v1.0 (7 types + evidence/confidence) + [binding.md](binding.md) (4 maps) + [coverage-review.md](coverage-review.md). Pending Founder review.
 
 ## Structure
 - [taxonomy.md](taxonomy.md) — canonical Assessment Types (v1.0).
-- [evidence-and-confidence.md](evidence-and-confidence.md) — what demonstrates mastery, sufficiency, confidence thresholds, AI reliability, calibrated-confidence surfacing, formative vs summative.
-- [binding.md](binding.md) — leaf→type + exit→evidence + node→culmination + practice→assessment maps (pending).
-- [coverage-review.md](coverage-review.md) — coverage verification (pending).
+- [evidence-and-confidence.md](evidence-and-confidence.md) — mastery evidence, sufficiency, confidence thresholds, AI reliability, calibrated-confidence surfacing, formative vs summative.
+- [binding.md](binding.md) ✅ — leaf→strategy + exit→evidence + node→culmination + practice→assessment maps.
+- [coverage-review.md](coverage-review.md) ✅ — coverage verification.
 - [assessment-type-schema.md](assessment-type-schema.md) — Assessment Type schema v1.0.
 - [decisions.md](decisions.md) — AM-001/002.
 
