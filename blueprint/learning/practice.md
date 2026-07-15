@@ -11,7 +11,7 @@ Define how practice is designed across skills and bands.
 - **Worked examples / scaffolding** (Sweller et al. 2019): reduce load for novices; **expertise reversal** — fade as skill grows.
 - **Deliberate practice** (Ericsson 1993): focused, goal-oriented, feedback-driven — **quality over volume**. The "hours" framing is rejected; practice explains limited variance (Macnamara 2016).
 
-## Proposed defaults (confirm during review)
+## Decided defaults (Founder-approved 2026-07-16)
 - **Grain size:** adaptive by band — fine micro-skill decomposition for low bands; coarser whole-task for high bands (expertise reversal).
 - **Interleaving:** moderate — mix within a skill; cross-skill review.
 - **Scaffolding:** gradual fading — worked examples → independent practice as expertise develops.
@@ -24,5 +24,4 @@ Define how practice is designed across skills and bands.
 - Item types and scheduling ← `../practice/`; review rules ← [review.md](review.md); band grain ← `../bands/`.
 
 ## Open questions
-- [ ] Confirm the proposed grain-size / interleaving / scaffolding defaults.
 - [ ] Define practice-item types — during `../practice/`.

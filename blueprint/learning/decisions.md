@@ -60,3 +60,22 @@ Founder decisions that define the learning model. Each resolves a fork surfaced 
 **Evidence.** Direct L2 prerequisite evidence is `[OPEN]` (brief §6); CLT element interactivity (Sweller et al. 2019) informs what can plausibly be classified "Required".
 
 **Implications.** The actual prerequisite *graph* (which specific items are Required/Recommended/Independent) is defined per skill in `../curriculum/` and `../knowledge/`, applying this classification.
+
+---
+
+## LD-005 — Learning Progression vs. Exam Preparation (two independent concepts)
+**Date:** 2026-07-16 · **Status:** Decided (Founder) · **Resolves:** Progression fork #4 (test-date reconciliation)
+
+**Decision.** The Blueprint explicitly models two independent concepts:
+- **Learning Progression** — mastery-gated. A learner is **not** certified as having completed or progressed beyond a band until **all required mastery criteria** are satisfied.
+- **Exam Preparation** — may expose learners to **higher-band tasks before mastery** when preparing for a fixed test date. This exposure is for **diagnosis, familiarization, and exam readiness only**.
+
+**Constraints (binding) — Exam Preparation must never:**
+- unlock higher-band mastery;
+- satisfy progression requirements;
+- bypass prerequisites;
+- modify certification of current-band completion.
+
+**Rationale.** Preserves educational integrity (mastery-gated certification) while remaining practical for real IELTS candidates facing fixed test dates.
+
+**Implications.** Implemented in [progression.md](progression.md); Exam-Preparation instruments feed [assessment.md](assessment.md) (summative/diagnostic) but do not affect [mastery.md](mastery.md) certification.

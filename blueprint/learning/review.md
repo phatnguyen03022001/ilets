@@ -10,7 +10,7 @@ Define how long-term retention is maintained.
 
 ## Model
 - **Expanding-interval** review of vocabulary, grammar, and task strategies.
-- *Proposed default (confirm):* **performance-graded spacing** — schedule the next review when retrieval accuracy drops toward ~80–90% (i.e., just before it is fully lost), rather than a fixed calendar.
+- **Decided (Founder-approved 2026-07-16): performance-graded spacing** — schedule the next review when retrieval accuracy drops toward ~80–90% (i.e., just before it is fully lost), rather than a fixed calendar.
 
 ## IELTS application
 - Vocabulary/grammar on expanding intervals; mix immediate and delayed review of task strategies.
@@ -22,4 +22,4 @@ Define how long-term retention is maintained.
 - Review scheduling rules ← `../progress/` (adaptive within band) and `../practice/`.
 
 ## Open questions
-- [ ] Confirm performance-graded spacing as the default vs. fixed expanding intervals.
+- [ ] Define the adaptive scheduling algorithm — during `../progress/`.
