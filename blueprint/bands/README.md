@@ -20,7 +20,7 @@ The overlay is always clearly labeled as inference, not official text.
 ## Planned structure
 - `README.md` (this file) — band model, scoring, half-bands, the two-layer model, Academic/GT handling.
 - `writing.md` ✅ — Task 1 (Academic) + Task 2 descriptors (TA/CC/LR/GRA), bands 0–9 verified + Bands 3–9 overlay + hierarchical exit criteria ([BD-002](decisions.md)).
-- `speaking.md` — Fluency&Coherence / LR / GRA / Pronunciation descriptors, Bands 3–9 + overlay.
+- `speaking.md` ✅ — FC / LR / GRA / Pronunciation descriptors (bands 0–9 verified) + Bands 3–9 overlay + Speaking-Skill exit criteria ([BD-002](decisions.md)).
 - `listening.md` — Academic raw-score→band conversion, Bands 3–9 + overlay.
 - `reading.md` — Academic raw-score→band conversion, Bands 3–9 + overlay.
 - GT variant-specific content added later under each skill per [FD-001](../product/foundational-decisions.md); convention fixed in `../review/`.
