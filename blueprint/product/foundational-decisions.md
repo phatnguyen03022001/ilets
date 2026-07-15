@@ -86,3 +86,4 @@ Non-foundational decisions live with their section and are indexed here:
 - [`skills/decisions.md`](../skills/decisions.md) — SK-001 decomposition rules (8 leaf criteria + stop); SK-002 atomic + common schema; SK-003 schema v1.1 refinements (`cognitive_level`, `typical_learning_load`, `assessment_strategy`).
 - [`knowledge/decisions.md`](../knowledge/decisions.md) — KK-001 Knowledge Graph rules; KK-002 Knowledge Object schema; KK-003 schema v1.1 (`common_misconceptions`, `examples`, atomicity refinement).
 - [`curriculum/decisions.md`](../curriculum/decisions.md) — CR-001 orchestration (reference by `id`, sequence by 5 factors, canonical pathway); CR-002 Curriculum Node schema.
+- [`practice/decisions.md`](../practice/decisions.md) — PR-001 Practice Taxonomy rules (canonical layer, referenced by `id`, 7 attributes, architectural separation); PR-002 Practice Type schema.
