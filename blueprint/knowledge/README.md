@@ -10,13 +10,13 @@ Every knowledge item is an atomic **Knowledge Object** conforming to [knowledge-
 - **grammar** (`K-GRA`) · **vocabulary** (`K-VOC`) · **phonology** (`K-PHON`).
 
 ## Status
-**In progress.** `grammar.md` drafted as the template (most-referenced: `K-GRA`). Pending validation, then `vocabulary.md` + `phonology.md` + the resolution map.
+**Complete (2026-07-16).** Three domains — grammar (26), vocabulary (9), phonology (8) = **43 atomic objects**, schema v1.1 — plus [resolution.md](resolution.md), which resolves every Skill `K-*` prerequisite. Pending Founder review.
 
 ## Structure
-- `grammar.md` / `vocabulary.md` / `phonology.md` — domain knowledge graphs.
-- [resolution.md](resolution.md) — maps every Skill `K-*` prerequisite to the knowledge object(s) that satisfy it.
-- [knowledge-object-schema.md](knowledge-object-schema.md) — canonical Knowledge Object schema v1.0.
-- [decisions.md](decisions.md) — KK-001/002.
+- `grammar.md` ✅ (26) · `vocabulary.md` ✅ (9) · `phonology.md` ✅ (8) — domain knowledge graphs, schema v1.1 (43 objects).
+- [resolution.md](resolution.md) — maps every Skill `K-*` prerequisite to the knowledge object(s) that satisfy it (completeness-checked).
+- [knowledge-object-schema.md](knowledge-object-schema.md) — canonical Knowledge Object schema v1.1.
+- [decisions.md](decisions.md) — KK-001/002/003.
 
 ## Dependencies
 - **Consumes:** the `K-*` prerequisites from [../skills/](../skills/) (per [../skills/consistency-review.md](../skills/consistency-review.md)).
