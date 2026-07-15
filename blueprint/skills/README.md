@@ -22,11 +22,12 @@ A **skill hierarchy**: skill → component → … → **leaf**. A node is a lea
 `<SKILL>-<COMPONENT>-<nn>` — e.g., `W-CC-03` = Writing, Coherence & Cohesion, leaf 03. (`W`=Writing, `S`=Speaking, `L`=Listening, `R`=Reading.)
 
 ## Status
-**In progress.** `writing.md` drafted as the granularity template — pending Founder validation of the decomposition depth + leaf record format before replicating to Speaking / Listening / Reading.
+**In progress.** Leaf schema v1.0 defined ([leaf-schema.md](leaf-schema.md)) — pending Founder validation. `writing.md` decomposition approved; pending retro-fit to the schema, then Speaking / Listening / Reading.
 
 ## Structure
-- `writing.md` / `speaking.md` / `listening.md` / `reading.md` — per-skill decompositions.
-- [decisions.md](decisions.md) — SK-001 decomposition rules.
+- `writing.md` / `speaking.md` / `listening.md` / `reading.md` — per-skill decompositions (each leaf conforms to [leaf-schema.md](leaf-schema.md)).
+- [leaf-schema.md](leaf-schema.md) — canonical Skill Leaf Schema v1.0.
+- [decisions.md](decisions.md) — SK-001 decomposition rules; SK-002 atomic decomposition + common schema.
 
 ## Dependencies
 - **Consumes:** [../bands/](../bands/) (competencies + exit criteria).
