@@ -1,12 +1,13 @@
 # Product & Pedagogical Principles
 
-> **Status:** Salvaged from the prior direction. These three principles remain product/pedagogy-relevant. The engineering-era principles from the prior `ssot/` work (Documentation-First, Observability First, Security By Default, Convention Over Configuration, etc.) belonged to the implementation phase and are **not** carried into the Blueprint; they will be re-evaluated if/when implementation resumes.
+> **Canonical location:** The full, governing set of learning principles lives in [`../learning/philosophy.md`](../learning/philosophy.md) — 11 Founder-decided principles plus the research-led meta-rule.
 
-## Principles
-1. **Learn by Practice** — Skill is acquired through deliberate practice, not passive study. The Blueprint's practice and assessment design must reflect this.
-2. **Immediate Feedback** — Learners improve fastest when feedback is timely and specific. Assessment and feedback models must support this.
-3. **AI Assists, Not Replaces** — AI augments evaluation, feedback, and guidance; it does not replace learner effort or authoritative assessment criteria.
+## Product-level framing
+- **Learning is the product.** Value is measured by learning outcomes, not features.
+- **Teach exactly what is required** for the target band — no over-teaching, no under-teaching (see `CLAUDE.md` Band Rules).
+
+## Note on the prior direction
+The three principles carried from the prior `ssot/` direction — *Learn by Practice, Immediate Feedback, AI Assists Not Replaces* — are **subsumed** by the canonical 11 in `learning/philosophy.md` (#5, #7, #8 respectively). The engineering-era principles (Documentation-First, Observability First, Security By Default, etc.) belonged to the implementation phase and are not carried into the Blueprint.
 
 ## Open questions
-- [ ] Are these three still the canonical product principles, or should they be revised or expanded?
-- [ ] Should the learning *philosophy* (spaced repetition, mastery-based progression, error-driven practice, etc.) live here or in `learning/`? **Recommendation:** philosophy lives in `learning/`; this file stays product-level.
+- [ ] Confirm whether any product-level principle exists that is *not* captured in `learning/philosophy.md`.
