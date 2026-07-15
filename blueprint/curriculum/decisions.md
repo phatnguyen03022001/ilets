@@ -18,3 +18,16 @@ Founder decisions defining the curriculum section. Indexed from [product/foundat
 - Each band phase exits at that band's exit criteria ([../bands/](../bands/), [BD-002](../bands/decisions.md)).
 
 **Implication.** A Curriculum Node schema ([CR-002](#cr-002--curriculum-node-schema)) governs every node; nodes reference `id`s only.
+
+---
+
+## CR-003 — Curriculum Node schema v1.1 refinements
+**Date:** 2026-07-16 · **Status:** Decided (Founder)
+
+**Decision.** Schema refined to **v1.1** ([curriculum-node-schema.md](curriculum-node-schema.md)):
+1. Add **`expected_outcomes`** — what the learner should be able to do after the node; a learning **intention** (not pass/fail), **complementing** `exit`.
+2. Add **`typical_learning_duration`** — estimated planning effort (e.g. "2–3 hours"); a **canonical planning property** of the node, **not** learner runtime data.
+
+**Reaffirmed:** curriculum is an **orchestration layer only** — it never duplicates Skill/Knowledge definitions; nodes reference objects by `id`.
+
+**Cross-band review gate.** After all Bands 3–9 are implemented, a cross-band consistency review (prerequisite consistency, workload balance, cognitive progression, mastery progression, duplicate/missing paths, full Band→Curriculum→Skill→Knowledge traceability) is required **before** proceeding to `../practice/`.
