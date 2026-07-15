@@ -30,3 +30,14 @@ Founder decisions defining the assessment section. Indexed from [product/foundat
 **Date:** 2026-07-16 · **Status:** Decided (Founder)
 
 **Decision.** Every assessment type conforms to [assessment-type-schema.md](assessment-type-schema.md) v1.0: `id`, `evidence_produced`, `strategy`, `sufficiency`, `confidence_required`, `ai_reliability`, `confidence_surfacing`, `kind` (formative/summative/diagnostic), `aligns_to`. The evidence-and-confidence rules live in [evidence-and-confidence.md](evidence-and-confidence.md); the type set in [taxonomy.md](taxonomy.md).
+
+---
+
+## AM-003 — Calibration defaults (configurable policy values)
+**Date:** 2026-07-16 · **Status:** Decided (Founder)
+
+**Decision.** The following are **Blueprint default policy values** — **not immutable constants**. They may be adjusted through future empirical validation **without changing the Blueprint architecture**:
+- **Minimum mastery confidence:** ≥ **0.80**.
+- **Minimum evidence sufficiency:** ≥ **2** independent demonstrations, with no regression below the previous certified level.
+
+**Nature.** These are *configurable calibration parameters* (default policy). Referenced by [evidence-and-confidence.md](evidence-and-confidence.md) and by `../progress/` mastery-state transitions. Adjusting them tunes strictness; it does not alter the model, schemas, or object graph.
