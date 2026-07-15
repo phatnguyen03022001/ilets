@@ -4,7 +4,7 @@
 Define the Band 3–9 descriptors — the spine that `skills/`, `assessment/`, `progress/`, and `curriculum/` implement. Per Founder directive: the band model *implements* the approved [learning model](../learning/README.md); it does not define it.
 
 ## Status
-**In progress (2026-07-16).** `writing.md` complete — descriptors verified + Bands 3–9 overlay + hierarchical exit criteria ([BD-002](decisions.md)). `speaking.md` next, then the receptive skills (`listening.md`, `reading.md`) with three-category evidence labeling ([BD-003](decisions.md)).
+**Drafted (2026-07-16) — all 4 skills.** `writing.md` + `speaking.md` (productive: verified descriptors + 5-field overlay + hierarchical exit criteria, [BD-002](decisions.md)); `listening.md` + `reading.md` (receptive: conversion tables + three-category evidence labeling, [BD-003](decisions.md)). **Pending Founder review.**
 
 ## Scope
 - **Bands 3–9** are the learning focus (curriculum, learning paths, detailed requirements, exit criteria). **Bands 0–2 are documented as boundary definitions only** — to complete the assessment model and support diagnostics; no learning content for 0–2 (see [BD-001](decisions.md)). **Band 3 is the program entry point.** Half-bands (e.g. 6.5) are awarded by interpolation, not separate descriptors.
@@ -21,8 +21,8 @@ The overlay is always clearly labeled as inference, not official text.
 - `README.md` (this file) — band model, scoring, half-bands, the two-layer model, Academic/GT handling.
 - `writing.md` ✅ — Task 1 (Academic) + Task 2 descriptors (TA/CC/LR/GRA), bands 0–9 verified + Bands 3–9 overlay + hierarchical exit criteria ([BD-002](decisions.md)).
 - `speaking.md` ✅ — FC / LR / GRA / Pronunciation descriptors (bands 0–9 verified) + Bands 3–9 overlay + Speaking-Skill exit criteria ([BD-002](decisions.md)).
-- `listening.md` — Academic raw-score→band conversion, Bands 3–9 + overlay.
-- `reading.md` — Academic raw-score→band conversion, Bands 3–9 + overlay.
+- `listening.md` ✅ — raw-score→band conversion (verified) + Bands 3–9 overlay (Blueprint Inference, [BD-003](decisions.md)) + Listening-Skill exit criteria.
+- `reading.md` ✅ — Academic raw-score→band conversion (verified) + Bands 3–9 overlay (Blueprint Inference, [BD-003](decisions.md)) + Reading-Skill exit criteria; GT deferred.
 - GT variant-specific content added later under each skill per [FD-001](../product/foundational-decisions.md); convention fixed in `../review/`.
 
 ## Dependencies
