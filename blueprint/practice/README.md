@@ -10,13 +10,14 @@ Practice defines **how things are trained** — distinct from Knowledge (known),
 Every practice type conforms to [practice-type-schema.md](practice-type-schema.md) v1.1 and answers: objective served, cognitive operations, skill leaves supported, knowledge reinforced, when used, mode, and a **primary learning phase** + supporting phases ([LD-006](../learning/decisions.md)). The taxonomy lives in [taxonomy.md](taxonomy.md).
 
 ## Status
-**Taxonomy v1.1 (2026-07-16).** 23 types, phase-classified. Next: bind — authoritative leaf↔type and node↔type mappings in [binding.md](binding.md), then a coverage review.
+**Complete (2026-07-16).** Taxonomy v1.1 (23 types, phase-classified) + [binding.md](binding.md) (leaf→type + node→type) + [coverage-review.md](coverage-review.md). Pending Founder review.
 
 ## Structure
 - [taxonomy.md](taxonomy.md) — canonical Practice Types (v1.1, phase-classified).
-- [binding.md](binding.md) — authoritative leaf→type + node→type bindings (pending).
+- [binding.md](binding.md) ✅ — authoritative leaf→type + node→type bindings.
+- [coverage-review.md](coverage-review.md) — coverage verification.
 - [practice-type-schema.md](practice-type-schema.md) — Practice Type schema v1.1.
-- [decisions.md](decisions.md) — PR-001 taxonomy rules + architectural separation; PR-002 schema; PR-003 phase classification.
+- [decisions.md](decisions.md) — PR-001/002/003.
 
 ## Dependencies
 - **Consumes:** [../learning/practice.md](../learning/practice.md) (practice principles), [LD-002](../learning/decisions.md)/[LD-003](../learning/decisions.md) (feedback model/timing), [../skills/](../skills/) + [../knowledge/](../knowledge/) (what it supports/reinforces), [../curriculum/](../curriculum/) (when used).
