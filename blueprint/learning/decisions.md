@@ -79,3 +79,18 @@ Founder decisions that define the learning model. Each resolves a fork surfaced 
 **Rationale.** Preserves educational integrity (mastery-gated certification) while remaining practical for real IELTS candidates facing fixed test dates.
 
 **Implications.** Implemented in [progression.md](progression.md); Exam-Preparation instruments feed [assessment.md](assessment.md) (summative/diagnostic) but do not affect [mastery.md](mastery.md) certification.
+
+---
+
+## LD-006 — Canonical learning phases
+**Date:** 2026-07-16 · **Status:** Decided (Founder)
+
+**Decision.** The Blueprint's canonical **learning phases**, used to classify practice types, sequence the curriculum, drive adaptive planning, AI tutoring, and analytics:
+1. **Acquisition** — initial learning of new knowledge/skill.
+2. **Consolidation** — strengthening/stabilizing newly learned material.
+3. **Retrieval** — active recall practice for retention.
+4. **Transfer** — applying learning to new/varied contexts (incl. interleaving).
+5. **Fluency** — building automaticity, speed, effortless performance.
+6. **Exam Readiness** — practicing under exam conditions (timed, full tasks; = Exam Preparation, [LD-005](#ld-005--learning-progression-vs-exam-preparation-two-independent-concepts)).
+
+**Usage.** A practice type supports one or more phases; exactly one is **primary** ([PR-003](../practice/decisions.md)). Feedback timing ([LD-003](#ld-003--feedback-timing-stage-dependent-acquisition--consolidation--transfer)) maps to these phases (Acquisition → immediate; Transfer/Exam Readiness → delayed).

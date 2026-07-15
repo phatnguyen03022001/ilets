@@ -35,3 +35,12 @@ Founder decisions defining the practice section. Indexed from [product/foundatio
 These responsibilities stay strictly separate.
 
 **Implication.** A Practice Type schema ([PR-002](#pr-002--practice-type-schema)) governs every type; the taxonomy lives in [taxonomy.md](taxonomy.md).
+
+---
+
+## PR-003 — Practice Type phase classification (schema v1.1)
+**Date:** 2026-07-16 · **Status:** Decided (Founder)
+
+**Decision.** Each Practice Type explicitly declares its **primary learning phase** against the canonical phases ([LD-006](../learning/decisions.md)): Acquisition, Consolidation, Retrieval, Transfer, Fluency, Exam Readiness. A type may support multiple phases, but exactly one is **primary**. Schema → v1.1 (`primary_phase` + `phases`, replacing the coarser `purpose`).
+
+**Rationale.** Improves curriculum sequencing, adaptive planning, AI tutoring, and analytics. Feedback timing ([LD-003](../learning/decisions.md)) maps to these phases.
