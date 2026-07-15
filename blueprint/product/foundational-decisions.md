@@ -53,6 +53,23 @@ Foundational decisions that constrain the entire Blueprint. Each records the dec
 
 ---
 
+## FD-005 — Branch & freeze lifecycle
+**Date:** 2026-07-15 · **Status:** Decided (Founder) · **Type:** Process / governance
+
+**Decision.** All Blueprint work proceeds on the `blueprint` branch. `main` represents only the latest **stable, approved** Blueprint. The `blueprint` branch is merged into `main` only after the Blueprint has:
+- completed all planned sections;
+- passed consistency review;
+- passed gap analysis;
+- passed validation, challenge, and stress testing;
+- been approved by the Founder;
+- been frozen as the project's official SSOT.
+
+Implementation begins only after the frozen Blueprint is merged into `main`.
+
+**Implications.** Discovery/drafting commits land on `blueprint`. The pivot (`1192da7`) is on `blueprint`; `main` still holds the prior direction until the Blueprint is frozen and merged.
+
+---
+
 ## Decision index
 | ID | Title | Status |
 |---|---|---|
@@ -60,3 +77,8 @@ Foundational decisions that constrain the entire Blueprint. Each records the dec
 | FD-002 | Learner model (L1-agnostic + localization) | Decided |
 | FD-003 | Skill taxonomy (4 skills + knowledge) | Decided |
 | FD-004 | Repository slate (salvage + clean commit) | Decided |
+| FD-005 | Branch & freeze lifecycle | Decided |
+
+## Section decision logs
+Non-foundational decisions live with their section and are indexed here:
+- [`learning/decisions.md`](../learning/decisions.md) — LD-001 progression (mastery-gated across bands, adaptive within); LD-002 AI-primary feedback; LD-003 stage-dependent feedback timing; LD-004 prerequisite classification (Required / Recommended / Independent).
