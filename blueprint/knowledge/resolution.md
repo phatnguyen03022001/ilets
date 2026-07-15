@@ -12,12 +12,15 @@
 | W-CC-04 | reference & substitution | K-GRA-030, K-GRA-032, K-GRA-033 |
 | W-LR-01 | topic word lists | K-VOC-012 |
 | W-LR-02 | collocations | K-VOC-020 |
+| W-LR-03 | paraphrase | K-VOC-041, K-VOC-020 |
 | W-LR-05 | spelling / word formation | K-VOC-030, K-VOC-031 |
 | W-GRA-01 | basic sentence structure | K-GRA-001, K-GRA-002 |
 | W-GRA-02 | coordination | K-GRA-003, K-GRA-020 |
-| W-GRA-03 | subordination | K-GRA-004, K-GRA-021, K-GRA-005, K-GRA-006, K-GRA-007 |
+| W-GRA-03 | subordination | K-GRA-004, K-GRA-021, K-GRA-005, K-GRA-006, K-GRA-007, K-GRA-031 |
 | W-GRA-04 | tense & aspect | K-GRA-050, K-GRA-051, K-GRA-052, K-GRA-053, K-GRA-054, K-GRA-055 |
 | W-GRA-05 | articles & determiners | K-GRA-032, K-GRA-040, K-GRA-041 |
+| W-TA-03 | report key features with data | K-GRA-064 |
+| W-GRA-07 | structural flexibility | K-GRA-005, K-GRA-006, K-GRA-007, K-GRA-062, K-GRA-063 |
 
 ### Speaking ([../skills/speaking.md](../skills/speaking.md))
 | skill leaf | prerequisite (as stated) | resolves to |
@@ -27,8 +30,10 @@
 | S-LR-04 | word-choice accuracy | K-VOC-040, K-VOC-020 |
 | S-GRA-01 | basic sentence structure | K-GRA-001, K-GRA-002 |
 | S-GRA-02 | subordination | K-GRA-004, K-GRA-021, K-GRA-005 |
-| S-GRA-04 | grammatical accuracy | K-GRA-001, K-GRA-002, K-GRA-060 |
+| S-GRA-04 | grammatical accuracy | K-GRA-001, K-GRA-002, K-GRA-060, K-GRA-065 |
 | S-P-01 | phoneme inventory | K-PHON-010, K-PHON-011, K-PHON-012 |
+| S-P-02 | word stress | K-PHON-020 |
+| S-P-03 | sentence stress & intonation | K-PHON-021, K-PHON-030 |
 
 ### Reading ([../skills/reading.md](../skills/reading.md))
 | skill leaf | prerequisite (as stated) | resolves to |

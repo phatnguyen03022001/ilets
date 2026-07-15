@@ -197,4 +197,4 @@
 | grammatical accuracy (S-GRA-04) | K-GRA-001, K-GRA-002, K-GRA-060 |
 
 ## Open questions
-- [ ] Whether to add a `K-GRA-009` compound-complex sentence object (currently reachable via K-GRA-003 + K-GRA-004 composition).
+- [ ] Whether to add a compound-complex sentence object (currently reachable via composition of K-GRA-003 + K-GRA-004).
