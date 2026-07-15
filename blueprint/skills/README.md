@@ -17,10 +17,11 @@ Every leaf conforms to the **Skill Leaf Schema** ([leaf-schema.md](leaf-schema.m
 `<SKILL>-<COMPONENT>-<nn>` — e.g., `W-CC-03` = Writing, Coherence & Cohesion, leaf 03. (`W`=Writing, `S`=Speaking, `L`=Listening, `R`=Reading.)
 
 ## Status
-**Approved & locked (2026-07-16).** Leaf schema v1.1 ([leaf-schema.md](leaf-schema.md)) — canonical learning object. `writing.md` decomposition approved; retro-fitting to v1.1, then Speaking / Listening / Reading.
+**All four skills decomposed (2026-07-16).** Schema v1.1 locked; Writing (23) + Speaking (18) + Listening (11) + Reading (12) = **64 leaves**. Cross-skill consistency review done ([consistency-review.md](consistency-review.md)); field **calibration deferred** to a dedicated phase.
 
 ## Structure
-- `writing.md` / `speaking.md` / `listening.md` / `reading.md` — per-skill decompositions (each leaf conforms to [leaf-schema.md](leaf-schema.md) v1.1).
+- `writing.md` ✅ · `speaking.md` ✅ · `listening.md` ✅ · `reading.md` ✅ — per-skill decompositions, schema v1.1 (64 leaves total).
+- [consistency-review.md](consistency-review.md) — cross-skill consistency review (calibration deferred).
 - [leaf-schema.md](leaf-schema.md) — canonical Skill Leaf Schema v1.1.
 - [decisions.md](decisions.md) — SK-001 decomposition rules; SK-002 atomic + common schema; SK-003 schema v1.1 refinements.
 
