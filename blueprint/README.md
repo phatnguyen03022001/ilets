@@ -4,7 +4,7 @@ The **Single Source of Truth (SSOT)** for every learning decision in the IELTS l
 
 This Blueprint defines *what learners must know, what they must practice, how they are assessed, and how they progress from Band 3 to Band 9*. It does **not** define implementation (architecture, APIs, databases, infrastructure). Implementation begins only after the Blueprint is reviewed and frozen. See `/CLAUDE.md` and `/OBJECTIVE.md`.
 
-> **Status: v0 — Foundation.** Only `product/` and `glossary/` contain content. All other categories are scaffolded and pending discovery + research.
+> **Status: FROZEN (2026-07-16).** The Learning Blueprint (Blueprint Scope) is the project's Single Source of Truth for the learning domain — all 11 categories complete, independently validated (**0 Critical / 0 High**), glossary finalized. See [review/freeze-report.md](review/freeze-report.md). **Product & Implementation scopes remain open** and consume this frozen Blueprint ([FD-006](product/foundational-decisions.md)).
 
 ---
 

@@ -16,5 +16,5 @@ Define the product vision, scope, guiding principles, and the foundational decis
 
 ## Open questions
 - [ ] **PRODUCT-001** — Re-confirm mission wording (currently salvaged from the prior direction; see `mission.md`).
-- [ ] **PRODUCT-002** — Delivery model: self-study vs. tutor-supported vs. institutional (B2B). Deferred until `practice/` and `assessment/` are authored.
-- [ ] **PRODUCT-003** — Entry/wedge: is "Writing first" still the intended product entry point, and does a product-sequencing decision belong in the learning Blueprint at all?
+- ~~PRODUCT-002 — Delivery model~~ → **Deferred to Product Scope** ([FD-006](foundational-decisions.md)): the Blueprint is delivery-agnostic.
+- ~~PRODUCT-003 — Entry wedge~~ → **Deferred to Product Scope** ([FD-006](foundational-decisions.md)): the Blueprint is implementation/business-model-agnostic; the entry wedge is a product-sequencing decision that consumes the frozen Blueprint.

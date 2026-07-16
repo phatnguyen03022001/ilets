@@ -70,6 +70,23 @@ Implementation begins only after the frozen Blueprint is merged into `main`.
 
 ---
 
+## FD-006 — Blueprint scope boundaries (delivery / product / implementation-agnostic)
+**Date:** 2026-07-16 · **Status:** Decided (Founder)
+
+**Decision.** The Learning Blueprint defines the **canonical learning domain only**. It is:
+- **delivery-agnostic** (no assumption about self-study / tutor-supported / institutional channel);
+- **implementation-agnostic** (no architecture, code, tech, or UX);
+- **business-model-agnostic** (no commercialization, pricing, or GTM).
+
+**Scope split:**
+- **Blueprint Scope** — the canonical learning domain (`blueprint/`). **FROZEN 2026-07-16.**
+- **Product Scope** — delivery model, onboarding, entry wedge, UX, commercialization, GTM. **Intentionally open**; consumes the frozen Blueprint. `PRODUCT-002` (delivery model) and `PRODUCT-003` (entry wedge) are **deferred product-level decisions** — *not* Blueprint defects.
+- **Implementation Scope** — architecture, code, infrastructure. **Intentionally open**; a later phase.
+
+**Principle.** Future product/implementation decisions **consume** the frozen Blueprint; they must **not modify** it. Only **Blueprint Scope** is frozen today.
+
+---
+
 ## Decision index
 | ID | Title | Status |
 |---|---|---|
