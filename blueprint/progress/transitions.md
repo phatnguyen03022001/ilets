@@ -8,10 +8,12 @@
 - `mastered → emerging` (regression): a later assessment shows regression below the certified level → revert; re-practice / re-assess.
 - (`KnowledgeState`: `not_acquired → learning → acquired`, via `AT-03` probes — same threshold logic.)
 
-## 2. Band progression rules ([LD-001](../learning/decisions.md))
-- **Between bands: mastery-gated.** Band N+1 unlocks only when all four skill `BandCertificationState`s at N are `certified` (via `AT-05`; [BD-002](../bands/decisions.md) exit criteria).
-- **Within band: adaptive** (§4) — never bypasses required objectives or mastery criteria.
-- **Same outcomes, different paths** — every learner reaches the same band exit criteria via different node/leaf sequences.
+## 2. Band progression rules ([LD-001](../learning/decisions.md); [PG-002](decisions.md))
+- **Per-skill progression:** each skill's `BandCertificationState` advances **independently** — a skill certifies Band N→N+1 when its own [BD-002](../bands/decisions.md) exit criteria are met (`AT-05` portfolio), regardless of other skills. (Aligns with IELTS per-section bands.)
+- **Overall band** = average of the four section bands — **informational, not a gate** ([PG-002](decisions.md)).
+- **Within a skill-band:** adaptive (§4) — never bypasses required objectives or mastery criteria.
+- **Same outcomes, different paths** — every learner reaches the same per-skill exit criteria via different node/leaf sequences.
+- *(Replaces the prior synchronized "all four skills at N" rule, which blocked uneven profiles — V-HIGH-01.)*
 
 ## 3. Prerequisite enforcement ([LD-004](../learning/decisions.md))
 - A leaf/node `unlocks` when its **`Required`** prerequisites (skill `requires` + knowledge `requires`, classified per LD-004) are satisfied (`mastery_state=mastered` / `state=acquired`).

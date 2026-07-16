@@ -32,7 +32,7 @@ The canonical shape of learner runtime state. Per-learner instances conform to t
 ### `OverallLearnerState`
 | field | type | notes |
 |---|---|---|
-| `current_band` | per skill + overall | learner's certified band per skill. |
+| `current_band` | per skill + overall | learner's certified band **per skill** (each advances independently, [PG-002](decisions.md)); overall = average of the four section bands (**informational**, not a gate). |
 | `leaf_states` | map `leaf_id`→`LeafMasteryState` | mastery across the Skill Graph. |
 | `knowledge_states` | map `knowledge_id`→`KnowledgeState` | acquisition across the Knowledge Graph. |
 | `certification_history` | array | band certifications over time. |

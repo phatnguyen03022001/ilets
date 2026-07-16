@@ -23,7 +23,7 @@ All four skills × official criteria trace through all six layers. No missing pa
 
 ## Suite 3 — Learner Journey Validation (3→5, 4→6, 5→7, 6→8) ✅ with V-HIGH-01
 - Each simulation walks the band phases; **prerequisites stay satisfiable** (knowledge-first), **ordering is coherent** (acquisition→consolidation→exam), **practice progression is appropriate**, **assessment evidence is sufficient** (`AT-05` ≥2 demonstrations at each exit), and **mastery transitions are explainable**.
-- **V-HIGH-01 (High — requires Founder decision before freeze):** [progress/transitions.md](../progress/transitions.md) §2 gates Band N+1 on **all four skills** certifying at N. IELTS skills progress **unevenly** (per-section bands; overall = average), and [BD-002](../bands/decisions.md) defines **per-skill** exit criteria. The synchronized gate would block a strong reader at Band 5 by weak writing. **Recommendation:** make band progression **per-skill** (each skill's `BandCertificationState` advances independently via its BD-002 exit); the overall band is informational (average), not a gate. *This aligns with IELTS scoring and BD-002.*
+- **V-HIGH-01 (High → RESOLVED):** the prior synchronized gate (all four skills at N) was revised to **per-skill progression** ([PG-002](../progress/decisions.md)): each skill's band advances independently via its BD-002 exit; overall = average (informational). Aligns with IELTS + BD-002.
 
 ## Suite 4 — Challenge Testing
 | probe | result |
@@ -34,7 +34,7 @@ All four skills × official criteria trace through all six layers. No missing pa
 | unreachable curriculum nodes | ✅ none |
 | unsupported assessment strategies | ✅ none (all reference `AT-01..07`) |
 | unsupported practice pathways | ✅ none (all `PT→AT` valid) |
-| inconsistent band boundaries | **V-HIGH-01** (synchronized gate) + F-04 (`band_relevance` calibration) |
+| inconsistent band boundaries | V-HIGH-01 → **RESOLVED** (PG-002 per-skill) + F-04 (`band_relevance` calibration) |
 
 ## Suite 5 — Stress Testing
 | edge case | result |
@@ -42,14 +42,14 @@ All four skills × official criteria trace through all six layers. No missing pa
 | skipping bands | ✅ forbidden by design (mastery-gated, LD-001); Exam-Prep (LD-005) permits non-certifying higher-band exposure |
 | compressed timelines | ⚠ **V-L-01 (Low):** certification is **not** accelerated by timelines (mastery required regardless) — document explicitly |
 | repeated assessment failures | ✅ learner stays in band; adaptive scheduling + remediation loop. **V-L-02 (Low):** no explicit "stuck-learner" escalation defined |
-| partial mastery across skills | **V-HIGH-01** — surfaces the synchronized-gate problem (uneven profiles blocked) |
+| partial mastery across skills | V-HIGH-01 → **RESOLVED** (per-skill progression handles uneven profiles) |
 | high-performing, knowledge-deficient | ⚠ **V-L-03 (Medium):** many knowledge prereqs are `Recommended` (LD-004 minimum hard gates); a learner could certify a high band with shaky underlying knowledge. Audit that critical knowledge is `Required` (hard-gated) |
 
 ## Findings summary
 | id | severity | status |
 |---|---|---|
 | V-S-01 S-FC-05 not sequenced | Medium | **RESOLVED** (added to C-B5-06) |
-| V-HIGH-01 band-progression synchronization | **High** | **OPEN — Founder decision required** |
+| V-HIGH-01 band-progression synchronization | High | **RESOLVED** (PG-002 per-skill progression) |
 | V-L-03 critical-knowledge hard-prereq audit | Medium | OPEN (calibration) |
 | V-L-01 timeline↔certification (document) | Low | OPEN (documentation) |
 | V-L-02 stuck-learner escalation | Low | OPEN (calibration) |
@@ -59,4 +59,4 @@ All four skills × official criteria trace through all six layers. No missing pa
 **Critical issues (unresolved): 0.**
 
 ## Freeze recommendation
-**NOT YET.** One **High** finding — **V-HIGH-01 (per-skill vs synchronized band progression)** — requires a Founder decision before freeze, as it changes the core progression model. All other findings are Low/Medium and documented with rationale and severity. Once V-HIGH-01 is decided (and [progress/transitions.md](../progress/transitions.md) §2 revised accordingly), the Blueprint meets the freeze bar: **0 unresolved Critical, 0 unresolved High**, remaining items documented.
+**READY (conditional).** V-HIGH-01 is **resolved** (PG-002 per-skill progression). Status: **0 unresolved Critical, 0 unresolved High**. Remaining items are Low/Medium and documented (V-L-01/02/03, calibration flags), plus two open **Medium** product questions (PRODUCT-002 delivery model, PRODUCT-003 entry wedge). The Blueprint may be frozen once PRODUCT-002/003 are resolved **or explicitly deferred** (they are product-scope and do not affect the learning Blueprint's structural correctness).
