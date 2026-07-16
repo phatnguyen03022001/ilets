@@ -41,7 +41,7 @@
 - exit: W-LR-03/05 mastered.
 
 **`C-B5-06` Speaking — fluency, complex speech & pronunciation** · seq 6 · load: high · duration: 3–4h
-- skill_leaves: `S-FC-02`, `S-FC-03`, `S-FC-04`, `S-GRA-02`, `S-LR-02`, `S-P-02`, `S-P-03` · knowledge_objects: `K-GRA-021`, `K-VOC-012`
+- skill_leaves: `S-FC-02`, `S-FC-03`, `S-FC-04`, `S-FC-05`, `S-GRA-02`, `S-LR-02`, `S-P-02`, `S-P-03` · knowledge_objects: `K-GRA-021`, `K-VOC-012`
 - focus: produce extended, coherent spoken turns with complex structures, paraphrase, and refined stress/intonation.
 - expected_outcomes: learner can sustain a long turn with complex grammar, paraphrase, and controlled stress/intonation.
 - sequencing: applies C-B5-01; prereq S-FC-01/S-P-01 (Band 4); cognitive create.

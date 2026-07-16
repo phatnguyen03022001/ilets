@@ -7,11 +7,12 @@ The **Blueprint Governance layer** — defines and executes repository-wide qual
 Verifies structural/terminological/traceability/dependency consistency, canonical-object uniqueness, duplicate + orphan detection, Academic-vs-GT separation, evidence labeling, decision-record consistency, and reference integrity. Outputs a formal **Blueprint Health Report**.
 
 ## Status
-**Governance executed (2026-07-16).** QA catalog ([governance.md](governance.md)) + variant convention ([GV-002](decisions.md)) + executed [health-report.md](health-report.md). **0 unresolved Critical issues.** Two findings fixed (orphan knowledge objects, stale index). Ready for the final validation phase → freeze.
+**Governance + Validation executed (2026-07-16).** [health-report.md](health-report.md) (0 Critical) + [validation.md](validation.md) (independent gate): **0 Critical**, 1 **High** (V-HIGH-01 band-progression — Founder decision needed before freeze). Glossary finalized. Freeze pending V-HIGH-01.
 
 ## Structure
 - [governance.md](governance.md) — the 12-check QA catalog.
-- [health-report.md](health-report.md) — executed Health Report (findings + severity + resolutions) — pending.
+- [health-report.md](health-report.md) — executed Health Report.
+- [validation.md](validation.md) — independent validation report (5 suites).
 - [decisions.md](decisions.md) — GV-001 governance; GV-002 Academic/GT variant convention.
 
 ## Dependencies
