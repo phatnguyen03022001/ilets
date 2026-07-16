@@ -26,7 +26,7 @@ The canonical shape of learner runtime state. Per-learner instances conform to t
 |---|---|---|
 | `band` | int 3–9 | the band. |
 | `skill` | enum | writing \| speaking \| listening \| reading. |
-| `status` | enum | `not_started` → `in_progress` → `certified`. |
+| `status` | enum | `not_started` → `in_progress` → `certified`. On regression below the band's floor, reverts `certified → in_progress` (re-certify via a fresh `AT-05` portfolio; see [transitions.md](transitions.md) §6). No `revoked` state — `certification_history` retains prior attainment. |
 | `exit_evidence_refs` | array | the `AT-05` portfolio evidence certifying this exit ([BD-002](../bands/decisions.md)). |
 
 ### `OverallLearnerState`
@@ -35,7 +35,7 @@ The canonical shape of learner runtime state. Per-learner instances conform to t
 | `current_band` | per skill + overall | learner's certified band **per skill** (each advances independently, [PG-002](decisions.md)); overall = average of the four section bands (**informational**, not a gate). |
 | `leaf_states` | map `leaf_id`→`LeafMasteryState` | mastery across the Skill Graph. |
 | `knowledge_states` | map `knowledge_id`→`KnowledgeState` | acquisition across the Knowledge Graph. |
-| `certification_history` | array | band certifications over time. |
+| `certification_history` | array | band certifications over time — a **point-in-time record of attainments** (preserved when current `status` later reverts on regression; cf. IELTS Test Report Form). |
 | `exam_prep_mode` | bool | whether Exam-Preparation is active ([LD-005](../learning/decisions.md)) — diagnostic exposure, non-certifying. |
 | `review_queue` | array | due spaced-retrieval items ([../learning/review.md](../learning/review.md)). |
 

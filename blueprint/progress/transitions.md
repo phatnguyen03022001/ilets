@@ -5,7 +5,7 @@
 - `not_started → practicing`: learner completes a Practice Type event targeting the leaf (PT-* per [../practice/binding.md](../practice/binding.md)).
 - `practicing → emerging`: assessment evidence (AT-*) accumulates; `confidence` rises.
 - `emerging → mastered`: **`confidence ≥ 0.80` AND `evidence_count ≥ 2`** (independent demonstrations) AND no criterion below band N−1 ([AM-003](../assessment/decisions.md); [LD-001](../learning/decisions.md)). Certification via `AT-05` portfolio.
-- `mastered → emerging` (regression): a later assessment shows regression below the certified level → revert; re-practice / re-assess.
+- `mastered → emerging` (regression): a later assessment shows regression below the certified level → revert; re-practice / re-assess. (Leaf-level regression; the band-level consequence is specified in [§6](#6-certification-state).)
 - (`KnowledgeState`: `not_acquired → learning → acquired`, via `AT-03` probes — same threshold logic.)
 
 ## 2. Band progression rules ([LD-001](../learning/decisions.md); [PG-002](decisions.md))
@@ -34,6 +34,7 @@ Adaptive selection is runtime; it **never bypasses mastery criteria** (LD-001 in
 
 ## 6. Certification state
 - **Certified** when `AT-05` portfolio is satisfied (≥2 demonstrations, confidence ≥0.80, no regression) → `BandCertificationState.status = certified`. This gates band progression (**Learning Progression**).
+- **Regression after certification** (resolves Red-Team F2): certification is **not** a permanent, irrevocable flag. `status` reflects *currently held* certification. If a later assessment shows a leaf regressing below the certified band's floor (no criterion below band N−1, per [BD-002](../bands/decisions.md)), that skill's `BandCertificationState.status` reverts `certified → in_progress` — the band is no longer *currently* certified, and re-certification requires a fresh `AT-05` portfolio. There is **no separate `revoked` state**: certification is either currently held (`certified`) or not (`in_progress`). The prior attainment is retained as a **point-in-time record** in `certification_history` (cf. the IELTS Test Report Form, which records attainment at a moment and is not "revoked" on later decline). This removes the prior ambiguity ("can a learner display 'Band 6 certified' while currently performing at Band 4?") — current status tracks current ability; history preserves attainment.
 - `AT-07` mock → exam-readiness estimate, **non-certifying** ([LD-005](../learning/decisions.md)). A learner may be certified yet mock-underperform, or vice versa.
 
 ## 7. Learning recommendations

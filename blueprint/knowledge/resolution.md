@@ -1,7 +1,7 @@
 # Knowledge Resolution Map
 *Maps every `K-*` prerequisite referenced by the [Skill Graph](../skills/) to the canonical Knowledge Object(s) that satisfy it ([KK-001](decisions.md)). Strictly Skill↔Knowledge (kept separate from the Knowledge↔Knowledge edges in the domain docs).*
 
-**Inventory:** `K-GRA` 26 · `K-VOC` 9 · `K-PHON` 8 = **43 atomic knowledge objects.**
+**Inventory:** `K-GRA` 29 · `K-VOC` 9 · `K-PHON` 8 = **46 atomic knowledge objects.**
 
 ## Resolution (skill leaf → knowledge objects)
 

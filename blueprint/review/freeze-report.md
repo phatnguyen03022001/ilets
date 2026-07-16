@@ -2,7 +2,7 @@
 **The Learning Blueprint is FROZEN — 2026-07-16.** This report records the scope of the freeze, the gate evidence, and what remains intentionally open. Per [FD-005](../product/foundational-decisions.md), the frozen Blueprint is merged to `main` as the project's Single Source of Truth for the learning domain.
 
 ## Scope distinction ([FD-006](../product/foundational-decisions.md))
-- **Blueprint Scope — FROZEN.** The canonical learning domain: all 11 categories (`product`, `learning`, `curriculum`, `bands`, `skills`, `knowledge`, `practice`, `assessment`, `progress`, `review`, `glossary`) + `localization/` scaffold. **64 skill leaves · 43 knowledge objects · 44 curriculum nodes · 23 practice types · 7 assessment types**, a Learner State Model, and Governance + Validation. Delivery-agnostic, implementation-agnostic, business-model-agnostic.
+- **Blueprint Scope — FROZEN.** The canonical learning domain: all 11 categories (`product`, `learning`, `curriculum`, `bands`, `skills`, `knowledge`, `practice`, `assessment`, `progress`, `review`, `glossary`) + `localization/` scaffold. **64 skill leaves · 46 knowledge objects · 44 curriculum nodes · 23 practice types · 7 assessment types**, a Learner State Model, and Governance + Validation. Delivery-agnostic, implementation-agnostic, business-model-agnostic.
 - **Product Scope — intentionally open.** Delivery model, onboarding, entry wedge, UX, commercialization, GTM. `PRODUCT-002` and `PRODUCT-003` are **deferred product-level decisions** (not Blueprint defects). Product decisions **consume** the frozen Blueprint; they do not modify it.
 - **Implementation Scope — intentionally open.** Architecture, code, infrastructure. A later phase.
 
