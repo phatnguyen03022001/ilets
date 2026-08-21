@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: canonical learning pathway, Curriculum Node identity, recommended ordering, prerequisite classification for sequence, and Band-3-to-9 orchestration of Skill and Knowledge objects
+OWNS: canonical learning pathway, Curriculum Node identity, recommended ordering, prerequisite classification for sequence, variant route overlays, and Band-3-to-9 orchestration of Skill and Knowledge objects
 DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
 DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, practice types, assessment sufficiency, learner-state transitions, or uncalibrated duration/load estimates
 
@@ -11,7 +11,7 @@ Define **when canonical learning is sequenced**.
 
 Curriculum orchestrates existing Skill Leaves and Knowledge Objects by stable ID. It never creates a parallel definition of them.
 
-The active curriculum preserves **44 stable Curriculum Node IDs** across Bands 3–9.
+The active base curriculum preserves **44 stable Curriculum Node IDs** across Bands 3–9. Variant overlays modify the target set of applicable nodes without duplicating the shared Band-3-to-9 pathway.
 
 ## Canonical Curriculum Node fields
 
@@ -23,7 +23,7 @@ Node exit intent means the node's intended learning-completion condition. **Band
 
 ## Sequencing policy
 
-Order is constrained by Required prerequisites, target-band progression, knowledge-before-dependent-skill where genuinely required, cognitive complexity, workload balance, and integration needs.
+Order is constrained by Required prerequisites, target-band progression, knowledge-before-dependent-skill where genuinely required, cognitive complexity, workload balance, integration needs, and the learner's target variant.
 
 Dependencies are classified as:
 
@@ -36,15 +36,14 @@ Canonical interpretation:
 1. every `requires` edge defined by `03-SKILLS.md` or `04-KNOWLEDGE.md` is a **Required prerequisite**;
 2. every entry in this file's `Depends` column is **Recommended sequencing by default** unless explicitly prefixed `Required:`;
 3. a new Required edge must be justified by evidence/theory and should be added to the owning Skill/Knowledge graph when it is an intrinsic object dependency rather than merely a pathway preference;
-4. runtime hard-gate enforcement belongs to `09-PROGRESSION.md`.
-
-This keeps hard gates minimal while making the existing `requires` graph executable rather than advisory.
+4. runtime hard-gate enforcement belongs to `09-PROGRESSION.md`;
+5. a variant overlay may add/substitute variant-specific targets but may not remove shared capability genuinely required by that variant.
 
 # Canonical node registry
 
-`Depends` records explicit recommended sequencing relationships unless marked otherwise. Every node also inherits Required prerequisite semantics from the referenced Skill/Knowledge graphs. Every coded reference below is a complete stable ID; prose such as "prior Band-3 nodes" is intentionally not an object reference.
+`Depends` records explicit recommended sequencing relationships unless marked otherwise. Every node also inherits Required prerequisite semantics from the referenced Skill/Knowledge graphs.
 
-For an integration row whose Skill target is written as `Band-N target set`, the target set is the **deterministic union of all explicit Skill and Knowledge targets in the preceding nodes of that same Band-N phase**. Integration rows introduce no new canonical Skill or Knowledge objects.
+For an integration row whose Skill target is written as `Band-N target set`, the target set is the **deterministic union of all explicit Skill and Knowledge targets in the preceding nodes of that same Band-N phase after applicable variant-overlay substitution/addition**. Integration rows introduce no new canonical Skill or Knowledge objects.
 
 ## Band 3 — foundation / structured entry
 
@@ -64,7 +63,7 @@ For an integration row whose Skill target is written as `Band-N target set`, the
 | Node | Focus | Skill targets | Knowledge targets | Depends | Expected outcome / node exit intent |
 |---|---|---|---|---|---|
 | `C-B4-01` | Writing accuracy, punctuation, paragraphing | `W-GRA-01`, `W-GRA-06`, `W-CC-01` | — | Band-3 sentence foundation | Produce simple, punctuated, paragraphed writing. |
-| `C-B4-02` | Task foundations: key features and prompt analysis | `W-TA-01`, `W-TR-01` | — | Band-3 writing foundation | Identify Task-1 key features and deconstruct Task-2 prompts. |
+| `C-B4-02` | Task foundations: Task-1 analysis and Task-2 prompt analysis | variant Task-1 analysis target, `W-TR-01` | — | Band-3 writing foundation | Identify the Task-1 construct requirements for the selected variant and deconstruct Task-2 prompts. |
 | `C-B4-03` | Topic vocabulary and word choice | `W-LR-01`, `S-LR-01`, `S-LR-04` | `K-VOC-012`, `K-VOC-040` | `K-VOC-010` | Discuss/write common topics with adequate and context-appropriate vocabulary. |
 | `C-B4-04` | Speaking continuity and basic accuracy | `S-FC-01`, `S-GRA-04`, `S-P-05` | `K-GRA-010` | Band-3 sentence/phoneme foundation | Sustain basic speech on familiar topics with clear overall meaning. |
 | `C-B4-05` | Receptive main ideas and details | `L-COMP-01`, `L-COMP-02`, `R-COMP-01`, `R-COMP-02` | `K-VOC-012` | Band-3 receptive foundation | Handle gist/detail in moderately more complex input. |
@@ -78,10 +77,10 @@ For an integration row whose Skill target is written as `Band-N target set`, the
 | `C-B5-01` | Compound and complex sentence foundation | `W-GRA-02`, `W-GRA-03` | `K-GRA-003`, `K-GRA-020`, `K-GRA-004`, `K-GRA-021` | `W-GRA-01` plus core grammar | Produce compound/complex sentences with usable control. |
 | `C-B5-02` | Cohesion and logical progression | `W-CC-02`, `W-CC-03`, `W-CC-04` | `K-GRA-022`, `K-GRA-033` | `W-CC-01`; `C-B5-01` | Organize responses with progression, linking, reference and substitution. |
 | `C-B5-03` | Task-2 position, development, relevance | `W-TR-02`, `W-TR-03`, `W-TR-04` | `K-VOC-012` | `W-TR-01`; `C-B5-02` | Write a relevant Task-2 response with a clear position and supported ideas. |
-| `C-B5-04` | Task-1 reporting with data | `W-TA-03` | `K-GRA-050`, `K-GRA-051` | `W-TA-01` | Report selected features with accurate supporting data and suitable tense. |
+| `C-B5-04` | Task-1 content fulfilment | variant Task-1 fulfilment target | variant-dependent | variant Task-1 analysis target | Fulfil the selected variant's Task-1 content requirement with relevant support. |
 | `C-B5-05` | Paraphrase, word formation, spelling | `W-LR-03`, `W-LR-05` | `K-VOC-030`, `K-VOC-031` | `W-LR-01` | Paraphrase without meaning loss and control productive word form/spelling. |
 | `C-B5-06` | Speaking fluency, complexity, pronunciation | `S-FC-02`, `S-FC-03`, `S-FC-04`, `S-FC-05`, `S-GRA-02`, `S-LR-02`, `S-P-02`, `S-P-03` | `K-GRA-021`, `K-VOC-012` | `S-FC-01`, `S-P-01`; `C-B5-01` | Sustain an extended coherent turn using more complex language and controlled stress/intonation. |
-| `C-B5-07` | Receptive inference, paraphrase, distractors | `L-COMP-03`, `L-COMP-04`, `L-COMP-05`, `R-COMP-03`, `R-COMP-04`, `R-COMP-05` | `K-VOC-011` | lower receptive comprehension prerequisites | Handle inference, paraphrase, structure and distractors more reliably. |
+| `C-B5-07` | Receptive inference, paraphrase, distractors | `L-COMP-03`, `L-COMP-04`, `L-COMP-05`, `R-COMP-03`, `R-COMP-04`, `R-COMP-05` | variant-appropriate vocabulary | lower receptive comprehension prerequisites | Handle inference, paraphrase, structure and distractors more reliably. |
 | `C-B5-08` | Higher-order receptive question types | `L-QT-02`, `L-QT-03`, `L-QT-04`, `R-QT-01`, `R-QT-02`, `R-QT-04`, `R-QT-06` | — | `C-B5-07` | Apply higher-order question-type strategies under realistic constraints. |
 | `C-B5-09` | Band-5 integration | Band-5 target set | — | all prior Band-5 nodes | Integrate Band-5 capabilities; non-certifying orchestration checkpoint. |
 
@@ -90,9 +89,9 @@ For an integration row whose Skill target is written as `Band-N target set`, the
 | Node | Focus | Skill targets | Knowledge targets | Depends | Expected outcome / node exit intent |
 |---|---|---|---|---|---|
 | `C-B6-01` | Grammatical accuracy and variety | `W-GRA-03`, `W-GRA-02`, `S-GRA-03` | `K-GRA-004`, `K-GRA-003` | Band-5 grammar | Increase accuracy and structural variety in productive language. |
-| `C-B6-02` | Task-1 overview and flexible reference | `W-TA-02`, `W-CC-04` | `K-GRA-033` | `W-TA-03` plus prior cohesion | Produce a clear overview and reduce repetition through controlled reference. |
+| `C-B6-02` | Task-1 global control and flexible reference | variant Task-1 global-control target, `W-CC-04` | variant-dependent | variant Task-1 fulfilment target plus prior cohesion | Produce the selected variant's required global Task-1 control and reduce repetition through controlled reference. |
 | `C-B6-03` | Collocation and idiomatic resource | `W-LR-02`, `S-LR-03` | `K-VOC-020`, `K-VOC-021` | core/topic vocabulary | Use collocations accurately and begin appropriate less-common/idiomatic use. |
-| `C-B6-04` | Extended and dense receptive content | `L-COMP-06`, `R-COMP-06` | `K-VOC-011` | Band-5 receptive analysis | Follow extended academic speech and dense academic reading with useful reliability. |
+| `C-B6-04` | Extended/dense receptive content and variant transfer | `L-COMP-06`, `R-COMP-06` | variant-appropriate vocabulary | Band-5 receptive analysis | Handle extended/dense input and transfer shared Reading capability into the selected variant's required contexts. |
 | `C-B6-05` | Writer-view classification | `R-QT-03` | — | `R-QT-02`, `R-COMP-04` | Distinguish writer agreement/disagreement/absence accurately. |
 | `C-B6-06` | Band-6 integration | Band-6 target set | — | all prior Band-6 nodes | Integrate Band-6 accuracy/clarity; non-certifying orchestration checkpoint. |
 
@@ -101,9 +100,9 @@ For an integration row whose Skill target is written as `Band-N target set`, the
 | Node | Focus | Skill targets | Knowledge targets | Depends | Expected outcome / node exit intent |
 |---|---|---|---|---|---|
 | `C-B7-01` | Structural flexibility and error-free frequency | `W-GRA-07`, `W-GRA-03` | `K-GRA-005`, `K-GRA-006`, `K-GRA-007` | `W-GRA-03` | Produce varied complex structures flexibly with frequent accurate sentences. |
-| `C-B7-02` | Lexical sophistication | `W-LR-04`, `S-LR-03` | `K-VOC-021`, `K-VOC-011` | Band-6 lexical foundation | Use less-common/idiomatic resource with increasing precision and appropriateness. |
+| `C-B7-02` | Lexical sophistication | `W-LR-04`, `S-LR-03` | `K-VOC-021`, variant-appropriate advanced vocabulary | Band-6 lexical foundation | Use less-common/idiomatic resource with increasing precision and appropriateness. |
 | `C-B7-03` | Cohesion, position, development | `W-CC-03`, `W-CC-04`, `W-TR-02`, `W-TR-03` | `K-GRA-022`, `K-GRA-033` | Band-5/6 cohesion and response work | Sustain clear developed positions with flexible organization/cohesion. |
-| `C-B7-04` | Receptive inference and structure | `R-COMP-04`, `R-COMP-05`, `L-COMP-03`, `L-COMP-04` | `K-VOC-011` | Band-5 receptive analysis | Handle inference, stance, paraphrase and structure reliably. |
+| `C-B7-04` | Receptive inference and structure | `R-COMP-04`, `R-COMP-05`, `L-COMP-03`, `L-COMP-04` | variant-appropriate vocabulary | Band-5 receptive analysis | Handle inference, stance, paraphrase and structure reliably. |
 | `C-B7-05` | Pronunciation range and flexibility | `S-P-03`, `S-P-04` | `K-PHON-030`, `K-PHON-040` | lower pronunciation prerequisites | Sustain useful intonation, connected speech and chunking across extended turns. |
 | `C-B7-06` | Band-7 integration | Band-7 target set | — | all prior Band-7 nodes | Integrate Band-7 flexible control; non-certifying orchestration checkpoint. |
 
@@ -112,9 +111,9 @@ For an integration row whose Skill target is written as `Band-N target set`, the
 | Node | Focus | Skill targets | Knowledge targets | Depends | Expected outcome / node exit intent |
 |---|---|---|---|---|---|
 | `C-B8-01` | Wide flexible language and near-error-free accuracy | `W-GRA-07`, `W-LR-04`, `W-GRA-01`, `W-GRA-03`, `S-GRA-03` | `K-GRA-005`, `K-GRA-007` | Band-7 productive control | Produce wide, flexible, highly accurate language. |
-| `C-B8-02` | Skillful cohesion and fully developed response | `W-CC-02`, `W-CC-03`, `W-CC-04`, `W-TR-03`, `W-TA-02` | `K-GRA-022`, `K-GRA-033` | Band-7 writing integration | Produce well-developed responses whose organization is easy to follow. |
+| `C-B8-02` | Skillful cohesion and fully developed response | `W-CC-02`, `W-CC-03`, `W-CC-04`, `W-TR-03`, variant Task-1 global-control target | `K-GRA-022`, `K-GRA-033` | Band-7 writing integration | Produce well-developed responses whose organization is easy to follow, including variant-appropriate Task-1 control. |
 | `C-B8-03` | Effortless speaking fluency and wide resource | `S-FC-02`, `S-FC-04`, `S-GRA-03`, `S-LR-03`, `S-P-05` | `K-PHON-040`, `K-PHON-041` | Band-7 speaking/pronunciation | Sustain fluent, wide-resource speech that is easily understood. |
-| `C-B8-04` | Complex receptive comprehension | `L-COMP-06`, `R-COMP-06`, `R-COMP-04` | `K-VOC-011` | Band-7 receptive control | Handle detailed, abstract and complex input with little difficulty. |
+| `C-B8-04` | Complex receptive comprehension | `L-COMP-06`, `R-COMP-06`, `R-COMP-04` | variant-appropriate vocabulary | Band-7 receptive control | Handle detailed, abstract and complex input with little difficulty across required variant contexts. |
 | `C-B8-05` | Band-8 integration | Band-8 target set | — | all prior Band-8 nodes | Integrate Band-8 high competence; non-certifying orchestration checkpoint. |
 
 ## Band 9 — ceiling
@@ -122,13 +121,58 @@ For an integration row whose Skill target is written as `Band-N target set`, the
 | Node | Focus | Skill targets | Knowledge targets | Depends | Expected outcome / node exit intent |
 |---|---|---|---|---|---|
 | `C-B9-01` | Full flexibility and precision | `W-GRA-07`, `W-LR-04`, `S-GRA-03`, `S-LR-03`, `S-P-05` | `K-GRA-005`, `K-GRA-007`, `K-VOC-021` | Band-8 productive control | Approach full flexibility, precision and sustained intelligibility. |
-| `C-B9-02` | Integrated exam-level mastery | `W-TA-02`, `W-TR-03`, `W-CC-03`, `R-COMP-04`, `L-COMP-06` | — | Band-8 exit-level capability | Integrate ceiling-level capability under independent exam-like demand. |
+| `C-B9-02` | Integrated exam-level mastery | variant Task-1 global-control target, `W-TR-03`, `W-CC-03`, `R-COMP-04`, `L-COMP-06` | — | Band-8 exit-level capability | Integrate ceiling-level capability under independent exam-like demand for the selected variant. |
 | `C-B9-03` | Ceiling integration | Band-9 target set | — | `C-B9-01`, `C-B9-02` | Final integration checkpoint; certification still requires evidence under Bands/Assessment/Progression. |
+
+# Variant route overlay
+
+The base node registry remains one shared curriculum. The following substitutions/additions are deterministic from `TargetProfile.test_variant`.
+
+## Academic overlay
+
+| Placeholder / condition | Academic resolution |
+|---|---|
+| variant Task-1 analysis target | `W-TA-01` |
+| variant Task-1 fulfilment target | `W-TA-03`; knowledge `K-GRA-050`, `K-GRA-051`, `K-GRA-064` as applicable to concrete visuals |
+| variant Task-1 global-control target | `W-TA-02` |
+| variant-appropriate vocabulary in Academic receptive work | include `K-VOC-011` when dense academic vocabulary is material |
+| Reading transfer condition | Academic-style passage distribution and full official question-family coverage |
+
+Academic Task-1 and Academic Reading assets must still satisfy content/evidence conditions; this table is orchestration truth, not proof of product coverage.
+
+## General Training overlay
+
+| Placeholder / condition | General Training resolution |
+|---|---|
+| variant Task-1 analysis target | `W-GT1-01` |
+| variant Task-1 fulfilment target | `W-GT1-03`; include `K-VOC-040` where register choice is material |
+| variant Task-1 global-control target | `W-GT1-02` |
+| variant-appropriate vocabulary in GT receptive work | use general/topic/workplace vocabulary appropriate to the concrete section; `K-VOC-011` is not a universal GT prerequisite |
+| Reading transfer condition | sample Section-1 everyday, Section-2 workplace, and Section-3 longer general-interest contexts before GT readiness support |
+
+### GT phase expectations
+
+- Bands 3–4: introduce recipient/purpose identification and basic relationship/register awareness; use accessible everyday/workplace Reading contexts.
+- Band 5: require all GT Task-1 prompt bullet points to be recognized/attempted and broaden Reading across Section-1/2/3 context classes.
+- Band 6: require generally appropriate register and complete task-purpose fulfilment; independent timed GT Reading must include the official section/context structure.
+- Bands 7–9: increase flexibility, precision, audience sensitivity, and unseen transfer without inventing extra GT-only language criteria.
+
+## Variant-exclusion rule
+
+A learner targeting General Training does **not** need Academic visual-specific `W-TA-*` leaves to satisfy GT Writing Task 1. A learner targeting Academic does **not** need `W-GT1-*` leaves to satisfy Academic Writing Task 1.
+
+Shared Writing, Reading, Listening, Speaking, Grammar, Vocabulary, and Phonology targets remain reusable where the construct is shared.
 
 ## Adaptive sequencing
 
-Runtime may reorder/interleave nodes when Required prerequisites remain satisfied, target outcomes remain complete, weak canonical capabilities are not bypassed, and learner evidence supports the change. A learner may draw from different band phases by skill because progression is per skill. Integration nodes never force synchronized four-skill certification.
+Runtime may reorder/interleave nodes when Required prerequisites remain satisfied, target outcomes remain complete, variant requirements remain complete, weak canonical capabilities are not bypassed, and learner evidence supports the change.
+
+A learner may draw from different band phases by skill because progression is per skill. Integration nodes never force synchronized four-skill certification.
 
 ## Coverage invariant
 
-Every Curriculum Node references canonical objects or a deterministic integration-set union defined above. New nodes require a distinct orchestration purpose, not merely another lesson/exercise. Concrete lessons and exercise instances belong to `10-CONTENT-MODEL.md`.
+Every Curriculum Node references canonical objects, deterministic variant placeholders resolved above, or a deterministic integration-set union.
+
+A planner must resolve `test_variant` before constructing Writing Task-1 or Reading variant coverage. It is invalid to return an unresolved `variant Task-1 ... target` placeholder at runtime.
+
+New nodes require a distinct orchestration purpose, not merely another lesson/exercise. Concrete lessons and exercise instances belong to `10-CONTENT-MODEL.md`.
