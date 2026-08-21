@@ -76,16 +76,16 @@ README.md               navigation only
 CONSTITUTION.md         governance authority
 OBJECTIVE.md            project-intent authority
 spec/                   12 canonical learning owners + 1 supporting decision ledger
-design/                 7 canonical product/runtime owners
+design/                 9 canonical product/runtime owners
 ```
 
-The structural baseline is **23 active Markdown files**.
+The structural baseline is **25 active Markdown files**.
 
 A new canonical file requires a genuinely new authority domain, not merely a large section or a desire to split a document.
 
 Conversely, independently evolving semantics with genuinely distinct ownership may justify a new domain after an explicit constitutional/user decision.
 
-The number 23 is a governance baseline, not a substitute for reasoning.
+The number 25 is a governance baseline, not a substitute for reasoning.
 
 Implementation source files, machine contracts, generated code, research, evidence, and archive do not count toward the active Markdown count.
 
@@ -117,6 +117,8 @@ how media is used
 how end-to-end product/system flows work
 how API resources/operations are organized
 which runtime unit/language/framework owns implementation responsibility
+which external-service capabilities/providers are allowed and how they fail/exit
+how product coverage/support claims are evaluated and declared
 ```
 
 A design document may use learning truth but cannot change it.
@@ -126,7 +128,9 @@ Examples:
 - `design/02-practice-catalog.md` may expose 28 practice modes but cannot redefine `PT-*` semantics;
 - `design/01-skill-features.md` may define a Writing workspace but cannot redefine Writing Band thresholds;
 - `design/05-api.md` may carry `GapEvaluation` across HTTP but cannot redefine gap semantics;
-- `design/06-implementation-stack.md` may assign Go to Progression execution but cannot change Progression policy.
+- `design/06-implementation-stack.md` may assign Go to Progression execution but cannot change Progression policy;
+- `design/07-third-party-services.md` may select a provider boundary but cannot make provider output learner truth;
+- `design/08-coverage-and-support.md` may declare a target uncovered/supported but cannot redefine the IELTS construct or learner readiness standard.
 
 ## 7. Collapse documents, not semantics
 
@@ -225,13 +229,15 @@ A domain may depend on another without absorbing its semantics.
 ## 14. Canonical product/runtime design domains
 
 ```text
-Learning Experience   end-to-end learner product journey
-Skill Features        user-facing capabilities per skill/shared surface
-Practice Catalog      concrete product practice modes
-Media / YouTube       media eligibility and learning use
-Application Flows     end-to-end web/API/evaluator flows
-API                   public/internal resource and operation semantics
-Implementation Stack  deployable/language/framework ownership
+Learning Experience    end-to-end learner journey, TargetProfile and route behavior
+Skill Features         user-facing capabilities per skill/shared surface
+Practice Catalog       concrete product practice modes
+Media / YouTube        media eligibility and learning use
+Application Flows      end-to-end web/API/evaluator flows
+API                    public/internal resource and operation semantics
+Implementation Stack   deployable/language/framework ownership
+Third-Party Services   external capability/provider/portability/failure rules
+Coverage and Support   product-coverage gaps, support gates and target declarations
 ```
 
 `design/` may be implementation-specific where the user has intentionally frozen a first-order architecture, but must remain separable from IELTS learning truth.
@@ -248,7 +254,7 @@ Do not create synonym drift such as `student` in one subsystem and `learner` in 
 
 ## 16. Canonical vs runtime separation
 
-A Skill, Knowledge Object, Curriculum Node, Practice Type, Assessment Type, feature definition, or practice-mode definition is reusable canonical design.
+A Skill, Knowledge Object, Curriculum Node, Practice Type, Assessment Type, feature definition, practice-mode definition, provider capability definition, or coverage declaration is reusable canonical design.
 
 A learner's attempts, observations, evidence, mastery estimates, feedback, scheduling state, sessions, drafts, and certification history are runtime instances referencing canonical definitions.
 
@@ -266,7 +272,9 @@ The system optimizes for learning correctness rather than document volume or imp
 - do not mistake unknown for weak;
 - do not mistake stale evidence for regression;
 - do not mistake a practice success for automatic mastery;
-- do not let product UX lower the evidence standard.
+- do not let product UX lower the evidence standard;
+- do not describe a product CoverageGap as a learner weakness;
+- do not describe a modelled path as product-supported before support gates pass.
 
 ## 18. Conflict repair
 
@@ -296,8 +304,8 @@ A product/runtime design change should answer:
 - Does it alter learning truth or only translate it?
 - Which user/system flows are affected?
 - Which runtime unit owns execution?
-- Does it create/change a cross-language boundary?
-- Which contract must change?
+- Does it create/change a cross-language or third-party boundary?
+- Which contract/provider/coverage declaration must change?
 
 An implementation-stack change should also answer:
 
@@ -536,7 +544,9 @@ A healthy repository lets a new session answer quickly:
 - Which runtime unit executes it?
 - Which primary language/framework implements that unit?
 - Which machine contract crosses the boundary?
+- Which third-party provider boundary is involved, if any?
+- Is this target MODELLED, COVERED, SUPPORTED_FOR_PRODUCT, or VALIDATED?
 - Is the semantic duplicated elsewhere?
 - Can root verification prove the affected path?
 
-If the answer requires guessing from folders, reading hidden agent instructions, or reconciling three language-specific copies of one rule, the architecture has regressed.
+If the answer requires guessing from folders, reading hidden agent instructions, reconciling three language-specific copies of one rule, or trusting an undeclared provider/coverage assumption, the architecture has regressed.

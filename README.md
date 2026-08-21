@@ -1,21 +1,18 @@
 # IELTS Learning System
 
-This repository is self-describing. It contains the canonical IELTS learning specification and the canonical product/runtime design that translates that learning model into a real application.
+This repository is self-describing. It contains canonical IELTS learning truth, canonical product/runtime design, and supporting research/evidence used to justify those owners.
 
 ## Read order
 
-A new session should reconstruct the project in this order:
-
-1. `CONSTITUTION.md` — governance, authority, ownership, naming, repository topology, and cross-language rules.
-2. `OBJECTIVE.md` — why the project exists, what the complete product must define, and its success condition.
-3. `spec/00-PRODUCT.md` — learning-product principles and boundaries.
-4. `spec/01-LEARNER-MODEL.md` — the learner and epistemic learner-state requirements.
-5. `spec/02-IELTS-MODEL.md` — the external IELTS reality the system must respect.
-6. Read the relevant `spec/` owners for learning truth.
-7. Read the relevant `design/` owner for product/runtime translation.
-8. Use `spec/DECISIONS.md` only for rationale; it is not canonical authority.
-9. Consult `research/` and `evidence/` only when provenance/validation is required.
-10. Treat `archive/` as historical only.
+1. `CONSTITUTION.md` — governance, authority, ownership, naming, topology, and cross-language rules.
+2. `OBJECTIVE.md` — product scope and success condition.
+3. `spec/00-PRODUCT.md`, `spec/01-LEARNER-MODEL.md`, `spec/02-IELTS-MODEL.md`.
+4. Read relevant `spec/` owners for learning truth.
+5. Read relevant `design/` owners for product/runtime translation.
+6. Read `design/08-coverage-and-support.md` before making any completeness/support claim.
+7. Use `spec/DECISIONS.md` for rationale only.
+8. Use `research/` and `evidence/` for provenance/validation only.
+9. Treat `archive/` as historical only.
 
 ## Authority
 
@@ -30,12 +27,10 @@ spec/      canonical learning truth
   ↓
 design/    canonical product/runtime translation
   ↓
-contracts/ exact machine interface truth once materialized
+contracts/ exact machine-interface truth once materialized
 ```
 
 `README.md` is navigation only.
-
-A design document may consume and operationalize learning semantics, but it may not redefine a Skill, Band threshold, prerequisite, evidence rule, mastery rule, or progression rule owned by `spec/`.
 
 ## Active learning specification
 
@@ -66,53 +61,80 @@ design/
 ├── 03-media-youtube.md
 ├── 04-application-flows.md
 ├── 05-api.md
-└── 06-implementation-stack.md
+├── 06-implementation-stack.md
+├── 07-third-party-services.md
+└── 08-coverage-and-support.md
 ```
 
-The active Markdown baseline is now **23 documents**:
+The active Markdown baseline is **25 documents**:
 
 ```text
 README.md               1
 CONSTITUTION.md         1
 OBJECTIVE.md            1
 spec/                  13
-  canonical owners     12
-  decision rationale    1
-design/                 7
+design/                 9
 --------------------------
-TOTAL                  23
+TOTAL                  25
 ```
 
-Markdown under `research/`, `evidence/`, and `archive/` is supporting or historical and does not count toward the active authority surface.
+`research/`, `evidence/`, and `archive/` do not count toward the active authority surface.
+
+## Imported founder-decision research
+
+`research/lenbands-founder-decisions/` contains a byte-preserved import of the normalized LenBands founder set:
+
+```text
+64  platform/reliability
+26  identity/privacy/access
+12  AI/evaluation/cost
+45  product/requirements
+40  learning interventions
+54  evidence/readiness
+40  learner experience
+24  economics/entitlements
+20  coverage/support
+---
+325 numbered decisions
+```
+
+The separate content-rights/provenance block is imported too but is explicitly outside the 325 count.
+
+Importing a decision does not adopt it. Active adoption happens only through the correct `spec/` or `design/` owner.
 
 ## Product baseline
 
-The product now has explicit design for:
+The product has explicit design for:
 
-- the end-to-end learner journey;
-- Quick / Standard / Deep daily study presets;
+- `TargetProfile` with overall and/or per-skill target constraints;
+- diagnostic → Today plan → practice/review/re-evidence → readiness loop;
+- strong route recommendations with learner Swap/Skip/Shorten agency that cannot bypass Required prerequisites;
 - 40 named skill/shared feature capabilities;
 - 28 user-facing practice modes;
-- Listening, Reading, Writing, and Speaking interaction flows;
-- YouTube/media learning inspired by useful dictation/shadowing patterns while preserving platform/rights boundaries;
-- diagnostic, review, remediation, readiness, and mock flows;
-- a public Go Core API and bounded Python evaluator service;
-- asynchronous Writing/Speaking evaluation;
-- a concrete Go + Python + TypeScript framework allocation.
+- Listening, Reading, Writing, and Speaking flows;
+- YouTube/media learning with rights/transcript eligibility;
+- API and async evaluator flows;
+- Go + Python + TypeScript framework allocation;
+- explicit third-party capability/provider boundaries;
+- condition-based coverage/support declarations instead of unsupported “100%” claims.
 
-These counts are product design, not IELTS learning thresholds.
+## Current coverage truth
 
-## Implementation language and unit baseline
+Do **not** read the repository as claiming full production support yet.
 
-The approved primary application languages are:
+Current design-time status is summarized in `design/08-coverage-and-support.md`:
 
 ```text
-Go
-Python
-TypeScript
+Academic semantic model        strong / modelled
+Academic product coverage      not yet COVERED
+General Training               partial
+runtime implementation         not started
+validated target-band outcome  not established
 ```
 
-Initial deployable ownership is:
+The intended complete standard-IELTS scope is Academic + General Training. IELTS Life Skills is a separate construct and is not currently in product scope.
+
+## Implementation baseline
 
 ```text
 apps/web                 TypeScript / Next.js
@@ -120,70 +142,35 @@ services/core-api        Go / net/http + chi
 services/evaluator       Python / FastAPI
 ```
 
-The repository is not organized into top-level language silos.
-
-Future implementation follows responsibility/deployable boundaries:
-
-```text
-apps/       user-facing deployables and clients
-services/   independently runnable backend services/workers
-packages/   reusable implementation libraries when justified
-contracts/  language-neutral cross-unit interface definitions
-tools/      repository/development/generation/release tooling
-```
-
-Cross-language semantics are never maintained as three handwritten copies. Genuine boundaries use one explicit machine-readable contract, while learning meaning remains owned by `spec/` and product/runtime behavior by `design/`.
+Cross-language semantics are never maintained as three handwritten copies. Machine boundaries use explicit contracts; learning meaning remains in `spec/`, product/runtime behavior in `design/`.
 
 ## Overall product loop
 
 ```text
-Goal
+TargetProfile
   ↓
 Diagnostic
   ↓
 Learner model
   ↓
-Daily plan
+Gap / uncertainty / due review
   ↓
-Learning session
+Daily Plan
+  ↓
+Learning Session
   ↓
 Attempt
   ↓
 Observation / Evidence
   ↓
-Mastery / Gap
+Mastery / Readiness
   ↓
-Next action
+Next Action
   ↺
 ```
 
-The implementation flow is:
-
-```text
-Web (TypeScript)
-  ↓
-Core API (Go)
-  ├── deterministic learning/product orchestration
-  └── Evaluator (Python) for bounded AI/audio/text analysis
-          ↓
-      observations
-          ↓
-      Core API
-          ↓
- evidence / progression / next plan
-```
-
-Python does not certify Band or advance learner state. The browser does not call the evaluator directly.
-
-## Project boundary
-
-The repository defines both:
-
-1. **Learning truth** — what the learner must know/demonstrate and how mastery/progression works;
-2. **Product/runtime design** — how the application lets the learner study, practice, use media, submit attempts, receive feedback, and move through the system.
-
-It still does not require a particular cloud provider, database vendor, AI model provider, auth provider, payment provider, or deployment platform. Those choices may evolve behind the design/contract boundaries.
+The product can guarantee the integrity of this process and truthfulness of its own evidence/support states. It must not guarantee that following the plan necessarily produces a specific external IELTS score.
 
 ## Historical snapshot
 
-The pre-refactor Blueprint is preserved under `archive/legacy-2026-07-16/` for provenance and forensic comparison only. If archived material conflicts with active `spec/` or `design/`, active canonical owners win.
+The pre-refactor Blueprint is preserved under `archive/legacy-2026-07-16/`. If archived material conflicts with active `spec/` or `design/`, active canonical owners win.
