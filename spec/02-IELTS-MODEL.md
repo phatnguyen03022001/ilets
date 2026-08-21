@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: external IELTS test structure, standard variants, delivery modes, section/overall scoring facts, official assessment criteria, and exam/administrative facts the learning system must respect
+OWNS: external IELTS test structure, standard variants, delivery modes, section/overall scoring facts, official task/question-family identity, official assessment criteria, and exam/administrative facts the learning system must respect
 DEPENDS_ON: 00-PRODUCT.md
-DOES_NOT_OWN: pedagogical skill decomposition, learning-band overlays, curriculum, practice strategy, evidence sufficiency, learner progression, product-support policy, or UI/runtime behavior
+DOES_NOT_OWN: pedagogical skill decomposition, learning-band overlays, curriculum, practice strategy, evidence sufficiency, learner progression, content-instance identity, product-support policy, or UI/runtime behavior
 
 # 02 — IELTS Model
 
@@ -33,12 +33,76 @@ IELTS reports separate Band scores for:
 3. Writing;
 4. Speaking.
 
-The overall Band is the arithmetic mean of the four section Bands rounded to the nearest whole or half Band. Current official rounding examples/rules include:
+The overall Band is the arithmetic mean of the four section Bands rounded to the nearest whole or half Band. Current official rounding rules include:
 
 - an average ending in `.25` rounds up to the next half Band;
 - an average ending in `.75` rounds up to the next whole Band.
 
 The overall score is an external test-result summary. It is not itself evidence that every underlying learning capability is equally strong.
+
+# Stable external task/question-family identity
+
+The repository assigns stable IDs to official IELTS task/question families so product coverage can be checked without turning exam UI categories into extra Skill Leaves.
+
+These IDs identify an **external exam family**, not a pedagogical capability, Practice Type, product feature, or wire enum.
+
+Rules:
+
+1. a family ID remains stable while the corresponding external family remains materially the same;
+2. Academic and General Training share a family ID when IELTS uses the same interaction family;
+3. variant-specific task families remain distinct where the external construct differs;
+4. a Skill Leaf may support several family IDs and one family may require several Skill Leaves;
+5. content/coverage tooling must track family identity separately from Skill identity;
+6. if IELTS materially changes its official task-family taxonomy, this owner changes first and downstream coverage is re-evaluated.
+
+## Listening family registry
+
+| ID | Official family |
+|---|---|
+| `IELTS-L-QF-01` | Multiple choice |
+| `IELTS-L-QF-02` | Matching |
+| `IELTS-L-QF-03` | Plan / map / diagram labelling |
+| `IELTS-L-QF-04` | Form / note / table / flow-chart / summary completion |
+| `IELTS-L-QF-05` | Sentence completion |
+| `IELTS-L-QF-06` | Short-answer questions |
+
+## Reading family registry
+
+These family identities are shared by Academic and General Training; variant content/context and scoring still differ.
+
+| ID | Official family |
+|---|---|
+| `IELTS-R-QF-01` | Multiple choice |
+| `IELTS-R-QF-02` | Identifying information — True / False / Not Given |
+| `IELTS-R-QF-03` | Identifying writer views/claims — Yes / No / Not Given |
+| `IELTS-R-QF-04` | Matching information |
+| `IELTS-R-QF-05` | Matching headings |
+| `IELTS-R-QF-06` | Matching features |
+| `IELTS-R-QF-07` | Matching sentence endings |
+| `IELTS-R-QF-08` | Sentence completion |
+| `IELTS-R-QF-09` | Summary / note / table / flow-chart completion |
+| `IELTS-R-QF-10` | Diagram label completion |
+| `IELTS-R-QF-11` | Short-answer questions |
+
+## Writing task-family registry
+
+| ID | Official task family | Variant |
+|---|---|---|
+| `IELTS-W-A-T1` | Academic Writing Task 1 — visual information | Academic |
+| `IELTS-W-GT-T1` | General Training Writing Task 1 — letter | General Training |
+| `IELTS-W-T2` | Writing Task 2 — essay response | shared learning core; concrete prompt remains variant-scoped |
+
+Academic Task-1 visual presentation may include graphs/charts/tables, diagrams/processes, maps/plans, or combinations. Those stimulus-presentation classes are content-instance coverage dimensions, not additional scored Writing tasks.
+
+## Speaking part-family registry
+
+| ID | Official part |
+|---|---|
+| `IELTS-S-P1` | Speaking Part 1 — interview/familiar topics |
+| `IELTS-S-P2` | Speaking Part 2 — individual long turn |
+| `IELTS-S-P3` | Speaking Part 3 — extended discussion |
+
+A whole Speaking Band claim remains holistic; these IDs exist so content/readiness coverage cannot omit a part silently.
 
 # Delivery modes — 2026 external baseline
 
@@ -106,14 +170,7 @@ The context progression is:
 - Part 3 — educational/training conversation;
 - Part 4 — academic monologue.
 
-Major question families include:
-
-- multiple choice;
-- matching;
-- plan/map/diagram labelling;
-- form/note/table/flow-chart completion;
-- sentence completion;
-- short answer.
+Official question families are the six `IELTS-L-QF-*` identities defined above.
 
 Listening is shared between Academic and General Training.
 
@@ -136,21 +193,7 @@ IELTS states that the precise mark needed may vary slightly between test version
 
 Reading contains 40 questions and allows 60 minutes. Academic and General Training use the same Band scale but differ in text/context characteristics and typical raw-score requirements.
 
-## Shared interaction families
-
-Major Reading question families include:
-
-- multiple choice;
-- True / False / Not Given;
-- Yes / No / Not Given;
-- matching information;
-- matching headings;
-- matching features;
-- matching sentence endings;
-- sentence completion;
-- summary/note/table/flow-chart completion;
-- diagram label completion where applicable;
-- short answer.
+Official interaction families are the eleven shared `IELTS-R-QF-*` identities defined above.
 
 Shared interaction families do not imply identical text distributions or raw-score conversions.
 
@@ -203,17 +246,17 @@ The criteria are equally weighted within each task. Task 2 contributes more weig
 
 ## Academic Writing
 
-### Task 1
+### Task 1 — `IELTS-W-A-T1`
 
 The learner describes or explains visual information. Minimum response length is 150 words; the expected time allocation is roughly 20 minutes.
 
-### Task 2
+### Task 2 — `IELTS-W-T2`
 
 The learner responds to a point of view, argument, or problem. Minimum response length is 250 words; the expected allocation is roughly 40 minutes.
 
 ## General Training Writing
 
-### Task 1
+### Task 1 — `IELTS-W-GT-T1`
 
 The learner is given a situation and writes a letter of at least 150 words, normally in about 20 minutes.
 
@@ -225,7 +268,7 @@ The prompt supplies three bullet points/content functions to cover. Appropriate 
 
 Style depends on the relationship to the recipient and communicative purpose. The task may involve requesting/providing information, expressing needs or preferences, complaints, opinions, or related practical purposes.
 
-### Task 2
+### Task 2 — `IELTS-W-T2`
 
 The learner writes an essay of at least 250 words in response to a point of view, argument, or problem, normally in about 40 minutes.
 
@@ -235,11 +278,7 @@ Task 2 substantially shares the same scored Writing criteria with Academic Task 
 
 Speaking is a recorded, human-examiner interaction shared across Academic and General Training.
 
-It has three parts:
-
-- Part 1 — interview/questions on familiar personal topics;
-- Part 2 — individual long turn, with one minute to prepare and a target response of up to about two minutes;
-- Part 3 — extended discussion related to the Part-2 topic.
+Its three parts correspond to `IELTS-S-P1`, `IELTS-S-P2`, and `IELTS-S-P3`.
 
 IELTS Speaking uses four equally weighted criteria:
 
@@ -294,9 +333,10 @@ Therefore downstream learning documents must distinguish:
 
 # Change rule
 
-If IELTS changes a live test variant, delivery option, scoring rule, task/section format, One Skill Retake condition, or other external fact relevant to learning/product behavior:
+If IELTS changes a live test variant, delivery option, scoring rule, task/question family, section format, One Skill Retake condition, or other external fact relevant to learning/product behavior:
 
 1. update this external-truth owner first;
 2. refresh the dated evidence provenance;
-3. review affected Skill/Band/Curriculum/Assessment/design owners;
-4. do not preserve an obsolete external fact merely because downstream implementation already encoded it.
+3. review affected Skill/Band/Curriculum/Assessment/Content/design owners;
+4. preserve stable family IDs when semantics remain materially the same;
+5. do not preserve an obsolete external fact merely because downstream implementation already encoded it.
