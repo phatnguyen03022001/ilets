@@ -1,38 +1,43 @@
-# IELTS Learning Blueprint
+# IELTS Learning System
 
-This repository is self-describing. It contains the canonical learning specification for an IELTS learning system, the governance needed to keep that specification coherent, and the repository-level rules that future implementation code must follow.
+This repository is self-describing. It contains the canonical IELTS learning specification and the canonical product/runtime design that translates that learning model into a real application.
 
 ## Read order
 
 A new session should reconstruct the project in this order:
 
-1. `CONSTITUTION.md` — governance, authority, ownership, repository topology, naming, and cross-language rules.
-2. `OBJECTIVE.md` — why the project exists, its scope, and its success condition.
-3. `spec/00-PRODUCT.md` — product-level boundaries and principles.
-4. `spec/01-LEARNER-MODEL.md` — the learner the system represents.
+1. `CONSTITUTION.md` — governance, authority, ownership, naming, repository topology, and cross-language rules.
+2. `OBJECTIVE.md` — why the project exists, what the complete product must define, and its success condition.
+3. `spec/00-PRODUCT.md` — learning-product principles and boundaries.
+4. `spec/01-LEARNER-MODEL.md` — the learner and epistemic learner-state requirements.
 5. `spec/02-IELTS-MODEL.md` — the external IELTS reality the system must respect.
-6. Read only the canonical domain specs relevant to the current question, following each file's `DEPENDS_ON` metadata.
-7. Use `spec/DECISIONS.md` only to understand rationale. It is not a source of canonical truth.
-8. Consult `research/` and `evidence/` only when provenance or validation is required.
-9. Treat `archive/` as historical only.
+6. Read the relevant `spec/` owners for learning truth.
+7. Read the relevant `design/` owner for product/runtime translation.
+8. Use `spec/DECISIONS.md` only for rationale; it is not canonical authority.
+9. Consult `research/` and `evidence/` only when provenance/validation is required.
+10. Treat `archive/` as historical only.
 
 ## Authority
 
 ```text
+USER
+  ↓
 CONSTITUTION.md
-      ↓
+  ↓
 OBJECTIVE.md
-      ↓
-spec/*.md canonical domain owners
+  ↓
+spec/      canonical learning truth
+  ↓
+design/    canonical product/runtime translation
+  ↓
+contracts/ exact machine interface truth once materialized
 ```
 
-`README.md` is navigation only. It has no authority over the Constitution, Objective, or canonical specs.
+`README.md` is navigation only.
 
-Canonical truth lives in the spec that owns the semantic. A canonical spec may reference another canonical spec, but it must not restate semantics owned by that other spec.
+A design document may consume and operationalize learning semantics, but it may not redefine a Skill, Band threshold, prerequisite, evidence rule, mastery rule, or progression rule owned by `spec/`.
 
-Implementation code consumes those semantics; code does not become a competing source of product/learning truth.
-
-## Active specification
+## Active learning specification
 
 ```text
 spec/
@@ -51,9 +56,53 @@ spec/
 └── DECISIONS.md
 ```
 
-The structural baseline is 16 active Markdown documents: this file, `CONSTITUTION.md`, `OBJECTIVE.md`, and the 13 files under `spec/`. Markdown under `research/`, `evidence/`, and `archive/` is supporting or historical and is not part of the active-authority count.
+## Active product/runtime design
 
-## Implementation language baseline
+```text
+design/
+├── 00-learning-experience.md
+├── 01-skill-features.md
+├── 02-practice-catalog.md
+├── 03-media-youtube.md
+├── 04-application-flows.md
+├── 05-api.md
+└── 06-implementation-stack.md
+```
+
+The active Markdown baseline is now **23 documents**:
+
+```text
+README.md               1
+CONSTITUTION.md         1
+OBJECTIVE.md            1
+spec/                  13
+  canonical owners     12
+  decision rationale    1
+design/                 7
+--------------------------
+TOTAL                  23
+```
+
+Markdown under `research/`, `evidence/`, and `archive/` is supporting or historical and does not count toward the active authority surface.
+
+## Product baseline
+
+The product now has explicit design for:
+
+- the end-to-end learner journey;
+- Quick / Standard / Deep daily study presets;
+- 40 named skill/shared feature capabilities;
+- 28 user-facing practice modes;
+- Listening, Reading, Writing, and Speaking interaction flows;
+- YouTube/media learning inspired by useful dictation/shadowing patterns while preserving platform/rights boundaries;
+- diagnostic, review, remediation, readiness, and mock flows;
+- a public Go Core API and bounded Python evaluator service;
+- asynchronous Writing/Speaking evaluation;
+- a concrete Go + Python + TypeScript framework allocation.
+
+These counts are product design, not IELTS learning thresholds.
+
+## Implementation language and unit baseline
 
 The approved primary application languages are:
 
@@ -63,28 +112,78 @@ Python
 TypeScript
 ```
 
-The repository is **not** organized into top-level language silos. Future implementation follows responsibility/deployable boundaries:
+Initial deployable ownership is:
+
+```text
+apps/web                 TypeScript / Next.js
+services/core-api        Go / net/http + chi
+services/evaluator       Python / FastAPI
+```
+
+The repository is not organized into top-level language silos.
+
+Future implementation follows responsibility/deployable boundaries:
 
 ```text
 apps/       user-facing deployables and clients
-services/   independently runnable backend services and workers
-packages/   reusable implementation libraries
-contracts/  language-neutral cross-unit interfaces
+services/   independently runnable backend services/workers
+packages/   reusable implementation libraries when justified
+contracts/  language-neutral cross-unit interface definitions
 tools/      repository/development/generation/release tooling
 ```
 
-These directories are created only when real implementation units exist.
+Cross-language semantics are never maintained as three handwritten copies. Genuine boundaries use one explicit machine-readable contract, while learning meaning remains owned by `spec/` and product/runtime behavior by `design/`.
 
-A unit is named for what it does, not for the language used to implement it. Language-specific source naming then follows Go, Python, or TypeScript conventions defined by `CONSTITUTION.md`.
+## Overall product loop
 
-Cross-language semantics are not copied manually between Go, Python, and TypeScript. Genuine boundaries use one explicit machine-readable contract, while domain meaning remains owned by the relevant canonical spec.
+```text
+Goal
+  ↓
+Diagnostic
+  ↓
+Learner model
+  ↓
+Daily plan
+  ↓
+Learning session
+  ↓
+Attempt
+  ↓
+Observation / Evidence
+  ↓
+Mastery / Gap
+  ↓
+Next action
+  ↺
+```
+
+The implementation flow is:
+
+```text
+Web (TypeScript)
+  ↓
+Core API (Go)
+  ├── deterministic learning/product orchestration
+  └── Evaluator (Python) for bounded AI/audio/text analysis
+          ↓
+      observations
+          ↓
+      Core API
+          ↓
+ evidence / progression / next plan
+```
+
+Python does not certify Band or advance learner state. The browser does not call the evaluator directly.
 
 ## Project boundary
 
-The canonical learning specification defines the learning domain: what learners need to know, what they need to demonstrate, how learning is sequenced and practiced, how mastery is assessed, and how progression works from Band 3 through Band 9.
+The repository defines both:
 
-The learning specs intentionally do **not** choose production frameworks, databases, deployment platforms, package managers, API technologies, or infrastructure. Those implementation decisions may evolve independently so long as they obey the repository topology, naming, ownership, language, contract, and verification rules in `CONSTITUTION.md`.
+1. **Learning truth** — what the learner must know/demonstrate and how mastery/progression works;
+2. **Product/runtime design** — how the application lets the learner study, practice, use media, submit attempts, receive feedback, and move through the system.
+
+It still does not require a particular cloud provider, database vendor, AI model provider, auth provider, payment provider, or deployment platform. Those choices may evolve behind the design/contract boundaries.
 
 ## Historical snapshot
 
-The pre-refactor Blueprint is preserved under `archive/legacy-2026-07-16/`. It is retained for provenance and forensic comparison only. If archived material conflicts with the active specification, the active specification wins.
+The pre-refactor Blueprint is preserved under `archive/legacy-2026-07-16/` for provenance and forensic comparison only. If archived material conflicts with active `spec/` or `design/`, active canonical owners win.
