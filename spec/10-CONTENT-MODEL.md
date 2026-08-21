@@ -1,15 +1,13 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, reference contracts between concrete content and canonical objects, Learning Unit, Practice/Assessment Item, Stimulus, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact, and content coverage identity semantics
-DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
-DOES_NOT_OWN: canonical skill/knowledge/band rules, curriculum sequence, learning-mechanism policy, assessment eligibility/sufficiency, learner-state transitions, persistence/API/database schemas
+OWNS: conceptual content-instance model, stable content-context identity, reference contracts between concrete content and canonical objects, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
+DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
+DOES_NOT_OWN: Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, or product coverage status
 
 # 10 — Content Model
 
 ## Purpose
 
-Define how concrete learning, tutoring, and measurement objects reference the canonical learning system without becoming a second source of truth.
-
-The specification separates reusable canonical semantics from replaceable instances:
+Define how concrete learning, tutoring, and measurement objects reference canonical learning/exam semantics without becoming another source of truth.
 
 ```text
 Canonical definitions
@@ -19,8 +17,9 @@ Canonical definitions
   Learning Mechanism
   Practice Type
   Assessment Type
+  Content Context
 
-Concrete/supporting instances
+Concrete/runtime instances
   Learning Unit
   Stimulus
   ScaffoldingProfile
@@ -35,15 +34,48 @@ Concrete/supporting instances
   EvidenceFact
 ```
 
-## Reference-first rule
+# Reference-first rule
 
-Every concrete object identifies the canonical target(s) and policy objects that justify its existence. Concrete content may instantiate semantics; it may not redefine them.
+Every concrete object references the canonical targets/context/policies that justify its existence.
 
-When variant/context affects the task or inference, the object must preserve that scope explicitly. A generic `reading` or `writing-task-1` label is insufficient when Academic and General Training require different content or capability.
+When variant, task, section, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading` or `writing-task-1` are insufficient.
+
+# Stable Content Context registry
+
+Content context is a canonical identity layer for **where/how an IELTS construct is instantiated**, not a new learning skill.
+
+Stable IDs:
+
+| ID | Meaning | Variant |
+|---|---|---|
+| `CTX-LISTENING-SHARED` | shared IELTS Listening construct/context | shared |
+| `CTX-READING-ACADEMIC` | Academic Reading passage/set context | Academic |
+| `CTX-READING-GT-S1-EVERYDAY` | GT Reading Section 1 everyday context | General Training |
+| `CTX-READING-GT-S2-WORKPLACE` | GT Reading Section 2 workplace context | General Training |
+| `CTX-READING-GT-S3-GENERAL-INTEREST` | GT Reading Section 3 longer general-interest context | General Training |
+| `CTX-WRITING-ACADEMIC-T1-VISUAL` | Academic Writing Task 1 visual-information context | Academic |
+| `CTX-WRITING-GT-T1-LETTER` | GT Writing Task 1 letter context | General Training |
+| `CTX-WRITING-T2` | Writing Task 2 construct; concrete prompt retains variant where material | shared/core |
+| `CTX-SPEAKING-SHARED` | shared IELTS Speaking construct | shared |
+
+Rules:
+
+1. these IDs are semantic identities and remain stable across specs/content/manifests/runtime contracts;
+2. exact JSON field/enumeration representation is a machine-contract concern, but it must preserve these identities unchanged;
+3. new context IDs require a materially distinct external/content inference context, not a topic, difficulty, Band, delivery mode, or UI screen;
+4. delivery mode is orthogonal and therefore not encoded by multiplying context IDs.
+
+# Delivery scope
+
+Where exam-readiness behavior depends materially on external delivery, concrete items/runs may declare a delivery scope/reference resolved from `02-IELTS-MODEL.md` / TargetProfile.
+
+Examples conceptually include test-centre computer, an eligible Writing-on-Paper condition, or an eligible online Academic condition.
+
+Delivery scope changes interaction/conditions. It does not create a second Content Context for the same learning construct unless the content itself materially differs.
 
 # `LearningUnit`
 
-A Learning Unit is a delivery-neutral grouping of content around a coherent curriculum purpose.
+Delivery-neutral grouping around a coherent curriculum purpose.
 
 Conceptual fields:
 
@@ -53,6 +85,8 @@ curriculum_node_id
 objective_refs
 prerequisite_refs
 test_variant_scope
+content_context_refs
+delivery_mode_scope optional
 content_sequence
 practice_item_refs
 assessment_item_refs
@@ -61,13 +95,11 @@ remediation_pattern_refs
 completion_intent
 ```
 
-Completion is not mastery. Multiple Learning Units may instantiate the same Curriculum Node for different delivery modes, variants, or learner contexts.
+Completion is not mastery. Multiple units may instantiate one Curriculum Node for different variants, delivery preparations, or learner contexts.
 
 # `Stimulus`
 
-A Stimulus is source material the learner reads, hears, views, analyzes, or responds to.
-
-Examples include passages, recordings/transcripts, charts/tables/maps, Writing prompts, Speaking questions/cue cards, model responses, worked examples, and sentence/paragraph material.
+Material the learner reads, hears, views, analyses, or responds to.
 
 Conceptual fields:
 
@@ -75,7 +107,7 @@ Conceptual fields:
 id
 kind
 test_variant_scope
-exam_section_or_task_context
+content_context_id
 source_or_provenance
 content
 language_properties
@@ -83,29 +115,15 @@ difficulty_parameters
 rights_or_usage_metadata
 ```
 
-Variant/context examples:
+Examples: passages, recordings/transcripts, charts/tables/maps, Writing prompts, Speaking questions/cue cards, model responses, worked examples, sentence/paragraph material.
 
-```text
-ACADEMIC_READING_PASSAGE
-GT_READING_SECTION_1_EVERYDAY
-GT_READING_SECTION_2_WORKPLACE
-GT_READING_SECTION_3_GENERAL_INTEREST
-ACADEMIC_WRITING_TASK_1_VISUAL
-GT_WRITING_TASK_1_LETTER
-WRITING_TASK_2_SHARED_OR_VARIANT_SCOPED
-LISTENING_SHARED
-SPEAKING_SHARED
-```
-
-These are conceptual context classes, not mandatory wire enum spellings until contracts are materialized.
-
-A Stimulus may be reused across Practice and Assessment only when reuse does not invalidate independence, novelty, or the inference intended from the later attempt.
+A Stimulus may be reused across Practice/Assessment only when reuse does not invalidate independence, novelty, or later inference.
 
 # `ScaffoldingProfile`
 
-A ScaffoldingProfile records material support available during an item/attempt.
+Records material support available during learning/performance.
 
-Conceptual dimensions may include:
+Conceptual dimensions:
 
 ```text
 content_support
@@ -115,17 +133,15 @@ response_support
 hints
 worked_example_access
 feedback_timing
-attempt/retry support
-timing support
+attempt_or_retry_support
+timing_support
 ```
 
-The profile exists because a correct response with material support has a different inference scope from independent performance.
-
-Scaffolding is not inherently bad. It is a learning tool whose presence must remain visible when Assessment interprets an Observation.
+Support is not inherently invalid; its presence must remain visible because it changes inference scope.
 
 # `ExposureContext`
 
-ExposureContext records material prior exposure relevant to learning, novelty, retry, or transfer inference.
+Records material prior exposure and transfer/novelty context.
 
 Conceptual fields:
 
@@ -136,14 +152,14 @@ prior_feedback_exposure
 similarity_or_novelty_dimensions
 prior_attempt_refs
 context_variation
-variant_context_variation
+content_context_variation
 ```
 
-Exact-item novelty is not equivalent to transfer. The material dimensions depend on the claim.
+Exact-item novelty is not equivalent to meaningful transfer.
 
 # `PracticeItem`
 
-A Practice Item is a concrete instance of a Practice Type and may declare the Learning Mechanisms it instantiates.
+Concrete instance of a Practice Type.
 
 Conceptual fields:
 
@@ -152,7 +168,8 @@ id
 practice_type_id
 learning_mechanism_refs
 test_variant_scope
-exam_section_or_task_context
+content_context_id
+delivery_mode_scope optional
 target_skill_leaf_ids
 target_knowledge_ids
 curriculum_node_id
@@ -170,18 +187,20 @@ answer_or_model_reference
 
 Invariants:
 
-1. `practice_type_id` resolves to `07-PRACTICE.md`.
-2. mechanism refs resolve to canonical `LM-*` where declared.
-3. target IDs resolve to canonical Skill/Knowledge objects.
-4. variant/context is compatible with every variant-specific target.
-5. `W-TA-*` visual targets cannot be instantiated as GT Task 1 and `W-GT1-*` cannot be instantiated as Academic Task 1.
-6. difficulty/scaffolding may vary without changing the target.
-7. generated and authored items obey the same contract.
-8. item instances are replaceable.
+1. `practice_type_id` resolves to `07-PRACTICE.md`;
+2. Learning Mechanism refs resolve where declared;
+3. Skill/Knowledge refs resolve canonically;
+4. Content Context is compatible with variant-specific targets;
+5. `W-TA-*` visual targets cannot instantiate GT Task 1;
+6. `W-GT1-*` cannot instantiate Academic Task 1;
+7. delivery scope is recorded when interaction/readiness inference depends on it;
+8. difficulty/scaffold may vary without changing the target;
+9. authored and generated items obey the same contract;
+10. item instances remain replaceable.
 
 # `AssessmentItem`
 
-An Assessment Item is a concrete measurement instance of an Assessment Type.
+Concrete measurement instance of an Assessment Type.
 
 Conceptual fields:
 
@@ -190,7 +209,8 @@ id
 assessment_type_id
 claim_scope
 test_variant_scope
-exam_section_or_task_context
+content_context_id
+delivery_mode_scope optional
 target_skill_leaf_ids
 target_knowledge_ids
 target_band
@@ -207,17 +227,17 @@ independence_group
 
 Invariants:
 
-- the item samples the capability it claims to measure;
-- Band semantics are referenced from `05-BANDS.md`;
-- variant/task/context matches the claim;
-- Reading scoring reference uses the correct variant conversion where a Band inference is intended;
-- conditions preserve timing, assistance, partial/full-task status, delivery mode, and other material context;
-- independence/novelty metadata allows `08-ASSESSMENT.md` to judge the claim correctly;
-- the item itself never decides mastery or certification.
+- samples the claimed capability;
+- references Band semantics rather than redefining them;
+- context/variant matches the claim;
+- Reading Band inference uses applicable variant scoring policy;
+- timing, assistance, partial/full-task state, delivery/input mode, capture quality, and other material conditions remain visible;
+- independence/novelty metadata supports correct Assessment inference;
+- the item never decides mastery/certification.
 
 # `ErrorPattern`
 
-An Error Pattern is reusable tutoring knowledge about a recurring learner mistake or misconception.
+Reusable tutoring hypothesis about a recurring error/misconception.
 
 Conceptual fields:
 
@@ -225,22 +245,22 @@ Conceptual fields:
 id
 target_skill_leaf_ids
 target_knowledge_ids
-variant_or_context_scope where material
+content_context_refs when material
 pattern_description
 applicability_context
 example_refs
 detection_hints
 likely_causes where evidence supports them
-priority when useful
+priority where useful
 evidence_or_provenance
 locale_or_l1_scope
 ```
 
-An Error Pattern is a hypothesis/supporting pattern, not proof that a learner has the error. Population/L1/variant-specific patterns must declare their scope.
+It is not proof the learner has the error. Population/L1/context-specific patterns declare scope.
 
 # `RemediationPattern`
 
-A Remediation Pattern is a reusable tutoring strategy for a diagnosed weak target or Error Pattern.
+Reusable tutoring strategy for a diagnosed target/ErrorPattern.
 
 Conceptual fields:
 
@@ -248,7 +268,7 @@ Conceptual fields:
 id
 target_skill_leaf_ids
 target_knowledge_ids
-variant_or_context_scope where material
+content_context_refs when material
 error_pattern_refs
 learning_mechanism_refs
 practice_type_refs
@@ -260,11 +280,11 @@ scope
 evidence_or_provenance
 ```
 
-It may recommend mechanisms and Practice Types but cannot redefine prerequisites, Band thresholds, or mastery rules.
+It may recommend mechanisms/types but cannot redefine prerequisites, Band thresholds, or mastery rules.
 
 # `FeedbackArtifact`
 
-Feedback is guidance derived from an Attempt/Observation.
+Runtime guidance derived from Attempt/Observation.
 
 Conceptual fields:
 
@@ -272,7 +292,7 @@ Conceptual fields:
 attempt_ref
 observation_refs
 target_refs
-variant/context scope where material
+content_context_ref when material
 observed_performance
 gap_or_error
 matched_error_pattern_refs
@@ -284,13 +304,11 @@ remediation_pattern_refs
 uncertainty when material
 ```
 
-Feedback must distinguish observed performance from inferred cause. It should be actionable when formative and must not perform the learner's required cognitive operation on the learner's behalf.
-
-Feedback is runtime/supporting output, not canonical learning truth.
+Feedback distinguishes observation from inferred cause and must not perform the learner’s required cognitive operation for them.
 
 # `Attempt`
 
-An Attempt is a learner-instance event against a Practice Item or Assessment Item.
+Learner-instance event against a Practice/Assessment Item.
 
 Conceptual fields:
 
@@ -301,16 +319,17 @@ response
 started_at
 completed_at
 actual_delivery_mode
+actual_input_or_capture_conditions
 scaffolding_profile
 exposure_context
 evaluation_refs
 ```
 
-An Attempt records what the learner did. It is not automatically evidence.
+An Attempt records what happened; it is not automatically evidence.
 
 # `Observation`
 
-An Observation is a normalized measurement result derived from an Attempt before evidence admission.
+Normalized measurement result before evidence admission.
 
 Conceptual fields:
 
@@ -321,7 +340,8 @@ assessment_type_ref
 claim_candidate_refs
 target_refs
 test_variant_scope
-exam_section_or_task_context
+content_context_id
+actual_delivery_mode where material
 criterion_outcomes
 raw_result
 conditions
@@ -332,11 +352,11 @@ uncertainty
 observed_at
 ```
 
-Observations preserve history. A scoring/policy change may alter downstream interpretation without rewriting the original observation.
+Observations preserve history. New scoring/policy may change later interpretation without rewriting the original measurement.
 
 # `EvidenceFact`
 
-An EvidenceFact is a claim-scoped admission of an Observation under `08-ASSESSMENT.md`.
+Claim-scoped admission of an Observation under Assessment policy.
 
 Conceptual fields:
 
@@ -351,86 +371,88 @@ policy_version
 admitted_at
 ```
 
-One Observation may produce EvidenceFacts for multiple compatible claims or no EvidenceFact at all.
+One Observation may yield multiple compatible EvidenceFacts or none.
 
-EvidenceFact is historical admissible evidence. It is not MasteryEstimate, ReadinessEvaluation, or Certification.
+EvidenceFact is not MasteryEstimate, ReadinessEvaluation, or Certification.
 
-The legacy umbrella term `EvidenceRecord` should not be used for new design because it hides the Observation-versus-EvidenceFact boundary.
+Do not reintroduce an umbrella `EvidenceRecord` that hides Observation vs EvidenceFact.
 
-# Content coverage manifest semantics
+# Content coverage manifest
 
-When executable content is materialized, implementation must maintain a machine-checkable **content coverage manifest** or equivalent derived index. The manifest is an implementation artifact, not a new learning authority.
+When executable content exists, maintain a machine-checkable content manifest/equivalent derived index.
 
-Each content capability entry should be able to answer:
+Each entry must support answers to:
 
 ```text
-which canonical targets are instantiated
-which IELTS variant/task/section contexts are represented
-which Practice/Assessment Types are supported
-which response interaction is implemented
-which answer key/rubric/evaluator path applies
-which difficulty/transfer classes exist
-which rights/provenance state applies
-whether exam-readiness independent assets exist
-which product/release version activates the content
+canonical target refs
+stable Content Context ID
+test variant
+supported delivery scope where material
+Practice/Assessment Type support
+implemented response interaction
+answer-key/rubric/evaluator route
+difficulty/transfer classes
+rights/provenance state
+independent readiness asset state
+product/release activation
 ```
 
-Coverage tooling may derive condition status from this manifest, but `design/08-coverage-and-support.md` remains the owner of what conditions must be satisfied.
+The manifest is implementation truth about available content, not new learning authority.
 
-A feature existing in UI is not evidence that content coverage exists.
+`design/08-coverage-and-support.md` owns which conditions must pass before coverage/support promotion.
 
-# Content composition
+A UI feature existing is not proof of content coverage.
 
-A typical flow is:
+# Composition
 
 ```text
 Curriculum Node + variant overlay
-     ↓
+      ↓
 Learning Unit
-     ├── explanation / Stimuli
-     ├── Practice Items
-     ├── Error / Remediation Patterns
-     └── Assessment Items
-              ↓
-            Attempt
-              ↓
-          Observation
-              ↓
-          EvidenceFact
-              ↓
-   Mastery / Readiness evaluation
-              ↓
-       learner-state decision
+  ├─ Stimuli
+  ├─ Practice Items
+  ├─ Error/Remediation Patterns
+  └─ Assessment Items
+          ↓
+        Attempt
+          ↓
+      Observation
+          ↓
+      EvidenceFact
+          ↓
+ Readiness / learner-state decision
 ```
 
-This is not a required UI screen flow or persistence schema.
+This is conceptual composition, not a required UI flow or database table graph.
 
-# Difficulty model
+# Difficulty
 
-Concrete content may express difficulty through linguistic complexity, information load, abstraction, distractor strength, response length, target integration, timing pressure, scaffold/cue availability, novelty, transfer distance, and variant/context demand.
+Concrete difficulty may vary by linguistic complexity, information load, abstraction, distractor strength, response length, integration, timing pressure, scaffold/cues, novelty, transfer distance, and context demand.
 
-Difficulty metadata supports selection and calibration. It does not define a Band.
+Difficulty metadata does not define a Band.
 
 # Content quality requirements
 
-A concrete/supporting object is acceptable only when:
+A concrete object is acceptable only when:
 
-- canonical references resolve;
-- variant/task/context references are internally compatible;
-- it does not introduce contradictory teaching/scoring rules;
-- task/variant conditions match purpose;
+- canonical refs resolve;
+- Content Context/variant refs are compatible;
+- delivery scope is compatible when material;
+- it introduces no contradictory teaching/scoring rule;
 - answer key/rubric/model is valid where applicable;
-- assessment contexts do not leak answers;
+- assessment context does not leak answers;
 - provenance/rights are known where needed;
-- difficulty and scaffolding are plausible for intended use;
-- exposure/reuse does not invalidate the intended evidence claim;
-- error/remediation claims declare population/context scope when non-universal;
+- difficulty/scaffolding fit intended use;
+- reuse/exposure does not invalidate inference;
+- non-universal remediation/error claims declare scope;
 - it can be replaced without changing canonical learning truth.
 
-# Generated content boundary
+# Generated-content boundary
 
-AI generation is an instance-generation mechanism, not authority. Generated exercises, explanations, feedback, error hypotheses, and remediation suggestions must pass the same reference, variant/context, rights, quality, and evidence-context contract as authored content.
+AI generation is an instance-generation mechanism, not authority. Generated items/explanations/feedback/error hypotheses/remediation must pass the same target, context, delivery, rights, quality, and evidence contracts as authored content.
 
-# No persistence contract
+# No persistence/wire contract
 
-Names and fields here are conceptual contracts. They do not require one-to-one SQL tables, classes, JSON payloads, services, or language-specific types. Cross-language implementation uses explicit contracts under the repository governance rules in `CONSTITUTION.md`.
+Names/fields here define conceptual semantics. They do not force one-to-one SQL tables/classes/JSON payloads.
+
+Machine boundaries materialize exact shapes under repository contract governance while preserving stable canonical IDs.
