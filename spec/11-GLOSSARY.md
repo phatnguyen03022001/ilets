@@ -67,9 +67,9 @@ This file is the canonical vocabulary for the active specification. Definitions 
 
 **Progression** — how learner runtime state advances, regresses, certifies, and selects next actions.
 
-**Content Model** — conceptual representation of concrete learning/assessment instances that reference canonical definitions.
+**Content Model** — conceptual representation of concrete/supporting learning, assessment, tutoring, and feedback objects that reference canonical definitions.
 
-## Canonical objects
+## Canonical objects and supporting content contracts
 
 **Skill Leaf** — atomic capability unit, identified by a stable `W-*`, `S-*`, `L-*`, or `R-*` ID.
 
@@ -89,9 +89,15 @@ This file is the canonical vocabulary for the active specification. Definitions 
 
 **Stimulus** — source material presented to the learner, such as a passage, recording, visual, prompt, or example.
 
-**Feedback Artifact** — runtime feedback tied to an attempt and canonical targets; not canonical truth.
+**Error Pattern** — reusable supporting tutoring/content knowledge describing a recurring learner error or misconception and explicitly referencing the canonical Skill/Knowledge targets it concerns; it is not part of Skill/Knowledge identity.
 
-**Evidence Record** — normalized assessment output tied to a learner attempt and canonical target.
+**Remediation Pattern** — reusable supporting tutoring/content strategy for correcting a weak target or Error Pattern through referenced canonical targets, Practice Types, scaffolds, and success checks; it does not redefine mastery or prerequisites.
+
+**Feedback Artifact** — runtime feedback tied to an Attempt and canonical targets; not canonical learning truth.
+
+**Attempt** — learner-instance event against a Practice Item or Assessment Item, including the response, conditions, time, and evaluation references needed to interpret what happened.
+
+**Evidence Record** — normalized assessment output tied to an Attempt and canonical target, containing enough measurement context for Assessment to judge validity/sufficiency and Progression to consume the result.
 
 ## Learning and mastery
 
@@ -113,9 +119,9 @@ This file is the canonical vocabulary for the active specification. Definitions 
 
 ## Prerequisites and adaptation
 
-**Required prerequisite** — hard dependency whose absence makes dependent learning ineffective and cannot reasonably be worked around adaptively.
+**Required prerequisite** — hard dependency whose absence makes dependent learning ineffective and cannot reasonably be worked around adaptively. Canonical Skill/Knowledge `requires` edges are interpreted as Required prerequisites.
 
-**Recommended prerequisite** — beneficial dependency used for ordering but not a hard gate.
+**Recommended prerequisite** — beneficial dependency used for ordering but not a hard gate. Curriculum `Depends` entries are Recommended by default unless explicitly marked Required.
 
 **Independent** — no prerequisite relationship.
 
