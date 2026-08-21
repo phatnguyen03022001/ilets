@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: user-facing feature capabilities for Listening, Reading, Writing, Speaking, and shared learning surfaces, including variant/delivery-aware feature behavior
-DEPENDS_ON: ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, 00-learning-experience.md
+DEPENDS_ON: ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md
 DOES_NOT_OWN: live IELTS format/delivery facts, skill/Band truth, practice mechanisms, evidence sufficiency, planner policy, API wire shape, media rights, or frameworks
 
 # Skill Features
@@ -83,7 +83,7 @@ Transcript visibility is not required before the first independent listening att
 
 Academic and GT reuse Reading capabilities and question interactions while concrete content/evidence preserves the selected external variant context.
 
-GT readiness content resolves the required GT section/context classes from `../spec/02-IELTS-MODEL.md` and `../spec/10-CONTENT-MODEL.md`. Academic-only assets cannot silently satisfy a GT whole-Reading path.
+GT readiness content resolves stable Content Context IDs from `../spec/10-CONTENT-MODEL.md`. Academic-only assets cannot silently satisfy a GT whole-Reading path.
 
 Reading flow:
 
@@ -127,12 +127,12 @@ Academic overview/visual-feature guidance is never presented as a GT letter rule
 `W-F09` is exam-readiness oriented and therefore resolves a supported input configuration, for example:
 
 - typed computer response;
-- handwriting rehearsal for an eligible Writing-on-Paper target, with the product recording actual assistance/timing/input context;
+- handwriting rehearsal for an eligible Writing-on-Paper target, with actual assistance/timing/input context recorded;
 - remote computer-interface rehearsal when the target is an eligible online delivery.
 
 A delivery-specific rehearsal does not alter Writing scoring criteria or Band semantics.
 
-Writing feedback prioritizes task fulfilment/response and high-impact structure/language issues before flooding the learner with local corrections.
+Writing feedback prioritizes task fulfilment/response and high-impact structure/language issues before local corrections.
 
 During evidence/readiness attempts, autocomplete/rewriting/AI continuation may not perform the target cognitive work for the learner.
 
@@ -197,6 +197,7 @@ Every implementation feature resolves:
 ```text
 feature ID
 → TargetProfile variant/delivery context when material
+→ stable Content Context when material
 → canonical target IDs
 → Practice Type or Assessment Type
 → learner-state purpose
