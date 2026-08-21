@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: product coverage semantics, TargetCoverageSpecification, CoverageGap taxonomy, support-promotion gates, official-construct-to-feature coverage mapping, and current product-support declarations
-DEPENDS_ON: ../spec/00-PRODUCT.md, ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/06-CURRICULUM.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md, 07-third-party-services.md
+DEPENDS_ON: ../spec/00-PRODUCT.md, ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/06-CURRICULUM.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md, 07-third-party-services.md
 DOES_NOT_OWN: IELTS external truth, learning targets, feature behavior, provider selection, learner GapEvaluation, or empirical validation results
 
 # Coverage and Product Support
@@ -9,9 +9,9 @@ DOES_NOT_OWN: IELTS external truth, learning targets, feature behavior, provider
 
 Define exactly what it means for the product to claim that an IELTS target is modelled, covered, supported, or validated.
 
-This document exists to prevent statements such as “100% IELTS coverage” from being made because many documents, features, or exercises exist.
+This document prevents statements such as “100% IELTS coverage” from being made because many documents, features, or exercises exist.
 
-## Coverage is not a percentage
+# Coverage is not a percentage
 
 Coverage is evaluated as logical conditions over a scoped target.
 
@@ -35,13 +35,13 @@ VALIDATED
 
 No weighted aggregate may hide a missing required condition.
 
-## Product support statuses
+# Product support statuses
 
-### `MODELLED`
+## `MODELLED`
 
-The construct/requirement is represented in canonical spec with enough semantic detail to reason about it.
+The construct/requirement is represented in canonical spec with enough semantic detail to reason about it end-to-end.
 
-### `COVERED`
+## `COVERED`
 
 The complete executable learning path exists for the scoped target with no blocking CoverageGap:
 
@@ -52,20 +52,21 @@ requirement
 → intervention / practice
 → evidence / re-evidence / transfer
 → learner experience / transition
+→ content/assets
 → viable runtime/provider path
 ```
 
-### `SUPPORTED_FOR_PRODUCT`
+## `SUPPORTED_FOR_PRODUCT`
 
-A versioned release declaration says the product actually exposes the target and all release-critical content, rights, privacy/security, reliability, evaluator/calibration, and cost gates are satisfied.
+A versioned release declaration says the product actually exposes the target and all release-critical content, rights, privacy/security, reliability, evaluator/calibration, operational, and cost gates are satisfied.
 
-### `VALIDATED`
+## `VALIDATED`
 
 Scoped empirical evidence supports the declared product outcome under named learner/product/evaluator/intervention versions and conditions.
 
 Architecture coherence never implies `VALIDATED`.
 
-## Coverage-condition statuses
+# Coverage-condition statuses
 
 Each material condition is independently one of:
 
@@ -77,7 +78,7 @@ Each material condition is independently one of:
 - `NOT_APPLICABLE`;
 - `CALIBRATION_REQUIRED`.
 
-## CoverageGap
+# CoverageGap
 
 A product coverage hole is not a learner weakness.
 
@@ -89,159 +90,201 @@ A product coverage hole is not a learner weakness.
 - `EVIDENCE_OR_EVALUATOR`;
 - `EXPERIENCE`;
 - `TRANSITION`;
+- `CONTRACT_OR_INTEGRATION`;
 - `COST_OR_OPERATIONS`;
 - `RIGHTS_PRIVACY_RELIABILITY`;
 - `CALIBRATION_OR_VALIDATION`.
 
-Each gap records scope, missing/failed condition, blocking consequence, dependencies, provenance/version, and the required demand class.
+Each gap records scope, missing/failed condition, blocking consequence, dependencies, provenance/version, and required demand class.
 
 # Target scope
 
-## Standard IELTS construct target
-
-The product's complete standard-IELTS target is:
+## Complete standard IELTS construct target
 
 ```text
 IELTS Academic
 + IELTS General Training
 + Listening / Reading / Writing / Speaking
 + all official task/question families
-+ band/criterion semantics needed for learner planning
++ Band-3→9 learning interpretation
 + diagnostic → learning → practice → assessment → progression → exam-readiness paths
 ```
 
-Academic may be released before General Training, but the repository must not confuse release sequencing with construct completeness.
+Academic may be released before General Training, but release sequencing is not construct completeness.
 
 ## UKVI Academic / General Training
 
-IELTS for UKVI Academic and General Training use the same language-test construct/results as their standard counterparts while adding security/administrative requirements outside the learning construct. The learning system therefore reuses Academic/GT coverage; UKVI-specific booking/venue/compliance workflow is not a new learning curriculum.
-
-Any visa-route minimum-score requirement belongs in a learner `TargetProfile` as an external constraint with provenance rather than being hard-coded as IELTS learning truth.
+UKVI reuses the corresponding language-test construct while adding administrative/security requirements outside the learning curriculum.
 
 ## One Skill Retake
 
-One Skill Retake reuses one of the existing four skill constructs. It requires no new Skill ontology. Product support is represented by focused goal/reassessment/exam-preparation flows for the selected skill.
+One Skill Retake reuses one existing skill construct. Product support is focused goal/reassessment/exam-preparation flow plus current external eligibility/availability guidance, not a fifth Skill ontology.
 
 ## IELTS Life Skills
 
-IELTS for UKVI Life Skills A1/A2/B1 is **not currently in product scope**. It is a different Listening/Speaking-only pass/fail construct and does not fit the current Band-3-to-9 curriculum model.
+IELTS Life Skills remains outside current product-learning scope because it is a different Listening/Speaking-only pass/fail construct.
 
-Therefore the repository must not claim “100% of every test sold under the IELTS brand.” The intended claim, once all gates pass, is **complete standard IELTS Academic + General Training learning coverage**.
+Therefore a future claim must be phrased as **complete standard IELTS Academic + General Training learning coverage**, not “every test sold under the IELTS brand.”
 
-# Current coverage declaration — 2026-08-22 design state
+# Required TargetCoverageSpecification conditions
+
+For a scoped `(variant, target-profile/band conditions)` target, coverage evaluation must test every applicable condition below.
+
+| Condition | Required meaning |
+|---|---|
+| `construct_model` | external IELTS requirement is represented correctly |
+| `skill_knowledge_model` | required capabilities/knowledge have stable canonical identity |
+| `band_threshold` | target threshold/variant overlay is defined |
+| `curriculum_route` | valid Band-3→target sequencing/variant route exists |
+| `practice_intervention` | required acquisition/consolidation/retrieval/transfer/fluency/exam-readiness actions are executable where applicable |
+| `feature_experience` | learner can perform the required interaction and understand state/result |
+| `content_assets` | sufficient valid stimuli/items/templates/generators exist for required target/context diversity |
+| `assessment_policy` | correct Assessment Type and versioned executable EvidenceRequirement exist |
+| `evaluator_scoring` | deterministic scoring or calibrated productive evaluator route exists |
+| `progression_transition` | evidence can drive explainable state/next-action behavior |
+| `variant_context` | variant-specific task/section/context conditions are represented and sampled |
+| `machine_contracts` | exact cross-unit interfaces exist for implemented boundaries |
+| `rights_privacy_security` | applicable source/data/consent/security conditions pass |
+| `reliability_recovery` | lifecycle, idempotency, retry, failure/recovery behavior pass |
+| `accessibility_capture_quality` | learner can access interaction and low-quality capture is handled without false ability inference |
+| `cost_abuse_operations` | release can operate within declared cost/rate/abuse constraints |
+| `observability_audit` | consequential decisions preserve version/provenance/reason reconstruction |
+| `validation` | empirical evidence exists when status is promoted to `VALIDATED` |
+
+A condition may be `NOT_APPLICABLE` only with an explicit reason for the scoped target.
+
+# Content coverage closure
+
+A UI feature/table mapping is not content coverage.
+
+When content is implemented, coverage tooling should consume the content coverage manifest or equivalent index defined by `spec/10-CONTENT-MODEL.md` and verify at least:
+
+```text
+canonical target refs
+variant/task/section contexts
+practice/assessment role
+interaction implementation
+answer/rubric/evaluator path
+transfer/novelty classes
+rights/provenance
+independent readiness assets
+release activation
+```
+
+Only then can a `CONTENT_OR_ASSET` condition become `SATISFIED`.
+
+# Evidence policy closure
+
+A high-consequence `(variant, skill, band)` claim cannot be product-supported merely because `08-ASSESSMENT.md` describes evidence principles.
+
+Before support, the exact claim must resolve to a versioned executable `EvidenceRequirement`. Hidden LLM judgment, an unversioned threshold, or “two good attempts seems enough” is not an acceptable production policy.
+
+# Contract closure
+
+A multi-language runtime target cannot become `COVERED` while TypeScript, Go, and Python maintain independent handwritten interpretations of the same interface.
+
+Implemented cross-unit boundaries require one exact machine contract authority under `contracts/`, generated/validated consumers, and conformance tests.
+
+# Current coverage declaration — 2026-08-22 audit state
 
 This is a design-time declaration, not a production support claim.
+
+The canonical learning model now closes the major Academic/General Training semantic gap, including GT Reading context distribution and GT Writing Task-1 letter capabilities. Runtime/content/evaluator/contract/validation work is still missing.
 
 | Target | Model status | Feature/practice path | Evidence/progression path | Runtime/content/calibration | Current product status |
 |---|---|---|---|---|---|
 | Academic Listening | strong model | defined | defined | not implemented/validated | `MODELLED`, not `COVERED` |
-| Academic Reading | strong model | defined, task-family mapping requires explicit closure | defined | not implemented/validated | `MODELLED`, not `COVERED` |
-| Academic Writing | strong model | defined | defined; productive evaluator unimplemented | calibration/content/runtime missing | `MODELLED`, not `COVERED` |
-| Academic Speaking | strong model | defined | defined; productive evaluator unimplemented | calibration/audio/runtime missing | `MODELLED`, not `COVERED` |
-| General Training Listening | shared with Academic | shared path | shared path | not implemented/validated | `MODELLED`, not `COVERED` |
-| General Training Speaking | shared with Academic | shared path | shared path | not implemented/validated | `MODELLED`, not `COVERED` |
-| General Training Reading | external format partly represented | product interaction reusable but GT corpus/context path incomplete | scoring/evidence path conceptually reusable | GT assets/path missing | `PARTIAL` |
-| General Training Writing Task 1 | external letter task represented | dedicated learner feature/path incomplete | criterion path reusable but task-specific model incomplete | assets/evaluator calibration missing | `PARTIAL` |
-| General Training Writing Task 2 | substantially shared | shared Writing path | shared criterion path | not implemented/validated | `MODELLED`, not `COVERED` |
-| One Skill Retake preparation | construct shared | focused-skill journey can reuse current surfaces | normal evidence semantics reusable | release workflow not implemented | `DEFINED` |
-| IELTS Life Skills | out of scope | none | none | none | `NOT_APPLICABLE` to current product target |
+| Academic Reading | strong model | defined | defined | content/runtime not implemented/validated | `MODELLED`, not `COVERED` |
+| Academic Writing | strong model | defined | variant-correct; productive EvidenceRequirement/evaluator must be materialized/calibrated | content/runtime/calibration missing | `MODELLED`, not `COVERED` |
+| Academic Speaking | strong model | defined | defined; productive EvidenceRequirement/evaluator must be materialized/calibrated | audio/content/runtime/calibration missing | `MODELLED`, not `COVERED` |
+| General Training Listening | shared strong model | shared path | shared path | not implemented/validated | `MODELLED`, not `COVERED` |
+| General Training Speaking | shared strong model | shared path | shared path | not implemented/validated | `MODELLED`, not `COVERED` |
+| General Training Reading | shared Reading skills + explicit GT section/context/score overlay modelled | variant-aware Reading modes/features defined | GT-specific claim conditions defined | GT assets/runtime not implemented/validated | `MODELLED`, not `COVERED` |
+| General Training Writing Task 1 | dedicated `W-GT1-*` capability and Band/Curriculum overlay modelled | variant-aware planner/draft/timed path defined | GT-specific evidence non-substitution defined | assets/evaluator/runtime/calibration missing | `MODELLED`, not `COVERED` |
+| General Training Writing Task 2 | shared model | shared Writing path | shared criterion path | not implemented/validated | `MODELLED`, not `COVERED` |
+| One Skill Retake preparation | construct shared | focused-skill journey reusable | normal evidence semantics reusable | release/admin guidance workflow not implemented | `DEFINED` |
+| IELTS Life Skills | out of scope | none | none | none | `NOT_APPLICABLE` to current target |
 
 ## Current top-level verdict
 
 ```text
 Academic semantic model        STRONG / MODELLED
+General Training semantic model STRONGER / MODELLED at learning-design level
 Academic product coverage      NOT YET COVERED
-General Training               PARTIAL
+General Training product coverage NOT YET COVERED
 Runtime support                NOT IMPLEMENTED
 Validated band-outcome claim   NOT ESTABLISHED
 ```
 
-Until this table has no blocking conditions for a scoped target and a TargetSupportDeclaration exists, user-facing copy must not say the product “fully supports” that target.
+No user-facing copy may say a target is fully supported until its blocking conditions are closed and a versioned TargetSupportDeclaration exists.
 
 # Official task/question-family mapping
 
-This table maps external IELTS families to existing product surfaces. It does not redefine the families; `02-IELTS-MODEL.md` owns external exam truth.
+This maps external families to product surfaces. It does not redefine external exam truth.
 
 ## Listening
 
-| Official family | Product feature path | Practice path | Design condition |
-|---|---|---|---|
-| Multiple choice | `L-F01`, `L-F05` | focused distractor/choice items + `PM-L06` | `DEFINED` |
-| Matching | `L-F01`, `L-F05` | focused relation/matching items + `PM-L06` | `DEFINED` |
-| Plan/map/diagram labelling | `L-F06` | `PM-L05` | `SATISFIED` at design level |
-| Form/note/table/flow-chart/summary completion | `L-F04` | `PM-L03` | `SATISFIED` at design level |
-| Sentence completion | `L-F04` | `PM-L03` | `SATISFIED` at design level |
-| Short-answer questions | `L-F04` | `PM-L03` | `SATISFIED` at design level |
+| Official family | Product feature/practice path | Design condition |
+|---|---|---|
+| Multiple choice | `L-F01`, `L-F05`, `PM-L06` | `DEFINED` |
+| Matching | `L-F01`, `L-F05`, `PM-L06` | `DEFINED` |
+| Plan/map/diagram labelling | `L-F06`, `PM-L05` | `DEFINED` |
+| Form/note/table/flow-chart completion | `L-F04`, `PM-L03` | `DEFINED` |
+| Sentence completion | `L-F04`, `PM-L03` | `DEFINED` |
+| Short answer | `L-F04`, `PM-L03` | `DEFINED` |
 
-A dedicated mode is not required for each task family when one interaction model truthfully supports several families.
+## Reading — shared interactions, variant content
 
-## Academic Reading
+| Official family | Product feature/practice path | Design condition |
+|---|---|---|
+| Multiple choice | `R-F01`, `R-F06`, `PM-R05`/`PM-R06` | `DEFINED` |
+| True / False / Not Given | `R-F04`, `PM-R03` | `DEFINED` |
+| Yes / No / Not Given | `R-F04`, `PM-R03` | `DEFINED` |
+| Matching information | `R-F03`, `R-F07`, `PM-R02`/`PM-R06` | `DEFINED` |
+| Matching headings | `R-F05`, `PM-R04` | `DEFINED` |
+| Matching features/endings | `R-F03`, `R-F06`, `PM-R02`/`PM-R05` | `DEFINED` |
+| Completion families | `R-F03`, `R-F06`, `PM-R02`/`PM-R05` | `DEFINED` |
+| Diagram label completion | `R-F03`, `PM-R02` | `DEFINED` |
+| Short answer | `R-F03`, `PM-R02`/`PM-R06` | `DEFINED` |
 
-| Official family | Product feature path | Practice path | Design condition |
-|---|---|---|---|
-| Multiple choice | `R-F01`, `R-F06` | `PM-R05` / `PM-R06` | `DEFINED` |
-| True / False / Not Given | `R-F04` | `PM-R03` | `SATISFIED` at design level |
-| Yes / No / Not Given | `R-F04` | `PM-R03` | `SATISFIED` at design level |
-| Matching information | `R-F03`, `R-F07` | `PM-R02` / `PM-R06` | `DEFINED` |
-| Matching headings | `R-F05` | `PM-R04` | `SATISFIED` at design level |
-| Matching features | `R-F03`, `R-F06` | `PM-R02` / `PM-R05` | `DEFINED` |
-| Matching sentence endings | `R-F06` | `PM-R05` | `DEFINED` |
-| Sentence completion | `R-F03` | `PM-R02` / `PM-R06` | `DEFINED` |
-| Summary/note/table/flow-chart completion | `R-F03`, `R-F06` | `PM-R02` / `PM-R05` | `DEFINED` |
-| Diagram label completion | `R-F03` | `PM-R02` | `DEFINED` |
-| Short-answer questions | `R-F03` | `PM-R02` / `PM-R06` | `DEFINED` |
+Variant closure additionally requires:
 
-Before Academic Reading becomes `COVERED`, each `DEFINED` family above requires real content/template generation, interaction support, answer/evidence logic, and transfer/readiness assets—not merely a table mapping.
+- Academic content corpus/transfer/readiness assets;
+- GT Section-1 everyday, Section-2 workplace, Section-3 general-interest assets;
+- correct variant raw-score/evidence policy.
 
 ## Writing
 
-| Construct | Product feature path | Practice/evidence path | Design condition |
+| Construct | Product path | Practice/evidence path | Design condition |
 |---|---|---|---|
-| Academic Task 1 visual information | `W-F01`, `W-F03`, `W-F07`, `W-F08`, `W-F09` | planning → draft → revision → timed independent | `DEFINED` |
-| General Training Task 1 letter | current generic Writing surfaces plus missing dedicated letter-planning behavior | same Writing mechanisms, GT task-specific assets required | `PARTIAL` |
+| Academic Task 1 visual | `W-F01`, `W-F03`, `W-F07`, `W-F08`, `W-F09` | `W-TA-*`; plan → draft → revision → timed independent | `DEFINED` |
+| General Training Task 1 letter | same variant-aware Writing features | `W-GT1-*`; audience/purpose/register/bullet points → draft → revision → timed independent | `DEFINED` |
 | Task 2 essay | `W-F01`, `W-F02`, `W-F06`, `W-F07`, `W-F08`, `W-F09` | component → full → timed independent | `DEFINED` |
-| Writing criteria | criterion-level feedback/evaluator path | `AT-01` / `AT-05`, calibration required | `CALIBRATION_REQUIRED` for high-stakes support |
+| Writing criteria | criterion-level feedback/evaluator path | `AT-01` / `AT-05` | `CALIBRATION_REQUIRED` for high-consequence support |
 
 ## Speaking
 
-| Construct | Product feature path | Practice/evidence path | Design condition |
+| Construct | Product path | Practice/evidence path | Design condition |
 |---|---|---|---|
 | Part 1 | `S-F01` | `PM-S03` | `DEFINED` |
 | Part 2 | `S-F02` | `PM-S04` | `DEFINED` |
 | Part 3 | `S-F03` | `PM-S05` | `DEFINED` |
-| Pronunciation | `S-F04`, `S-F05`, `S-F07` | `PM-S01`, `PM-S02` | `DEFINED`; calibration needed for numeric claims |
-| Whole Speaking construct | `S-F09` | `PM-S06` | `DEFINED`; evaluator/content/runtime missing |
+| Pronunciation | `S-F04`, `S-F05`, `S-F07` | `PM-S01`, `PM-S02` | `DEFINED`; calibration needed for quantitative claims |
+| Whole Speaking | `S-F09` | `PM-S06` | `DEFINED`; evaluator/content/runtime missing |
 
-# TargetProfile coverage
+# TargetProfile coverage invariant
 
 A product target is not one number.
 
-A `TargetProfile` may contain:
+A TargetProfile may contain variant, overall target, per-skill minima, test date, receiving constraint, and selected One Skill Retake focus.
 
-```text
-test_variant
-purpose / receiving requirement when relevant
-target_overall_band optional
-minimum_listening_band optional
-minimum_reading_band optional
-minimum_writing_band optional
-minimum_speaking_band optional
-test_date optional
-selected_skill_retake optional
-```
+The product supports a target only if every required TargetProfile condition has a covered path.
 
-The product may support a target only if every required TargetProfile condition has a covered path.
-
-If a learner supplies only an overall target, the planner must not pretend that this uniquely determines the four skill targets. It must either:
-
-1. collect required skill minima from the learner/receiving institution; or
-2. use an explicitly labelled planning profile that keeps multiple valid score combinations possible.
-
-Overall readiness is then evaluated from TargetProfile constraints and skill evidence—not from averaging internal mastery percentages.
+If only an overall target is provided, the planner must not pretend this uniquely determines four skill targets. It must either collect real per-skill minima or use an explicitly labelled planning profile that preserves multiple valid score combinations.
 
 # Route-to-target invariant
 
-When a target is supported, the default product route is:
+When a target is supported:
 
 ```text
 TargetProfile
@@ -250,34 +293,23 @@ provisional diagnostic
   ↓
 material target gaps / unknowns
   ↓
-Daily Plan
+Daily Plan eligibility
   ↓
-required prerequisite + highest-value eligible action
+ranked valid next action
   ↓
 practice / review / re-evidence
   ↓
 updated readiness conditions
-  ↓
-next plan
   ↺
-until target conditions are supported or learner changes target
 ```
 
-The learner may Swap, Skip, Shorten, or Change Skill among eligible alternatives, but:
-
-- Required prerequisites remain blocking;
-- skipped target requirements remain unsatisfied;
-- learner preference never turns an uncovered/failed condition into support;
-- the target remains stable until the learner explicitly changes it;
-- repeated avoidance becomes a friction/preference signal, not ability evidence.
-
-The app therefore provides a strong governed route without claiming it can force adherence or guarantee an external test result.
+Ranking cannot make an invalid action valid. Required prerequisites, variant compatibility, evidence truth, and CoverageGaps remain upstream constraints.
 
 # No guaranteed-band promise
 
-`SUPPORTED_FOR_PRODUCT` means the product has a complete, release-qualified path for the target. It does **not** mean every learner following the path is guaranteed to receive that IELTS score.
+`SUPPORTED_FOR_PRODUCT` means the product has a complete release-qualified path. It does **not** guarantee that a learner receives that external IELTS score.
 
-Allowed product language:
+Allowed:
 
 - “Your current evidence supports Band N under this profile.”
 - “These are the remaining blockers to your target.”
@@ -298,26 +330,32 @@ Every blocking CoverageGap produces one demand class before implementation work 
 - content/asset/template/generator;
 - evaluator/calibration;
 - learner-flow/transition;
+- contract/integration;
 - provider/runtime/operations;
 - rights/privacy/security;
 - validation/research.
 
 Only content gaps create content quantity demand.
 
-# Support-declaration minimum
+# TargetSupportDeclaration minimum
 
-A future `TargetSupportDeclaration` must name:
+A future declaration must name:
 
 - target scope and variants;
 - supported bands/TargetProfiles;
 - product/version boundary;
 - feature/practice coverage;
-- content/asset coverage;
+- content/asset coverage manifest version;
+- EvidenceRequirement/policy versions;
 - evaluator/calibration state;
+- machine-contract versions;
 - rights/privacy/security gates;
 - third-party activation state;
 - reliability/recovery state;
+- accessibility/capture-quality gate;
+- cost/abuse/operations gate;
+- observability/audit gate;
 - known non-blocking validation backlog;
 - revocation conditions.
 
-Support is versioned and revocable when construct, provider, rights, reliability, cost, or calibration evidence changes.
+Support is versioned and revocable when construct, provider, rights, reliability, cost, calibration, or validation evidence changes.
