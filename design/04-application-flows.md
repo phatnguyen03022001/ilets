@@ -1,167 +1,179 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluation service, learner state, target route, media, async result delivery, planning-stage separation, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 03-media-youtube.md
-DOES_NOT_OWN: API field schemas, learning/mastery truth, product coverage/support declaration, exact persistence topology, provider selection, or framework internals
+DOES_NOT_OWN: API field schemas, learning/mastery truth, product coverage declaration, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
 
 # Application Flows
 
 ## Purpose
 
-Define how major product interactions traverse the system without assigning learning authority to transport, UI, evaluator, ranker, or third-party layers.
+Define how major product interactions traverse runtime boundaries without assigning learning authority to transport, UI, evaluator, ranker, or third-party infrastructure.
 
-## Logical runtime units
+# Logical runtime units
 
 ```text
-apps/web                 TypeScript learner/admin web experience
-services/core-api        Go public API + deterministic learning orchestration
-services/evaluator       Python AI/audio/text evaluation and analysis
+apps/web                 TypeScript learner/admin experience
+services/core-api        Go public API + deterministic orchestration
+services/evaluator       Python bounded AI/audio/text evaluation
 ```
 
-The browser communicates with Go Core API as the product authority boundary. It does not call Python Evaluator directly.
+Normal product path:
 
 ```text
 Web
- │
- ▼
+ ↓
 Core API
- ├── target / learner / plan / deterministic scoring
- └── evaluator request
-          │
-          ▼
+ ├─ durable learner/target/session/attempt state
+ ├─ deterministic scoring/policy execution
+ └─ internal evaluator request
+          ↓
       Evaluator
-          │
-          ▼
-   Observation result
-          │
-          ▼
+          ↓
+   Observation candidates + provenance
+          ↓
       Core API
-          │
-          ▼
-Evidence / Mastery / Gap / Plan
+          ↓
+Assessment / Progression / Planner
+          ↓
+Web
 ```
 
-Evaluator returns observations and provenance. It does not certify Band, advance learner state, declare product coverage, or select the final next action.
+The evaluator does not certify Band, mutate learner progression, declare product coverage, or choose the final next action.
 
 # Planner decision contract
 
-Planning is a staged decision. Implementations must preserve the stage boundaries because later ranking is not allowed to redefine earlier truth.
+Planning is a staged decision. Later stages may not redefine truth established by earlier stages.
 
 ```text
-1. TargetProfile + target-support check
+1. resolve TargetProfile + product-support scope
         ↓
 2. expand unresolved target conditions
         ↓
-3. interpret learner evidence → GapEvaluation / ActionIntent
+3. consume Assessment/Progression → GapEvaluation / ActionIntent
         ↓
-4. resolve Required prerequisites + hard eligibility
+4. hard eligibility filtering
         ↓
-5. generate eligible learning / assessment candidates
+5. candidate generation
         ↓
-6. rank eligible candidates
+6. ranking among eligible candidates
         ↓
-7. select coherent plan + stable explanation
+7. coherent plan + stable explanation
 ```
 
-## Stage 1 — target-support check
+## Stage 1 — target/support resolution
 
-Resolve current product support for the exact TargetProfile. A blocking product CoverageGap remains a product condition; it is never converted into learner weakness.
+Resolve the current TargetProfile version, including variant and delivery mode when material, and the product-support state for that exact scope.
+
+A product CoverageGap remains a product condition; it is never converted into learner weakness.
 
 ## Stage 2 — target-condition expansion
 
-Expand the TargetProfile into the per-skill/variant conditions still required. Overall-band planning may keep multiple valid score combinations; it must not invent hidden per-skill minima.
+Expand the target into unresolved per-skill/variant/external-purpose conditions.
+
+An overall Band alone may correspond to multiple valid four-skill combinations. The planner must not invent hidden per-skill minima.
 
 ## Stage 3 — evidence interpretation
 
-Consume Assessment/Progression outputs. Planning does not rescore evidence or create a second gap taxonomy.
+Consume canonical outputs from Assessment and Progression. Planning does not rescore an Observation, reinterpret evaluator output, or invent another gap taxonomy.
 
 ## Stage 4 — hard eligibility
 
-Filter out candidates that violate:
+Remove candidates that violate any applicable hard condition:
 
-- Required prerequisites;
+- Required prerequisite;
 - target variant/task compatibility;
-- product coverage/support constraints;
-- evidence-role constraints;
+- delivery-mode compatibility for exam-readiness work when material;
+- product coverage/support constraint;
+- evidence-role constraint;
 - rights/privacy/source eligibility;
-- learner accessibility constraints that make the activity unusable;
-- lifecycle constraints such as already-submitted immutable work.
+- accessibility/capture feasibility;
+- immutable lifecycle condition;
+- target-purpose/acceptance condition where the product knows the requested route cannot serve it.
+
+Examples:
+
+- Academic visual Task-1 practice is not eligible as GT Task-1 readiness work;
+- typing-only mock behavior is not sufficient delivery-mode practice when the learner explicitly targets eligible Writing on Paper;
+- IELTS Online Academic exam-readiness is not eligible for a GT target or a target purpose that requires a test-centre route;
+- a failed microphone capture cannot become eligible Speaking evidence by ranking it highly.
 
 ## Stage 5 — candidate generation
 
-Generate one or more valid actions for the current ActionIntent. Candidate generation may use alternate Practice Modes or Assessment actions but cannot weaken the target.
+Generate valid learning or assessment candidates for the current ActionIntent. Multiple modes may satisfy the same intent; candidate generation may vary delivery but not the target standard.
 
 ## Stage 6 — ranking
 
-Ranking may consider, among eligible candidates:
+Ranking may consider only **eligible** candidates. Useful ranking signals include:
 
 - target urgency/test date;
-- expected decision/learning value;
+- expected learning or decision value;
 - due review;
 - time fit;
 - learner preference/friction;
 - fatigue/session coherence;
-- exposure diversity/transfer value;
+- transfer/exposure diversity;
 - operational cost after semantic validity is preserved.
 
 ### Ranker non-authority invariant
 
-A ranker may reorder **eligible** candidates only. It may never:
+A ranker may reorder eligible candidates. It may never:
 
 - make an ineligible candidate eligible;
 - bypass a Required prerequisite;
-- alter a GapEvaluation or ReadinessEvaluation;
+- alter GapEvaluation or ReadinessEvaluation;
 - reinterpret evaluator output;
 - hide a CoverageGap;
 - lower a target threshold;
-- turn preference into ability evidence;
+- convert preference into ability evidence;
+- ignore a material variant/delivery constraint;
 - certify a learner.
 
-## Stage 7 — plan and explanation
+## Stage 7 — plan/explanation
 
-The selected plan preserves the TargetProfile version/state reference and emits reason codes that reconstruct why each activity is present.
+A plan records enough state/target references and reason information to reconstruct why every activity was eligible and selected.
 
-Deterministic tie-breaking should be stable enough that unchanged learner state does not create arbitrary plan churn.
+Tie-breaking should be deterministic/stable enough that unchanged learner state does not create arbitrary plan churn.
 
-# Flow A — target setup, onboarding, and diagnostic
+# Flow A — target setup and diagnostic
 
 ```text
-1. Web collects TargetProfile + study constraints
-2. Core API validates the target against current product-support scope
-3. Core API creates/updates LearnerProfile and TargetProfile
-4. If target path is not product-supported, Web shows the blocking product CoverageGap truthfully
-5. Web requests quick/full diagnostic
-6. Core API resolves test variant and selects diagnostic activities from canonical targets
-7. Learner completes attempts
-8. Objective Listening/Reading items may be scored deterministically by Core API
-9. Productive Writing/Speaking attempts use Evaluator when automated evaluation is eligible
-10. Evaluator returns criterion observations + provenance + uncertainty
-11. Core API applies Assessment eligibility/interpretation
-12. Core API updates MasteryEstimate / GapEvaluation
-13. Core API executes the Planner decision contract
-14. Web renders learner evidence state without inventing missing ability
+1. Web collects TargetProfile + planning constraints
+2. Core API validates variant/delivery/purpose combination against known external/product support
+3. Core API persists TargetProfile revision
+4. unsupported product conditions are surfaced as CoverageGap
+5. learner selects quick/full diagnostic UX shape
+6. Core API selects variant-correct diagnostic items
+7. learner attempts items
+8. objective L/R items may score deterministically
+9. eligible W/S attempts may use Evaluator
+10. Evaluator returns observations + provenance + uncertainty
+11. Assessment applies diagnostic sampling/eligibility semantics
+12. Progression derives only justified learner-state interpretation
+13. Planner executes stages 1–7
+14. Web shows sampled and unresolved conditions truthfully
 ```
 
-Quick diagnostic and full baseline remain non-certifying unless normal EvidenceRequirement rules independently support a claim.
+A completed diagnostic run is not synonymous with a complete learner model or certification.
 
-# Flow B — route-to-target Daily Plan
+# Flow B — Daily Plan
 
 ```text
 TargetProfile
   ↓
-target support + unresolved target conditions
+product support + unresolved target conditions
   ↓
 GapEvaluation / ActionIntent
   ↓
-Required prerequisite + variant eligibility
+hard eligibility
   ↓
-eligible candidate generation
+valid candidate generation
   ↓
-rank eligible candidates
+ranking
   ↓
 coherent DailyPlan + reason codes
 ```
 
-Representative reason codes:
+Representative reason codes include:
 
 ```text
 PREREQUISITE_GAP
@@ -174,85 +186,83 @@ TRANSFER_GAP
 FLUENCY_GAP
 REVIEW_DUE
 EXAM_CONDITION_GAP
+DELIVERY_MODE_PREPARATION
 PRODUCT_COVERAGE_BLOCKED
 ```
 
 `PRODUCT_COVERAGE_BLOCKED` is not a learner GapEvaluation.
 
-Learner Swap/Skip/Shorten/Change-skill actions select among eligible actions only. Skipped target requirements remain unresolved.
+Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do not mark skipped requirements satisfied.
 
 # Flow C — ordinary practice attempt
 
 ```text
 1. Web starts PracticeActivity
-2. Core API returns item/source + variant/context + conditions + evidence-role label
+2. Core API returns item + target + variant/context + conditions + evidence-role label
 3. learner performs task
-4. Web submits Attempt with actual assistance/scaffold/exposure/delivery metadata
+4. Web submits Attempt with actual scaffold/exposure/delivery metadata
 5. Core API or Evaluator produces Observation
-6. if training-only:
-      generate feedback / remediation / review state
-   if evidence-eligible:
-      Assessment evaluates admissibility and scope
-7. Progression updates learner-state interpretation when justified
-8. Core API derives next target-relevant action through the Planner contract
-9. Web updates session without pretending every activity changes Band
+6. training-only → feedback/remediation/review handling
+   evidence-eligible → Assessment eligibility/inference
+7. Progression updates interpretation only when justified
+8. Planner derives next target-relevant action
+9. Web presents outcome without fabricating a micro Band change
 ```
 
-Attempt creation/submission is idempotent so network retry cannot duplicate learner history or evaluator cost.
+Submission/retry is idempotent where network repetition could duplicate history or cost.
 
-# Flow D — Writing or Speaking async evaluation
+# Flow D — Writing/Speaking asynchronous evaluation
 
 ```text
-Web
-  │ POST submission
-  ▼
-Core API
-  │ persist authoritative Attempt/work state
-  │ COMMIT
-  │ ACK 202 + evaluation identity
-  ▼
-Evaluator
-  │ criterion observations
-  │ transcript/acoustic/text features when relevant
-  │ model/rubric provenance + uncertainty
-  ▼
-Core API
-  │ validate evaluation response
-  │ Assessment → EvidenceFact / claim outcome
-  │ Progression → Gap / state / next action
-  ▼
-Web receives completion via SSE or fetch refresh
+Web submits work
+  ↓
+Core API persists authoritative Attempt/work state
+  ↓ COMMIT
+ACK accepted/pending
+  ↓
+Evaluator executes bounded work
+  ↓
+criterion observations + provenance + uncertainty
+  ↓
+Core API validates evaluator response
+  ↓
+Assessment → EvidenceFact / ReadinessEvaluation
+  ↓
+Progression → learner-state interpretation
+  ↓
+Planner → next action
+  ↓
+Web receives status/result via SSE or resource refresh
 ```
 
 Rules:
 
-- accepted learner work is durable before learner-visible success;
-- pending is valid;
-- timeout/provider failure does not become a low score;
-- retries reuse one work/evaluation identity;
-- evaluator provider/model remains visible in provenance;
+- accepted learner work is durable before learner-visible acceptance;
+- pending/unavailable are valid non-score states;
+- timeout/provider failure never becomes a low learner score;
+- retries preserve one logical work/evaluation identity and provenance;
 - no progression occurs from failed/invalid evaluator output;
-- fallback must satisfy the same approved quality/privacy floor or the work remains delayed/unavailable.
+- fallback must meet the same applicable quality/privacy floor.
 
-# Flow E — objective Listening / Reading attempt
+# Flow E — objective Listening/Reading attempt
 
 ```text
 Attempt
   ↓
-answer-key / instruction / word-limit validation
+answer-key + instruction/word-limit validation
   ↓
-item result
+raw result
   ↓
-Observation with variant/context
+Observation with variant/context/conditions
   ↓
-Assessment eligibility / scope
+Assessment eligibility/inference scope
   ↓
 EvidenceFact when valid
 ```
 
-Reading Band inference uses the correct Academic/GT context and scoring policy. Python is not used merely because the repository has Python.
+Reading Band inference uses the correct Academic/GT scoring/context policy.
 
-# Flow F — feedback and remediation
+# Flow F — feedback/remediation
 
 ```text
 Observation(s)
@@ -270,48 +280,46 @@ Practice Mode
 fresh Practice Item
 ```
 
-Do not directly map `incorrect_answer → exercise_id`.
+Direct `wrong answer → fixed exercise id` mapping is not a canonical remediation policy.
 
 # Flow G — review
 
 ```text
 review request
   ↓
-classify queue item
-  ├── knowledge retrieval
-  ├── error remediation
-  └── re-evidence
+queue kind
+  ├─ knowledge retrieval
+  ├─ error remediation
+  └─ re-evidence
   ↓
-select eligible activity
+eligible activity
   ↓
 Attempt
   ↓
-update corresponding state only
+update only the corresponding semantic state
 ```
 
-The UI may show one Review tab; backend semantics stay distinct.
+One Review screen may present these together; backend meaning remains distinct.
 
-# Flow H — YouTube/media lesson creation
+# Flow H — media lesson creation
 
 ```text
-1. learner pastes URL
-2. Web sends source request to Core API
-3. Core API resolves provider/video metadata and eligibility
-4. transcript/rights state is established
-5. authorized text, when available, may be sent to Evaluator for analysis
-6. Evaluator proposes segments, targets, difficulty, prompts
-7. Core API validates practice-mode + target references + rights state
-8. Web shows preview
-9. learner saves MediaLesson
-10. later attempts use normal Practice/Attempt pipeline
+1. learner supplies source URL/reference
+2. Core API resolves provider metadata and source eligibility
+3. rights/transcript state is established
+4. authorized text may be sent to Evaluator
+5. Evaluator proposes segments/targets/difficulty/prompts
+6. Core API validates rights + canonical target + practice mapping
+7. learner previews/saves MediaLesson
+8. later attempts use the normal Practice/Attempt path
 ```
 
-Python never receives an implied authorization to download arbitrary YouTube media.
+Evaluator access never implies authorization to download/copy arbitrary media.
 
-# Flow I — full mock
+# Flow I — mock/readiness
 
 ```text
-TargetProfile variant
+TargetProfile variant + delivery target when material
   ↓
 MockRun
   ↓
@@ -319,9 +327,9 @@ Listening shared
 Reading variant-correct
 Writing Task 1 variant-correct
 Writing Task 2
-Speaking shared (same run or separately scheduled)
+Speaking shared construct
   ↓
-section observations / scores
+section observations / estimates
   ↓
 ReadinessEvaluation
   ↓
@@ -330,88 +338,90 @@ GapEvaluation
 exam-preparation plan
 ```
 
-A mock is broad readiness evidence, not a certification shortcut. A mixed Academic/GT mock is invalid for normal readiness unless explicitly created as non-certifying comparison practice.
+A mixed Academic/GT mock is invalid for normal full-test readiness unless explicitly created as non-certifying comparison practice.
 
-# Flow J — target reached / target unresolved
+Delivery-mode practice may change interaction conditions without changing scoring/Band semantics.
 
-For each TargetProfile condition:
+# Flow J — target supported/unresolved
+
+For every TargetProfile condition:
 
 ```text
 current admissible evidence
   ↓
-SUPPORTED | unresolved state
+SUPPORTED | unresolved evidence state
 ```
 
-When all required target conditions are currently supported, the app may present **current evidence supports the declared target profile**.
+When all learner evidence conditions are supported, the app may state that current evidence supports the declared target profile **only if product-support wording remains separately truthful**.
 
-It must not present **you are guaranteed to score this on test day**.
+It must never state that the learner is guaranteed an external result.
 
-When a condition remains unresolved, the route continues through the appropriate action. When the product itself lacks a required path, the route stops with a product CoverageGap rather than manufacturing an activity.
+When product capability is missing, route generation stops at the CoverageGap rather than manufacturing an invalid activity.
 
 # Legal lifecycle state machines
 
-Exact wire fields belong to API contracts, but legal semantic transitions are owned here so different services do not invent incompatible lifecycle behavior.
+Exact wire fields belong to machine contracts. Legal semantic transitions are owned here so services cannot invent incompatible lifecycle rules.
 
 ## LearningSession
 
 ```text
 planned → in_progress → completed
-                    └→ abandoned
-planned ─────────────→ abandoned
+   │          └────────→ abandoned
+   └───────────────────→ abandoned
 ```
 
-`completed` and `abandoned` are terminal for that session identity. Resume uses an allowed in-progress session or a new session according to product policy; it does not rewrite history.
+`completed` and `abandoned` are terminal for that session identity.
 
 ## Attempt
 
 ```text
 draft → submitted → evaluating → evaluated
-                  ├────────────→ evaluated       deterministic path
+                  ├────────────→ evaluated   deterministic path
                   └────────────→ invalid
 submitted ─────────────────────→ invalid
 ```
 
 Rules:
 
-- `draft` may mutate only before submission under revision/concurrency rules;
+- draft content may mutate only before submission under concurrency/revision rules;
 - submission is idempotent;
-- submitted learner work is immutable as that Attempt identity;
-- correction/redraft creates a new version/attempt relation rather than rewriting submitted history;
+- submitted work is immutable for that Attempt identity;
+- redraft/correction creates a new version/related attempt rather than rewriting submitted history;
 - infrastructure failure is not `invalid` learner performance.
 
 ## Evaluation
 
 ```text
 pending → running → completed
-              ├──→ unavailable
-              └──→ invalid
-pending ──────────→ unavailable
-pending ──────────→ invalid
+    │         ├────→ unavailable
+    │         └────→ invalid
+    ├──────────────→ unavailable
+    └──────────────→ invalid
 ```
 
-`completed`, `unavailable`, and `invalid` are terminal for that evaluation identity. A retry after unavailable uses the same logical work identity with explicit attempt/retry provenance; it must not duplicate learner evidence.
+Terminal state applies to the evaluation identity. Retry preserves logical-work linkage and must not duplicate EvidenceFacts.
 
 ## DiagnosticRun
 
 ```text
 created → in_progress → completed
-                    └→ abandoned
+                    ├→ abandoned
                     └→ unavailable
 ```
 
-Completion means sampling flow finished, not certification.
+`completed` means the sampling flow ended, not that all learner claims are known.
 
 ## MockRun
 
 ```text
 created → in_progress → completed
-                    └→ abandoned
+                    ├→ abandoned
                     └→ invalid
 ```
 
-A partial/abandoned mock may preserve valid section observations at their actual inference scope but cannot masquerade as a complete full-mock result.
+Partial valid section observations preserve their actual scope; they cannot masquerade as a complete mock result.
 
-## MediaSource / MediaLesson analysis
+## Media resolution/analysis
 
 ```text
 requested → resolving/analyzing → ready
@@ -419,72 +429,76 @@ requested → resolving/analyzing → ready
                          └──────→ unavailable
 ```
 
-`ineligible` is a rights/source/product condition, not learner failure.
+`ineligible` is a source/rights/product condition, never learner failure.
 
 ## BandCertificationState
 
-Current per-skill Band state follows `09-PROGRESSION.md`:
+Per skill/Band, current state follows Progression:
 
 ```text
 not_started → in_progress → certified
                      ↑          │
-                     └──────────┘  only when later admissible evidence establishes regression
+                     └──────────┘  only after later admissible evidence establishes regression
 ```
 
-Staleness alone does not execute the regression transition.
+Staleness alone does not execute regression.
 
-# Transition enforcement invariants
+# Transition invariants
 
-- Invalid lifecycle transitions fail closed.
-- Retry of the same idempotent operation returns/reuses the same logical result where applicable.
-- One service cannot advance another service-owned lifecycle by direct database mutation.
-- Every terminal transition records enough provenance/reason to reconstruct why it occurred.
-- Lifecycle state never substitutes for learning state: `completed` activity does not mean `mastered` target.
+- invalid transitions fail closed;
+- retry of an idempotent operation reuses the same logical result/identity where applicable;
+- one service does not advance another owner’s lifecycle by direct database mutation;
+- consequential terminal transitions record reconstructable reason/provenance;
+- runtime completion state never substitutes for learning state.
 
 # Result delivery
 
-Immediate deterministic results may use synchronous success.
+Immediate deterministic work may return synchronously.
 
-Long productive/media work uses:
+Long work uses the semantic pattern:
 
 ```text
-submit → 202 pending
-            ↓
-      SSE status/result
+submit → accepted/pending
+             ↓
+       SSE status/result
 ```
 
-Polling remains fallback. Persistent truth is queryable through normal resources.
+Polling/resource refresh remains fallback. Persistent truth remains queryable independently of SSE delivery.
 
 # Failure semantics
 
-Failures/states preserve distinctions:
+Keep these distinct where applicable:
 
-- `invalid_attempt`;
-- `evaluation_pending`;
-- `evaluation_unavailable`;
-- `insufficient_evidence`;
-- `source_unavailable`;
-- `source_ineligible`;
-- `conflicting_evidence`;
-- `stale_evidence`;
-- `target_not_supported` / product coverage blocked.
+```text
+invalid_attempt
+evaluation_pending
+evaluation_unavailable
+insufficient_evidence
+conflicting_evidence
+stale_evidence
+source_unavailable
+source_ineligible
+target_not_supported
+product_coverage_blocked
+```
 
-Do not collapse these into generic “practice failed” or score zero.
+Infrastructure failure is never represented as score zero or generic learner failure.
 
-# Cross-language ownership
+# Runtime ownership invariant
 
 ```text
 TypeScript
-  interaction/rendering/browser capture
+  browser interaction/rendering/capture
 
 Go
-  public API, target/learner/session/attempt orchestration,
-  deterministic scoring, Assessment policy execution,
-  Progression execution, planner eligibility/ranking orchestration,
-  durable product state
+  public API + durable product state
+  deterministic scoring
+  Assessment policy execution
+  Progression execution
+  Planner orchestration
 
 Python
   bounded AI/audio/text evaluation and media analysis
 ```
 
-The same semantic rule is not independently implemented in all three languages. Cross-language data crosses explicit contracts.
+Cross-language data crosses explicit contracts. The same semantic rule is not independently maintained in multiple runtimes.
