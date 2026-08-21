@@ -4,44 +4,30 @@ OWNER: spec/02-IELTS-MODEL.md provenance
 
 # Official IELTS Evidence Baseline — 2026-08-22
 
-This is supporting evidence only. `spec/02-IELTS-MODEL.md` owns current canonical external-exam semantics.
+This is source/provenance evidence only. `spec/02-IELTS-MODEL.md` owns current canonical external-exam semantics.
 
-## Sources rechecked
+## Primary official sources rechecked
 
-Primary official IELTS pages:
+- IELTS Academic test overview and detailed format — `ielts.org`.
+- IELTS General Training overview and detailed Reading/Writing format — `ielts.org`.
+- IELTS scoring in detail — `ielts.org`.
+- IELTS official sample-test resources — `ielts.org`.
+- Updates to IELTS test delivery, published 2026-03-05 — `ielts.org/news-and-insights/updates-to-ielts-test-delivery`.
+- IELTS on computer: Writing on Paper — `ielts.org/take-a-test/test-types/ielts-on-computer-writing-on-paper`.
+- IELTS Online — `ielts.org/take-a-test/test-types/ielts-academic-test/ielts-online` and the corresponding organisations guidance.
+- IELTS One Skill Retake guidance — `ielts.org`.
 
-- Academic test overview — `https://ielts.org/take-a-test/test-types/ielts-academic-test`
-- Academic format in detail — `https://ielts.org/organisations/ielts-for-organisations/test-types/ielts-academic-test/academic-test-format-in-detail`
-- General Training test overview — `https://ielts.org/take-a-test/test-types/ielts-general-training-test`
-- General Training sample-test resources — `https://ielts.org/take-a-test/preparation-resources/sample-test-questions/general-training-test`
-- IELTS scoring in detail — `https://ielts.org/take-a-test/your-results/ielts-scoring-in-detail`
+URLs are evidence pointers, not repository authority. Live external guidance must be rechecked when implementation or release depends on it.
 
-## Confirmed external facts
+## Confirmed construct facts
 
-### Four sections
+### Four scored sections
 
-IELTS reports Listening, Reading, Writing, and Speaking section scores.
+IELTS reports Listening, Reading, Writing, and Speaking section scores. Academic and General Training share Listening and Speaking; Reading and Writing differ by variant.
 
-### Variant relationship
+### Listening
 
-Listening and Speaking are the same for Academic and General Training.
-
-Reading and Writing differ between Academic and General Training.
-
-### Academic timing
-
-Official Academic overview states a total test time of about 2 hours 45 minutes, with:
-
-- Listening: about 30 minutes;
-- Reading: 60 minutes;
-- Writing: 60 minutes;
-- Speaking: 11–14 minutes.
-
-Paper/computer answer-transfer mechanics can differ and should not be promoted into invariant learning semantics unless material to the task condition.
-
-### Listening structure
-
-Official detailed format confirms:
+Current official format confirms:
 
 - 4 parts;
 - 10 questions per part;
@@ -50,86 +36,108 @@ Official detailed format confirms:
 - Parts 1–2 use everyday/social situations;
 - Parts 3–4 use educational/training contexts, with Part 4 an academic monologue.
 
-### Listening scoring anchors
+Official scoring guidance publishes average Listening anchors such as Band 5 = 16/40, Band 6 = 23/40, Band 7 = 30/40, Band 8 = 35/40, while warning that exact conversion can vary slightly by test version.
 
-Official scoring page publishes average marks out of 40:
+### Reading
 
-| Band | Listening average anchor |
-|---|---:|
-| 5 | 16 |
-| 6 | 23 |
-| 7 | 30 |
-| 8 | 35 |
+Academic Reading uses three passages in 60 minutes.
 
-IELTS explicitly states that precise marks can vary slightly between test versions.
+General Training Reading uses three sections of increasing difficulty:
 
-### Reading scoring anchors
+- Section 1 — short everyday/social-survival texts;
+- Section 2 — workplace texts;
+- Section 3 — one longer general-interest text.
 
-Academic Reading official average anchors:
+Academic and GT share major question interaction families but not corpus/context distribution or raw-score conversion.
 
-| Band | Academic Reading average anchor |
-|---|---:|
-| 5 | 15 |
-| 6 | 23 |
-| 7 | 30 |
-| 8 | 35 |
+Official average Reading anchors include:
 
-General Training Reading official average anchors:
+| Band | Academic average /40 | GT average /40 |
+|---|---:|---:|
+| 4 | — | 15 |
+| 5 | 15 | 23 |
+| 6 | 23 | 30 |
+| 7 | 30 | 35 |
+| 8 | 35 | — |
 
-| Band | GT Reading average anchor |
-|---|---:|
-| 4 | 15 |
-| 5 | 23 |
-| 6 | 30 |
-| 7 | 35 |
-
-IELTS states that General Training commonly requires more correct answers for a given band because the texts differ in vocabulary/style complexity.
+These are published average anchors, not an immutable internal conversion table.
 
 ### Writing
 
-Official material confirms two tasks.
-
 Academic:
 
-- Task 1: describe visual information, minimum 150 words;
-- Task 2: respond to a point of view, argument, or problem, minimum 250 words.
+- Task 1 — visual information, minimum 150 words;
+- Task 2 — point of view/argument/problem response, minimum 250 words.
 
 General Training:
 
-- Task 1: letter/situation response, minimum 150 words;
-- Task 2: essay response, minimum 250 words.
+- Task 1 — situation-based letter, minimum 150 words;
+- the prompt supplies three bullet points/content functions;
+- appropriate style may be personal, semi-formal, or formal depending on recipient relationship and purpose;
+- Task 2 — essay response, minimum 250 words.
 
-Writing assessment uses:
-
-- Task Achievement / Task Response;
-- Coherence and Cohesion;
-- Lexical Resource;
-- Grammatical Range and Accuracy.
-
-Criteria are equally weighted within a task, and Task 2 carries more weight than Task 1 in the section score.
+Writing assessment uses Task Achievement/Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. Task 2 contributes twice as much as Task 1 to the Writing section score.
 
 ### Speaking
 
-Official material confirms three parts and four equally weighted criteria:
+Speaking uses three parts and four equally weighted criteria: Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, and Pronunciation.
 
-- Fluency and Coherence;
-- Lexical Resource;
-- Grammatical Range and Accuracy;
-- Pronunciation.
+The language construct remains human-interactive. Test-centre Speaking is conducted with a trained examiner; IELTS Online Academic conducts Speaking in real time with a trained examiner through a secure video call.
 
-Speaking is shared across Academic and General Training.
+## Delivery facts relevant to exam readiness
+
+### Test-centre computer baseline
+
+IELTS announced on 2026-03-05 that from mid-2026 it will no longer offer the standard paper-based IELTS test, with exact market transition timing varying. The test construct and result interpretation do not change because of this delivery transition.
+
+Therefore computer delivery is the default current test-centre exam-readiness baseline, subject to market rollout/access arrangements.
+
+### Writing on Paper
+
+In selected countries, IELTS on computer may offer Writing on Paper:
+
+- Listening and Reading remain on computer;
+- Writing tasks are shown on screen but responses are handwritten;
+- task types, scoring, and time allocation are unchanged;
+- it is available for Academic and General Training;
+- it is not currently offered for IELTS for UKVI;
+- if a Writing One Skill Retake follows a Writing-on-Paper original test, current guidance requires the same delivery mode.
+
+This is a delivery/input-mode overlay, not a different Writing construct.
+
+### IELTS Online
+
+IELTS Online is a remote delivery option for IELTS Academic in supported countries:
+
+- the Academic format, timing, questions, marking criteria, and Band interpretation remain the same;
+- Listening, Reading, and Writing are delivered remotely online;
+- Speaking is a live video call with a trained IELTS examiner;
+- receiving institutions decide whether they accept IELTS Online results;
+- IELTS Online is not currently accepted for visa/immigration purposes;
+- General Training is not currently offered through IELTS Online.
+
+This is a delivery/acceptance condition, not a third standard IELTS variant.
+
+### One Skill Retake
+
+Current official guidance establishes that One Skill Retake:
+
+- reuses one of Listening, Reading, Writing, or Speaking;
+- follows a full eligible IELTS-on-computer test at a participating centre;
+- permits one skill retake once per original full test;
+- must be completed within 60 days of the original test;
+- remains subject to location and receiving-organisation acceptance.
 
 ## Evidence boundary
 
-These pages establish exam format and scoring facts.
-
-They do **not** establish every pedagogical statement in `spec/05-BANDS.md`, especially detailed receptive can-do descriptions by band. Those learning overlays are intentionally labeled Blueprint Inference rather than official IELTS descriptors.
+These sources establish external format, delivery, scoring, and administrative facts. They do **not** establish every pedagogical statement in `spec/05-BANDS.md`, especially detailed receptive can-do descriptions by Band. Those learning overlays remain Evidence-Based Interpretation or Blueprint Inference as labelled by the owning specification.
 
 ## Update rule
 
-If official IELTS changes format, scoring guidance, or variant behavior:
+When external IELTS format, delivery, scoring, variant, One Skill Retake, or acceptance guidance changes:
 
-1. update `spec/02-IELTS-MODEL.md` first;
-2. review dependent specs for consequences;
-3. refresh or supersede this evidence note;
-4. do not silently preserve stale external rules because they were historically canonical.
+1. recheck the live official source;
+2. update `spec/02-IELTS-MODEL.md` first when canonical external truth changes;
+3. review affected learner/design/coverage owners;
+4. refresh this evidence baseline or replace it with a newer dated provenance record;
+5. never preserve a stale external rule merely because it was previously documented.
