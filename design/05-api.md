@@ -1,7 +1,7 @@
 STATUS: CANONICAL
 OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, and contract-materialization rules
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 04-application-flows.md
-DOES_NOT_OWN: learning truth, TargetProfile UX semantics, product coverage policy, evaluator algorithms, runtime lifecycle truth, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
+DOES_NOT_OWN: learning truth, external task-family definitions, TargetProfile UX semantics, product coverage policy, evaluator algorithms, runtime lifecycle truth, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
 
 # API
 
@@ -13,12 +13,12 @@ Define semantic API boundaries before implementation. The product exposes one le
 
 1. public version prefix `/v1`;
 2. resource-oriented design over one-endpoint-per-button RPC;
-3. stable canonical IDs cross boundaries unchanged;
+3. stable canonical/external IDs cross boundaries unchanged;
 4. creation/submission operations are idempotent where retry could duplicate history/cost;
 5. long work returns durable pending resources rather than unbounded requests;
 6. evidence states and CoverageGap are domain results, not generic failures;
 7. browser never calls Python evaluator directly;
-8. variant/task/context/delivery is explicit wherever it changes content, scoring, inference, target eligibility, or exam-readiness behavior;
+8. variant, official family, Content Context, material Presentation Class, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
 9. API resources expose lifecycle states owned by `04-application-flows.md` rather than redefining transition rules here;
 10. once materialized, machine-readable contracts own exact wire shape.
 
@@ -44,13 +44,13 @@ Required checks once materialized:
 
 - schema validation;
 - generated-artifact drift checks where generation is used;
-- stable ID/enum compatibility;
+- stable canonical/external ID compatibility;
 - public/internal boundary separation;
 - consumer/provider conformance;
 - deployed `/v1` compatibility policy;
 - contract version/provenance in integration verification.
 
-Machine schemas define transport shape, not IELTS learning truth.
+Machine schemas define transport shape, not IELTS learning/exam truth.
 
 # Public resource groups
 
@@ -98,6 +98,7 @@ Result semantics include:
 - run lifecycle state from `04-application-flows.md`;
 - TargetProfile/reference used for sampling;
 - Observations/evaluation status by sampled activity;
+- stable family/context refs for samples where material;
 - a material target-condition sampling ledger that distinguishes at least:
   - `sampled`;
   - `not_sampled`;
@@ -124,7 +125,8 @@ Response semantics include:
 - reason codes;
 - estimated duration;
 - canonical targets;
-- variant/context/delivery refs where material;
+- official family/Content Context refs where material;
+- delivery refs where material;
 - evidence-role labels;
 - unresolved target conditions;
 - CoverageGap indicator where applicable.
@@ -153,14 +155,19 @@ A PracticeActivity resolves:
 
 ```text
 practice mode
-canonical targets
-variant/task/context where material
-delivery condition where exam-readiness material
+canonical target refs
+external task/question-family refs where material
+Content Context ref
+Presentation Class refs where material
+variant
+delivery condition where readiness-relevant
 stimulus/source
 response conditions
 scaffolding/exposure state
 evidence-role label
 ```
+
+Official family identity must not be reconstructed from a broad Skill Leaf when the leaf serves several external families.
 
 Direct browsing may create an eligible activity but cannot satisfy unrelated target conditions.
 
@@ -181,6 +188,8 @@ Writing drafts may mutate before submission under revision control. Submission i
 - exposure/retry context;
 - delivery mode/input mode where material;
 - timestamps/response provenance required by Assessment.
+
+Family/context/presentation semantics come from the immutable referenced item/work configuration rather than client-supplied reclassification at submission time.
 
 Accepted submission corresponds to durable authoritative state before success acknowledgement.
 
@@ -239,12 +248,15 @@ GET    /v1/mock-runs/{mock_run_id}
 A MockRun preserves:
 
 - resolved test variant;
+- external family configuration for the run;
+- Content Context distribution;
+- material Presentation Class coverage where applicable;
 - delivery mode/interaction conditions when material;
 - full-test or selected-section scope;
 - actual completion/abandonment state;
 - section observations/readiness outputs at their valid scope.
 
-Full mocks cannot mix Academic and GT Reading/Task 1 accidentally.
+Full mocks cannot mix Academic and GT Reading/Task 1 accidentally or silently omit a required Speaking part from a claimed whole-Speaking mock.
 
 One Skill Retake preparation scopes to one existing skill; it does not create another Skill type.
 
@@ -289,7 +301,10 @@ References include:
 evaluation/work identity
 attempt identity
 canonical target IDs
-variant/task/context
+external task/question-family refs where material
+Content Context ID
+Presentation Class refs where material
+variant
 actual delivery/input condition where material
 assessment/practice context
 response or secure response reference
@@ -298,6 +313,8 @@ rubric/evaluator configuration reference
 requested observation families
 ```
 
+The evaluator consumes these identities; it does not infer/relabel the exam family from free-form prompt text when authoritative item metadata already exists.
+
 ## Evaluation response semantics
 
 Python returns bounded measurement output:
@@ -305,7 +322,7 @@ Python returns bounded measurement output:
 ```text
 evaluation identity
 status
-Observation candidates
+Observation candidates preserving target/family/context provenance
 criterion measurements
 transcript/acoustic/text-analysis refs where appropriate
 uncertainty/quality flags
@@ -406,5 +423,6 @@ Forbidden without an explicit architecture change:
 - practice/UI action implicitly mutating TargetProfile/readiness;
 - CoverageGap represented as learner GapEvaluation;
 - ranker returning an activity that failed hard eligibility;
-- omitted variant/context/delivery when that omission changes scoring, evidence, or target meaning;
+- omitted official family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
+- client/evaluator silently reclassifying immutable item family identity;
 - `completed diagnostic` represented as `complete learner baseline`.
