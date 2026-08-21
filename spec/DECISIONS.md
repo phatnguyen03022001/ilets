@@ -258,6 +258,46 @@ Historical wording and superseded process decisions remain preserved under `arch
 
 **Rationale:** Concrete content must be replaceable and generatable without changing canonical learning truth.
 
+## D-026 — Go, Python, and TypeScript are the primary application languages
+
+**Decision:** The implementation may use exactly three approved primary application languages: Go, Python, and TypeScript. Supporting declarative/tooling formats do not count as additional primary application languages.
+
+**Canonical owner:** `../CONSTITUTION.md`
+
+**Rationale:** The project is intentionally polyglot, but the language set should remain explicit enough that repository structure, verification, and boundary discipline do not drift accidentally. Another primary runtime language is an architectural choice, not a casual dependency.
+
+## D-027 — Structure by responsibility, not language
+
+**Decision:** Organize implementation under responsibility/deployable roots such as `apps/`, `services/`, `packages/`, `contracts/`, and `tools/`; do not create top-level `go/`, `python/`, or `typescript/` product silos.
+
+**Canonical owner:** `../CONSTITUTION.md`
+
+**Rationale:** A language-first tree encourages the same domain to be independently modeled three times. Responsibility-first topology keeps ownership visible while still allowing each unit to use its natural language/toolchain.
+
+## D-028 — Cross-language boundaries are contract-owned
+
+**Decision:** When Go, Python, and TypeScript units exchange machine-readable data or behavior, the boundary has one explicit contract authority. Generated or language-local bindings are derived and cannot become independent semantic owners.
+
+**Canonical owner:** `../CONSTITUTION.md`
+
+**Rationale:** Manual mirror models are a high-risk source of drift. Contract ownership provides one interface truth while leaving domain meaning in the owning canonical specification.
+
+## D-029 — Shared vocabulary, language-idiomatic naming
+
+**Decision:** Domain concepts use the same canonical vocabulary across all implementation languages, while casing/file/package conventions follow Go, Python, and TypeScript idioms respectively.
+
+**Canonical owner:** `../CONSTITUTION.md`
+
+**Rationale:** Forcing one casing convention across all languages is unidiomatic; allowing each subsystem to rename concepts is semantically dangerous. The stable layer is vocabulary, not capitalization.
+
+## D-030 — Root verification spans affected languages and contracts
+
+**Decision:** Once implementation begins, one canonical root verification entrypoint must cover every affected primary language and relevant cross-language contract boundary.
+
+**Canonical owner:** `../CONSTITUTION.md`
+
+**Rationale:** A polyglot change is not verified because one ecosystem is green. Repository-level PASS must compose the native checks of all affected units.
+
 ## Retired process decisions
 
 Legacy repository-process and vendor-specific decisions such as Claude-specific operating rules, branch/worktree workflow guidance, and staged Blueprint document conventions are intentionally **not migrated as active learning/governance truth**.
