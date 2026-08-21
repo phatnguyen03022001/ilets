@@ -1,43 +1,43 @@
 STATUS: CANONICAL
-OWNS: product identity, learning-product scope, product principles, variant and delivery boundaries
+OWNS: product identity, learning-product scope, product principles, variant boundary, delivery-overlay boundary, and learning-system promise boundary
 DEPENDS_ON: ../OBJECTIVE.md
-DOES_NOT_OWN: learner state, IELTS scoring rules, skill decomposition, band thresholds, curriculum, practice, assessment, progression, implementation architecture
+DOES_NOT_OWN: live IELTS format/scoring/delivery facts, learner state, skill decomposition, Band thresholds, curriculum, practice, assessment, progression, coverage status, or implementation architecture
 
 # 00 — Product
 
 ## Product identity
 
-This project specifies an evidence-based IELTS learning system whose primary product value is learning outcome, not feature count.
+This project specifies an evidence-based IELTS learning system whose primary value is learner capability and truthful readiness evidence, not feature count or content volume.
 
-The learning specification is intended to be complete enough that a future implementation can build delivery, UX, and technology around it without re-deciding the core learning model.
+The learning specification should be complete enough that implementation can build delivery and technology around it without re-deciding the core learning model.
 
-## Product principles
+# Product principles
 
-### Learning is the product
+## Learning is the product
 
-Features are valuable only when they improve a learner's ability to demonstrate the target IELTS capability.
+A feature is justified only when it improves the learner's ability to acquire, demonstrate, retain, transfer, or prepare to demonstrate target IELTS capability.
 
-### Teach exactly what the target requires
+## Teach exactly what the target requires
 
-The system should neither over-teach unrelated English content nor under-teach required IELTS capability. Breadth is justified by target competence, not by content availability.
+Do not over-teach unrelated English merely because content is available. Do not under-teach required capability to reduce implementation scope.
 
-### Evidence leads learning policy
+## Evidence leads learning policy
 
-Major pedagogical choices should be grounded in official IELTS material where the claim concerns the exam and in credible learning-science evidence where the claim concerns learning. When evidence is weak, the specification should expose the uncertainty rather than turn an inference into a fact.
+External exam claims are grounded in authoritative IELTS evidence. Learning-policy claims should use credible learning evidence and label uncertainty where the evidence is weaker.
 
-### Deliberate practice over passive consumption
+## Deliberate performance over passive consumption
 
-Learning activities should have an explicit objective, require relevant learner performance, and produce feedback or evidence that can change the next learning action.
+Core activities have an explicit target, require a relevant learner cognitive/performance operation, and can produce feedback or evidence that changes a later decision.
 
-### Mastery before certification
+## Mastery before certification
 
-Progression is based on demonstrated competence rather than time spent or content consumed. The exact progression semantics are owned by `09-PROGRESSION.md`.
+Time spent, lessons completed, or content consumed do not certify competence. Evidence/Progression owners define certification semantics.
 
-### AI supports learning without becoming the standard
+## AI supports learning without becoming the standard
 
-AI may provide tutoring, generation, feedback, and assessment support, but canonical learning truth remains the specification and external IELTS standards. AI uncertainty must be surfaced where it materially affects assessment decisions; the assessment policy is owned by `08-ASSESSMENT.md`.
+AI may tutor, generate, analyse, and evaluate within bounded roles. It does not become IELTS truth, Assessment truth, or Progression authority.
 
-## Standard IELTS scope
+# Standard IELTS learning scope
 
 The intended complete learning construct is:
 
@@ -49,69 +49,86 @@ IELTS Academic
 + Band-3→9 structured learning paths
 ```
 
-Academic and General Training share Listening, Speaking, much of Reading capability, shared Writing criteria, and Task-2 learning capability. They diverge only where the external exam construct diverges.
+Shared constructs stay shared. Variant-specific semantics exist only where IELTS externally differs.
 
-Canonical rules:
+Learning-model boundary:
 
 - Listening is shared;
 - Speaking is shared;
-- Reading capability/question strategy is shared, while variant-specific corpus/context distribution and raw-score conversion are preserved;
+- Reading capabilities/question strategies are shared while variant-specific contexts/scoring remain external/contextual conditions;
 - Academic Writing Task 1 uses visual-information capability;
-- General Training Writing Task 1 uses letter-purpose/audience/register capability;
-- Writing Task 2 is substantially shared at the learning-model level;
-- variant-specific capability is represented as an overlay, not as a second parallel learning system.
+- General Training Writing Task 1 uses letter purpose/audience/register/required-content capability;
+- Writing Task 2 is substantially shared;
+- shared Writing criteria/grammar/lexis/cohesion are not cloned per variant.
 
-Academic may be the first production release. Release order must never be confused with learning-construct completeness or used to erase General Training from the canonical model.
+Academic may be released before General Training. Release order does not redefine canonical construct scope.
 
-The authoritative external variant semantics are owned by `02-IELTS-MODEL.md`.
+Current external variant facts are owned by `02-IELTS-MODEL.md`.
 
-## Delivery boundary
+# Delivery-overlay boundary
 
-The learning model is delivery-agnostic. It must not require a specific channel such as self-study, tutor-led, classroom, mobile, or web.
+The canonical learning requirement does not change merely because IELTS is delivered through a different permitted interface or setting.
 
-Exam-delivery preparation is different from learning truth. Current live-test delivery facts are owned by `02-IELTS-MODEL.md`; product exam-readiness surfaces translate them without changing the underlying capability standard.
+A delivery mode may affect:
 
-For the 2026 design baseline, computer-delivered exam interaction is the default readiness target because IELTS announced the transition away from paper-based IELTS. A market-specific Writing-on-Paper option, where available, is a delivery overlay rather than a new learning construct.
+- exam-interface familiarity;
+- response input mechanics;
+- timing/navigation practice;
+- accessibility/capture conditions;
+- external eligibility/acceptance constraints.
 
-## Language and localization boundary
+It may not redefine:
 
-The canonical learning specification is L1-agnostic and written in English.
+- Skill identity;
+- Knowledge requirements;
+- Band quality standard;
+- evidence truth for a learning claim except where the claim explicitly includes delivery-condition readiness.
 
-A learner's first language may inform optional localization, explanations, examples, or interference-aware remediation, but L1-specific material must not alter the canonical learning requirement.
+Live IELTS delivery modes/eligibility are owned only by `02-IELTS-MODEL.md`. Product exam-readiness design consumes those facts rather than copying them here.
 
-Localization is therefore an overlay on the learning system, not a canonical domain in the active specification.
+# Language/localization boundary
 
-## Human-support boundary
+The canonical learning system is L1-agnostic.
 
-The core learning system must be able to operate without mandatory human review. Human expert input may be an optional enhancement, especially for productive-skill assessment or low-confidence cases.
+First-language context may improve localization, explanations, examples, interference hypotheses, or remediation. It cannot create a different definition of IELTS competence.
 
-This is a product availability constraint only. The exact evidence and confidence rules are owned by `08-ASSESSMENT.md`.
+# Human-support boundary
 
-## Implementation boundary
+The core learning loop must not require mandatory human review for ordinary operation.
 
-This specification is implementation-agnostic. It does not choose application architecture, persistence technology, AI provider, model vendor, API design, cloud platform, or frontend framework.
+Human expert input may be an optional/required escalation only where the applicable Assessment/evaluator policy needs it for a particular consequence. This file does not define that evidence rule.
 
-Implementation consumes canonical objects and rules; it does not become a second learning authority.
+# Implementation boundary
 
-## Product success
+Learning truth does not choose application architecture, persistence, model vendor, API design, cloud provider, or frontend framework.
 
-The product succeeds, at the learning-model level, when it can support a learner from the structured Band-3 entry range toward Band 9 by:
+Implementation consumes canonical semantics; code/protocol/storage do not become competing learning owners.
 
-- representing what the learner must know and demonstrate;
-- preserving Academic/General Training differences without duplicating shared constructs;
-- teaching prerequisite knowledge before dependent capability when truly required;
-- adapting within a band without bypassing required outcomes;
-- training capability through appropriate learning phases;
-- measuring mastery with sufficient evidence;
+# Learning-model success
+
+At the learning-model level, the system is successful when it can represent and govern a path from the structured Band-3 entry range toward Band 9 by:
+
+- representing required Skills and enabling Knowledge;
+- preserving genuine Academic/GT differences without duplicating shared constructs;
+- enforcing genuine prerequisites;
+- supporting acquisition, consolidation, retrieval, transfer, fluency, and exam readiness;
+- preserving uncertainty rather than converting unknown to weakness;
+- measuring capability through admissible evidence;
 - progressing each skill independently;
-- supporting exam preparation without falsely certifying higher mastery.
+- supporting exam preparation without treating exposure as certification.
 
-## Product coverage is not model completeness
+# Model completeness vs product support
 
-A canonical construct can be fully modelled while the product is still uncovered because content, evaluator calibration, interaction, runtime, reliability, rights/privacy/security, cost, or validation gates are missing.
+A model may be coherent while the executable product is still missing content, interactions, machine contracts, evaluator calibration, runtime, rights/privacy/security, reliability, cost controls, or empirical validation.
 
-The statuses `MODELLED`, `COVERED`, `SUPPORTED_FOR_PRODUCT`, and `VALIDATED` are owned by `../design/08-coverage-and-support.md` and must never be collapsed into a marketing percentage.
+Current coverage/support semantics and status are owned by `../design/08-coverage-and-support.md`, not this learning-product owner.
 
-## Non-goals of this spec
+# Promise boundary
 
-This file does not define detailed business strategy, pricing, acquisition, retention mechanics, UI flows, or technical implementation. Those decisions may be made later as long as they consume rather than contradict the learning specification.
+The learning system may promise process properties it can actually control: target integrity, valid prerequisite/evidence rules, explainable next-action semantics, and truthful current state.
+
+It must not claim that following the system guarantees a future external IELTS result.
+
+# Non-goals
+
+This file does not define pricing, acquisition, retention mechanics, concrete UI flow, provider selection, or technical implementation.
