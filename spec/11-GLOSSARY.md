@@ -35,9 +35,11 @@ This file owns learning-spec vocabulary only. Behavioral detail remains in the o
 
 **General Training / GT** — the other in-scope standard IELTS variant. It shares Listening/Speaking with Academic and has variant-specific Reading/Writing conditions.
 
-**Delivery mode** — how an IELTS test is administered, such as test-centre computer, an eligible Writing-on-Paper overlay, or IELTS Online Academic. Delivery mode is not a new Skill, Band, or standard IELTS variant.
+**Delivery mode** — how an IELTS test is administered. Delivery mode may change interaction/eligibility but is not a new Skill, Band, or standard IELTS variant.
 
 **Variant overlay** — variant-specific semantics layered on a shared learning core only where Academic and General Training genuinely differ.
+
+**Official task/question family** — stable external identity for an IELTS question type, Writing task, or Speaking part defined by `02-IELTS-MODEL.md`. It is an exam-family identity, not a Skill Leaf.
 
 **Task 1 / Task 2** — the two Writing tasks; exact Academic/GT external semantics are owned by `02-IELTS-MODEL.md`.
 
@@ -63,7 +65,7 @@ This file owns learning-spec vocabulary only. Behavioral detail remains in the o
 
 # Canonical objects
 
-**Skill Leaf** — atomic independently useful capability with a stable `L-*`, `R-*`, `W-*`, or `S-*` identity.
+**Skill Leaf** — atomic independently useful capability with a stable `L-*`, `R-*`, `W-*`, or `S-*` identity. A leaf may serve multiple official task/question families.
 
 **Knowledge Object** — atomic enabling concept with a stable `K-GRA-*`, `K-VOC-*`, or `K-PHON-*` identity.
 
@@ -75,6 +77,10 @@ This file owns learning-spec vocabulary only. Behavioral detail remains in the o
 
 **Assessment Type** — reusable measurement role with stable `AT-*` identity.
 
+**Content Context** — stable semantic identity for the IELTS variant/section/task context in which concrete content operates, for example a GT Reading section context or Academic Writing Task 1. It does not create another Skill.
+
+**Content Presentation Class** — stable identity for a materially different subformat/stimulus presentation inside an official family when that distinction is necessary to verify real content coverage. It is not a scored task or Skill.
+
 # Concrete/runtime representations
 
 **Learning Unit** — delivery-neutral concrete grouping around a Curriculum Node.
@@ -85,9 +91,11 @@ This file owns learning-spec vocabulary only. Behavioral detail remains in the o
 
 **ExposureContext** — prior item/stimulus/feedback exposure and material novelty/variation context.
 
-**Practice Item** — concrete instance of a Practice Type targeting canonical objects.
+**Practice Item** — concrete instance of a Practice Type targeting canonical objects and, where material, an official family/context/presentation.
 
 **Assessment Item** — concrete measurement instance for a defined claim/target scope.
+
+**Content coverage manifest** — machine-checkable implementation index describing which canonical targets, official families, contexts, material presentation classes, interactions, evaluation routes, rights states, and release activations actual content provides. It is implementation evidence, not canonical learning truth.
 
 **Error Pattern** — reusable tutoring hypothesis about a recurring mistake; not proof that a learner has the error.
 
