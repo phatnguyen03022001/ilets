@@ -2,37 +2,35 @@
 
 ## Purpose
 
-Build a complete, evidence-based IELTS learning system specification and product/runtime design that a future implementation team or reasoning session can consume without making new major learning-system, learner-route, product-coverage, external-provider-boundary, or first-order architecture decisions.
+Build a complete, evidence-based IELTS learning-system specification and product/runtime design that an implementation team or future reasoning session can consume without re-deciding major learning semantics, learner-route semantics, product-coverage semantics, external-provider boundaries, or first-order runtime responsibilities.
 
 The repository must define, with implementation-grade precision:
 
 - what the learner must know and demonstrate;
-- how IELTS external requirements map to capabilities without copying exam UI into the learner ontology;
-- how a learner sets a target overall Band and/or per-skill minimums;
-- how diagnosis, planning, learning, practice, review, re-evidence, readiness, and mocks form one closed route toward that target;
-- how learner agency changes eligible delivery without silently weakening Required prerequisites or target conditions;
-- which concrete skill features and practice experiences exist;
-- how every official task/question family is represented in the product surface;
-- how media such as eligible YouTube content is used safely;
-- how attempts, observations, evidence, mastery, readiness, gaps, and next actions flow;
-- how product support/coverage is declared without unsupported completeness percentages;
-- how external providers are isolated behind explicit capability boundaries;
-- how TypeScript, Go, and Python divide runtime responsibility without duplicating domain truth.
+- how external IELTS requirements map to capabilities without copying exam UI into the learner ontology;
+- how target overall Band and/or per-skill minimums constrain planning;
+- how diagnosis, planning, learning, practice, review, re-evidence, readiness, and mocks form one closed route toward the target;
+- how learner agency changes eligible delivery without weakening Required prerequisites or target conditions;
+- which learner-facing capabilities and practice experiences exist;
+- how every supported official task/question family reaches content, interaction, evidence, and progression paths;
+- how attempts, observations, evidence, mastery/readiness, gaps, and next actions remain distinct;
+- how product coverage/support is declared without unsupported completeness percentages;
+- how external providers remain replaceable behind explicit capability boundaries;
+- how runtime units divide responsibility without duplicating domain truth.
 
 ## Target outcome
 
 The product should support a learner moving from a Band-3 structured entry point toward Band 9 across Listening, Reading, Writing, and Speaking while preserving:
 
 - uneven per-skill profiles;
-- explicit unknown/stale/conflicting evidence states;
-- target overall/per-skill constraints;
-- truthful distinction between learning progress, readiness support, product coverage, and actual external IELTS result.
+- explicit unknown, stale, and conflicting evidence states;
+- overall and per-skill target constraints;
+- variant-correct Academic and General Training learning routes;
+- truthful distinction between learning progress, readiness, product support, and an actual external IELTS result.
 
 The product may provide a strong governed route to a target. It must never imply that following the route guarantees a particular external test score.
 
 ## Intended complete standard-IELTS scope
-
-The intended complete product-learning scope is:
 
 ```text
 IELTS Academic
@@ -40,12 +38,12 @@ IELTS Academic
 + Listening / Reading / Writing / Speaking
 + official task/question families
 + Band-3→9 learning paths
-+ target profile → diagnostic → learning → practice → assessment → readiness flow
++ target profile → diagnostic → learning → practice → assessment → readiness
 ```
 
-IELTS Academic may be supported before General Training, but release ordering must not be confused with construct completeness.
+Academic may be released before General Training, but release ordering must not be confused with construct completeness.
 
-IELTS for UKVI Academic/General Training reuses the same learning construct while adding external administrative/security conditions. One Skill Retake reuses the selected skill construct. IELTS Life Skills is a different Listening/Speaking-only pass/fail construct and is outside the current product-learning target unless explicitly added later.
+IELTS for UKVI Academic/General Training reuses the corresponding learning construct while adding external administrative/security conditions. One Skill Retake reuses the selected skill construct. IELTS Life Skills is a different Listening/Speaking-only pass/fail construct and is outside the current product-learning target unless explicitly added later.
 
 ## Scope
 
@@ -55,7 +53,7 @@ The active learning specification covers:
 
 - the four scored IELTS skills;
 - enabling grammar, vocabulary, and phonology;
-- canonical Skill Leaves and Knowledge Objects;
+- stable Skill Leaves and Knowledge Objects;
 - Band expectations and exit criteria;
 - curriculum sequencing and prerequisites;
 - learning mechanisms and reusable Practice Types;
@@ -65,18 +63,18 @@ The active learning specification covers:
 
 ### Learner route
 
-The active design must cover:
+The product/runtime design must close this route:
 
 ```text
 TargetProfile
-→ provisional diagnostic
+→ diagnostic
 → learner model
 → target blockers / uncertainty / due review
-→ Daily Plan
+→ eligible Daily Plan
 → coherent learning session
 → Attempt
-→ Observation / Evidence
-→ Mastery / Readiness
+→ Observation / EvidenceFact
+→ Mastery / Readiness evaluation
 → GapEvaluation / ActionIntent
 → next plan
 ↺
@@ -86,19 +84,17 @@ The planner must preserve the learner's declared target until the learner change
 
 ### Product experience
 
-The active design covers:
+The active design must provide concrete, understandable learner surfaces for:
 
-- Today-first navigation;
-- onboarding and TargetProfile setup;
-- quick/full diagnostics;
-- skill/practice/review/media/progress/mock surfaces;
-- Quick, Standard, and Deep plan-size presets;
-- 40 named feature capabilities;
-- 28 user-facing practice modes;
-- Listening, Reading, Writing, and Speaking interaction flows;
-- feedback, remediation, scaffold fading, transfer, re-evidence, review, and exam preparation;
+- onboarding and `TargetProfile` setup;
+- quick and fuller diagnostic entry paths;
+- Today/plan, skills, practice, review, media, progress, and mock flows;
+- Listening, Reading, Writing, and Speaking interactions;
+- feedback, remediation, scaffold fading, transfer, re-evidence, fluency, review, and exam preparation;
 - section and full mock flows;
 - focused preparation for One Skill Retake without inventing a fifth Skill ontology.
+
+Exact feature inventories, practice-mode inventories, durations, and UI defaults are owned by the relevant `design/` documents rather than this Objective.
 
 ### Coverage and support
 
@@ -111,48 +107,29 @@ MODELLED
 → VALIDATED
 ```
 
-A scoped target is `COVERED` only when its executable chain is complete with no blocking CoverageGap. A product-support declaration additionally requires release-critical content, evaluator/calibration, provider, rights/privacy/security, reliability, and cost gates.
+A scoped target is `COVERED` only when its executable chain is complete with no blocking CoverageGap. Product support additionally requires release-critical content, evaluator/calibration, contract, provider, rights/privacy/security, reliability, accessibility/capture-quality, operational, and cost gates.
 
 No global “100% IELTS” percentage may hide a missing required condition.
 
+The current mutable coverage declaration is owned only by `design/08-coverage-and-support.md`; this Objective does not duplicate that status.
+
 ### Media
 
-The design covers:
-
-- YouTube as an embedded source where platform policy permits;
-- transcript/rights eligibility;
-- dictation, shadowing, retell/comprehension, and vocabulary-mining uses;
-- media removal/source-failure behavior;
-- prohibition on treating arbitrary unofficial download/transcription as an assumed capability.
+The design covers media as an eligible source substrate without making media providers part of learning truth. Transcript/rights eligibility, safe media failure behavior, and the prohibition on assumed arbitrary extraction/download must be explicit.
 
 ### Application/runtime design
 
-The active design covers:
+The design must provide:
 
-- one learner-facing public API boundary;
-- asynchronous productive-skill evaluation;
-- TypeScript web, Go Core API, and Python Evaluator responsibility allocation;
-- cross-language machine-readable contracts;
-- idempotency, pending evaluation, SSE result delivery, and failure semantics;
-- canonical third-party capability/provider boundaries;
-- native verification expectations for all three primary languages.
+- one learner-facing public product API boundary;
+- bounded asynchronous productive-skill evaluation;
+- non-overlapping runtime ownership across the approved application languages;
+- explicit machine-readable contracts at genuine cross-unit boundaries before independent implementations diverge;
+- idempotency, lifecycle, pending/unavailable states, and recovery semantics;
+- provider-neutral external capability boundaries;
+- repository-wide verification across every affected runtime and contract boundary.
 
-## Current design-state truth
-
-The repository is a specification/design repository. It is not yet a running learning product.
-
-At this stage:
-
-```text
-Academic semantic model        strong / modelled
-Academic product coverage      not yet COVERED
-General Training               partial
-runtime implementation         not started
-production support declaration none
-validated target-band outcome  not established
-```
-
-`design/08-coverage-and-support.md` owns the detailed current declaration and blockers.
+Exact framework versions, route inventories, provider selections, and deployment details are owned downstream by their `design/` or future machine-contract owners.
 
 ## Non-goals
 
@@ -169,7 +146,7 @@ The repository does not currently freeze:
 - pixel-perfect visual design or brand system;
 - vendor-specific coding-agent instructions.
 
-These choices may later be selected behind the canonical provider/runtime boundaries. They must not redefine learning truth or product-support semantics.
+These choices may later be selected behind canonical provider/runtime boundaries. They must not redefine learning truth or product-support semantics.
 
 ## Quality target
 
@@ -184,7 +161,7 @@ Optimize for:
 7. learner-facing explainability;
 8. target-route integrity;
 9. measurable coverage/support gates;
-10. minimal duplicated policy across services/languages/providers.
+10. minimal duplicated policy across documents, services, languages, and providers.
 
 ## Success definition
 
@@ -193,19 +170,17 @@ The project objective is satisfied when:
 - every major learning semantic has one canonical `spec/` owner;
 - every major first-order product/runtime semantic has one canonical `design/` owner;
 - Bands 3–9 form coherent learning progressions across all four skills;
-- a TargetProfile can express the learner's real overall/per-skill constraints;
+- Academic and General Training reach complete standard-IELTS modelling without duplicating shared constructs;
+- a `TargetProfile` can express real overall/per-skill constraints and material exam-delivery constraints when relevant;
 - the planner can derive a valid route from current learner state to every supported target condition;
-- Required prerequisites cannot be bypassed by UI choice;
-- every supported official task/question family maps to concrete features, practice, content, and evidence paths;
+- Required prerequisites cannot be bypassed by UI choice or ranking;
+- every supported official task/question family maps to concrete feature, practice, content, assessment, and transition paths;
 - every supported target has no blocking CoverageGap and has a versioned TargetSupportDeclaration;
-- Academic + General Training can reach complete standard-IELTS coverage without duplicating shared constructs;
 - practice covers acquisition, consolidation, retrieval, transfer, fluency, exam readiness, and targeted remediation;
 - Assessment preserves Attempt → Observation → EvidenceFact → Readiness/Progression separation;
 - productive evaluator output cannot directly certify Band or advance learner state;
-- the app provides an understandable concrete practice catalog rather than a vague adaptive promise;
-- YouTube/media adds independent learning value while respecting external platform/rights constraints;
-- each external provider is replaceable behind a declared capability boundary;
-- Go, Python, and TypeScript have non-overlapping primary runtime responsibilities;
-- cross-language interfaces have one contract authority;
-- product copy distinguishes modelled, covered, supported, validated, and learner-ready states;
-- a new reasoning session can reconstruct the complete system from repository content alone.
+- media adds learning value while respecting external platform/rights constraints;
+- external providers remain replaceable behind declared capability boundaries;
+- cross-language interfaces have one machine-contract authority;
+- product copy distinguishes learner evidence state from product support state;
+- a new reasoning session can reconstruct the system from repository content without hidden prompts or stale review documents.
