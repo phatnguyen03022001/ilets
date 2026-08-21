@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: Bands 3–9 learning thresholds, per-skill proficiency expectations, task/skill exit criteria, residual-error boundaries, and higher-band exclusions
+OWNS: Bands 3–9 learning thresholds, per-skill proficiency expectations, variant-specific task thresholds, task/skill exit criteria, residual-error boundaries, and higher-band exclusions
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md
 DOES_NOT_OWN: official IELTS test format or conversion rules, Skill Leaf definitions, Knowledge Object definitions, evidence sufficiency, learner state transitions, curriculum ordering
 
@@ -7,7 +7,7 @@ DOES_NOT_OWN: official IELTS test format or conversion rules, Skill Leaf definit
 
 ## Purpose
 
-Translate the external IELTS band standard into the canonical learning thresholds the Blueprint teaches toward.
+Translate the external IELTS band standard into the canonical learning thresholds the system teaches toward.
 
 `02-IELTS-MODEL.md` owns official exam facts. This file owns the **learning interpretation**: what level of capability is expected at each structured band and what constitutes the target performance boundary.
 
@@ -17,6 +17,8 @@ Translate the external IELTS band standard into the canonical learning threshold
 - Bands **0–2** remain diagnostic/external boundaries only; they do not receive a detailed canonical curriculum.
 - Band 3 is the structured program entry floor.
 - Band 9 is the ceiling.
+- Shared skill thresholds remain shared across Academic/General Training where the IELTS construct is shared.
+- Variant-specific Reading score conversion and Writing Task-1 behavior are preserved explicitly.
 
 ## Evidence labels
 
@@ -44,9 +46,9 @@ This file owns the first two levels. `09-PROGRESSION.md` owns the state transiti
 
 `08-ASSESSMENT.md` owns how much evidence and confidence are required before an exit criterion is considered reliably demonstrated.
 
-## Band 3 — structured entry
+# Band 3 — structured entry
 
-### Listening — Blueprint Inference · confidence Medium
+## Listening — Blueprint Inference · confidence Medium
 
 The learner can extract isolated or simple meaning from predictable everyday speech, especially gist fragments and concrete details.
 
@@ -65,7 +67,7 @@ Acceptable residual limitations:
 
 Skill exit: achieve the official Listening Band-3 result under the IELTS scoring model with evidence sufficiency defined by `08-ASSESSMENT.md`.
 
-### Reading — Blueprint Inference · confidence Medium
+## Reading — Blueprint Inference · confidence Medium
 
 The learner can locate isolated information in relatively accessible text but has limited global and inferential comprehension.
 
@@ -79,24 +81,22 @@ Acceptable residual limitations:
 
 - little reliable inference;
 - weak main-idea integration;
-- dense academic text remains outside the expected threshold.
+- dense/complex text remains outside the expected threshold.
 
-Skill exit: achieve the official Academic Reading Band-3 result with sufficient evidence as defined by `08-ASSESSMENT.md`.
+## Writing
 
-### Writing
+Expected shared capability:
 
-Expected capability:
-
-- attempt both Academic Task 1 and Task 2 at a rateable length;
+- attempt both required tasks at a rateable length;
 - produce attempted sentence forms;
 - convey at least partial relevant meaning;
 - avoid being wholly dependent on memorized language.
 
-Frequent grammar, spelling, organization, and vocabulary problems remain acceptable at this floor.
+Frequent grammar, spelling, organization, vocabulary, and task-control problems remain acceptable at this floor.
 
-Higher-band features such as a reliable overview, developed position, flexible cohesion, and controlled complex grammar are not required yet.
+Academic Task 1 may show only partial feature selection/description. GT Task 1 may show only partial recipient/purpose/bullet-point control and unstable register.
 
-### Speaking
+## Speaking
 
 Expected capability:
 
@@ -107,11 +107,9 @@ Expected capability:
 
 Numerous grammatical errors, limited vocabulary, and pronunciation difficulty remain acceptable at this floor.
 
-## Band 4 — basic functional control
+# Band 4 — basic functional control
 
-### Listening — Blueprint Inference · confidence Medium
-
-The learner can grasp basic gist and details in familiar social material and has partial access to more educational content.
+## Listening — Blueprint Inference · confidence Medium
 
 Expected capability:
 
@@ -121,9 +119,7 @@ Expected capability:
 
 Paraphrase, distractor management, and dense academic listening remain unreliable.
 
-### Reading — Blueprint Inference · confidence Medium
-
-The learner can locate specific information and obtain limited gist from accessible academic text.
+## Reading — Blueprint Inference · confidence Medium
 
 Expected capability:
 
@@ -133,19 +129,22 @@ Expected capability:
 
 Inference, writer stance, and dense abstract reading remain outside the expected threshold.
 
-### Writing
+## Writing
 
-Expected capability:
+Expected shared capability:
 
 - minimally address each task;
-- identify some key Task-1 features;
 - present a discernible Task-2 position;
 - use simple sentences with some accuracy;
 - attempt paragraphing and basic cohesion.
 
+Academic Task 1: identify some key visual features.
+
+GT Task 1: recognize the recipient/purpose, attempt the required bullet points, and show some awareness that style should match the relationship.
+
 Frequent errors and repetitive structures are still acceptable if basic meaning remains accessible.
 
-### Speaking
+## Speaking
 
 Expected capability:
 
@@ -156,9 +155,9 @@ Expected capability:
 
 Long pauses, repetition, frequent errors, and pronunciation lapses remain acceptable.
 
-## Band 5 — developing control
+# Band 5 — developing control
 
-### Listening — Blueprint Inference · confidence Medium
+## Listening — Blueprint Inference · confidence Medium
 
 Expected capability:
 
@@ -169,7 +168,7 @@ Expected capability:
 
 Dense academic detail and complex paraphrase remain unreliable.
 
-### Reading — Blueprint Inference · confidence Medium
+## Reading — Blueprint Inference · confidence Medium
 
 Expected capability:
 
@@ -179,20 +178,25 @@ Expected capability:
 
 Abstract or densely argued passages and nuanced writer stance remain unreliable.
 
-### Writing
+For GT Reading, the learner should begin transferring shared Reading capability across everyday and workplace texts rather than relying on one corpus style.
 
-Expected capability:
+## Writing
+
+Expected shared capability:
 
 - address the main task requirements, though incompletely in places;
-- attempt a Task-1 overview and communicate selected features;
 - state a Task-2 position, though development may be limited;
 - show underlying organization;
 - attempt complex grammar with limited accuracy;
 - use minimally adequate task vocabulary.
 
+Academic Task 1: attempt an overview and communicate selected features.
+
+GT Task 1: identify the communicative purpose, cover the major bullet-point demands, and use broadly plausible personal/semi-formal/formal style, though inconsistency remains acceptable.
+
 Noticeable language errors, mechanical cohesion, and underdeveloped ideas remain acceptable.
 
-### Speaking
+## Speaking
 
 Expected capability:
 
@@ -201,9 +205,9 @@ Expected capability:
 - attempt paraphrase;
 - control basic sentence forms while complex speech remains error-prone.
 
-## Band 6 — competent, clear performance
+# Band 6 — competent, clear performance
 
-### Listening — Blueprint Inference · confidence Medium
+## Listening — Blueprint Inference · confidence Medium
 
 Expected capability:
 
@@ -212,23 +216,18 @@ Expected capability:
 - begin following extended academic speech;
 - manage many distractors with remaining inconsistency.
 
-### Reading — Blueprint Inference · confidence Medium
+## Reading — Blueprint Inference · confidence Medium
 
 Expected capability:
 
 - understand main ideas plus detailed explicit information;
 - manage most official question types;
 - perform some reliable inference;
-- engage with denser academic passages, with remaining difficulty on nuance and abstraction.
+- engage with denser/longer passages, with remaining difficulty on nuance and abstraction.
 
-### Writing
+For GT Reading, useful competence must transfer across Section-1 everyday, Section-2 workplace, and Section-3 longer general-interest contexts.
 
-Task 1 threshold:
-
-- cover the main task requirements;
-- select relevant features;
-- attempt a relevant overview;
-- support description with appropriate data/detail.
+## Writing
 
 Task 2 threshold:
 
@@ -236,14 +235,28 @@ Task 2 threshold:
 - present a relevant position;
 - develop main ideas sufficiently for clear communication.
 
-Cross-task threshold:
+Shared cross-task threshold:
 
 - generally coherent progression;
 - adequate task vocabulary;
 - a mix of simple and complex sentence forms;
 - errors may occur but rarely block communication.
 
-### Speaking
+Academic Task 1 threshold:
+
+- cover the main task requirements;
+- select relevant visual features;
+- attempt a relevant overview;
+- support description with appropriate data/detail.
+
+GT Task 1 threshold:
+
+- identify the recipient and purpose correctly;
+- address all required bullet points with adequate relevant information;
+- use a generally appropriate personal/semi-formal/formal register and recognizable letter organization;
+- avoid register choices that materially undermine the communicative purpose.
+
+## Speaking
 
 Expected capability:
 
@@ -253,9 +266,9 @@ Expected capability:
 - use a mix of simple and complex structures;
 - use some effective stress/intonation and remain generally understandable.
 
-## Band 7 — good, flexible control
+# Band 7 — good, flexible control
 
-### Listening — Blueprint Inference · confidence Medium-High
+## Listening — Blueprint Inference · confidence Medium-High
 
 Expected capability:
 
@@ -265,7 +278,7 @@ Expected capability:
 - reject most distractors;
 - miss only occasional nuance or demanding detail.
 
-### Reading — Blueprint Inference · confidence Medium-High
+## Reading — Blueprint Inference · confidence Medium-High
 
 Expected capability:
 
@@ -274,13 +287,9 @@ Expected capability:
 - understand text organization;
 - execute demanding matching and stance-related question types with consistency.
 
-### Writing
+GT performance must remain reliable across its full context distribution, including workplace and longer Section-3 material.
 
-Task 1 threshold:
-
-- provide a clear overview;
-- identify and clearly highlight main trends/differences or other key features;
-- organize details appropriately.
+## Writing
 
 Task 2 threshold:
 
@@ -288,7 +297,7 @@ Task 2 threshold:
 - extend and support main ideas;
 - maintain relevance and focus.
 
-Cross-task threshold:
+Shared cross-task threshold:
 
 - clear logical progression;
 - generally effective paragraphing;
@@ -296,7 +305,20 @@ Cross-task threshold:
 - some less-common/precise lexical resource;
 - varied complex structures with frequent error-free sentences.
 
-### Speaking
+Academic Task 1 threshold:
+
+- provide a clear overview;
+- identify and clearly highlight main trends/differences or other key features;
+- organize details appropriately.
+
+GT Task 1 threshold:
+
+- achieve the letter's purpose clearly;
+- cover every required bullet point with relevant development;
+- choose and sustain an appropriate relationship/register with only occasional lapses;
+- use organization/opening/closing choices that support the communicative situation rather than generic memorized formality.
+
+## Speaking
 
 Expected capability:
 
@@ -307,9 +329,9 @@ Expected capability:
 - use a useful range of structures with frequent error-free sentences;
 - maintain effective pronunciation despite occasional lapses.
 
-## Band 8 — very strong control
+# Band 8 — very strong control
 
-### Listening — Blueprint Inference · confidence Medium-High
+## Listening — Blueprint Inference · confidence Medium-High
 
 Expected capability:
 
@@ -317,20 +339,17 @@ Expected capability:
 - manage distractors and paraphrase confidently;
 - make only rare errors on subtle or dense detail.
 
-### Reading — Blueprint Inference · confidence Medium-High
+## Reading — Blueprint Inference · confidence Medium-High
 
 Expected capability:
 
-- understand detailed, complex, and abstract academic text with little difficulty;
+- understand detailed, complex, and abstract text with little difficulty;
 - manage inference, stance, structure, and demanding question types reliably;
 - make only rare errors on subtle argumentation.
 
-### Writing
+GT context/register differences should no longer cause meaningful instability.
 
-Task 1 threshold:
-
-- satisfy the task appropriately and sufficiently;
-- select, highlight, and illustrate key features skilfully.
+## Writing
 
 Task 2 threshold:
 
@@ -338,7 +357,7 @@ Task 2 threshold:
 - present a clear, well-developed position;
 - extend and support ideas effectively.
 
-Cross-task threshold:
+Shared cross-task threshold:
 
 - easy-to-follow organization;
 - well-managed cohesion;
@@ -347,7 +366,18 @@ Cross-task threshold:
 - majority of sentences error-free;
 - only occasional non-systematic errors with minimal impact.
 
-### Speaking
+Academic Task 1 threshold:
+
+- satisfy the task appropriately and sufficiently;
+- select, highlight, and illustrate key features skilfully.
+
+GT Task 1 threshold:
+
+- fulfil purpose and all required content appropriately and sufficiently;
+- control personal/semi-formal/formal register flexibly and consistently;
+- make audience-sensitive lexical, tone, organization, opening, and closing choices with only occasional non-systematic lapses.
+
+## Speaking
 
 Expected capability:
 
@@ -356,28 +386,25 @@ Expected capability:
 - use a wide structural range with most sentences error-free;
 - sustain effective rhythm, stress, intonation, and intelligibility.
 
-## Band 9 — ceiling mastery
+# Band 9 — ceiling mastery
 
-### Listening — Blueprint Inference · confidence Medium-High
+## Listening — Blueprint Inference · confidence Medium-High
 
 Expected capability:
 
 - comprehend virtually all spoken content, including subtle, abstract, detailed, and extended material;
 - any misses are exceptional rather than systematic.
 
-### Reading — Blueprint Inference · confidence Medium-High
+## Reading — Blueprint Inference · confidence Medium-High
 
 Expected capability:
 
-- comprehend virtually all relevant academic text, including subtle argument, abstraction, and dense detail;
+- comprehend virtually all relevant text, including subtle argument, abstraction, and dense detail;
 - any misses are exceptional rather than systematic.
 
-### Writing
+Academic and GT context differences should not create a systematic weakness within their respective constructs.
 
-Task 1 threshold:
-
-- fully and appropriately satisfy task requirements;
-- select and communicate essential features with precise, controlled support.
+## Writing
 
 Task 2 threshold:
 
@@ -385,7 +412,7 @@ Task 2 threshold:
 - maintain a clear fully developed position;
 - extend and support ideas fully and relevantly.
 
-Cross-task threshold:
+Shared cross-task threshold:
 
 - effortless coherence;
 - sophisticated cohesion and paragraph control;
@@ -393,7 +420,18 @@ Cross-task threshold:
 - full structural flexibility and control;
 - only extremely rare lapses.
 
-### Speaking
+Academic Task 1 threshold:
+
+- fully and appropriately satisfy task requirements;
+- select and communicate essential visual features with precise, controlled support.
+
+GT Task 1 threshold:
+
+- fully achieve the communicative purpose and all prompt requirements;
+- use relationship-appropriate register, tone, organization, and lexical choices with complete or near-complete flexibility;
+- any register/content-control lapse is exceptional rather than systematic.
+
+## Speaking
 
 Expected capability:
 
@@ -404,31 +442,69 @@ Expected capability:
 - effortless intelligibility;
 - only extremely rare lapses comparable to ordinary high-level speech mistakes.
 
-## Skill-level exit criteria
+# Variant-specific Writing Task-1 capability bindings
 
-### Listening
+For an Academic Writing Band-N claim, Task 1 evaluates the Academic-specific leaves:
+
+```text
+W-TA-01
+W-TA-02
+W-TA-03
++ applicable shared Writing leaves
+```
+
+For a General Training Writing Band-N claim, Task 1 evaluates:
+
+```text
+W-GT1-01
+W-GT1-02
+W-GT1-03
++ applicable shared Writing leaves
+```
+
+`W-TA-*` visual-specific leaves are not required for GT Task 1. `W-GT1-*` letter-specific leaves are not required for Academic Task 1.
+
+Task 2 and shared Writing quality continue to use `W-TR-*`, `W-CC-*`, `W-LR-*`, and `W-GRA-*` as applicable.
+
+# Skill-level exit criteria
+
+## Listening
 
 Listening Band N exit requires performance that converts to Band N under the official IELTS Listening scoring model. Reliability and evidence count are defined by `08-ASSESSMENT.md`.
 
-### Academic Reading
+## Academic Reading
 
-Academic Reading Band N exit requires performance that converts to Band N under the official IELTS Academic Reading scoring model. General Training will use its own official conversion as a variant overlay when that pathway is activated.
+Academic Reading Band N exit requires performance that converts to Band N under the official Academic Reading scoring model and samples the Academic construct sufficiently under `08-ASSESSMENT.md`.
 
-### Writing
+## General Training Reading
 
-Writing Band N exit requires:
+General Training Reading Band N exit requires performance that converts to Band N under the official **General Training** Reading scoring model and samples the GT section/context distribution sufficiently. Academic raw-score conversion or Academic-only content cannot certify a GT Reading Band claim.
 
-- Task 1 at the Band-N threshold;
+## Academic Writing
+
+Academic Writing Band N exit requires:
+
+- Academic Task 1 at the Band-N threshold;
 - Task 2 at the Band-N threshold;
-- the shared Writing criteria at the Band-N quality level.
+- shared Writing criteria at the Band-N quality level.
 
-Task 1 and Task 2 cannot substitute for each other. Evidence sufficiency is owned by `08-ASSESSMENT.md`.
+## General Training Writing
 
-### Speaking
+General Training Writing Band N exit requires:
+
+- GT Task 1 at the Band-N threshold, including recipient/purpose/required-point/register control;
+- Task 2 at the Band-N threshold;
+- shared Writing criteria at the Band-N quality level.
+
+Task 1 and Task 2 cannot substitute for each other. Academic Task-1 evidence cannot satisfy GT Task-1 evidence and vice versa.
+
+Evidence sufficiency for both variants is owned by `08-ASSESSMENT.md`.
+
+## Speaking
 
 Speaking Band N exit requires Band-N performance across the whole Speaking construct, demonstrated across Parts 1, 2, and 3. Part-specific pedagogical practice may exist, but the canonical band standard remains holistic unless future evidence justifies an explicit part-level authority change.
 
-## Residual errors and exclusions rule
+# Residual errors and exclusions rule
 
 A band specification is a threshold, not a list of everything the learner could possibly study.
 
@@ -436,9 +512,9 @@ A learner at Band N may retain errors explicitly compatible with Band N. Feature
 
 This rule prevents both over-teaching and accidental upward drift of the standard.
 
-## Downstream ownership
+# Downstream ownership
 
-- `06-CURRICULUM.md` decides when these thresholds are trained toward.
+- `06-CURRICULUM.md` decides when these thresholds are trained toward and which variant overlays are included.
 - `07-PRACTICE.md` decides how capability is practiced.
 - `08-ASSESSMENT.md` decides what evidence is sufficient to conclude the threshold is met.
 - `09-PROGRESSION.md` decides what learner-state transition follows valid evidence.
