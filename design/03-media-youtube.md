@@ -1,24 +1,22 @@
 STATUS: CANONICAL
 OWNS: media-learning product semantics, YouTube eligibility, authorized transcript paths, media lesson creation, player-compliance rules, and media-to-practice mapping
 DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/10-CONTENT-MODEL.md, 01-skill-features.md, 02-practice-catalog.md
-DOES_NOT_OWN: YouTube platform policy itself, Skill/Band truth, assessment sufficiency, arbitrary media-downloading rights, API wire shape, or framework selection
+DOES_NOT_OWN: YouTube platform policy itself, Skill/Band truth, Assessment sufficiency, arbitrary media-downloading rights, API wire shape, provider legal terms, or framework selection
 
 # Media and YouTube Learning
 
 ## Purpose
 
-Use authentic media as a learning substrate without turning the product into a YouTube clone, bypassing platform restrictions, or creating a second practice taxonomy.
+Use authentic media as a learning source without turning the product into a media clone, bypassing external platform restrictions, or creating a second learning/practice taxonomy.
 
-The product inspiration is the useful interaction pattern seen in products such as Parroto: short video-driven dictation, shadowing, and vocabulary review. The IELTS product extends that pattern with explicit Skill targets, gap/action semantics, transfer, and evidence boundaries.
-
-## Core rule
+# Core rule
 
 ```text
 Media Source
   ↓
 eligibility + rights/provenance
   ↓
-segment / transcript when permitted
+authorized transcript/segment when available
   ↓
 canonical target mapping
   ↓
@@ -27,183 +25,162 @@ existing Practice Mode
 Attempt
 ```
 
-A YouTube video is a **source**, not a learning objective and not a Practice Type.
+A media item is a **source**, not a Skill, Knowledge Object, Learning Mechanism, or Practice Type.
 
-## Initial media modes
+# Supported learning uses
 
-Eligible media supports four primary learning uses:
+Eligible media may instantiate existing practice semantics for:
 
-1. **Dictation** — `PM-L01`; transcript/answer key required;
-2. **Shadowing** — `PM-S02`; transcript useful but not always required for basic imitation;
-3. **Retell / comprehension** — listening first, then spoken/written summary or discussion using existing Speaking/Listening practice semantics;
-4. **Vocabulary mining** — extract candidate vocabulary/collocation items from an authorized transcript or learner-selected phrase, then move suitable items to review.
+1. **Dictation** — trusted transcript/answer reference required for automated correctness scoring;
+2. **Shadowing** — pronunciation/prosody/fluency imitation where relevant;
+3. **Retell/comprehension** — listening followed by meaning reconstruction/discussion;
+4. **Vocabulary/collocation mining** — only from text the product is permitted to process or learner-entered phrases.
 
-A fifth user-facing "YouTube practice" taxonomy is forbidden. Media composes existing modes.
+Do not create a parallel “YouTube practice” taxonomy. Source type and learning action remain separate dimensions.
 
-## YouTube source flow
+# YouTube source flow
 
 ```text
-paste YouTube URL
+learner supplies URL
   ↓
-parse video ID
+resolve video identity + permitted metadata
   ↓
-fetch permitted metadata
+check availability / embeddability / language / suitability
   ↓
-check availability / embeddability / language / duration
+resolve transcript/rights state
   ↓
-resolve transcript path
+map to canonical target + existing practice mode
   ↓
-map to target skill + practice mode
+optional bounded analysis of permitted material
   ↓
-AI may segment / level / annotate permitted text
+validate generated lesson candidate
   ↓
-learner previews generated lesson
-  ↓
-publish to personal library
+learner preview/save
 ```
 
-## Transcript eligibility
+# Transcript states
 
-The system recognizes four transcript states.
+## `AUTHORIZED_CREATOR_CAPTION`
 
-### `AUTHORIZED_CREATOR_CAPTION`
+Caption access is obtained through an authorized account/path with the permissions required by the external platform.
 
-The authenticated user/channel has the rights required by YouTube to retrieve/edit the caption track through an authorized API flow.
+May support segmentation, trusted dictation keys, vocabulary extraction, and lesson generation within the permitted use.
 
-This may support automated segmentation, dictation answer keys, vocabulary extraction, and lesson generation.
+## `LICENSED_TRANSCRIPT`
 
-### `LICENSED_TRANSCRIPT`
+Transcript/timed text is supplied independently through an owned or licensed content source. Provenance/rights metadata identifies that source.
 
-A transcript or timed text is provided by a licensed/owned content source independently of YouTube playback.
+## `USER_PROVIDED_TRANSCRIPT`
 
-The provenance/rights metadata must identify the source.
+The learner/content author supplies text under the product's applicable rights/usage terms. It must not be represented as official platform caption data unless that provenance is independently established.
 
-### `USER_PROVIDED_TRANSCRIPT`
+## `NO_AUTHORIZED_TRANSCRIPT`
 
-The learner or content author supplies transcript text and accepts the product's rights/usage terms.
+Playback may still be used where embedding is permitted, but the product cannot fabricate a trustworthy caption-derived answer key.
 
-The system may use the text for lesson generation but should not represent it as official YouTube caption data.
-
-### `NO_AUTHORIZED_TRANSCRIPT`
-
-The app may still embed and play the video where permitted, but it must not fabricate an authoritative answer key from inaccessible captions.
-
-Allowed uses can include:
+Possible uses include:
 
 - shadowing from playback;
-- learner-created notes;
-- manual segment bookmarks;
+- learner notes/bookmarks;
 - retell/discussion prompts that do not require copied transcript text;
-- learner-selected vocabulary typed by the learner.
+- learner-entered vocabulary.
 
-Automated Dictation scoring is disabled unless a trustworthy answer transcript exists.
+Automated transcript-dependent scoring is disabled.
 
-## Explicit non-goal: arbitrary media extraction
+# Explicit non-goal: arbitrary extraction
 
-The initial architecture does **not** authorize this flow:
+The initial architecture does not authorize:
 
 ```text
-arbitrary YouTube URL
+arbitrary public URL
 → unofficial downloader
 → server copies audio/video
-→ unrestricted transcription
+→ unrestricted transcription/storage
 ```
 
-If a future legal/platform review establishes a compliant way to support a broader flow, it requires a new decision with rights, storage, policy, quota, and deletion consequences.
+A future broader extraction path requires a new current decision after legal/platform, rights, storage, quota, deletion, and privacy review.
 
-## Embedded-player rules
+# Embedded-player compliance boundary
 
-When YouTube playback is used, the implementation must preserve the standard YouTube experience required by YouTube's current API policies.
+When YouTube playback is used, implementation follows the live supported IFrame/API requirements rather than a copied local interpretation.
 
-Product requirements include:
+Product-level invariants include:
 
-- use the supported YouTube embedded/IFrame player path;
-- preserve required player controls and branding;
-- do not place overlays over the player or obscure controls;
-- do not suppress required playback-origin/referrer signals;
-- respect minimum player-size and visibility/autoplay requirements;
-- do not remove ads or standard player behavior;
-- clearly identify the content as YouTube content;
-- add independent learning value rather than presenting a YouTube clone.
+- use a supported embed/player integration path;
+- preserve required controls/branding/visibility behavior;
+- do not overlay/obscure controls in a prohibited way;
+- do not suppress required origin/referrer behavior;
+- do not remove advertising or standard player behavior;
+- identify the external content/source truthfully;
+- provide independent learning value rather than mirror the media platform.
 
-Policy references to re-check before implementation/release:
+External policy pages remain external authority and must be rechecked before implementation/release.
 
-- `https://developers.google.com/youtube/terms/developer-policies`
-- `https://developers.google.com/youtube/terms/developer-policies-guide`
-- `https://developers.google.com/youtube/terms/required-minimum-functionality`
-- `https://developers.google.com/youtube/terms/api-services-terms-of-service`
+# Caption API constraint
 
-The policy pages themselves remain external authority and may change.
+Current YouTube Data API caption-download behavior requires appropriate authorization/permission for the video. Therefore arbitrary public-video caption download is not a product assumption.
 
-## Caption API constraint
+This is why transcript eligibility is a first-class state rather than a hidden implementation detail.
 
-The YouTube Data API caption-download operation currently requires authorization associated with permission to edit the video. Therefore, public-video caption download must not be assumed to work for arbitrary learner-pasted links.
+# `MediaSource` product contract
 
-Current reference:
-
-- `https://developers.google.com/youtube/v3/docs/captions/download`
-
-This constraint is why transcript eligibility is explicit rather than hidden behind a "generate lesson" button.
-
-## `MediaSource` product contract
-
-A media source conceptually contains:
+Conceptual fields:
 
 ```text
 id
-provider                  # youtube | owned_audio | owned_video | other_licensed
+provider
 provider_source_id
 canonical_url
 source_title
 source_author_or_channel
 language
 duration
-embeddable_or_playable
+playability_or_embeddability
 rights_state
 transcript_state
 transcript_ref optional
 metadata_snapshot
 ```
 
-This is product-level representation. Exact storage/API schema belongs to implementation contracts.
+Exact wire/storage shape belongs to machine/persistence implementation.
 
-## `MediaLesson` contract
+# `MediaLesson` product contract
 
-A generated lesson contains:
+Conceptual fields:
 
 ```text
 media_source_id
 segment_start / segment_end
 practice_mode_id
 canonical_target_ids
-transcript_ref when authorized/required
+transcript_ref when permitted/required
 prompt_set
 scaffold_policy
 feedback_policy
-difficulty_label
+difficulty_metadata
 provenance
 ```
 
-AI may propose these fields, but canonical target IDs and rights/eligibility must validate before publication.
+Generated proposals do not become valid lessons until canonical targets, practice mode, source rights, and transcript eligibility validate.
 
-## Segmentation
+# Segmentation defaults
 
-For authorized transcript-backed media, AI may propose sentence/chunk boundaries using timing and linguistic structure.
+For authorized transcript-backed media, bounded analysis may propose chunk boundaries.
 
-Default preferred practice segment duration:
+Useful initial UX ranges include:
 
-- 3–12 seconds for focused dictation/shadowing chunks;
-- 20–90 seconds for gist/detail or retell segments;
-- longer material only when the selected Practice Mode requires integrated performance.
+- short focused chunks for dictation/shadowing;
+- longer segments for gist/detail/retell;
+- longer continuous material only when the selected Practice Mode requires integrated performance.
 
-These are product defaults, not learning laws.
+Exact seconds are mutable content/product calibration, not learning truth.
 
-## Media difficulty
+# Difficulty
 
-Difficulty may consider:
+Media difficulty may consider:
 
 - speech rate;
-- accent/intelligibility;
+- intelligibility/accent demand;
 - lexical rarity;
 - syntactic complexity;
 - discourse density;
@@ -214,51 +191,53 @@ Difficulty may consider:
 
 A media difficulty label is not an IELTS Band score.
 
-## AI use
+# AI boundary
 
 AI may:
 
-- segment authorized transcript text;
+- segment permitted transcript text;
 - propose vocabulary/collocations;
-- generate comprehension prompts;
-- classify candidate practice targets;
-- generate retell/discussion prompts;
-- produce feedback from learner attempts when the owning Assessment/Practice rules permit it.
+- generate comprehension/retell/discussion prompts;
+- propose canonical target candidates;
+- generate bounded feedback under normal Practice/Assessment rules.
 
-AI must not:
+AI may not:
 
 - claim inaccessible captions are official;
 - silently download/copy restricted media;
-- convert a media lesson into IELTS certification evidence by itself;
-- rewrite canonical target semantics.
+- upgrade ordinary media practice into certification evidence;
+- rewrite canonical target semantics;
+- override rights/eligibility validation.
 
-## Certification boundary
+# Evidence boundary
 
 Media-based practice is **non-certifying by default**.
 
-A media-derived activity contributes formal evidence only if it independently satisfies the normal Assessment validity contract, including target fit, conditions, provenance, independence, scoring validity, and scope. Ordinary YouTube shadowing/dictation does not certify IELTS Speaking or Listening Band.
+A media-derived Observation may become formal evidence only when it independently passes normal Assessment validity, target fit, independence, provenance, scoring-quality, and inference-scope rules.
 
-## Storage rule
+# Storage rule
 
-For YouTube sources, the preferred persisted representation is:
+For an embedded YouTube source, preferred persisted product state is reference-based:
 
 ```text
-video ID / canonical URL
-metadata required for the product
+provider video identity / URL
+allowed metadata
 segment timestamps
 lesson configuration
 authorized transcript reference when permitted
-learner attempts / feedback
+learner attempts / derived feedback/evidence
 ```
 
-Do not mirror the audiovisual content merely for convenience.
+Do not mirror audiovisual content merely for implementation convenience.
 
-## Removal / source failure
+# Source removal/failure
 
-Media can disappear, become private, lose embedding permission, or change availability. A MediaLesson must therefore fail gracefully:
+A source may disappear, become private, lose embedding permission, or otherwise become unavailable.
 
-- preserve learner attempt/progress history;
-- mark source unavailable;
+The product must:
+
+- preserve historical learner attempts/evidence at their valid historical scope;
+- mark the source unavailable/ineligible as appropriate;
 - stop scheduling inaccessible lesson instances;
-- replace with an equivalent eligible source when possible;
+- substitute an equivalent eligible source when possible;
 - never reinterpret source loss as learner regression.
