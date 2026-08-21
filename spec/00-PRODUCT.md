@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: product identity, learning-product scope, product principles, variant and delivery boundaries
-DEPENDS_ON: ../OBJECTIVE.md, 02-IELTS-MODEL.md
+DEPENDS_ON: ../OBJECTIVE.md
 DOES_NOT_OWN: learner state, IELTS scoring rules, skill decomposition, band thresholds, curriculum, practice, assessment, progression, implementation architecture
 
 # 00 — Product
