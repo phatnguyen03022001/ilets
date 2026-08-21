@@ -1,66 +1,62 @@
 STATUS: CANONICAL
 OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, and contract-materialization rules
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 04-application-flows.md
-DOES_NOT_OWN: learning truth, TargetProfile product semantics, product coverage/support policy, evaluator algorithms, framework selection, persistence schema, authentication provider, or exact generated wire schemas after machine-readable contracts exist
+DOES_NOT_OWN: learning truth, TargetProfile UX semantics, product coverage policy, evaluator algorithms, runtime lifecycle truth, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
 
 # API
 
 ## Purpose
 
-Define target API semantics before implementation. The product exposes one public learner-facing API boundary through the Go Core API and one bounded internal evaluation API to Python.
+Define semantic API boundaries before implementation. The product exposes one learner-facing public API through Go Core API and one bounded internal evaluation API to Python.
 
-# API principles
+# Principles
 
-1. public version prefix: `/v1`;
-2. resource-oriented names over action-heavy RPC naming;
-3. stable canonical IDs cross the wire unchanged;
-4. creation/submission operations support idempotency;
-5. long work returns a pending resource rather than holding an unbounded request;
-6. missing/invalid/stale/conflicting evidence are domain states, not generic server errors;
-7. product CoverageGap is distinct from learner GapEvaluation;
-8. Python internal routes are never called directly by browser clients;
-9. variant/task/context is explicit wherever it changes content, scoring, evidence, or route behavior;
-10. once a machine-readable contract exists, it is the exact wire-shape authority and handwritten language mirrors are forbidden.
+1. public version prefix `/v1`;
+2. resource-oriented design over one-endpoint-per-button RPC;
+3. stable canonical IDs cross boundaries unchanged;
+4. creation/submission operations are idempotent where retry could duplicate history/cost;
+5. long work returns durable pending resources rather than unbounded requests;
+6. evidence states and CoverageGap are domain results, not generic failures;
+7. browser never calls Python evaluator directly;
+8. variant/task/context/delivery is explicit wherever it changes content, scoring, inference, target eligibility, or exam-readiness behavior;
+9. API resources expose lifecycle states owned by `04-application-flows.md` rather than redefining transition rules here;
+10. once materialized, machine-readable contracts own exact wire shape.
 
 # Implementation-start contract gate
 
-Semantic API design is not enough for parallel TypeScript/Go/Python implementation.
+Parallel runtimes must not independently author equivalent DTO/schema definitions.
 
-Before two runtime units independently implement the same boundary, the repository must materialize an exact contract under `contracts/`.
-
-Minimum gate:
+Before two runtime units implement the same boundary:
 
 ```text
-design/05-api.md                 semantic intent
+design/05-api.md            semantic intent
         ↓
-contracts/http/openapi.yaml      exact HTTP wire shape
+contracts/http/...          exact machine contract
         ↓
-validation / generated bindings
+validation / generated bindings where useful
         ↓
-Go / TypeScript / Python consumers
+consumer/provider implementation
 ```
 
-If public and internal evaluator APIs need separate contract documents, they must still have one exact authority per boundary.
+Public and internal evaluator APIs may use separate contract files, but each boundary has exactly one exact machine authority.
 
-Implementation may prototype inside one runtime owner before contract materialization. It may **not** let multiple languages create handwritten equivalent DTO/schema definitions and reconcile them later.
-
-Required contract checks once materialized:
+Required checks once materialized:
 
 - schema validation;
-- generated-client/server-binding drift detection where generation is used;
+- generated-artifact drift checks where generation is used;
 - stable ID/enum compatibility;
 - public/internal boundary separation;
-- representative consumer/provider conformance tests;
-- backward-compatibility policy for deployed `/v1` changes;
-- contract version/provenance visible in integration verification.
+- consumer/provider conformance;
+- deployed `/v1` compatibility policy;
+- contract version/provenance in integration verification.
 
-OpenAPI/JSON Schema carry wire shape, not IELTS learning truth. Field meaning continues to resolve to canonical `spec/`/`design/` owners.
+Machine schemas define transport shape, not IELTS learning truth.
 
-# Public API resource groups
+# Public resource groups
 
-The initial API has **11 public resource groups**.
+The initial semantic API surface has 11 resource groups.
 
-## 1. Identity, learner, and target
+## 1. Identity, learner, target
 
 ```text
 GET    /v1/me
@@ -71,11 +67,22 @@ PUT    /v1/target-profile
 GET    /v1/target-support
 ```
 
-`target-profile` carries Academic/General Training, overall target, optional per-skill minima, target date, receiving-rule reference, and optional selected One Skill Retake focus.
+`target-profile` represents, where supplied/material:
 
-`target-support` reports product support for the exact TargetProfile and blocking CoverageGap classes. It is not learner readiness.
+```text
+test_variant
+delivery_mode
+purpose_or_receiving_rule
+target_overall_band
+per-skill minimums
+test_date
+selected_skill_retake
+revision/version
+```
 
-Authentication-provider-specific endpoints are outside this API contract.
+`target-support` reports product support for the exact target scope, including delivery/purpose conditions where applicable, plus blocking CoverageGap classes.
+
+It is not learner readiness.
 
 ## 2. Diagnostics
 
@@ -84,31 +91,45 @@ POST   /v1/diagnostic-runs
 GET    /v1/diagnostic-runs/{diagnostic_run_id}
 ```
 
-Creation selects quick/full mode and optional focus constraints. A result distinguishes completed sampling from supported claims.
+Creation selects the product diagnostic shape and optional focus constraints.
+
+Result semantics include:
+
+- run lifecycle state from `04-application-flows.md`;
+- TargetProfile/reference used for sampling;
+- Observations/evaluation status by sampled activity;
+- a material target-condition sampling ledger that distinguishes at least:
+  - `sampled`;
+  - `not_sampled`;
+  - `unusable`;
+  - `pending_evaluation`;
+- resulting evidence states/next evidence need where available.
+
+A `completed` diagnostic does not mean every condition is known or certified.
 
 ## 3. Daily plan
 
 ```text
-GET    /v1/daily-plan
+GET /v1/daily-plan
 ```
 
-Parameters may include requested duration preset and eligible focus override.
+Optional request inputs may include duration preset and an eligible focus override.
 
-Response conceptually contains:
+Response semantics include:
 
 - plan identity;
-- TargetProfile reference/version;
-- generated-at learner-state reference;
+- TargetProfile revision/reference;
+- learner/evidence state reference used to compute it;
 - activity cards;
 - reason codes;
-- estimated durations;
-- canonical target references;
-- variant/context refs when material;
+- estimated duration;
+- canonical targets;
+- variant/context/delivery refs where material;
 - evidence-role labels;
 - unresolved target conditions;
-- product CoverageGap indicator where applicable.
+- CoverageGap indicator where applicable.
 
-A DailyPlan is the output of the staged Planner decision contract in `04-application-flows.md`. The API must not collapse eligibility and ranking into one opaque recommendation field.
+DailyPlan is the output of the staged Planner contract. It must not collapse hard eligibility and ranking into one opaque recommendation score.
 
 ## 4. Learning sessions
 
@@ -118,9 +139,9 @@ GET    /v1/learning-sessions/{learning_session_id}
 PATCH  /v1/learning-sessions/{learning_session_id}
 ```
 
-Session mutation follows the legal lifecycle in `04-application-flows.md`. Lifecycle completion never means target mastery.
+Mutations follow the lifecycle owned by `04-application-flows.md`. Session completion never means mastery.
 
-## 5. Practice catalog and activities
+## 5. Practice modes/activities
 
 ```text
 GET    /v1/practice-modes
@@ -128,9 +149,20 @@ POST   /v1/practice-activities
 GET    /v1/practice-activities/{practice_activity_id}
 ```
 
-`practice-modes` exposes the 28 product modes from `02-practice-catalog.md`.
+A PracticeActivity resolves:
 
-A PracticeActivity resolves mode, TargetProfile variant when material, canonical targets, source/stimulus, conditions, scaffolding, and item configuration.
+```text
+practice mode
+canonical targets
+variant/task/context where material
+delivery condition where exam-readiness material
+stimulus/source
+response conditions
+scaffolding/exposure state
+evidence-role label
+```
+
+Direct browsing may create an eligible activity but cannot satisfy unrelated target conditions.
 
 ## 6. Attempts
 
@@ -141,62 +173,53 @@ PATCH  /v1/attempts/{attempt_id}
 POST   /v1/attempts/{attempt_id}/submissions
 ```
 
-Lifecycle:
+The resource exposes the legal state from `04-application-flows.md`; this file does not define a second lifecycle diagram.
+
+Writing drafts may mutate before submission under revision control. Submission is explicit, idempotent, and records actual:
+
+- assistance/scaffolding;
+- exposure/retry context;
+- delivery mode/input mode where material;
+- timestamps/response provenance required by Assessment.
+
+Accepted submission corresponds to durable authoritative state before success acknowledgement.
+
+## 7. Evaluations
 
 ```text
-draft
-→ submitted
-→ evaluating | evaluated | invalid
+GET /v1/evaluations/{evaluation_id}
 ```
 
-Detailed legal transitions are owned by `04-application-flows.md`.
+Public output may expose:
 
-Writing drafts may be saved before final submission. Submission is explicit so draft edits cannot accidentally become assessment evidence.
+- status;
+- learner-meaningful criterion observations;
+- feedback;
+- uncertainty/quality state where useful;
+- retry/unavailable state.
 
-Each submission records actual attempt conditions, including scaffold/exposure/delivery metadata needed by Assessment.
-
-A learner-visible accepted submission must correspond to durable authoritative state before success acknowledgement.
-
-## 7. Evaluation results
-
-```text
-GET    /v1/evaluations/{evaluation_id}
-```
-
-Public output exposes learner-meaningful criterion observations, feedback, status, and uncertainty where useful.
-
-Typical status:
-
-```text
-pending
-running
-completed
-unavailable
-invalid
-```
-
-It does not expose raw model chain-of-thought, secrets, or irrelevant provider internals.
+It does not expose chain-of-thought, secrets, or irrelevant provider internals.
 
 ## 8. Progress and gaps
 
 ```text
-GET    /v1/progress
-GET    /v1/gaps
+GET /v1/progress
+GET /v1/gaps
 ```
 
-`progress` exposes TargetProfile, per-skill state, supported Band claims, certification history, evidence freshness, and remaining target conditions.
+`progress` exposes target conditions, per-skill current support/certification history, evidence freshness, and unresolved requirements.
 
-`gaps` exposes learner GapEvaluation results and explainable ActionIntent recommendations.
+`gaps` exposes learner GapEvaluation + explainable ActionIntent.
 
-A product CoverageGap is separate. The API must not fabricate a scalar mastery percentage to replace the claim/gap model.
+CoverageGap remains separate. The API does not invent one mastery percentage to replace claim states.
 
 ## 9. Review
 
 ```text
-GET    /v1/review-queue
+GET /v1/review-queue
 ```
 
-Each queue item declares kind:
+Each item declares one semantic queue kind:
 
 ```text
 knowledge_retrieval
@@ -204,7 +227,7 @@ error_remediation
 re_evidence
 ```
 
-and references the canonical target plus recommended action.
+and references canonical targets plus the recommended action intent/mode where available.
 
 ## 10. Mocks
 
@@ -213,11 +236,17 @@ POST   /v1/mock-runs
 GET    /v1/mock-runs/{mock_run_id}
 ```
 
-A MockRun can be full IELTS or scoped section readiness.
+A MockRun preserves:
 
-For a full mock, the API must preserve one resolved test variant so Reading and Writing Task 1 cannot accidentally mix Academic and General Training.
+- resolved test variant;
+- delivery mode/interaction conditions when material;
+- full-test or selected-section scope;
+- actual completion/abandonment state;
+- section observations/readiness outputs at their valid scope.
 
-For One Skill Retake preparation, a run may be scoped to one existing skill without inventing a fifth Skill ontology.
+Full mocks cannot mix Academic and GT Reading/Task 1 accidentally.
+
+One Skill Retake preparation scopes to one existing skill; it does not create another Skill type.
 
 ## 11. Media
 
@@ -228,9 +257,9 @@ POST   /v1/media-lessons
 GET    /v1/media-lessons/{media_lesson_id}
 ```
 
-Creating a MediaSource resolves URL/provider metadata and transcript/rights state; it does not imply media copying.
+MediaSource creation resolves provider identity/metadata, playability, rights, and transcript state. It does not imply copying/downloading media.
 
-Creating a MediaLesson requires an eligible source plus valid mode/target mapping.
+MediaLesson creation requires an eligible source plus valid canonical target and Practice Mode mapping.
 
 # Server event stream
 
@@ -238,11 +267,13 @@ Creating a MediaLesson requires an eligible source plus valid mode/target mappin
 GET /v1/event-stream
 ```
 
-SSE may deliver evaluation/media/diagnostic/mock/derived-state updates. Persistent truth remains queryable through normal resources and reconnect is safe.
+SSE may deliver status/update notifications for evaluation, media analysis, diagnostics, mocks, and derived plan/progress refresh.
+
+Persistent truth remains queryable through normal resources; SSE is not state authority and reconnect is safe.
 
 # Internal evaluator API
 
-The Go Core API is the only normal caller.
+Normal caller: Go Core API only.
 
 ```text
 POST /internal/v1/evaluations
@@ -252,62 +283,63 @@ GET  /internal/v1/health
 
 ## Evaluation request semantics
 
-Input references:
+References include:
 
-- evaluation/work identity;
-- attempt identity;
-- target IDs;
-- variant/task/context;
-- assessment/practice context;
-- response or secure response reference;
-- actual conditions/scaffold state;
-- rubric/evaluator configuration reference;
-- requested observation families.
+```text
+evaluation/work identity
+attempt identity
+canonical target IDs
+variant/task/context
+actual delivery/input condition where material
+assessment/practice context
+response or secure response reference
+scaffold/exposure conditions
+rubric/evaluator configuration reference
+requested observation families
+```
 
 ## Evaluation response semantics
 
-Python returns:
+Python returns bounded measurement output:
 
 ```text
 evaluation identity
 status
-Observation[]
-criterion-level measurements
-transcript / acoustic or textual analysis refs where appropriate
-uncertainty / quality flags
+Observation candidates
+criterion measurements
+transcript/acoustic/text-analysis refs where appropriate
+uncertainty/quality flags
 model/evaluator provenance
 diagnostics
 ```
 
-Python does not return authoritative `certified=true`, product support, Band advancement, or learner progression state.
+Python never returns authoritative learner certification, product support, Band advancement, or final DailyPlan state.
 
-## Media analysis semantics
+## Media-analysis semantics
 
-Input contains authorized/licensed transcript/text/media metadata or another permitted analysis reference.
-
-Output may propose segments, difficulty metadata, vocabulary candidates, practice-target candidates, and generated prompt candidates. Go validates product/domain eligibility before saving a MediaLesson.
+Input contains permitted transcript/text/media metadata or another authorized reference. Output may propose segments, difficulty metadata, vocabulary, canonical targets, and generated prompts. Core API validates eligibility before saving product state.
 
 # Idempotency
 
-The following require an idempotency key or equivalent stable client-operation identity:
+Require an idempotency key/equivalent stable client operation for operations where retry can duplicate learner history or paid/provider work, including:
 
-- diagnostic-run creation;
-- learning-session creation where retry could duplicate a session;
+- diagnostic run creation;
+- learning-session creation when duplicate creation matters;
 - attempt submission;
 - mock-run creation;
-- media-source/media-lesson creation where evaluator/provider cost may be incurred.
+- media-source/media-lesson creation with provider/evaluator cost.
 
-Server retries must not create duplicate learner attempts, duplicate evidence, or duplicate paid evaluator work.
+Retry cannot create duplicate attempts, EvidenceFacts, or paid evaluator work.
 
 # Optimistic concurrency
 
-Mutable draft-like resources such as Writing drafts and editable TargetProfile expose revision/version semantics when concurrent updates are possible.
+Mutable draft-like resources and TargetProfile use revision/version semantics where concurrent/stale updates are possible.
 
-A stale update is rejected rather than silently overwriting a newer learner draft/target.
+A stale mutation is rejected rather than silently overwriting newer learner state.
 
 # Error envelope
 
-Transport errors use one stable envelope conceptually:
+Transport failures use one stable conceptual envelope:
 
 ```text
 code
@@ -336,56 +368,43 @@ product_coverage_blocked
 rate_limited
 ```
 
-Evidence/coverage states are often successful domain results rather than HTTP failures. Exact HTTP mapping belongs to OpenAPI when materialized.
+Evidence/coverage states are often successful domain results rather than HTTP errors.
 
-# HTTP status conventions
+# HTTP conventions
 
-Target conventions:
+Target semantics:
 
-- `200` resource/read/update success;
-- `201` resource created;
-- `202` accepted for asynchronous work;
+- `200` read/update success;
+- `201` created;
+- `202` accepted/pending asynchronous work;
 - `204` successful no-body operation where useful;
 - `400` malformed request;
 - `401` unauthenticated;
-- `403` authenticated but unauthorized;
-- `404` resource absent/inaccessible;
+- `403` authenticated but unauthorized/ineligible by access policy;
+- `404` absent/inaccessible resource;
 - `409` lifecycle/concurrency/idempotency conflict;
-- `422` structurally valid request violating an operation contract;
-- `429` rate limited;
-- `5xx` infrastructure/service failure, never a learner score.
+- `422` structurally valid input violating operation contract;
+- `429` rate limit;
+- `5xx` infrastructure failure, never a learner score.
+
+Exact mapping belongs to the machine contract.
 
 # Pagination
 
-Attempt history, activity history, media libraries, and other unbounded collections use cursor pagination. Canonical small catalogs may be returned completely.
-
-# Contract materialization
-
-When implementation begins:
-
-```text
-design/05-api.md
-      ↓ semantic intent
-contracts/http/openapi.yaml
-      ↓ exact wire interface
-TS generated client / validators
-Go server binding / validation
-Python internal binding as relevant
-```
-
-Do not start independent cross-language DTO authoring and defer contract creation to cleanup.
+Unbounded history/library collections use cursor pagination. Small stable canonical catalogs may be returned in full.
 
 # API anti-patterns
 
-Forbidden without a new architectural decision:
+Forbidden without an explicit architecture change:
 
 - browser calling evaluator directly;
-- one endpoint per UI button;
-- provider/model names embedded into public domain routes;
-- duplicated Go/Python/TypeScript request models maintained independently when contract generation/validation is viable;
-- returning fake zero when evaluation fails;
-- using API shape as a second learner-state definition;
-- allowing practice/UI override to mutate readiness/TargetProfile implicitly;
-- representing a product CoverageGap as a learner GapEvaluation;
-- letting a ranker return an activity that failed hard eligibility;
-- omitting variant/context from data where it changes scoring or evidence meaning.
+- endpoint per UI button;
+- provider/model names in public domain routes;
+- independently handwritten mirror DTOs across runtimes;
+- fake score zero on evaluator failure;
+- API shape becoming a second learner-state definition;
+- practice/UI action implicitly mutating TargetProfile/readiness;
+- CoverageGap represented as learner GapEvaluation;
+- ranker returning an activity that failed hard eligibility;
+- omitted variant/context/delivery when that omission changes scoring, evidence, or target meaning;
+- `completed diagnostic` represented as `complete learner baseline`.
