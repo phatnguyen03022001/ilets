@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: the four-skill capability taxonomy, Skill Leaf identity, atomic objectives, skill/component membership, and Skill-to-Skill prerequisite edges
+OWNS: the four-skill capability taxonomy, Skill Leaf identity, atomic objectives, skill/component membership, variant-specific capability overlays, and Skill-to-Skill prerequisite edges
 DEPENDS_ON: 02-IELTS-MODEL.md
 DOES_NOT_OWN: Knowledge Object definitions or resolution, band thresholds, cognitive/load heuristics, common-error/remediation content, practice types, assessment strategies, learner state, curriculum ordering
 
@@ -13,14 +13,17 @@ Vocabulary, grammar, and phonology are enabling knowledge and are owned by `04-K
 
 ## Canonical inventory
 
-The first-class IELTS skills are exactly Listening, Reading, Writing, and Speaking. The active inventory contains **64 stable Skill Leaves**:
+The first-class IELTS skills are exactly Listening, Reading, Writing, and Speaking.
+
+The active inventory contains **67 stable Skill Leaves**:
 
 - Listening: 11;
 - Reading: 12;
 - Speaking: 18;
-- Writing: 23.
+- Writing shared/Academic: 23;
+- Writing General Training Task 1 overlay: 3.
 
-Stable IDs are preserved so downstream specs and historical evidence remain traceable.
+General Training does not create a fifth skill and does not duplicate shared Reading/Writing capability. Variant-specific leaves exist only where the external construct genuinely differs.
 
 ## Atomic Skill Leaf rule
 
@@ -33,10 +36,11 @@ A Skill Leaf canonically owns only:
 - stable `id`;
 - human-readable name;
 - IELTS skill and component;
+- applicable variant when not shared;
 - one atomic capability objective;
 - Skill-to-Skill prerequisite edges when another capability must precede it.
 
-The following legacy fields are intentionally **not** identity-level Skill authority:
+The following are intentionally not identity-level Skill authority:
 
 - band relevance or Band-N mastery quality → `05-BANDS.md`;
 - enabling Knowledge Object resolution → `04-KNOWLEDGE.md`;
@@ -99,7 +103,7 @@ Listening decomposition separates comprehension capability from question-type ex
 | `R-COMP-03` | Detailed comprehension | Understand explicit information accurately across a passage. |
 | `R-COMP-04` | Inference / writer views | Infer implications, claims, stance, or meaning beyond literal wording. |
 | `R-COMP-05` | Text structure / paragraph purpose | Recognize rhetorical organization and paragraph function. |
-| `R-COMP-06` | Dense/abstract/complex passages | Maintain comprehension through demanding academic vocabulary, syntax, and argument. |
+| `R-COMP-06` | Dense/abstract/complex passages | Maintain comprehension through demanding vocabulary, syntax, and argument. |
 
 ## Question-type strategies
 
@@ -127,7 +131,9 @@ Listening decomposition separates comprehension capability from question-type ex
 | `R-QT-05` | `R-COMP-03` |
 | `R-QT-06` | `R-COMP-03`, `R-COMP-04` |
 
-`R-QT-02` and `R-QT-03` remain distinct because one targets factual information and the other writer stance. Dense Academic Reading also has an enabling academic-vocabulary dependency resolved in `04-KNOWLEDGE.md`.
+`R-QT-02` and `R-QT-03` remain distinct because one targets factual information and the other writer stance.
+
+Academic and General Training reuse these Reading leaves. Their difference is external corpus/context distribution and score conversion, not a second reading-cognition ontology. GT context-transfer requirements are owned by `06-CURRICULUM.md` and concrete variant/context tagging by `10-CONTENT-MODEL.md`.
 
 # Speaking
 
@@ -187,17 +193,17 @@ Listening decomposition separates comprehension capability from question-type ex
 
 Other Speaking dependencies are enabling Knowledge Objects and are resolved in `04-KNOWLEDGE.md`.
 
-# Writing
+# Writing — shared and Academic Task 1
 
 ## Task Achievement — Academic Task 1
 
 | ID | Capability | Atomic objective |
 |---|---|---|
-| `W-TA-01` | Identify key features | Select the most important trends, differences, stages, or comparisons in a visual. |
-| `W-TA-02` | Write an overview | Summarize the main patterns clearly and separately from supporting detail. |
-| `W-TA-03` | Report features with data | Support selected features with accurate, relevant figures or details. |
+| `W-TA-01` | Identify key visual features | Select the most important trends, differences, stages, or comparisons in an Academic Task-1 visual. |
+| `W-TA-02` | Write an Academic overview | Summarize the main patterns clearly and separately from supporting detail. |
+| `W-TA-03` | Report features with data | Support selected visual features with accurate, relevant figures or details. |
 
-## Task Response — Task 2
+## Task Response — Task 2 shared core
 
 | ID | Capability | Atomic objective |
 |---|---|---|
@@ -237,6 +243,18 @@ Other Speaking dependencies are enabling Knowledge Objects and are resolved in `
 | `W-GRA-06` | Punctuation | Use punctuation to support grammatical and discourse clarity. |
 | `W-GRA-07` | Structural flexibility & variety | Use a broad structural repertoire without sacrificing accuracy. |
 
+# Writing — General Training Task 1 overlay
+
+General Training Task 1 is not represented by Academic visual-feature leaves. It has three dedicated leaves while reusing shared coherence, lexical, grammar, and general productive capability.
+
+| ID | Capability | Atomic objective |
+|---|---|---|
+| `W-GT1-01` | Situation / recipient / purpose analysis | Identify the relationship to the recipient, communicative purpose, and all required prompt bullet points. |
+| `W-GT1-02` | Letter register & relationship control | Select and sustain personal, semi-formal, or formal style appropriate to recipient and purpose, including suitable openings/closings and tone. |
+| `W-GT1-03` | Purpose and required-point fulfilment | Achieve the letter's communicative purpose and cover every required bullet point with relevant, sufficiently developed information. |
+
+These leaves are active only when the Writing Task-1 variant is General Training. They are assessed through the normal Writing criteria and do not create duplicate lexical/grammar/cohesion definitions.
+
 ## Writing prerequisite edges
 
 | Dependent | Requires Skill Leaves |
@@ -255,13 +273,25 @@ Other Speaking dependencies are enabling Knowledge Objects and are resolved in `
 | `W-GRA-02` | `W-GRA-01` |
 | `W-GRA-03` | `W-GRA-01` |
 | `W-GRA-07` | `W-GRA-02`, `W-GRA-03` |
+| `W-GT1-02` | `W-GT1-01` |
+| `W-GT1-03` | `W-GT1-01` |
+
+GT register knowledge resolves through `K-VOC-040` in `04-KNOWLEDGE.md`; letter capability remains a Skill because the learner must select and use that knowledge appropriately under a communicative task.
 
 Writing leaves with only Knowledge prerequisites are resolved in `04-KNOWLEDGE.md`. Length and exam-format compliance are external task constraints, not Skill Leaves.
+
+## Variant inclusion invariant
+
+For `Academic` Writing Task 1, required Task-1 capability includes `W-TA-01`, `W-TA-02`, and `W-TA-03` plus applicable shared Writing leaves.
+
+For `General Training` Writing Task 1, required Task-1 capability includes `W-GT1-01`, `W-GT1-02`, and `W-GT1-03` plus applicable shared Writing leaves; `W-TA-*` visual-specific leaves are not prerequisites for GT Task 1.
+
+Task 2 uses the shared `W-TR-*` and shared Writing criteria/capabilities for both variants unless `02-IELTS-MODEL.md` later identifies a genuine construct difference requiring a separate leaf.
 
 ## Ownership invariants
 
 - `04-KNOWLEDGE.md` is the sole owner of Skill→Knowledge resolution.
-- `05-BANDS.md` is the sole owner of Band-N quality/exit thresholds.
+- `05-BANDS.md` is the sole owner of Band-N quality/exit thresholds, including variant-specific Task-1 overlays.
 - `06-CURRICULUM.md` may sequence Skill Leaves but may not redefine them.
 - `07-PRACTICE.md` may bind Practice Types to leaves but may not redefine them.
 - `08-ASSESSMENT.md` may measure leaves but may not redefine them.
