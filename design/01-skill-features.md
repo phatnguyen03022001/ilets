@@ -1,15 +1,15 @@
 STATUS: CANONICAL
-OWNS: user-facing feature capabilities for Listening, Reading, Writing, Speaking, and shared learning surfaces
+OWNS: user-facing feature capabilities for Listening, Reading, Writing, Speaking, and shared learning surfaces, including variant/delivery-aware feature behavior
 DEPENDS_ON: ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, 00-learning-experience.md
-DOES_NOT_OWN: skill/band truth, practice mechanism definitions, mastery/evidence rules, API wire shape, media rights policy, or implementation frameworks
+DOES_NOT_OWN: live IELTS format/delivery facts, skill/Band truth, practice mechanisms, evidence sufficiency, planner policy, API wire shape, media rights, or frameworks
 
 # Skill Features
 
 ## Purpose
 
-Define the initial product feature surface for each IELTS skill. Features are learner-facing capabilities; they consume canonical Skill, Practice, Assessment, and Progression semantics.
+Define the learner-facing capability surface. Features consume canonical learning/exam semantics; they do not redefine them.
 
-The initial product retains **40 named feature capabilities**:
+The initial product contains **40 named feature capabilities**:
 
 ```text
 Listening  8
@@ -21,196 +21,185 @@ Shared     6
 Total     40
 ```
 
-Variant completeness is represented as feature submodes/conditions where the interaction model is genuinely shared. Do not inflate feature count merely to mirror Academic/General Training labels.
+Academic/GT and delivery differences normally appear as feature configuration/submodes where the interaction capability is shared. Do not inflate feature identity merely to mirror labels.
 
-# Delivery interaction baseline
+# Variant/delivery behavior rule
 
-Exam-readiness features are **computer-first** because IELTS announced computer delivery as the standard rollout from mid-2026, with market timing variation.
+When the current TargetProfile carries a material `test_variant` or `delivery_mode`, exam-readiness features must resolve the applicable external conditions from `../spec/02-IELTS-MODEL.md`.
 
-A selected-market Writing-on-Paper option may be supported as an input-mode overlay. It does not create separate Skill, Band, Practice, or Assessment truth.
+Feature configuration may change:
 
-Features must therefore distinguish:
+- content context;
+- task shape;
+- input mode;
+- on-screen navigation/timing;
+- handwriting rehearsal;
+- remote-test familiarity;
+- evidence/readiness condition labels.
 
-- learning interaction that is delivery-agnostic;
-- computer exam-readiness behavior such as on-screen navigation/input;
-- optional handwriting practice when the learner's real booked delivery option makes it relevant.
+It may not change Skill/Band truth.
 
-# Listening — 8 features
+# Listening — 8
 
 | ID | Feature | Learner experience | Primary output |
 |---|---|---|---|
-| `L-F01` | IELTS Section Player | play official-style/owned section material with computer-style question navigation and timed mode | section attempt |
-| `L-F02` | Dictation Lab | listen to short segments and type exactly what was heard; reveal progressively after attempt | lexical/detail/spelling observations |
-| `L-F03` | Gist & Main-Idea Drill | listen once, choose or produce the central meaning before detail review | gist observation |
-| `L-F04` | Detail & Completion Drill | form/note/table/sentence/short-answer completion with word-limit validation | detail + form-control observations |
-| `L-F05` | Paraphrase & Distractor Lab | compare prompt/audio phrasing, identify distractor logic, justify final choice | paraphrase/distractor observations |
-| `L-F06` | Map / Diagram Lab | spatial-language listening with plan/map/diagram labeling | spatial/detail observations |
-| `L-F07` | Transcript & Error Review | after the independent attempt, inspect transcript/evidence and classify why an answer failed | ErrorPattern + remediation links |
-| `L-F08` | Media Listening Lab | use eligible YouTube/owned media for dictation, gist, retell, detail, or vocabulary practice | practice attempt; non-certifying by default |
+| `L-F01` | IELTS Section Player | timed/untimed section playback with target-delivery-compatible question navigation | section attempt |
+| `L-F02` | Dictation Lab | listen to short segments and reproduce details before reveal | detail/segmentation/spelling observations |
+| `L-F03` | Gist & Main-Idea Drill | capture central meaning before detail review | gist observation |
+| `L-F04` | Detail & Completion Drill | completion/short-answer work with form/word-limit validation | detail + form-control observations |
+| `L-F05` | Paraphrase & Distractor Lab | compare prompt/audio meaning and identify distractor logic | paraphrase/distractor observations |
+| `L-F06` | Map / Diagram Lab | spatial-language listening with visual labelling | spatial/detail observations |
+| `L-F07` | Transcript & Error Review | after eligible independent attempt, inspect evidence/transcript and classify failure | ErrorPattern/remediation links |
+| `L-F08` | Media Listening Lab | eligible media used through existing listening practice roles | practice attempt; non-certifying by default |
 
 Listening flow:
 
 ```text
-pre-task objective
+objective
 → independent listen/answer
 → result
-→ transcript/evidence reveal when allowed
+→ evidence/transcript reveal when permitted
 → error classification
-→ targeted replay/remediation
-→ optional fresh transfer item
+→ targeted remediation
+→ fresh transfer when useful
 ```
 
-The product must not require transcript visibility before the first independent listening attempt.
+Transcript visibility is not required before the first independent listening attempt.
 
-# Reading — 8 features
+# Reading — 8
 
 | ID | Feature | Learner experience | Primary output |
 |---|---|---|---|
-| `R-F01` | Reading Workspace | variant-aware IELTS Reading workspace with question navigation, highlighting/notes, timed or untimed mode | passage/section attempt |
-| `R-F02` | Skim Sprint | locate topic, purpose, and paragraph-level main ideas under a short time budget | gist/structure observation |
-| `R-F03` | Scan & Detail Hunt | locate explicit details, names, dates, numbers, definitions, and evidence spans | detail-location observation |
-| `R-F04` | T/F/NG + Y/N/NG Lab | distinguish contradiction, agreement, and absence of evidence | stance/evidence classification |
-| `R-F05` | Headings & Structure Lab | match headings, paragraph purposes, and text structure | structure observation |
-| `R-F06` | Paraphrase / Inference / Stance Lab | map lexical paraphrase and infer writer meaning/position without keyword matching | inference/paraphrase observation |
-| `R-F07` | Evidence Review | reveal and compare the exact text evidence supporting/invalidating the learner response | ErrorPattern + reasoning review |
-| `R-F08` | Timed Reading | complete an Academic passage or GT section/full Reading configuration under target timing | readiness evidence when valid |
+| `R-F01` | Reading Workspace | variant-aware passage/section workspace with notes/highlighting/navigation | passage/section attempt |
+| `R-F02` | Skim Sprint | identify topic/purpose/paragraph gist under a short time budget | gist/structure observation |
+| `R-F03` | Scan & Detail Hunt | locate explicit facts/references/evidence spans | detail-location observation |
+| `R-F04` | T/F/NG + Y/N/NG Lab | classify support/contradiction/absence or writer stance | classification observation |
+| `R-F05` | Headings & Structure Lab | match paragraph purpose/headings/text organization | structure observation |
+| `R-F06` | Paraphrase / Inference / Stance Lab | reason beyond keyword matching | inference/paraphrase observation |
+| `R-F07` | Evidence Review | compare response with exact supporting/invalidating text evidence | ErrorPattern/reasoning review |
+| `R-F08` | Timed Reading | variant-correct passage/section/full-Reading configuration under target conditions | readiness evidence candidate |
 
 ## Reading variant contract
 
-Academic and GT share Reading capabilities/question interaction families, but the workspace/content selector must preserve external variant context.
+Academic and GT reuse Reading capabilities and question interactions while concrete content/evidence preserves the selected external variant context.
 
-For **Academic**, readiness content must represent Academic passage characteristics.
-
-For **General Training**, the product must be able to construct the official three-section context progression:
-
-1. everyday/social-survival short texts;
-2. workplace texts;
-3. one longer, more complex general-interest text.
-
-A GT readiness route cannot be declared complete when only Academic-style passages exist.
+GT readiness content resolves the required GT section/context classes from `../spec/02-IELTS-MODEL.md` and `../spec/10-CONTENT-MODEL.md`. Academic-only assets cannot silently satisfy a GT whole-Reading path.
 
 Reading flow:
 
 ```text
-variant/context selection
-→ passage/section strategy
-→ independent question attempt
+variant/context
+→ independent attempt
 → answer state
-→ evidence-span review
-→ reasoning/error classification
-→ targeted question-type/context transfer practice
+→ evidence review
+→ error/reasoning classification
+→ targeted question/context transfer work
 ```
 
-The app must distinguish "wrong because evidence was missed" from "wrong because the question rule was misunderstood" and from "performance failed to transfer into the required variant context".
+The product should distinguish missed evidence, misunderstood question logic, and context-transfer failure when observations support that distinction.
 
-# Writing — 9 features
+# Writing — 9
 
 | ID | Feature | Learner experience | Primary output |
 |---|---|---|---|
-| `W-F01` | Task Analyzer | identify variant, task type, command/situation, required content, constraints, audience/purpose where applicable, and response objective | task interpretation |
-| `W-F02` | Idea & Plan Board | construct position, ideas, support, paragraph intent, and sequence before drafting | plan artifact |
-| `W-F03` | Task-1 Planner | Academic: key visual features/comparisons/grouping/overview; GT: recipient/purpose/three bullet points/register/opening/closing/organization | variant-specific Task-1 plan |
-| `W-F04` | Sentence & Grammar Workshop | sentence combining, correction, transformation, range/accuracy practice | focused productive attempt |
-| `W-F05` | Lexical & Paraphrase Lab | paraphrase prompt/ideas, collocation, precision, word formation, spelling, and register where task-relevant | lexical observations |
-| `W-F06` | Paragraph & Cohesion Builder | construct paragraph intent, development, reference, linking, and progression appropriate to the selected task | paragraph attempt |
-| `W-F07` | Draft Workspace | distraction-light variant-aware Task 1/2 editor with timer, word count, plan panel, and version history | complete writing attempt |
-| `W-F08` | Rubric Feedback & Revision Diff | criterion-level feedback, evidence-linked annotations, error patterns, revision comparison | FeedbackArtifact + revised attempt |
-| `W-F09` | Timed Writing | 20-minute Task 1, 40-minute Task 2, or combined exam-condition session using the selected variant | readiness/evidence candidate |
+| `W-F01` | Task Analyzer | identify variant, task/situation, constraints, required content, audience/purpose when applicable | task interpretation |
+| `W-F02` | Idea & Plan Board | construct position/ideas/support/paragraph intent before drafting | plan artifact |
+| `W-F03` | Task-1 Planner | Academic visual planning or GT letter recipient/purpose/register/required-point planning | variant-specific Task-1 plan |
+| `W-F04` | Sentence & Grammar Workshop | combine/correct/transform sentence forms | focused productive attempt |
+| `W-F05` | Lexical & Paraphrase Lab | practise collocation, precision, paraphrase, spelling, register where relevant | lexical observations |
+| `W-F06` | Paragraph & Cohesion Builder | develop paragraph purpose, progression, reference, and linking | paragraph attempt |
+| `W-F07` | Draft Workspace | variant-aware Task 1/2 drafting with timer, word count, plan, history | complete Writing attempt |
+| `W-F08` | Rubric Feedback & Revision Diff | criterion feedback, evidence-linked annotations, revision comparison | FeedbackArtifact + revised attempt |
+| `W-F09` | Timed Writing | independent full-task/combined Writing under selected variant and supported delivery-input condition | readiness/evidence candidate |
 
-## `W-F03` exact variant behavior
+## `W-F03` variant mapping
 
-Academic Task 1 planning resolves to:
+Academic Task 1 resolves to `W-TA-01..03`.
 
-```text
-W-TA-01 identify key visual features
-W-TA-02 plan overview
-W-TA-03 select supporting data/details
-```
+GT Task 1 resolves to `W-GT1-01..03` plus shared Writing capability.
 
-General Training Task 1 planning resolves to:
+Academic overview/visual-feature guidance is never presented as a GT letter rule; GT letter convention is never presented as Academic visual-task truth.
 
-```text
-W-GT1-01 recipient + relationship + purpose + all prompt bullet points
-W-GT1-02 personal/semi-formal/formal register + suitable tone/opening/closing
-W-GT1-03 purpose fulfilment + relevant development of every required point
-```
+## Writing delivery behavior
 
-The UI must never show Academic "overview/key trend" guidance as a required GT letter rule, and must never teach GT letter conventions as Academic visual-task criteria.
+`W-F07` is a normal learning/drafting workspace and may be delivery-agnostic.
 
-Writing feedback hierarchy:
+`W-F09` is exam-readiness oriented and therefore resolves a supported input configuration, for example:
 
-```text
-task fulfillment / response
-→ variant-specific Task-1 requirement when applicable
-→ organization / cohesion
-→ lexical resource / register where applicable
-→ grammar
-→ local errors
-```
+- typed computer response;
+- handwriting rehearsal for an eligible Writing-on-Paper target, with the product recording actual assistance/timing/input context;
+- remote computer-interface rehearsal when the target is an eligible online delivery.
 
-Do not flood the learner with every local correction before identifying the highest-impact gap.
+A delivery-specific rehearsal does not alter Writing scoring criteria or Band semantics.
 
-During assessment or exam-readiness attempts, no live autocomplete, rewriting, or AI-generated continuation may perform the target cognitive work for the learner.
+Writing feedback prioritizes task fulfilment/response and high-impact structure/language issues before flooding the learner with local corrections.
 
-# Speaking — 9 features
+During evidence/readiness attempts, autocomplete/rewriting/AI continuation may not perform the target cognitive work for the learner.
+
+# Speaking — 9
 
 | ID | Feature | Learner experience | Primary output |
 |---|---|---|---|
-| `S-F01` | Part-1 Quick Response | short familiar-topic questions with response recording | Part-1 attempt |
-| `S-F02` | Part-2 Cue Card | one-minute preparation followed by a 1–2 minute long turn | Part-2 attempt |
-| `S-F03` | Part-3 Discussion | increasingly abstract follow-up questions with multi-turn response | Part-3 attempt |
-| `S-F04` | Pronunciation Lab | sound contrasts, stress, chunking, intonation, connected speech, intelligibility | pronunciation observations |
-| `S-F05` | Shadowing | imitate eligible source speech for rhythm, stress, connected speech, and fluency | practice attempt; not direct IELTS certification evidence |
-| `S-F06` | Retell & Summarize | listen/watch/read, then retell meaning without copying wording | transfer + fluency attempt |
-| `S-F07` | Transcript & Fluency Analysis | transcript, pauses, repetitions, repair, discourse markers, and selected acoustic/prosodic feedback | observations + FeedbackArtifact |
-| `S-F08` | Feedback & Re-record | one targeted change followed by a fresh re-recording | remediation/recovery evidence |
-| `S-F09` | Full Speaking Mock | Parts 1–3 in IELTS-like order/timing with post-session feedback | readiness/evidence candidate |
+| `S-F01` | Part-1 Quick Response | recorded familiar-topic short responses | Part-1 attempt |
+| `S-F02` | Part-2 Cue Card | preparation + sustained long turn | Part-2 attempt |
+| `S-F03` | Part-3 Discussion | abstract follow-up discussion | Part-3 attempt |
+| `S-F04` | Pronunciation Lab | sounds, stress, chunking, intonation, connected speech | pronunciation observations |
+| `S-F05` | Shadowing | imitate eligible speech for prosody/fluency targets | training attempt |
+| `S-F06` | Retell & Summarize | reconstruct meaning without copying wording | transfer/fluency attempt |
+| `S-F07` | Transcript & Fluency Analysis | review pauses/repairs/discourse/prosodic observations | observations + FeedbackArtifact |
+| `S-F08` | Feedback & Re-record | apply one targeted change in a fresh recording | remediation/recovery attempt |
+| `S-F09` | Full Speaking Mock | Parts 1–3 sequence with target-condition-aware preparation/feedback | readiness/evidence candidate |
 
-Speaking analysis must distinguish language ability from microphone/audio failure. Low-quality capture produces an evidence-quality problem, not a low Speaking judgment.
+Capture failure or poor microphone quality is evidence-quality state, not low Speaking ability.
 
-# Shared — 6 features
+Where external delivery uses a different interaction channel, readiness configuration may rehearse that channel; it does not redefine the human-interactive Speaking construct.
+
+# Shared — 6
 
 | ID | Feature | Purpose |
 |---|---|---|
-| `X-F01` | Daily Plan | explainable set of recommended actions for selected study duration |
-| `X-F02` | Gap Map | show Ability, Prerequisite, Evidence, Conflict, Staleness, Scaffold, Transfer, Fluency, and Exam-Condition gaps |
-| `X-F03` | Review Queue | combine knowledge review, error remediation, and re-evidence while preserving their separate semantics |
-| `X-F04` | Vocabulary / Grammar SRS | spaced retrieval for suitable Knowledge Objects; not a universal IELTS-skill scheduler |
-| `X-F05` | Media Lesson Creator | turn eligible/authorized media into practice using the Media design contract |
-| `X-F06` | Full IELTS Mock | variant-aware integrated readiness session; never a certification shortcut |
+| `X-F01` | Daily Plan | explainable eligible recommended actions |
+| `X-F02` | Gap Map | show learner gap/evidence states without mixing CoverageGap |
+| `X-F03` | Review Queue | present retrieval, remediation, and re-evidence while preserving semantics |
+| `X-F04` | Vocabulary / Grammar SRS | spaced retrieval for suitable Knowledge Objects |
+| `X-F05` | Media Lesson Creator | create eligible media-supported practice under Media contract |
+| `X-F06` | Full IELTS Mock | variant/delivery-aware integrated readiness run; never certification shortcut |
 
-# Full-mock variant invariant
+# Full-mock invariant
 
-`X-F06` must resolve the declared TargetProfile variant before mock construction:
+`X-F06` resolves the current TargetProfile before construction:
 
-- Listening shared;
-- Speaking shared;
-- Reading uses Academic or GT format/content/scoring as selected;
-- Writing Task 1 uses Academic visual or GT letter construct as selected;
-- Writing Task 2 uses the applicable variant prompt/configuration without duplicating shared learning truth.
+- Listening shared construct;
+- Speaking shared construct;
+- Reading selected variant context/scoring;
+- Writing Task 1 selected variant construct;
+- Task 2 applicable configuration;
+- delivery interaction only where the declared supported target requires it.
 
-# Feature-state rules
+A mixed variant is invalid for a normal full readiness claim.
 
-Every feature must declare whether an attempt is:
+# Feature evidence-role rule
+
+Every concrete feature activity declares a role such as:
 
 - training-only;
-- evidence-eligible under conditions;
 - diagnostic;
+- evidence-eligible under conditions;
 - readiness-only;
-- potentially certification-contributing.
+- potentially certification-contributing after normal Assessment admission.
 
-A UI feature cannot upgrade its own evidence role. `08-ASSESSMENT.md` remains the authority.
+A feature cannot upgrade its own evidence role.
 
-# Feature-to-domain traceability
+# Traceability
 
-Every implementation feature must resolve to:
+Every implementation feature resolves:
 
 ```text
 feature ID
-→ test variant/context when material
-→ canonical Skill/Knowledge target(s)
+→ TargetProfile variant/delivery context when material
+→ canonical target IDs
 → Practice Type or Assessment Type
 → learner-state purpose
 ```
 
-A feature that cannot identify those references is product decoration, not a learning-system capability.
+A feature without these references is product decoration, not a learning-system capability.
