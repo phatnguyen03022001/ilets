@@ -1,39 +1,32 @@
 STATUS: CANONICAL
-OWNS: end-to-end learner product journey, TargetProfile semantics, navigation surfaces, study-session shapes, product timing defaults, route-to-target behavior, and user-visible interpretation of learning state
-DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md
-DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, concrete practice taxonomy, coverage support declarations, API wire contracts, framework selection, persistence, or deployment
+OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, study-session UX shapes, product timing defaults, learner agency, and user-visible interpretation of learning/product state
+DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/02-IELTS-MODEL.md
+DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, API wire contracts, persistence, frameworks, or deployment
 
 # Learning Experience
 
 ## Purpose
 
-Define how a learner experiences the learning system from target setup through daily study, assessment, review, and exam preparation.
+Define how a learner experiences the system from target setup through daily learning, assessment, review, and exam preparation.
 
-This document translates canonical learning semantics into a coherent product journey. It does not change the standard for mastery or progression and does not guarantee an external IELTS result.
+This document owns learner-visible product semantics. It does not redefine learning truth, evidence policy, planner internals, runtime state machines, or product coverage.
 
-# Primary product loop
+# Learner-visible product loop
 
 ```text
-TargetProfile
+set target
   ↓
-Diagnostic
+get an initial evidence picture
   ↓
-Learner model
+see the highest-value eligible next work
   ↓
-Target gap / unknown / due review
+learn / practise / review / assess
   ↓
-Daily plan
+see what the attempt showed
   ↓
-Learning session
+see what remains unknown or blocking
   ↓
-Attempt + feedback
-  ↓
-Evidence / mastery update
-  ↓
-Gap evaluation
-  ↓
-Next action
-  ↺
+continue toward the unchanged target
 ```
 
 The learner should always be able to answer:
@@ -44,14 +37,15 @@ The learner should always be able to answer:
 4. What did the last attempt actually show?
 5. What should I do next?
 
-# TargetProfile
+# `TargetProfile`
 
-A learner goal is a constraint profile, not one overall-band number.
+A learner goal is a constraint profile, not one overall Band number.
 
 Conceptual fields:
 
 ```text
 test_variant                 Academic | General Training
+delivery_mode                optional; external mode relevant to booked/intended test
 purpose_or_receiving_rule    optional external constraint reference
 target_overall_band          optional
 minimum_listening_band       optional
@@ -64,124 +58,103 @@ selected_skill_retake        optional
 
 Rules:
 
-1. the learner may set an overall target, per-skill minimums, or both;
-2. if a university/visa/employer requirement has per-skill minima, those constraints are represented explicitly;
+1. overall target, per-skill minima, or both may be supplied;
+2. real receiving-organisation/visa/employer minima are represented explicitly rather than inferred;
 3. an overall target alone does not uniquely determine four skill targets;
-4. the product must not fabricate hidden per-skill requirements from one overall number;
-5. the planner may propose a balanced planning profile, but it must be labelled as a product planning choice rather than external IELTS truth;
+4. the product must not fabricate hidden per-skill requirements;
+5. a balanced planning profile may be proposed only as a labelled product planning choice;
 6. the target remains stable until the learner explicitly changes it;
-7. current readiness is evaluated against TargetProfile conditions, not internal mastery averages.
+7. current readiness is evaluated against TargetProfile conditions, not an internal mastery average;
+8. delivery mode is included only when it changes exam-preparation interaction or an external acceptance/eligibility condition;
+9. delivery mode never changes the canonical Band standard.
 
-Whether a TargetProfile is currently covered/supported is evaluated downstream by `08-coverage-and-support.md`; this document owns the learner-facing target and route semantics, not support declaration.
+Current external variant/delivery facts are owned by `../spec/02-IELTS-MODEL.md`. Current product support for a TargetProfile is owned by `08-coverage-and-support.md`.
 
-# First-run flow
+# First-run experience
 
-## 1. Goal setup
+## Goal setup
 
-Capture only information that changes planning:
+Capture only information that changes planning or target interpretation:
 
-- IELTS variant;
-- target overall band and/or required skill minima;
-- receiving requirement when relevant;
-- target test date, optional;
-- selected One Skill Retake focus, optional;
-- current self-estimate, explicitly non-authoritative;
+- Academic or General Training;
+- overall target and/or real per-skill minima;
+- receiving/purpose requirement when relevant;
+- intended/booked delivery mode when known and material;
+- test date if fixed;
+- selected One Skill Retake focus if applicable;
+- self-estimate, clearly non-authoritative;
 - available study time;
-- preferred focus or urgent skill;
-- accessibility and optional first-language context.
+- accessibility requirements;
+- optional L1 context and temporary focus preference.
 
-Target setup should normally take **3–5 minutes**.
+Target setup should normally remain a short flow; the initial UX target is roughly **3–5 minutes** when the learner already knows their requirements.
 
-## 2. Diagnostic choice
+## Diagnostic choice
 
-The initial product exposes two entry modes.
+The product exposes two entry shapes:
 
-| Mode | Target duration | Purpose | Authority |
-|---|---:|---|---|
-| Quick start | 15 min | establish a provisional plan and locate obvious gaps/unknowns | diagnostic only, non-certifying |
-| Full baseline | 60 min target window | collect broader four-skill evidence before long-term planning | diagnostic only unless normal Assessment rules independently support a claim |
+| Mode | UX target | Learner promise |
+|---|---:|---|
+| Quick start | about 15 min | enough sampling for a useful provisional route; unresolved conditions remain explicit |
+| Full baseline | about 60 min target window | broader sampling across the target profile; still bounded by actual evidence obtained |
 
-A short diagnostic never pretends to know the whole learner. It may shorten or extend when the evidence state justifies that.
+These are UX defaults, not Assessment sufficiency rules.
 
-## 3. First plan
-
-The plan distinguishes:
-
-- observed ability gap;
-- prerequisite gap;
-- missing evidence;
-- conflicting evidence;
-- stale evidence;
-- scaffold dependence;
-- transfer gap;
-- fluency gap;
-- exam-condition gap;
-- product CoverageGap.
-
-A product CoverageGap is never rendered as learner weakness.
+A completed diagnostic may still contain `not sampled`, unusable capture, pending productive evaluation, conflicting, or stale conditions. Exact diagnostic evidence semantics are owned by `../spec/08-ASSESSMENT.md`.
 
 # Today-first home
 
-The default landing surface is **Today**. It provides a strong current recommendation rather than asking the learner to browse a library before learning can begin.
+The default landing surface is **Today**: a strong current recommendation rather than a content library that forces the learner to invent a route.
 
 Primary destinations:
 
 1. **Today** — current plan and resume state;
 2. **Skills** — Listening, Reading, Writing, Speaking profiles;
-3. **Practice** — user-facing practice modes;
-4. **Review** — due knowledge, errors, and re-evidence;
-5. **Media Lab** — eligible video/audio learning;
-6. **Progress** — target conditions, current evidence, certification history, blockers;
-7. **Mock** — section or full-test readiness practice.
+3. **Practice** — concrete user-facing practice modes;
+4. **Review** — due retrieval, remediation, and re-evidence;
+5. **Media Lab** — eligible media-supported learning;
+6. **Progress** — target conditions, evidence state, certification history, blockers;
+7. **Mock** — section/full-test readiness activity.
 
-The learner can browse Practice directly, but direct browsing does not silently replace the recommended route or satisfy missing target conditions.
+Direct Practice browsing is allowed but does not silently satisfy unrelated target conditions or replace the governed route.
 
 # Strong recommendation + learner agency
 
-The system preserves both route integrity and learner control.
+The learner sees a strong recommendation produced by the Planner contract in `04-application-flows.md`.
 
-The Today plan is a strong ranked recommendation derived from:
-
-```text
-TargetProfile
-+ current gaps / unknowns
-+ due review
-+ Required prerequisites
-+ available time
-+ evidence value
-+ learner constraints
-→ eligible next actions
-```
+This experience must expose enough reason information to explain the recommendation without exposing implementation internals.
 
 The learner may:
 
-- Swap to another eligible activity;
+- Swap to another **eligible** activity;
 - Skip an activity;
-- Shorten the session at a safe stopping point;
-- Change skill focus;
+- Shorten at a safe stopping point;
+- Change skill focus among eligible options;
 - edit the TargetProfile.
 
-But:
+UX invariants:
 
-- Required prerequisites remain blocking;
-- skipped requirements remain unresolved;
-- a preferred activity cannot certify an unrelated target;
-- repeated skip/abandonment is a friction/preference signal, not ability evidence;
-- the planner should seek eligible alternatives before repeating a low-value failed intervention;
-- the system must not weaken the target merely because the learner struggles.
+- Required prerequisites remain unresolved when skipped;
+- a skipped target requirement remains visible;
+- preference cannot certify an unrelated target;
+- repeated skip/abandonment is a friction/adherence signal, not ability evidence;
+- an uncovered product condition is shown as a product limitation, never learner weakness;
+- the UI cannot make an ineligible activity eligible.
+
+Eligibility, ranking, reason-code construction, and legal plan execution are owned by `04-application-flows.md`.
 
 # Daily study presets
 
-The app exposes three default plan sizes while allowing coherent adaptation.
+Product defaults provide predictable session sizes without becoming learning dosage laws.
 
 ## Quick — 10 minutes
 
 Typical envelope:
 
 ```text
-2 min  due review / retrieval
-6 min  one highest-value action
-2 min  result + next-action summary
+brief review / retrieval
+one highest-value action
+result + next-action summary
 ```
 
 Default maximum: **3 activity blocks**.
@@ -191,10 +164,10 @@ Default maximum: **3 activity blocks**.
 Typical envelope:
 
 ```text
-4 min  review / retrieval
-8 min  acquire or remediate
-9 min  independent practice / transfer
-4 min  checkpoint + next plan
+review
+acquire/remediate where needed
+independent practice/transfer
+checkpoint + next plan
 ```
 
 Default maximum: **4 activity blocks**.
@@ -204,28 +177,22 @@ Default maximum: **4 activity blocks**.
 Typical envelope:
 
 ```text
-5 min   review
-10 min  acquire or remediate
-12 min  focused practice
-12 min  transfer / fluency / timed work
-6 min   checkpoint / next plan
+review
+acquire/remediate
+focused practice
+transfer/fluency/timed work
+checkpoint
 ```
 
 Default maximum: **5 activity blocks**.
 
-These are scheduling defaults, not a fixed pedagogical recipe. Session composition follows the current ActionIntent, prerequisites, evidence value, and safe stopping points.
+The Planner may compose these differently according to ActionIntent, evidence need, target urgency, and safe stopping points. Exact per-activity duration in the practice catalog remains a product default, not mastery policy.
 
-# Learning-session state
+# Learning-session experience
 
-```text
-planned
-  ↓
-in_progress
-  ↓
-completed | abandoned
-```
+A learner-visible session may be shown as planned, in progress, completed, or abandoned according to the canonical runtime lifecycle in `04-application-flows.md`.
 
-An abandoned session is an adherence signal, not negative ability evidence.
+This document does not define legal state transitions.
 
 A session may contain:
 
@@ -239,31 +206,33 @@ A session may contain:
 - assessment sampling;
 - exam-readiness work.
 
+Completion/abandonment is session history, not a mastery judgment.
+
 # Activity card contract
 
-Before an activity, show:
+Before an activity, show enough information for informed action:
 
-- target skill/capability;
-- plain-language objective;
+- target skill/capability in plain language;
 - why now;
 - expected duration;
-- mode: learn, practice, review, assess, or mock;
-- scaffold/independence state;
-- whether the result may be evidence-eligible.
+- activity purpose: learn, practice, review, assess, or mock;
+- relevant target variant/context;
+- scaffold/independence state where material;
+- whether the attempt may be evidence-eligible.
 
 After an activity, show:
 
 - what was observed;
 - what changed, if anything;
-- uncertainty/missing evidence;
+- what remains uncertain/missing;
 - the next recommended action;
 - retry/review alternatives when useful.
 
-Do not display a fabricated precise band change after every micro-activity.
+Do not display a fabricated precise Band change after each micro-activity.
 
 # Skill-page contract
 
-Each skill page contains:
+Each skill page presents:
 
 ```text
 Target condition
@@ -277,31 +246,33 @@ Recent attempts
 Certification history
 ```
 
-Skill pages may differ because Listening/Reading are objective-receptive while Writing/Speaking are productive and criterion-based.
+Listening/Reading and Writing/Speaking may present different measurement detail because their external assessment mechanics differ.
 
 # Review experience
 
-The Review surface combines three queues while preserving their semantics:
+One Review surface may combine presentation of three semantic queues:
 
-1. Knowledge retrieval — vocabulary/grammar/phonology suitable for review;
-2. Error remediation — recurring error/remediation patterns;
-3. Re-evidence — stale, conflicting, or insufficient claims.
+1. **Knowledge retrieval** — reviewable vocabulary/grammar/phonology;
+2. **Error remediation** — diagnosed recurring error/remediation work;
+3. **Re-evidence** — stale, conflicting, or insufficient claims.
 
-The UI may merge presentation, but scheduling/evidence semantics remain distinct.
+Presentation may be unified. Scheduling/evidence meaning must remain distinct.
 
 # Exam-preparation experience
 
 Exam Preparation may increase:
 
-- timed sections;
-- full-task Writing;
+- computer-interface familiarity for current test-centre delivery;
+- typing/navigation/timing practice where relevant;
+- optional handwriting Writing practice when the learner targets an eligible Writing-on-Paper delivery;
+- remote-platform familiarity when targeting eligible IELTS Online Academic;
+- timed receptive sections;
+- complete Writing tasks;
 - complete Speaking simulations;
-- integrated receptive sections;
-- full mocks;
-- pacing/stamina work;
-- focused preparation for a selected One Skill Retake.
+- full mocks and pacing/stamina work;
+- selected One Skill Retake preparation.
 
-It does not change canonical mastery thresholds and does not convert one mock into certification.
+Delivery-mode preparation is not a new learning standard. It cannot rewrite Band thresholds or turn one mock into certification.
 
 # Progress presentation
 
@@ -312,10 +283,11 @@ where I am
 what blocks the target
 what changed
 what evidence is missing
+what product condition is unavailable, if any
 what to do next
 ```
 
-Recommended labels include:
+Suitable labels include:
 
 - **Not sampled yet**;
 - **Needs more evidence**;
@@ -324,31 +296,31 @@ Recommended labels include:
 - **Currently supported at Band N**;
 - **Evidence stale**;
 - **Evidence conflicting**;
-- **Product path not yet supported** when a CoverageGap blocks the target.
+- **Product path not yet supported**.
 
-Numeric confidence is shown only when meaningful and calibrated.
+Numeric confidence appears only when it is meaningful and calibrated.
 
-# No guaranteed-band promise
+# Promise boundary
 
-The app guarantees only process semantics it controls: preserving the target, following prerequisite/evidence rules, providing eligible next actions, and telling the truth about support/readiness state.
+The product may promise process integrity it controls: preserving the target, applying prerequisites/evidence/support rules, providing valid next actions, and reporting evidence/support state truthfully.
 
-It cannot guarantee an external test result.
+It cannot promise a future external IELTS result.
 
-Forbidden learner promise without appropriate empirical evidence:
+Forbidden without suitable empirical evidence:
 
 ```text
 Follow this plan and you will get Band N.
 ```
 
-Allowed:
+Allowed pattern:
 
 ```text
 Your target is Band N.
-These are the unresolved conditions.
-This is the highest-value next action.
-Your current evidence supports / does not yet support the target claim.
+These conditions remain unresolved.
+This is the highest-value eligible next action.
+Your current evidence supports / does not yet support the scoped claim.
 ```
 
-# Product defaults vs learning truth
+# Product-default boundary
 
-Durations, block counts, navigation order, and dashboard layout are product defaults. They may change through product evidence without redefining IELTS, mastery, prerequisites, or coverage truth.
+Durations, navigation order, dashboard layout, and activity-block counts are mutable product defaults. They may change through product evidence without redefining IELTS, Skill, Band, Assessment, Progression, or Coverage truth.
