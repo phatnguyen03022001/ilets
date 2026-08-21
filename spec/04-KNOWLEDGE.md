@@ -125,6 +125,9 @@ This is the sole canonical mapping from Skill Leaf knowledge needs to Knowledge 
 | `W-GRA-05` | `K-GRA-032`, `K-GRA-040`, `K-GRA-041` |
 | `W-TA-03` | `K-GRA-064` |
 | `W-GRA-07` | `K-GRA-005`, `K-GRA-006`, `K-GRA-007`, `K-GRA-062`, `K-GRA-063` |
+| `W-GT1-02` | `K-VOC-040` |
+
+`W-GT1-01` and `W-GT1-03` are task-capability leaves whose direct knowledge needs are covered by the shared lexical/grammar/cohesion targets selected for the concrete letter; they do not require a new letter-specific Knowledge Object.
 
 ## Speaking
 
@@ -145,6 +148,8 @@ This is the sole canonical mapping from Skill Leaf knowledge needs to Knowledge 
 | Skill Leaf | Resolved Knowledge Objects |
 |---|---|
 | `R-COMP-06` | `K-VOC-011` |
+
+General Training Reading context diversity is a curriculum/content condition, not a separate Knowledge Object.
 
 Listening currently has no explicit Knowledge prerequisite edge in the frozen graph; its direct prerequisites are intra-skill capability edges in `03-SKILLS.md`.
 
