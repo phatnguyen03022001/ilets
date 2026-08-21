@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: initial user-facing practice-mode catalog, mode identity/count, default duration envelopes, mode-to-learning-role mapping, variant/delivery-aware packaging, and catalog change policy
-DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, 01-skill-features.md, 04-application-flows.md
+DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 01-skill-features.md
 DOES_NOT_OWN: live IELTS facts, Learning Mechanism definitions, Practice Type semantics, evidence sufficiency, Skill/Band thresholds, concrete item content, planner eligibility/ranking, or scheduling implementation
 
 # Practice Catalog
@@ -49,7 +49,7 @@ Variant/delivery differences resolve inside an existing mode when the learner in
 
 `PM-R06` identifies selected variant and scope.
 
-Concrete GT content uses the GT section/context classes owned externally by `../spec/02-IELTS-MODEL.md` and represented as content context in `../spec/10-CONTENT-MODEL.md`.
+Concrete GT content uses the stable GT Reading Content Context IDs owned by `../spec/10-CONTENT-MODEL.md`.
 
 A focused activity may target one context. A whole-Reading readiness activity must use a complete applicable variant configuration and normal Assessment policy.
 
@@ -124,9 +124,9 @@ READINESS_ONLY
 
 # Selection boundary
 
-The Planner in `04-application-flows.md` owns hard eligibility and ranking.
+Hard eligibility and ranking are downstream product Planner concerns owned by `04-application-flows.md`.
 
-After an ActionIntent has valid eligible candidates, this catalog answers **which user-facing mode packages the chosen learning action**.
+This catalog answers **which user-facing mode packages a semantically valid selected learning action**.
 
 A mode must not independently:
 
