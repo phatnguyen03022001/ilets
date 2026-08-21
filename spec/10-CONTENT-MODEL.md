@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, stable content-context identity, stable content-presentation identity, reference contracts between concrete content and canonical objects/external task families, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
+OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, reference contracts between concrete content and canonical objects/external task families, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
 DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, or product coverage status
 
@@ -40,7 +40,7 @@ Concrete/runtime instances
 
 Every concrete object references the canonical targets/context/policies that justify its existence.
 
-When variant, official task/question family, task/section context, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading`, `completion`, or `writing-task-1` are insufficient for coverage claims.
+When variant, official task/question family, task/section context, material presentation, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading`, `completion`, or `writing-task-1` are insufficient for coverage claims.
 
 # Stable Content Context registry
 
@@ -75,37 +75,49 @@ Concrete content records those IDs separately from Skill targets because:
 - one official family may require multiple capabilities;
 - grouping several families under one Skill Leaf must not allow missing content for one family to disappear from coverage.
 
-Examples:
-
-```text
-IELTS-L-QF-04    completion family in Listening
-IELTS-R-QF-04    matching information
-IELTS-R-QF-06    matching features
-IELTS-W-A-T1     Academic Writing Task 1
-IELTS-S-P2       Speaking Part 2
-```
-
 # Stable Content Presentation Class registry
 
-Some official task families require materially different stimulus presentations even though the scored task family remains one construct. These are content-coverage dimensions, not new Skills or scored tasks.
+A Presentation Class identifies a materially different official subformat/stimulus shape inside an external family. It exists only when one family label would otherwise hide a meaningful content/interaction coverage gap.
 
-Initial Academic Writing Task-1 presentation classes:
+## Listening completion family — `IELTS-L-QF-04`
 
-| ID | Presentation class |
+| ID | Presentation |
+|---|---|
+| `PRES-L-QF04-FORM` | form completion |
+| `PRES-L-QF04-NOTE` | note completion |
+| `PRES-L-QF04-TABLE` | table completion |
+| `PRES-L-QF04-FLOW-CHART` | flow-chart completion |
+| `PRES-L-QF04-SUMMARY` | summary completion |
+
+## Reading completion family — `IELTS-R-QF-09`
+
+| ID | Presentation |
+|---|---|
+| `PRES-R-QF09-SUMMARY` | summary completion |
+| `PRES-R-QF09-NOTE` | note completion |
+| `PRES-R-QF09-TABLE` | table completion |
+| `PRES-R-QF09-FLOW-CHART` | flow-chart completion |
+
+## Academic Writing Task 1 — `IELTS-W-A-T1`
+
+| ID | Presentation |
 |---|---|
 | `PRES-W-A-T1-GRAPH-CHART-TABLE` | graph/chart/table/statistical visual, including combined statistical displays |
-| `PRES-W-A-T1-DIAGRAM-PROCESS` | diagram of a process, object, device, event, or comparable non-statistical process representation |
+| `PRES-W-A-T1-DIAGRAM-PROCESS` | diagram of a process, object, device, event, or comparable process representation |
 | `PRES-W-A-T1-MAP-PLAN` | map/plan/spatial-change representation |
 
-A stimulus may reference more than one class when the task genuinely combines presentation types. `02-IELTS-MODEL.md` remains the owner of the external Academic Task-1 construct; these IDs only make content diversity checkable.
+Rules:
 
-Other topics, accents, domains, vocabulary themes, and difficulty bands remain metadata rather than new presentation IDs unless their distinction becomes necessary for a material coverage/inference rule.
+1. Presentation Class is a content-coverage identity, not a Skill, Practice Type, or scored task;
+2. a Stimulus may reference multiple classes when a task genuinely combines presentation types;
+3. topic, accent, vocabulary theme, difficulty, and Band do not become presentation IDs merely for catalog convenience;
+4. new presentation IDs require a material interaction/content-coverage distinction justified by the external construct or evidence policy.
 
 # Delivery scope
 
 Where exam-readiness behavior depends materially on external delivery, concrete items/runs may declare a delivery scope/reference resolved from `02-IELTS-MODEL.md` / TargetProfile.
 
-Delivery scope changes interaction/conditions. It does not create a second Content Context or official task family.
+Delivery scope changes interaction/conditions. It does not create a second Content Context, external family, or Presentation Class.
 
 # `LearningUnit`
 
@@ -121,6 +133,7 @@ prerequisite_refs
 test_variant_scope
 content_context_refs
 external_task_family_refs where material
+required_presentation_class_refs where material
 delivery_mode_scope optional
 content_sequence
 practice_item_refs
@@ -130,7 +143,7 @@ remediation_pattern_refs
 completion_intent
 ```
 
-Completion is not mastery. Multiple units may instantiate one Curriculum Node for different variants, family coverage, delivery preparation, or learner contexts.
+Completion is not mastery. Multiple units may instantiate one Curriculum Node for different variants, family/subformat coverage, delivery preparation, or learner contexts.
 
 # `Stimulus`
 
@@ -152,7 +165,7 @@ difficulty_parameters
 rights_or_usage_metadata
 ```
 
-Examples: passages, recordings/transcripts, charts/tables/maps, Writing prompts, Speaking questions/cue cards, model responses, worked examples, sentence/paragraph material.
+Examples include passages, recordings/transcripts, charts/tables/maps, Writing prompts, Speaking questions/cue cards, model responses, worked examples, and sentence/paragraph material.
 
 A Stimulus may be reused across Practice/Assessment only when reuse does not invalidate independence, novelty, or later inference.
 
@@ -233,13 +246,14 @@ Invariants:
 3. Skill/Knowledge refs resolve canonically;
 4. official family refs resolve to `02-IELTS-MODEL.md`;
 5. Content Context is compatible with variant-specific targets/family;
-6. `W-TA-*` visual targets cannot instantiate GT Task 1;
-7. `W-GT1-*` cannot instantiate Academic Task 1;
-8. family identity cannot be inferred only from a broad Skill Leaf when several official families share that leaf;
-9. delivery scope is recorded when interaction/readiness inference depends on it;
-10. difficulty/scaffold may vary without changing the target;
-11. authored and generated items obey the same contract;
-12. item instances remain replaceable.
+6. required Presentation Class is represented where the family has material subformats;
+7. `W-TA-*` visual targets cannot instantiate GT Task 1;
+8. `W-GT1-*` cannot instantiate Academic Task 1;
+9. family identity cannot be inferred only from a broad Skill Leaf when several official families share that leaf;
+10. delivery scope is recorded when interaction/readiness inference depends on it;
+11. difficulty/scaffold may vary without changing the target;
+12. authored and generated items obey the same contract;
+13. item instances remain replaceable.
 
 # `AssessmentItem`
 
@@ -275,6 +289,7 @@ Invariants:
 - samples the claimed capability;
 - references Band semantics rather than redefining them;
 - official family/context/variant matches the claim;
+- material Presentation Class is preserved where relevant;
 - Reading Band inference uses applicable variant scoring policy;
 - timing, assistance, partial/full-task state, delivery/input mode, capture quality, and other material conditions remain visible;
 - independence/novelty metadata supports correct Assessment inference;
@@ -292,6 +307,7 @@ target_skill_leaf_ids
 target_knowledge_ids
 content_context_refs when material
 external_task_family_refs when material
+presentation_class_refs when material
 pattern_description
 applicability_context
 example_refs
@@ -316,6 +332,7 @@ target_skill_leaf_ids
 target_knowledge_ids
 content_context_refs when material
 external_task_family_refs when material
+presentation_class_refs when material
 error_pattern_refs
 learning_mechanism_refs
 practice_type_refs
@@ -341,6 +358,7 @@ observation_refs
 target_refs
 content_context_ref when material
 external_task_family_refs when material
+presentation_class_refs when material
 observed_performance
 gap_or_error
 matched_error_pattern_refs
@@ -437,7 +455,7 @@ Each entry must support answers to:
 canonical target refs
 stable official task/question-family refs
 stable Content Context ID
-presentation class where material
+material Presentation Class refs
 test variant
 supported delivery scope where material
 Practice/Assessment Type support
@@ -449,7 +467,13 @@ independent readiness asset state
 product/release activation
 ```
 
-Coverage tooling must be able to query **official family coverage independently of Skill coverage**. For example, content for Matching Information cannot silently satisfy Matching Features merely because both map to an aggregated Reading capability.
+Coverage tooling must query **official-family and required Presentation-Class coverage independently of Skill coverage**.
+
+Examples:
+
+- Matching Information cannot satisfy Matching Features merely because both share a broader Reading capability;
+- one form-completion template cannot prove all required `IELTS-L-QF-04` presentation coverage;
+- only graph/chart Academic Task-1 assets cannot prove visual-task coverage when required process/map presentation classes are absent.
 
 The manifest is implementation truth about available content, not new learning authority.
 
@@ -460,10 +484,10 @@ A UI feature existing is not proof of content coverage.
 # Composition
 
 ```text
-external task family + Curriculum Node + variant overlay
+external task family + content context + Curriculum Node
       ↓
 Learning Unit
-  ├─ Stimuli
+  ├─ Stimuli / presentation classes
   ├─ Practice Items
   ├─ Error/Remediation Patterns
   └─ Assessment Items
@@ -492,7 +516,7 @@ A concrete object is acceptable only when:
 - canonical refs resolve;
 - external task-family refs resolve when the item represents an official family;
 - Content Context/variant refs are compatible;
-- presentation class is correct when material;
+- Presentation Class is correct when material;
 - delivery scope is compatible when material;
 - it introduces no contradictory teaching/scoring rule;
 - answer key/rubric/model is valid where applicable;
