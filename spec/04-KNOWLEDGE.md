@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: enabling language knowledge, atomic Knowledge Object identity, knowledge-to-knowledge dependency graph, and Skill-to-Knowledge resolution
+OWNS: enabling language knowledge, atomic Knowledge Object identity, concise definitions, Knowledge→Knowledge prerequisite edges, and Skill→Knowledge resolution
 DEPENDS_ON: 03-SKILLS.md
-DOES_NOT_OWN: IELTS skill capability definitions, band proficiency thresholds, curriculum sequence, practice activities, assessment sufficiency, learner knowledge state
+DOES_NOT_OWN: band thresholds, curriculum sequence, practice activities, assessment sufficiency, learner knowledge state, examples, misconception catalogs, remediation scripts, or soft peer-association graphs without a learning consequence
 
 # 04 — Knowledge
 
@@ -9,11 +9,7 @@ DOES_NOT_OWN: IELTS skill capability definitions, band proficiency thresholds, c
 
 Define **what must be known** to support the capabilities in `03-SKILLS.md`.
 
-Knowledge is enabling language content, not a fifth IELTS skill. The canonical knowledge domains are:
-
-- Grammar;
-- Vocabulary;
-- Phonology.
+Knowledge is enabling language content, not a fifth IELTS skill. The canonical domains are Grammar, Vocabulary, and Phonology.
 
 The active inventory contains **46 stable atomic Knowledge Objects**:
 
@@ -23,107 +19,96 @@ The active inventory contains **46 stable atomic Knowledge Objects**:
 
 ## Atomic Knowledge Object rule
 
-A Knowledge Object represents one independently learnable concept.
+A Knowledge Object represents one independently learnable concept. Decompose while a concept still contains multiple independently learnable units. Stop when further splitting no longer improves learning, prerequisite reasoning, remediation, or reuse.
 
-Decompose while a concept still contains multiple independently learnable units. Stop when further splitting would no longer improve learning, prerequisite reasoning, remediation, or reuse.
+## Canonical Knowledge Object fields
 
-## Knowledge Object semantic shape
-
-A canonical Knowledge Object owns:
+A Knowledge Object canonically owns:
 
 - stable `id`;
 - name;
-- knowledge domain;
+- domain;
 - concise definition;
-- explicit `requires` edges to prerequisite Knowledge Objects;
-- optional `related_to` edges for non-prerequisite relationships;
-- examples where useful;
-- common misconceptions.
+- explicit `requires` edges to prerequisite Knowledge Objects.
 
-It does not own learner acquisition state or the curriculum position where the knowledge is taught.
+The following are intentionally not canonical object fields unless future evidence promotes them:
+
+- examples and worked instances → `10-CONTENT-MODEL.md`;
+- misconception/remediation catalogs → `10-CONTENT-MODEL.md`;
+- soft `related_to` associations with no gating/selection consequence → historical/supporting graph only;
+- band relevance → `05-BANDS.md` / `06-CURRICULUM.md`;
+- learner acquisition state → `09-PROGRESSION.md`.
 
 ## Grammar graph
 
-| ID | Knowledge Object | Requires |
-|---|---|---|
-| `K-GRA-010` | Word classes / parts of speech | — |
-| `K-GRA-061` | Noun countability & pluralization | `K-GRA-010` |
-| `K-GRA-001` | Clause structure | `K-GRA-010` |
-| `K-GRA-002` | Simple sentence | `K-GRA-001` |
-| `K-GRA-003` | Compound sentence / coordination | `K-GRA-002`, `K-GRA-020` |
-| `K-GRA-004` | Complex sentence / subordination | `K-GRA-002`, `K-GRA-021` |
-| `K-GRA-005` | Relative clauses | `K-GRA-004`, `K-GRA-031` |
-| `K-GRA-006` | Conditional clauses | `K-GRA-004` |
-| `K-GRA-007` | Noun clauses | `K-GRA-004` |
-| `K-GRA-020` | Coordinating conjunctions | `K-GRA-010` |
-| `K-GRA-021` | Subordinating conjunctions | `K-GRA-010` |
-| `K-GRA-022` | Linking adverbials / conjuncts | `K-GRA-010` |
-| `K-GRA-030` | Pronouns | `K-GRA-010` |
-| `K-GRA-031` | Relative pronouns | `K-GRA-030` |
-| `K-GRA-032` | Determiners | `K-GRA-010` |
-| `K-GRA-033` | Reference & substitution for cohesion | `K-GRA-030`, `K-GRA-032` |
-| `K-GRA-040` | Articles: a / an / the | `K-GRA-032` |
-| `K-GRA-041` | Definite / indefinite / zero article rules | `K-GRA-040` |
-| `K-GRA-050` | Present simple | `K-GRA-002` |
-| `K-GRA-051` | Past simple | `K-GRA-002` |
-| `K-GRA-052` | Present perfect | `K-GRA-051` |
-| `K-GRA-053` | Past perfect | `K-GRA-052` |
-| `K-GRA-054` | Progressive / continuous aspect | `K-GRA-050`, `K-GRA-051` |
-| `K-GRA-055` | Future forms | `K-GRA-002` |
-| `K-GRA-060` | Subject–verb agreement | `K-GRA-002`, `K-GRA-061` |
-| `K-GRA-062` | Modal verbs | `K-GRA-002` |
-| `K-GRA-063` | Passive voice | `K-GRA-002`, `K-GRA-061` |
-| `K-GRA-064` | Comparatives & superlatives | `K-GRA-010` |
-| `K-GRA-065` | Negation & question forms | `K-GRA-002` |
-
-### Grammar semantic clusters
-
-**Foundation.** Word classes, clause structure, sentence cores, noun countability, and agreement establish the minimum grammar needed for productive capability.
-
-**Complexity.** Coordination, subordination, relative/conditional/noun clauses, and modal/passive structures provide the grammar resource needed for higher-band range and flexibility.
-
-**Cohesion.** Conjunctions, conjuncts, pronouns, determiners, reference, and substitution support discourse relationships without becoming a Writing/Speaking capability definition themselves.
-
-**Time and comparison.** Tense/aspect, future forms, and comparison provide content needed to describe events, data, arguments, and relationships accurately.
+| ID | Object | Canonical definition | Requires |
+|---|---|---|---|
+| `K-GRA-010` | Word classes / parts of speech | Noun, verb, adjective, adverb, preposition, conjunction, determiner, pronoun and related functional categories. | — |
+| `K-GRA-061` | Noun countability & pluralization | Countable/uncountable noun behavior, regular/irregular plurals, and number marking. | `K-GRA-010` |
+| `K-GRA-001` | Clause structure | Core clause elements such as subject, verb, object, complement, adjunct and their basic ordering. | `K-GRA-010` |
+| `K-GRA-002` | Simple sentence | A complete sentence built from one independent clause. | `K-GRA-001` |
+| `K-GRA-003` | Compound sentence / coordination | Two or more independent clauses joined by coordination. | `K-GRA-002`, `K-GRA-020` |
+| `K-GRA-004` | Complex sentence / subordination | An independent clause combined with one or more subordinate clauses. | `K-GRA-002`, `K-GRA-021` |
+| `K-GRA-005` | Relative clauses | Clauses that modify a noun using relative forms, including defining and non-defining patterns. | `K-GRA-004`, `K-GRA-031` |
+| `K-GRA-006` | Conditional clauses | Conditional relationships expressed through if/conditional clause patterns, including common mixed forms. | `K-GRA-004` |
+| `K-GRA-007` | Noun clauses | Subordinate clauses functioning as noun-like constituents. | `K-GRA-004` |
+| `K-GRA-020` | Coordinating conjunctions | Coordinators such as and/but/or/so that join equal grammatical units. | `K-GRA-010` |
+| `K-GRA-021` | Subordinating conjunctions | Subordinators such as although/because/if/while that introduce dependent clauses. | `K-GRA-010` |
+| `K-GRA-022` | Linking adverbials / conjuncts | Sentence/discourse transitions such as however, therefore, moreover and consequently. | `K-GRA-010` |
+| `K-GRA-030` | Pronouns | Personal, possessive, demonstrative, reflexive and related pronoun systems. | `K-GRA-010` |
+| `K-GRA-031` | Relative pronouns | Relative forms such as who, whom, which, that and whose. | `K-GRA-030` |
+| `K-GRA-032` | Determiners | Articles, demonstratives, quantifiers, possessives and other noun-phrase specifiers. | `K-GRA-010` |
+| `K-GRA-033` | Reference & substitution for cohesion | Reference and substitution devices used to link discourse and avoid unnecessary repetition. | `K-GRA-030`, `K-GRA-032` |
+| `K-GRA-040` | Articles: a / an / the | Core indefinite and definite article forms and basic use. | `K-GRA-032` |
+| `K-GRA-041` | Definite / indefinite / zero article rules | Conditions governing article choice, including zero article and generic/specific reference. | `K-GRA-040` |
+| `K-GRA-050` | Present simple | Present-simple form and its core uses for facts, habits, states and generalizations. | `K-GRA-002` |
+| `K-GRA-051` | Past simple | Past-simple form and its core uses for completed past events/states. | `K-GRA-002` |
+| `K-GRA-052` | Present perfect | Present-perfect form connecting prior events/states to present relevance. | `K-GRA-051` |
+| `K-GRA-053` | Past perfect | Past-perfect form for an earlier past event/state relative to another past reference point. | `K-GRA-052` |
+| `K-GRA-054` | Progressive / continuous aspect | `be + -ing` aspect for ongoing or temporally bounded situations across time references. | `K-GRA-050`, `K-GRA-051` |
+| `K-GRA-055` | Future forms | Common future-reference forms including will, going to and present-continuous patterns. | `K-GRA-002` |
+| `K-GRA-060` | Subject–verb agreement | Agreement of finite verb form with subject person/number, including common complex cases. | `K-GRA-002`, `K-GRA-061` |
+| `K-GRA-062` | Modal verbs | Modal auxiliaries such as can, could, must, should, may, might and would and their core meanings. | `K-GRA-002` |
+| `K-GRA-063` | Passive voice | Passive construction using an appropriate form of `be` plus past participle to background the agent/focus the affected entity. | `K-GRA-002`, `K-GRA-061` |
+| `K-GRA-064` | Comparatives & superlatives | Comparative and superlative morphology/syntax for adjectives and adverbs. | `K-GRA-010` |
+| `K-GRA-065` | Negation & question forms | Core negation plus yes/no and wh-question formation, including auxiliary behavior and word order. | `K-GRA-002` |
 
 ## Vocabulary graph
 
-| ID | Knowledge Object | Requires |
-|---|---|---|
-| `K-VOC-010` | High-frequency / core vocabulary | — |
-| `K-VOC-011` | Academic vocabulary | `K-VOC-010` |
-| `K-VOC-012` | Topic-specific word sets | `K-VOC-010` |
-| `K-VOC-020` | Collocations | `K-VOC-010` |
-| `K-VOC-021` | Idioms & fixed expressions | `K-VOC-010` |
-| `K-VOC-030` | Word formation / affixation | `K-VOC-010` |
-| `K-VOC-031` | Spelling rules & patterns | `K-VOC-010` |
-| `K-VOC-040` | Register & formality | `K-VOC-010` |
-| `K-VOC-041` | Synonymy & paraphrase resources | `K-VOC-010` |
+| ID | Object | Canonical definition | Requires |
+|---|---|---|---|
+| `K-VOC-010` | High-frequency / core vocabulary | High-frequency general English word families required for basic comprehension and production. | — |
+| `K-VOC-011` | Academic vocabulary | Formal/academic lexical resource common in academic reading and writing. | `K-VOC-010` |
+| `K-VOC-012` | Topic-specific word sets | Reusable lexical sets organized around common IELTS-relevant topics. | `K-VOC-010` |
+| `K-VOC-020` | Collocations | Conventional recurrent word partnerships and their usage constraints. | `K-VOC-010` |
+| `K-VOC-021` | Idioms & fixed expressions | Fixed or semi-fixed multiword expressions whose meaning/use is conventionalized. | `K-VOC-010` |
+| `K-VOC-030` | Word formation / affixation | Productive relationships among word-family forms through prefixes, suffixes and derivation. | `K-VOC-010` |
+| `K-VOC-031` | Spelling rules & patterns | English orthographic conventions and recurring spelling patterns needed for accurate written production. | `K-VOC-010` |
+| `K-VOC-040` | Register & formality | Lexical choice according to formal, neutral, informal and context-appropriate register. | `K-VOC-010` |
+| `K-VOC-041` | Synonymy & paraphrase resources | Lexical alternatives, connotation and usage constraints used to re-express meaning accurately. | `K-VOC-010` |
 
-Vocabulary knowledge must be taught as usable meaning, form, collocation, register, and retrieval rather than as isolated memorized lists.
-
-`K-VOC-012` is a canonical object representing the topic-set system. Individual topic lexicons may later be concrete content instances under `10-CONTENT-MODEL.md`; they do not require a new canonical domain.
+`K-VOC-012` represents the topic-set system. Individual topic lexicons are concrete content under `10-CONTENT-MODEL.md`, not new canonical domains.
 
 ## Phonology graph
 
-| ID | Knowledge Object | Requires |
-|---|---|---|
-| `K-PHON-010` | Consonant phonemes | — |
-| `K-PHON-011` | Vowel phonemes | — |
-| `K-PHON-012` | Phoneme contrasts & minimal pairs | `K-PHON-010`, `K-PHON-011` |
-| `K-PHON-020` | Word stress | `K-PHON-011` |
-| `K-PHON-021` | Sentence stress | `K-PHON-020` |
-| `K-PHON-030` | Intonation patterns | `K-PHON-021` |
-| `K-PHON-040` | Connected speech | `K-PHON-010`, `K-PHON-011` |
-| `K-PHON-041` | Rhythm & chunking | `K-PHON-021`, `K-PHON-040` |
+| ID | Object | Canonical definition | Requires |
+|---|---|---|---|
+| `K-PHON-010` | Consonant phonemes | English consonant sound inventory and articulatory distinctions relevant to intelligible production/perception. | — |
+| `K-PHON-011` | Vowel phonemes | English monophthong/diphthong inventory and contrastive vowel distinctions. | — |
+| `K-PHON-012` | Phoneme contrasts & minimal pairs | Contrastive sound pairs used to perceive and produce meaning-distinguishing phonemes. | `K-PHON-010`, `K-PHON-011` |
+| `K-PHON-020` | Word stress | Placement of primary lexical stress and common stress shifts across word families. | `K-PHON-011` |
+| `K-PHON-021` | Sentence stress | Prominence patterns across utterances, including content/function-word stress behavior. | `K-PHON-020` |
+| `K-PHON-030` | Intonation patterns | Pitch contours and their discourse, pragmatic, or attitudinal functions. | `K-PHON-021` |
+| `K-PHON-040` | Connected speech | Linking, reduction, assimilation, elision and weak-form behavior across word boundaries. | `K-PHON-010`, `K-PHON-011` |
+| `K-PHON-041` | Rhythm & chunking | Grouping speech into sense units and maintaining intelligible rhythmic organization. | `K-PHON-021`, `K-PHON-040` |
 
-The canonical phonology graph is L1-agnostic. L1-specific contrast priorities may be supplied as localization/remediation overlays without redefining these objects.
+The canonical phonology graph is L1-agnostic. L1-specific contrast priorities belong to localized/remediation content, not this graph.
 
-## Skill-to-Knowledge resolution
+# Skill→Knowledge resolution
 
-The following table is the canonical cross-domain resolution from Skill Leaf needs to Knowledge Objects. Skill definitions remain owned by `03-SKILLS.md`; this file owns which knowledge satisfies those needs.
+This is the sole canonical mapping from Skill Leaf knowledge needs to Knowledge Objects.
 
-### Writing
+## Writing
 
 | Skill Leaf | Resolved Knowledge Objects |
 |---|---|
@@ -141,7 +126,7 @@ The following table is the canonical cross-domain resolution from Skill Leaf nee
 | `W-TA-03` | `K-GRA-064` |
 | `W-GRA-07` | `K-GRA-005`, `K-GRA-006`, `K-GRA-007`, `K-GRA-062`, `K-GRA-063` |
 
-### Speaking
+## Speaking
 
 | Skill Leaf | Resolved Knowledge Objects |
 |---|---|
@@ -155,24 +140,16 @@ The following table is the canonical cross-domain resolution from Skill Leaf nee
 | `S-P-02` | `K-PHON-020` |
 | `S-P-03` | `K-PHON-021`, `K-PHON-030` |
 
-### Reading
+## Reading
 
 | Skill Leaf | Resolved Knowledge Objects |
 |---|---|
 | `R-COMP-06` | `K-VOC-011` |
 
-Listening currently has no explicit `K-*` prerequisite edge in the canonical Skill Graph; its direct prerequisites are primarily intra-skill comprehension dependencies. Future evidence may justify explicit knowledge edges, but they must be added here rather than embedded as a parallel mapping elsewhere.
+Listening currently has no explicit Knowledge prerequisite edge in the frozen graph; its direct prerequisites are intra-skill capability edges in `03-SKILLS.md`.
 
-## Prerequisite classification
+## Dependency semantics
 
-Knowledge dependencies used as learning gates are classified by the Curriculum/Progression model as:
+This file defines the dependency graph. Whether a dependency is a runtime hard gate is decided by `06-CURRICULUM.md` using the minimum-gate `Required` / `Recommended` / `Independent` policy, then enforced by `09-PROGRESSION.md`.
 
-- **Required** — missing knowledge makes dependent learning ineffective and no reasonable adaptive workaround exists;
-- **Recommended** — beneficial but not blocking;
-- **Independent** — no prerequisite relation.
-
-This file defines graph edges and resolutions. `06-CURRICULUM.md` owns when those dependencies affect sequence; `09-PROGRESSION.md` owns runtime gating behavior.
-
-## Open calibration boundary
-
-Object identity and dependency semantics are canonical. Empirical difficulty, time-to-learn, localization priority, and frequency estimates may be calibrated later without redefining the object graph unless the evidence shows the graph itself is wrong.
+Object identity and prerequisite semantics are canonical. Difficulty, time-to-learn, frequency, examples, misconceptions, localization priority, and remediation catalogs are empirical/content concerns unless future evidence explicitly promotes them.
