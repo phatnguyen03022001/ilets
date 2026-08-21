@@ -1,35 +1,53 @@
 STATUS: CANONICAL
 OWNS: initial deployable-unit allocation, primary-language/framework assignment, runtime responsibility split, cross-language contract strategy, and native verification baseline
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
-DOES_NOT_OWN: learning/product truth, exact cloud/provider choice, database schema, deployment topology, evaluator model vendor, or future framework upgrades within the same responsibility boundary
+DOES_NOT_OWN: learning/product truth, exact dependency patch versions, cloud/provider choice, database schema, deployment topology, evaluator model vendor, or package-manager lock state
 
 # Implementation Stack
 
 ## Purpose
 
-Assign the approved Go, Python, and TypeScript languages to explicit runtime responsibilities so implementation does not re-decide the product architecture or duplicate domain logic across three stacks.
+Assign approved languages/framework families to explicit runtime responsibilities so implementation does not re-decide first-order architecture or duplicate domain logic across stacks.
 
-## Initial deployable topology
+Patch/minor dependency selection is implementation maintenance. This architecture owns **responsibility and framework family**, not a frozen release-note snapshot.
+
+# Initial deployable topology
 
 ```text
 apps/
-└── web/                  TypeScript
+└── web/                  TypeScript / React / Next.js App Router
 
 services/
-├── core-api/             Go
-└── evaluator/            Python
+├── core-api/             Go / net/http + chi
+└── evaluator/            Python / FastAPI
 
 contracts/
-├── http/                 OpenAPI when materialized
-└── events/               JSON Schema or another explicit event contract only when a real async event boundary exists
+├── http/                 exact HTTP contracts once materialized
+└── events/               only for a real asynchronous cross-unit event boundary
 
 tools/
-└── contract / content / repository tooling as justified
+└── contract/content/repository tooling when justified
 ```
 
-Do not create additional deployables merely because a feature has its own name.
+Do not create another deployable merely because a product feature has a distinct name.
 
-# TypeScript — learner web application
+# Version policy
+
+Architecture freezes compatibility families and responsibilities, not volatile patch numbers.
+
+At implementation/bootstrap time:
+
+- use a currently supported Node.js LTS line;
+- use a currently supported TypeScript release compatible with the selected web stack;
+- use the supported React/Next.js App Router line chosen for the web application;
+- use a currently supported Go release with `net/http` and `chi/v5`;
+- use a currently supported Python 3 release with a compatible FastAPI/Pydantic line;
+- pin exact package versions in implementation manifests/lockfiles;
+- keep supported security/maintenance releases current through normal dependency maintenance.
+
+A patch/minor upgrade does not change architecture when responsibility, runtime model, and contracts remain stable.
+
+# TypeScript — web
 
 ## Unit
 
@@ -37,55 +55,42 @@ Do not create additional deployables merely because a feature has its own name.
 apps/web/
 ```
 
-## Baseline
+## Framework family
 
 ```text
-Node.js       24 LTS
-TypeScript    5.x
-React         19.2-compatible line
-Next.js       16.x App Router; implementation baseline 16.3
+TypeScript
+React
+Next.js App Router
 ```
 
-The exact supported patch version follows current security/support releases. Do not freeze an obsolete patch merely because this document names the implementation baseline.
+## Owns
 
-Current reference points at design time:
-
-- Next.js 16.3 release: `https://nextjs.org/blog`
-- App Router: `https://nextjs.org/docs/app`
-- Node.js releases: `https://nodejs.org/en/blog/release`
-
-## Why Next.js
-
-The web product requires both highly interactive learner tools and ordinary application navigation/content surfaces. Next.js App Router provides a current React framework with server/client component boundaries, route/layout conventions, and production application tooling without creating a second backend-domain architecture.
-
-## TypeScript owns
-
-- learner/admin web rendering;
+- learner/admin rendering;
 - route/layout composition;
 - interactive Reading/Writing workspaces;
-- microphone/browser recording capture;
-- YouTube IFrame integration;
-- timers, local draft interaction, optimistic UI;
+- browser microphone/recording capture;
+- external embedded-player interaction;
+- timers/local draft interaction/optimistic presentation;
 - SSE client/reconnect behavior;
 - presentation-only transformations;
-- accessibility and responsive UI.
+- accessibility/responsive UI.
 
-## TypeScript does not own
+## Does not own
 
-- learner mastery/progression policy;
+- mastery/progression policy;
 - deterministic IELTS scoring policy;
 - evidence sufficiency;
-- canonical gap/action logic;
+- canonical gap/action rules;
 - productive evaluator algorithms;
-- copied domain DTO truth independent of the contract.
+- handwritten DTO truth independent of machine contracts.
 
-## Client-state rule
+## Client-state invariant
 
-Use local/component state for transient interaction and server/resource state for durable product truth.
+Transient interaction may live client-side. Durable learner/product truth remains server/resource state.
 
-Do not create a global client store that becomes a second learner-state authority.
+A global client store must not become a second Learner/Target/Progression authority.
 
-# Go — Core API and learning orchestration
+# Go — Core API + deterministic orchestration
 
 ## Unit
 
@@ -93,50 +98,41 @@ Do not create a global client store that becomes a second learner-state authorit
 services/core-api/
 ```
 
-## Baseline
+## Framework family
 
 ```text
-Go            1.26.x supported line
-HTTP          net/http
-Router        github.com/go-chi/chi/v5, 5.3.x line
+Go
+net/http
+chi/v5
 ```
 
-Current design-time references:
+## Owns
 
-- Go supported releases: `https://go.dev/doc/devel/release`
-- chi: `https://go-chi.io/`
-- chi releases: `https://github.com/go-chi/chi/releases`
-
-## Why Go + chi
-
-The Core API is the stable boundary for learner/session/attempt orchestration and deterministic policy execution. Go provides a small runtime and strong standard HTTP primitives; chi stays close to `net/http`, adds routing/middleware composition, and avoids imposing a large application framework over domain ownership.
-
-## Go owns
-
-- public `/v1` API;
-- authentication/authorization integration boundary, without owning provider identity semantics;
-- LearnerProfile/Goal durable product state;
-- DailyPlan and LearningSession orchestration;
+- learner-facing `/v1` API;
+- auth/authorization integration boundary;
+- durable LearnerProfile/TargetProfile product state;
+- DailyPlan/LearningSession orchestration;
 - PracticeActivity creation;
 - Attempt intake/lifecycle;
-- deterministic Listening/Reading answer-key scoring;
-- Assessment admissibility/claim execution from canonical rules;
-- Progression execution: MasteryEstimate, GapEvaluation, ActionIntent, certification state;
-- review queue composition;
-- idempotency/concurrency protection;
-- evaluation work orchestration and retry state;
+- deterministic Listening/Reading scoring;
+- Assessment policy execution over canonical/materialized rules;
+- Progression execution;
+- Planner eligibility/ranking orchestration;
+- review-queue composition;
+- idempotency/concurrency enforcement;
+- evaluation-work orchestration/retry state;
 - media-source eligibility/product state;
-- SSE product event delivery.
+- product SSE event delivery.
 
-## Go does not own
+## Does not own
 
-- AI rubric judgment itself;
+- AI rubric judgment;
 - speech/audio feature extraction;
-- LLM-generated feedback/content analysis;
+- LLM analysis/generation internals;
 - browser interaction;
-- duplicated Python evaluator rules.
+- duplicate Python evaluator behavior.
 
-# Python — evaluator and media analysis
+# Python — evaluator/media analysis
 
 ## Unit
 
@@ -144,38 +140,27 @@ The Core API is the stable boundary for learner/session/attempt orchestration an
 services/evaluator/
 ```
 
-## Baseline
+## Framework family
 
 ```text
-Python        3.14.x supported line
-FastAPI       0.141.x line at design time
-Pydantic      current FastAPI-compatible supported line
-project tool  uv
+Python 3
+FastAPI
+Pydantic-compatible typed models
+uv or equivalent project/environment tooling chosen consistently
 ```
 
-Current design-time references:
-
-- Python 3.14 releases: `https://www.python.org/doc/versions/`
-- FastAPI release notes: `https://fastapi.tiangolo.com/release-notes/`
-- FastAPI features/OpenAPI: `https://fastapi.tiangolo.com/features/`
-
-## Why FastAPI
-
-The evaluator boundary is typed HTTP with structured request/response models, streaming/async-friendly behavior, and strong alignment with OpenAPI/JSON Schema. FastAPI fits that boundary without making Python the product API owner.
-
-## Python owns
+## Owns
 
 - Writing criterion observation generation;
 - Speaking criterion observation generation;
-- speech transcription when the audio source is legally/product-eligible;
-- pronunciation/fluency/acoustic feature extraction where validated;
-- text analysis supporting ErrorPattern/FeedbackArtifact generation;
-- bounded AI-generated feedback candidates;
-- authorized transcript/media segmentation and analysis;
-- content/prompt candidate generation when requested;
+- eligible speech transcription;
+- validated pronunciation/fluency/acoustic feature extraction;
+- bounded text analysis supporting Feedback/ErrorPattern candidates;
+- bounded AI-generated feedback/content candidates;
+- authorized transcript/media analysis;
 - evaluator/model provenance and uncertainty output.
 
-## Python does not own
+## Does not own
 
 - certification;
 - Band advancement;
@@ -183,9 +168,9 @@ The evaluator boundary is typed HTTP with structured request/response models, st
 - DailyPlan selection;
 - public user API;
 - auth/session state;
-- arbitrary YouTube media extraction.
+- arbitrary external-media extraction.
 
-# One public API rule
+# One public product API
 
 ```text
 Browser
@@ -195,117 +180,115 @@ Go Core API
 Python Evaluator
 ```
 
-The web app does not independently orchestrate Python services. The Python service is not exposed as a second learner-facing API.
+Python is a bounded internal capability, not a second learner-facing backend.
 
 # Contract strategy
 
 ## HTTP
 
-When implementation starts, materialize:
+Before independent runtimes implement the same boundary, materialize one exact contract under `contracts/` as required by `05-api.md`.
+
+Typical structure:
 
 ```text
 contracts/http/openapi.yaml
 ```
 
-It owns exact HTTP wire shape for the public Go API and may include a separate internal evaluator surface or an explicitly separated internal document if the public/internal lifecycle makes that cleaner.
+Public and internal evaluator surfaces may be split if useful, but each boundary has one exact machine authority.
 
-Generated bindings/validators are derived.
+Generated clients/server bindings/validators are derived artifacts.
 
 ## Events
 
-Do **not** create an event-schema directory full of hypothetical events.
+Do not create hypothetical event schemas.
 
-Create `contracts/events/` only when an actual asynchronous cross-unit event is introduced and cannot be represented sufficiently by the HTTP/evaluation-work contract.
+Create event contracts only when an actual asynchronous cross-unit boundary exists and HTTP/work-resource semantics are insufficient.
 
-## Stable IDs
+## Stable identities
 
-Canonical Skill, Knowledge, Practice, Assessment, feature, practice-mode, and learner-state identifiers cross boundaries unchanged.
+Canonical Skill, Knowledge, Practice, Assessment, feature, practice-mode, and learner-state identifiers cross boundaries unchanged unless a deliberate presentation translation is explicitly defined.
 
-# Async work baseline
+# Async-work baseline
 
-Do not pre-authorize Kafka, Redis Streams, a workflow engine, or a custom distributed scheduler.
+Do not pre-authorize Kafka, Redis Streams, a workflow engine, or another broker merely because evaluation is asynchronous.
 
-For the first implementation:
+Initial semantic baseline:
 
-1. Core API persists the authoritative attempt/evaluation-work lifecycle;
-2. evaluator work is idempotent by evaluation identity;
-3. Core API invokes the Python service through the internal contract;
-4. retries preserve Attempt identity and do not double-charge/double-count results;
-5. introduce a dedicated broker only after measured throughput/reliability requirements justify it.
-
-This design rule keeps durable product state in one owner while preserving a clear Python execution boundary.
+1. Core API persists authoritative Attempt/evaluation-work lifecycle;
+2. evaluation work is idempotent by stable identity;
+3. Core API invokes Evaluator through the internal contract;
+4. retry preserves work/Attempt identity and cannot double-count evidence/cost;
+5. dedicated dispatch infrastructure is introduced only after measured reliability/throughput need.
 
 # Persistence boundary
 
-This document intentionally does not select the final database/provider.
+Final database provider/schema is not owned here.
 
-Implementation may choose relational/object storage appropriate to the runtime, but:
+Implementation invariants:
 
 - one durable product fact has one runtime owner;
-- Python must not silently mutate Go-owned learner/progression tables as a shared-database shortcut;
-- large audio/media artifacts use explicit object references rather than being smuggled through JSON fields;
-- storage schema is derived implementation detail, not domain authority.
+- Evaluator does not mutate Core-API-owned learner/progression storage directly;
+- large audio/media uses explicit object references rather than opaque large JSON state;
+- storage schema is derived implementation, not domain authority.
 
-# Native verification
+# Native verification baseline
 
-## TypeScript
+Each deployable owns its native checks.
 
-Minimum unit checks:
+## Web
+
+At minimum:
 
 ```text
 format/lint
 TypeScript typecheck
 unit/component tests
-Next.js build
-Playwright critical learner-flow tests where relevant
+production build
+critical browser E2E tests
 ```
 
-Recommended initial tools:
-
-- ESLint or Biome selected once and used consistently;
-- `tsc --noEmit`;
-- Vitest for unit/component logic where appropriate;
-- Playwright for end-to-end browser flows.
-
-Do not keep two competing formatter/linter stacks without a measured reason.
+Use one coherent formatter/linter strategy rather than overlapping competing stacks.
 
 ## Go
+
+At minimum:
 
 ```text
 gofmt check
 go vet ./...
 go test ./...
-go test -race ./... where supported
+race tests where supported/relevant
 build core-api
 ```
 
-Additional static analysis may be added, but standard checks remain understandable without a bespoke meta-framework.
-
 ## Python
 
-Recommended initial baseline:
+At minimum:
 
 ```text
-ruff format --check
-ruff check
-pyright or equivalent strict typecheck
+format check
+lint
+one primary strict static type check
 pytest
 ```
 
-Choose one primary static type checker and use it consistently.
+Tool choice may evolve without changing architecture when the verification contract remains equivalent.
 
-## Contract checks
+## Contracts
+
+At minimum once contracts exist:
 
 ```text
-OpenAPI validation
-generated-client drift check
-Go/TS/Python contract conformance
-integration tests for public API → evaluator boundary
+schema validation
+generated-artifact drift check
+consumer/provider conformance
+public API → evaluator integration tests
+backward-compatibility checks where deployed contracts require them
 ```
 
 # Root verification
 
-The repository must eventually expose one root entrypoint conceptually equivalent to:
+The repository must expose one canonical root verification entrypoint once implementation exists:
 
 ```text
 verify
@@ -316,29 +299,29 @@ verify
   └── cross-unit integration
 ```
 
-A change that crosses Go/Python/TypeScript is not PASS because one language's tests are green.
+A cross-stack change is not PASS because only one ecosystem is green.
 
 # Framework-change rule
 
-A patch/minor framework upgrade does not require a new architecture decision when responsibilities/contracts remain stable and verification is green.
-
-A framework replacement requires an explicit design change when it materially changes:
+A framework replacement requires a design change when it materially changes any of:
 
 - deployable boundaries;
-- public/internal API ownership;
+- API ownership;
 - rendering/runtime model;
 - persistence ownership;
 - cross-language contracts;
 - operational complexity.
 
+Patch/minor maintenance within the same responsibility boundary is implementation work.
+
 # Initial non-goals
 
-Do not introduce at bootstrap unless a real requirement appears:
+Do not introduce at bootstrap without demonstrated need:
 
-- microservice-per-feature architecture;
-- Redis/Kafka merely because async work exists;
-- vector database as default memory/content infrastructure;
+- microservice-per-feature topology;
+- broker/queue infrastructure merely because async work exists;
+- vector database as default memory/content store;
 - GraphQL alongside REST without a concrete consumer need;
-- separate BFF that duplicates Core API semantics;
+- separate BFF duplicating Core API semantics;
 - Python and Go implementations of the same progression/scoring rule;
 - frontend-owned Band/mastery calculations.
