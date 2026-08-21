@@ -1,15 +1,15 @@
 STATUS: CANONICAL
-OWNS: third-party capability inventory, provider-selection/activation rules, portability boundaries, external data-sharing constraints, provider failure/degradation semantics, and initial external-service requirements
+OWNS: third-party capability inventory, provider lifecycle/selection rules, portability boundaries, external data-sharing constraints, provider failure/degradation semantics, and external-service activation requirements
 DEPENDS_ON: ../CONSTITUTION.md, 03-media-youtube.md, 04-application-flows.md, 06-implementation-stack.md
-DOES_NOT_OWN: provider legal terms themselves, learning/mastery semantics, public API wire shape, deployment implementation, pricing plans, or a provider's internal architecture
+DOES_NOT_OWN: provider legal terms themselves, learning/mastery semantics, public API wire shape, deployment implementation, pricing plans, historical provider candidates, or provider internal architecture
 
 # Third-Party Services
 
 ## Purpose
 
-Make every external dependency explicit before implementation so provider convenience cannot silently become product truth, data authority, or an irreversible architecture boundary.
+Make external dependencies explicit so provider convenience cannot become product truth, data authority, or an irreversible architecture boundary.
 
-A third-party service is selected for a capability. The capability is not named after the provider.
+Canonical shape:
 
 ```text
 product capability
@@ -21,223 +21,206 @@ provider adapter
 external service
 ```
 
-## Provider lifecycle
+The capability is named for what the product needs, not after the vendor currently considered or selected.
 
-Every external capability uses one of these states:
+# Provider lifecycle
+
+Every external capability/provider relationship is in one of:
 
 - `TBD` — capability is required but no provider is selected;
-- `CANDIDATE` — provider is being evaluated and has no activation authority;
+- `CANDIDATE` — under evaluation, no activation authority;
 - `SELECTED_FOR_IMPLEMENTATION` — approved implementation choice behind the declared boundary;
-- `ACTIVATION_BLOCKED` — selection exists but release/privacy/security/legal/calibration gates are unresolved;
+- `ACTIVATION_BLOCKED` — selected but release/legal/privacy/security/calibration gates are unresolved;
 - `ACTIVE` — production-enabled under the current support declaration;
-- `SUSPENDED` — temporarily disabled because a gate or provider condition failed;
-- `RETIRED` — no longer used for new product work.
+- `SUSPENDED` — temporarily disabled after a material gate/provider failure;
+- `RETIRED` — no longer used for new work.
 
-Historical provider choices imported from LenBands research are not automatically selected here.
+Historical candidates in `research/` or `archive/` have **no provider status** until explicitly adopted here.
 
-## Selection order
+# Selection order
 
-A provider is eligible only after hard requirements pass:
+Provider eligibility is evaluated in this order:
 
 ```text
 legal / rights / privacy
         ↓
-semantic and quality fit
+semantic + quality fit
         ↓
-reliability / recoverability
+security + data controls
         ↓
-security / data controls
+reliability + recoverability
         ↓
-portability / exit feasibility
+portability + exit feasibility
         ↓
-cost and operational efficiency
+cost / latency / operational efficiency
 ```
 
-Cost cannot rescue an ineligible provider. A cheaper fallback cannot silently reduce the scoring/evidence quality floor.
+Cost cannot rescue an ineligible provider. A cheaper fallback cannot silently lower the evidence/quality floor.
 
-## Mandatory portability boundaries
+# Mandatory portability boundaries
 
-The initial product treats these boundaries as strategically portable:
+The first implementation treats these as mandatory strategic boundaries:
 
 1. **Database**;
-2. **AI / model evaluation**;
+2. **AI/model evaluation**;
 3. **Identity**.
 
-Object storage, email, analytics, observability, payments, and hosting should also use replaceable interfaces where practical, but the three boundaries above require explicit exit design from the first implementation.
+Object storage, email, analytics, observability, payments, hosting, and other external capabilities should also remain replaceable where practical, but the three above require explicit exit design from the beginning.
 
-# Initial service inventory
+# Initial capability inventory
 
-| Capability | Runtime owner | Provider status | Required boundary / rule |
+| Capability | Runtime owner | Status | Required boundary/invariant |
 |---|---|---|---|
-| Identity / credential custody | Go Core API integration boundary | `TBD` | internal stable `learner_id`; provider IDs never become learning identity |
-| PostgreSQL | Go Core API | technology `SELECTED_FOR_IMPLEMENTATION`; provider `TBD` | standard PostgreSQL; canonical structured product state; migrations + PITR + export/exit |
-| Object storage | Go Core API | `TBD` | private object storage; explicit retention/access namespaces; large audio/media by reference |
-| AI / LLM evaluation | Python Evaluator | `TBD` | provider adapter; model result produces observations, never direct certification |
-| Speech-to-text / speech features | Python Evaluator | `TBD` | staged speech pipeline; provenance and uncertainty preserved |
-| Text-to-speech / generated audio | content/media tooling | `TBD` | may supplement practice; benchmark/high-value assessment content must meet stronger provenance/quality rules |
-| YouTube playback/metadata | Web + Core API | YouTube `SELECTED_FOR_IMPLEMENTATION` for eligible embed/source use | IFrame/Data API compliance; no assumed arbitrary caption/audio extraction |
-| Transactional email | Core API | `TBD` | verification/reset/notification only; no domain truth in provider templates |
-| Product analytics | Web/Core API | `TBD` | structured minimal events; no raw learner-content firehose; analytics never owns product facts |
-| Error monitoring | all runtime units | `TBD` | operational diagnostics; redact learner content/secrets by default |
-| Payments / billing | Core API | `TBD` | entitlement adapter; billing state cannot alter learning truth or evidence quality |
-| Hosting / CDN | deployable owners | `TBD` | deployable portability; provider runtime must not redefine service boundaries |
-| Feature flags | Core API/Web | `TBD` or first-party | limited risky-feature flags and emergency kill switches; not a general policy engine |
+| Identity / credential custody | Core API integration | `TBD` | stable internal learner identity; provider ID never becomes learning identity |
+| PostgreSQL-compatible structured persistence | Core API | technology selected; provider `TBD` | migrations, PITR, logical export/restore, provider exit |
+| Object storage | Core API | `TBD` | private references, retention/access policy, large artifacts outside normal JSON state |
+| AI / LLM productive evaluation | Evaluator | `TBD` | adapter boundary; output is Observation candidate, never certification |
+| Speech-to-text / acoustic analysis | Evaluator | `TBD` | quality/provenance/uncertainty preserved |
+| Text-to-speech / generated audio | content/media tooling | `TBD` | quality/provenance fit for intended learning role |
+| YouTube playback/metadata | Web + Core API | selected capability path for eligible embed/source use | IFrame/Data API compliance; no assumed arbitrary extraction |
+| Transactional email | Core API | `TBD` | transport only; provider templates own no product truth |
+| Product analytics | Web/Core API | `TBD` | minimal structured events; no raw learner-content shadow database |
+| Error monitoring | all runtime units | `TBD` | redact secrets/sensitive learner payloads by default |
+| Payments / billing | Core API | `TBD` | entitlement boundary cannot alter learning/evidence truth |
+| Hosting / CDN | deployable owners | `TBD` | hosting must not redefine deployable/service ownership |
+| Feature flags | Core API/Web | `TBD` or first-party | bounded release/kill-switch use; not a hidden policy engine |
 
-## Historical candidates from LenBands
-
-The imported 325-decision research includes historical directions such as Auth0, Neon PostgreSQL, Cloud Run, Cloudflare R2, PostHog, and a Cloudflare/OpenNext frontend direction. These are **research candidates/provenance only** for this repository.
-
-They may be selected only after the current IELTS provider gate above is evaluated. No historical provider name is production activation authority.
+Research may contain named vendor candidates. Canonical design must not repeat those names until a provider actually enters this lifecycle.
 
 # Identity requirements
 
 Regardless of provider:
 
-- credentials are managed through a dedicated identity boundary rather than stored in learning-domain tables;
+- credential custody stays outside learning-domain records;
 - learning state references stable internal `learner_id`;
-- guest use may be supported, but guest→account merge requires explicit confirmation;
-- account deletion/export paths must exist before public support claims that require them;
+- guest→account merge requires explicit identity-safe semantics;
 - same-email identities are not silently linked;
+- account export/deletion capability must exist before a support declaration that depends on it;
 - privileged/admin access is a separate security boundary;
-- valid application sessions should not require a live IdP round-trip on every request when safe revocation semantics permit otherwise.
+- session design must preserve safe revocation without requiring unnecessary provider coupling.
 
-Exact token/session durations are implementation/calibration policy and are not frozen here.
+Exact token/session durations are implementation/security policy, not canonical architecture constants.
 
-# Learner-data and AI processor rules
+# Learner data + AI processor rules
 
-Default external-processing policy:
-
-```text
-processor training/reuse of learner content = prohibited unless explicitly approved
-minimum necessary context                 = required
-raw learner content in analytics           = prohibited
-provider/model provenance                  = required for evaluation observations
-```
-
-AI routing may escalate to stronger/more expensive models only when uncertainty, risk, or incremental value justifies it.
-
-Provider routing is:
+Default processor posture:
 
 ```text
-privacy + quality + reliability eligibility
-           ↓
-eligible route set
-           ↓
-cost / latency optimization
+training/reuse of learner content by processor = prohibited unless explicitly approved
+minimum necessary context                     = required
+raw learner content in analytics               = prohibited
+provider/model provenance                      = required for evaluator observations
 ```
 
-Never invert this ordering.
+AI route selection follows:
 
-# Audio and media privacy
+```text
+privacy + semantic quality + reliability eligibility
+                  ↓
+             eligible routes
+                  ↓
+      cost / latency optimisation
+```
 
-Learner audio is **ephemeral-by-default**.
+# Audio/media privacy
 
-The product should prefer:
+Learner audio is ephemeral-by-default unless the product purpose explicitly requires retention.
 
-- local preview/replay before upload where practical;
-- temporary server processing;
-- persisted derived observation/evidence/provenance rather than permanent raw audio;
-- explicit retention state when an activity genuinely requires retained recording;
-- user-visible disclosure before microphone/upload use.
+Prefer:
 
-Deletion and backup/recovery policy must prevent deleted media from silently returning to normal product use after restore.
+- local preview before upload where practical;
+- temporary processing;
+- persisted derived observations/evidence/provenance rather than permanent raw audio;
+- explicit retention state when raw recording is retained;
+- user-visible microphone/upload disclosure;
+- deletion/backup policy that prevents deleted media from silently returning to normal use after restore.
 
 # Durable submission rule
 
-A learner-visible successful submission must correspond to durable authoritative product state.
-
-For accepted Writing/Speaking attempts:
+A learner-visible accepted submission corresponds to durable authoritative product state before success acknowledgement.
 
 ```text
-persist Attempt / authoritative work state
-        ↓
+persist Attempt / authoritative work
+      ↓
 commit
-        ↓
-ACK success to learner
-        ↓
+      ↓
+ACK accepted
+      ↓
 async evaluation may continue
 ```
 
-An evaluator/provider outage must not lose accepted work. It may move evaluation into a truthful delayed/retry state.
+An evaluator/provider outage may delay evaluation. It must not lose accepted work or fabricate a score.
 
-# Retry and fallback
+# Retry + fallback
 
-Third-party retries must be:
+Third-party retry must be:
 
 - bounded;
 - idempotent;
-- classified as transient / permanent / ambiguous;
-- cost-aware;
-- tied to one evaluation/work identity;
-- observable.
+- classified as transient/permanent/ambiguous;
+- observable;
+- tied to one logical work identity;
+- cost-aware after semantic correctness.
 
-Fallback is allowed only to a pre-approved route satisfying the same minimum semantic/quality/privacy requirements for the claim. Otherwise the system delays, requests re-evidence, or enters a degraded state instead of fabricating a lower-quality result.
+Fallback is valid only when a pre-approved route meets the same applicable quality/privacy/security floor. Otherwise the product stays delayed/unavailable or requests re-evidence.
 
-# Database and recovery baseline
+# Database/recovery baseline
 
-PostgreSQL is the selected canonical structured-store technology for initial implementation.
+Initial structured durable product state uses PostgreSQL semantics behind a provider boundary.
 
-Required operational properties before production support:
+Before production support, the selected implementation must demonstrate:
 
 - point-in-time recovery;
-- independent logical export/backup outside the primary database provider boundary;
+- independent logical export/backup;
 - restore verification;
-- expand/contract-safe migration discipline;
-- provider exit test;
-- accepted learner submissions preserved at the application commit boundary.
+- safe migration discipline;
+- provider-exit test;
+- preservation of accepted learner work at the application commit boundary.
 
-A cache, broker, analytics store, or vector store may never become authority for canonical learner/product state.
+Cache, broker, analytics store, search index, or vector store cannot become authority for learner/product state.
 
-# Queue / broker rule
+# Queue/broker rule
 
-Do not provision Redis, Kafka, or another broker merely because evaluation is asynchronous.
+Asynchronous evaluation does not itself justify a broker.
 
-Initial direction remains:
+Initial semantic direction:
 
 ```text
-authoritative PostgreSQL state
-+ durable evaluation-work/outbox semantics
-+ idempotent worker execution
+authoritative database state
++ durable work/outbox semantics
++ idempotent execution
 ```
 
-A dedicated broker is introduced only after measured throughput/reliability requirements justify it. The broker remains dispatch infrastructure, never business-state authority.
+Introduce dedicated dispatch infrastructure only after a measured reliability/throughput need. Dispatch infrastructure never becomes business-state authority.
 
-# Analytics and observability
+# Analytics + observability
 
-Product analytics uses the minimum structured event set required to answer product questions. It must not become a shadow learner-content database.
+Keep separate concerns for:
 
-Operational observability should separate:
-
-- application/service telemetry;
-- privileged admin audit history;
+- product analytics;
+- service/operational telemetry;
+- privileged/admin audit history;
 - security events;
-- provider/evaluator cost and latency;
-- user-facing accepted-work state.
+- provider/evaluator latency/cost;
+- learner-visible accepted-work state.
 
-Retention can differ by class. Secrets and sensitive learner payloads are redacted by default.
+Retention may differ by class. Sensitive payloads/secrets are redacted by default.
 
-# Payments and entitlements
+# Payments + entitlements
 
-Free and paid product tiers may differ in volume, depth, personalization, or expensive-evaluation access. They may not differ in semantic truth or minimum evidence/quality standards for a claim.
+Tiers may differ in volume, optional depth, frequency, or expensive-capability access. They may not change canonical learning truth or silently lower evidence quality for the same claim.
 
-Quota pressure may:
-
-- reduce optional explanation depth;
-- delay noninteractive work;
-- limit volume/frequency;
-- use a cheaper route only if it remains fully eligible.
-
-Quota pressure may not silently lower IELTS scoring/evidence integrity.
+Quota pressure may reduce optional work or delay noninteractive work. It cannot create a lower-quality scoring route unless that route independently passes the same eligibility floor.
 
 # Provider failure product behavior
 
-A provider failure is mapped to one of:
+A provider failure maps to an explicit state such as:
 
 - retrying;
 - delayed;
 - degraded-safe;
 - temporarily unavailable;
-- fallback on an approved equivalent route.
+- approved equivalent fallback.
 
 It never becomes:
 
@@ -246,23 +229,25 @@ It never becomes:
 - silent content loss;
 - silent quality downgrade.
 
-# Activation checklist
+# Activation gate
 
-A third-party capability may become `ACTIVE` only when the current support declaration confirms, where applicable:
+A capability/provider may become `ACTIVE` only when the current product-support declaration confirms all applicable items:
 
 - terms/licensing/rights compatibility;
-- privacy and data-processing terms;
+- privacy/data-processing conditions;
 - learner-content training/reuse policy;
-- region/residency consequences;
-- security and secret handling;
+- region/residency implications;
+- security/secrets;
 - availability/rate limits/quotas;
-- cost assumptions and kill switches;
+- cost assumptions + kill switch;
 - deletion/export behavior;
 - backup/restore implications;
 - fallback/degraded behavior;
-- provider-exit path;
-- quality/calibration gate for evaluator providers.
+- exit/portability path;
+- evaluator quality/calibration where applicable.
 
 # Replacement invariant
 
-Replacing an external provider must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, or learner identity. If provider replacement changes those semantics, the integration boundary was designed incorrectly.
+Replacing a provider must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, practice-mode IDs, or learner identity.
+
+If a provider replacement changes canonical learning/product semantics, the provider boundary was incorrectly designed.
