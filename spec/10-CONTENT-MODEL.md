@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, stable content-context identity, reference contracts between concrete content and canonical objects, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
+OWNS: conceptual content-instance model, stable content-context identity, stable content-presentation identity, reference contracts between concrete content and canonical objects/external task families, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
-DOES_NOT_OWN: Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, or product coverage status
+DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, or product coverage status
 
 # 10 — Content Model
 
@@ -11,6 +11,7 @@ Define how concrete learning, tutoring, and measurement objects reference canoni
 
 ```text
 Canonical definitions
+  external IELTS task/question family
   Skill Leaf
   Knowledge Object
   Curriculum Node
@@ -18,6 +19,7 @@ Canonical definitions
   Practice Type
   Assessment Type
   Content Context
+  Content Presentation Class
 
 Concrete/runtime instances
   Learning Unit
@@ -38,13 +40,11 @@ Concrete/runtime instances
 
 Every concrete object references the canonical targets/context/policies that justify its existence.
 
-When variant, task, section, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading` or `writing-task-1` are insufficient.
+When variant, official task/question family, task/section context, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading`, `completion`, or `writing-task-1` are insufficient for coverage claims.
 
 # Stable Content Context registry
 
-Content context is a canonical identity layer for **where/how an IELTS construct is instantiated**, not a new learning skill.
-
-Stable IDs:
+Content Context identifies **where an IELTS construct is instantiated**, not a new learning skill.
 
 | ID | Meaning | Variant |
 |---|---|---|
@@ -60,18 +60,52 @@ Stable IDs:
 
 Rules:
 
-1. these IDs are semantic identities and remain stable across specs/content/manifests/runtime contracts;
-2. exact JSON field/enumeration representation is a machine-contract concern, but it must preserve these identities unchanged;
-3. new context IDs require a materially distinct external/content inference context, not a topic, difficulty, Band, delivery mode, or UI screen;
-4. delivery mode is orthogonal and therefore not encoded by multiplying context IDs.
+1. these IDs remain stable across content/manifests/runtime contracts;
+2. exact JSON representation is a machine-contract concern, but IDs survive unchanged;
+3. new context IDs require a materially distinct external/content inference context, not a topic, difficulty, Band, delivery mode, or screen;
+4. delivery mode is orthogonal and does not multiply Content Context IDs.
+
+# Official family reference
+
+Official task/question-family identity is owned by `02-IELTS-MODEL.md` through stable `IELTS-*-*` IDs.
+
+Concrete content records those IDs separately from Skill targets because:
+
+- one Skill Leaf may serve multiple official families;
+- one official family may require multiple capabilities;
+- grouping several families under one Skill Leaf must not allow missing content for one family to disappear from coverage.
+
+Examples:
+
+```text
+IELTS-L-QF-04    completion family in Listening
+IELTS-R-QF-04    matching information
+IELTS-R-QF-06    matching features
+IELTS-W-A-T1     Academic Writing Task 1
+IELTS-S-P2       Speaking Part 2
+```
+
+# Stable Content Presentation Class registry
+
+Some official task families require materially different stimulus presentations even though the scored task family remains one construct. These are content-coverage dimensions, not new Skills or scored tasks.
+
+Initial Academic Writing Task-1 presentation classes:
+
+| ID | Presentation class |
+|---|---|
+| `PRES-W-A-T1-GRAPH-CHART-TABLE` | graph/chart/table/statistical visual, including combined statistical displays |
+| `PRES-W-A-T1-DIAGRAM-PROCESS` | diagram of a process, object, device, event, or comparable non-statistical process representation |
+| `PRES-W-A-T1-MAP-PLAN` | map/plan/spatial-change representation |
+
+A stimulus may reference more than one class when the task genuinely combines presentation types. `02-IELTS-MODEL.md` remains the owner of the external Academic Task-1 construct; these IDs only make content diversity checkable.
+
+Other topics, accents, domains, vocabulary themes, and difficulty bands remain metadata rather than new presentation IDs unless their distinction becomes necessary for a material coverage/inference rule.
 
 # Delivery scope
 
 Where exam-readiness behavior depends materially on external delivery, concrete items/runs may declare a delivery scope/reference resolved from `02-IELTS-MODEL.md` / TargetProfile.
 
-Examples conceptually include test-centre computer, an eligible Writing-on-Paper condition, or an eligible online Academic condition.
-
-Delivery scope changes interaction/conditions. It does not create a second Content Context for the same learning construct unless the content itself materially differs.
+Delivery scope changes interaction/conditions. It does not create a second Content Context or official task family.
 
 # `LearningUnit`
 
@@ -86,6 +120,7 @@ objective_refs
 prerequisite_refs
 test_variant_scope
 content_context_refs
+external_task_family_refs where material
 delivery_mode_scope optional
 content_sequence
 practice_item_refs
@@ -95,7 +130,7 @@ remediation_pattern_refs
 completion_intent
 ```
 
-Completion is not mastery. Multiple units may instantiate one Curriculum Node for different variants, delivery preparations, or learner contexts.
+Completion is not mastery. Multiple units may instantiate one Curriculum Node for different variants, family coverage, delivery preparation, or learner contexts.
 
 # `Stimulus`
 
@@ -108,6 +143,8 @@ id
 kind
 test_variant_scope
 content_context_id
+external_task_family_refs where material
+presentation_class_refs where material
 source_or_provenance
 content
 language_properties
@@ -153,6 +190,8 @@ similarity_or_novelty_dimensions
 prior_attempt_refs
 context_variation
 content_context_variation
+external_family_variation where material
+presentation_variation where material
 ```
 
 Exact-item novelty is not equivalent to meaningful transfer.
@@ -169,6 +208,8 @@ practice_type_id
 learning_mechanism_refs
 test_variant_scope
 content_context_id
+external_task_family_refs where material
+presentation_class_refs where material
 delivery_mode_scope optional
 target_skill_leaf_ids
 target_knowledge_ids
@@ -190,13 +231,15 @@ Invariants:
 1. `practice_type_id` resolves to `07-PRACTICE.md`;
 2. Learning Mechanism refs resolve where declared;
 3. Skill/Knowledge refs resolve canonically;
-4. Content Context is compatible with variant-specific targets;
-5. `W-TA-*` visual targets cannot instantiate GT Task 1;
-6. `W-GT1-*` cannot instantiate Academic Task 1;
-7. delivery scope is recorded when interaction/readiness inference depends on it;
-8. difficulty/scaffold may vary without changing the target;
-9. authored and generated items obey the same contract;
-10. item instances remain replaceable.
+4. official family refs resolve to `02-IELTS-MODEL.md`;
+5. Content Context is compatible with variant-specific targets/family;
+6. `W-TA-*` visual targets cannot instantiate GT Task 1;
+7. `W-GT1-*` cannot instantiate Academic Task 1;
+8. family identity cannot be inferred only from a broad Skill Leaf when several official families share that leaf;
+9. delivery scope is recorded when interaction/readiness inference depends on it;
+10. difficulty/scaffold may vary without changing the target;
+11. authored and generated items obey the same contract;
+12. item instances remain replaceable.
 
 # `AssessmentItem`
 
@@ -210,6 +253,8 @@ assessment_type_id
 claim_scope
 test_variant_scope
 content_context_id
+external_task_family_refs where material
+presentation_class_refs where material
 delivery_mode_scope optional
 target_skill_leaf_ids
 target_knowledge_ids
@@ -229,7 +274,7 @@ Invariants:
 
 - samples the claimed capability;
 - references Band semantics rather than redefining them;
-- context/variant matches the claim;
+- official family/context/variant matches the claim;
 - Reading Band inference uses applicable variant scoring policy;
 - timing, assistance, partial/full-task state, delivery/input mode, capture quality, and other material conditions remain visible;
 - independence/novelty metadata supports correct Assessment inference;
@@ -246,6 +291,7 @@ id
 target_skill_leaf_ids
 target_knowledge_ids
 content_context_refs when material
+external_task_family_refs when material
 pattern_description
 applicability_context
 example_refs
@@ -269,6 +315,7 @@ id
 target_skill_leaf_ids
 target_knowledge_ids
 content_context_refs when material
+external_task_family_refs when material
 error_pattern_refs
 learning_mechanism_refs
 practice_type_refs
@@ -293,6 +340,7 @@ attempt_ref
 observation_refs
 target_refs
 content_context_ref when material
+external_task_family_refs when material
 observed_performance
 gap_or_error
 matched_error_pattern_refs
@@ -341,6 +389,8 @@ claim_candidate_refs
 target_refs
 test_variant_scope
 content_context_id
+external_task_family_refs when material
+presentation_class_refs when material
 actual_delivery_mode where material
 criterion_outcomes
 raw_result
@@ -385,7 +435,9 @@ Each entry must support answers to:
 
 ```text
 canonical target refs
+stable official task/question-family refs
 stable Content Context ID
+presentation class where material
 test variant
 supported delivery scope where material
 Practice/Assessment Type support
@@ -397,6 +449,8 @@ independent readiness asset state
 product/release activation
 ```
 
+Coverage tooling must be able to query **official family coverage independently of Skill coverage**. For example, content for Matching Information cannot silently satisfy Matching Features merely because both map to an aggregated Reading capability.
+
 The manifest is implementation truth about available content, not new learning authority.
 
 `design/08-coverage-and-support.md` owns which conditions must pass before coverage/support promotion.
@@ -406,7 +460,7 @@ A UI feature existing is not proof of content coverage.
 # Composition
 
 ```text
-Curriculum Node + variant overlay
+external task family + Curriculum Node + variant overlay
       ↓
 Learning Unit
   ├─ Stimuli
@@ -436,7 +490,9 @@ Difficulty metadata does not define a Band.
 A concrete object is acceptable only when:
 
 - canonical refs resolve;
+- external task-family refs resolve when the item represents an official family;
 - Content Context/variant refs are compatible;
+- presentation class is correct when material;
 - delivery scope is compatible when material;
 - it introduces no contradictory teaching/scoring rule;
 - answer key/rubric/model is valid where applicable;
@@ -449,7 +505,7 @@ A concrete object is acceptable only when:
 
 # Generated-content boundary
 
-AI generation is an instance-generation mechanism, not authority. Generated items/explanations/feedback/error hypotheses/remediation must pass the same target, context, delivery, rights, quality, and evidence contracts as authored content.
+AI generation is an instance-generation mechanism, not authority. Generated items/explanations/feedback/error hypotheses/remediation must pass the same target, official-family, context, presentation, delivery, rights, quality, and evidence contracts as authored content.
 
 # No persistence/wire contract
 
