@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: conceptual learner representation, learner dimensions, starting and target state semantics, learner constraints that affect planning
+OWNS: conceptual learner representation, learner dimensions, starting and target state semantics, learner constraints and epistemic conditions that affect planning
 DEPENDS_ON: 00-PRODUCT.md, 02-IELTS-MODEL.md
 DOES_NOT_OWN: IELTS band definitions, canonical skill or knowledge objects, curriculum ordering, assessment sufficiency, runtime state transitions, certification rules
 
@@ -9,15 +9,15 @@ DOES_NOT_OWN: IELTS band definitions, canonical skill or knowledge objects, curr
 
 Define the learner that the learning system reasons about without duplicating the domain objects used to teach, assess, or progress that learner.
 
-This is a conceptual model. Per-learner runtime state and transitions are owned by `09-PROGRESSION.md`.
+The learner is not represented by one scalar band. The system reasons about an uneven, evidence-limited, changing profile. Per-learner runtime transitions are owned by `09-PROGRESSION.md`; evidence semantics are owned by `08-ASSESSMENT.md`.
 
 ## Learner profile
 
-A learner is represented by a profile with the following independent dimensions.
+A learner profile contains independent dimensions.
 
 ### Current capability
 
-The learner may have a different current level in each IELTS skill:
+Current capability is represented per IELTS skill:
 
 ```text
 Listening
@@ -26,129 +26,121 @@ Writing
 Speaking
 ```
 
-Uneven profiles are normal. The model must not collapse a learner into a single overall band for progression purposes.
+Uneven profiles are normal. A learner may be stronger in Reading than Writing without either skill being forced to the other skill's state.
 
-A learner can therefore be, for example, stronger in Reading than Writing without the stronger skill being artificially gated by the weaker one.
+A current capability estimate is a claim supported by evidence, not a permanent fact. Unknown, stale, or conflicting evidence must not be silently converted into weakness.
 
-### Target outcome
+### Target profile
 
-The learner may have:
+A learner may have:
 
-- a target band per skill;
-- a target overall IELTS band;
-- a test date or no fixed test date;
-- a target test variant, initially Academic.
+- target band per skill;
+- target overall IELTS band;
+- fixed test date or no fixed date;
+- target test variant, initially Academic;
+- temporary study priorities.
 
-A target overall band is a planning objective. It does not replace the per-skill competence requirements owned by `05-BANDS.md`.
+The target overall band is a planning constraint. It does not replace the per-skill requirements owned by `05-BANDS.md`.
 
-### Skill mastery profile
+### Skill profile
 
-The learner's actual capability is represented at runtime by references to canonical Skill Leaves from `03-SKILLS.md`.
+Skill capability references canonical Skill Leaves from `03-SKILLS.md`.
 
-The learner model does not redefine those leaves. It only requires that the system can describe which capabilities are strong, weak, unstarted, developing, or mastered.
+The learner model requires the system to represent, as evidence permits, which leaves are unobserved, developing, currently supported, weak under a defined context, or in need of fresh evidence. This file does not define the measurement rule behind those states.
 
 ### Knowledge profile
 
-The learner's enabling knowledge is represented at runtime by references to canonical Knowledge Objects from `04-KNOWLEDGE.md`.
+Enabling knowledge references canonical Knowledge Objects from `04-KNOWLEDGE.md`.
 
-Knowledge gaps may explain skill difficulties, but knowledge acquisition is not itself an IELTS section score.
+A Knowledge gap may explain a skill difficulty, but Knowledge is not an IELTS section score and passing a Knowledge probe cannot substitute for target-skill performance.
 
-### Evidence profile
+### Epistemic profile
 
-The learner accumulates assessment evidence over time. Evidence belongs to learner runtime state and references canonical Assessment Types.
+The learner model must preserve uncertainty about what is known.
 
-A learner profile must allow the system to distinguish:
+For any material claim the system must be able to distinguish at least:
 
-- a single good performance;
-- repeated reliable performance;
-- low-confidence performance;
-- current regression after prior attainment.
+- sufficient current evidence;
+- insufficient evidence;
+- conflicting evidence;
+- stale evidence;
+- observed below-requirement performance.
 
-The sufficiency rules are owned by `08-ASSESSMENT.md`; the state consequences are owned by `09-PROGRESSION.md`.
+These conditions have different consequences. `08-ASSESSMENT.md` owns their evidence interpretation and `09-PROGRESSION.md` owns the resulting next action or state change.
 
 ### Learning constraints
 
-Planning may account for constraints such as:
+Planning may account for:
 
 - available study time;
 - fixed exam date;
 - preferred or available delivery mode;
 - accessibility needs;
-- prior exposure to IELTS;
-- first-language context for optional explanations or remediation;
-- temporary focus on a specific weak skill.
+- prior IELTS exposure;
+- first-language context for optional explanation/remediation;
+- temporary focus on a weak skill;
+- learner preference and repeated friction.
 
-Constraints may change sequencing or emphasis but must not change the canonical mastery requirement for a target band.
+Constraints may alter path, pacing, or presentation. They must not alter the canonical standard for a target skill and band.
+
+Preference, skipping, abandonment, or friction are not ability evidence by themselves.
 
 ## Program range
 
 The structured learning program targets Bands 3–9.
 
-Bands 0–2 remain useful as diagnostic boundaries in the IELTS model, but the Blueprint does not define a detailed Bands 0–2 curriculum.
-
-A learner below the Band-3 structured entry range should receive diagnosis and foundational remediation before entering the canonical Band-3 pathway. The specific band boundary is owned by `05-BANDS.md`.
+Bands 0–2 remain diagnostic/external boundaries. A learner below the Band-3 structured entry range receives diagnosis and foundational remediation before entering the canonical Band-3 pathway. The band boundary is owned by `05-BANDS.md`.
 
 ## Starting state
 
 A learner does not have to begin with every skill at the same band.
 
-Initial diagnosis should establish, as evidence permits:
+Initial diagnosis should establish only what the available evidence supports:
 
-- current per-skill band estimate;
-- relevant Skill Leaf strengths and gaps;
-- relevant Knowledge Object gaps;
+- current per-skill performance estimate;
+- Skill Leaf strengths and gaps;
+- Knowledge Object gaps;
 - prerequisite gaps;
-- exam-readiness constraints if a fixed test date exists.
+- unresolved uncertainty or conflicting evidence;
+- exam-readiness constraints when a fixed date exists.
 
-Diagnosis informs planning. It does not itself certify mastery unless the assessment evidence also satisfies the certification requirements.
+A short initial diagnostic should be allowed to produce a provisional profile rather than pretending to know the entire learner.
+
+Diagnosis informs planning. It does not certify mastery unless the relevant evidence also satisfies `08-ASSESSMENT.md`.
 
 ## Target state
 
-A learner reaches a target state when the required per-skill capability has been demonstrated according to the owning band and assessment rules.
+A learner reaches a target state when the required per-skill capability is currently supported by valid evidence under the owning Band and Assessment rules.
 
-The target state is therefore not defined by:
+The target state is not defined by:
 
 - number of lessons completed;
 - time spent;
-- practice count alone;
-- a model's unsupported prediction;
-- the learner's overall-band average alone.
+- practice count;
+- one unusually good attempt;
+- an unsupported model prediction;
+- overall-band averaging alone.
 
 ## Learning progression vs exam preparation
 
-The learner can be in ordinary learning progression, exam-preparation mode, or both simultaneously for different purposes.
+Ordinary learning progression and exam preparation are independent dimensions.
 
-Exam-preparation mode may expose the learner to higher-band or full-test tasks before mastery for:
-
-- diagnosis;
-- familiarization;
-- pacing;
-- test strategy;
-- readiness estimation.
-
-This exposure must not alter the learner's certified learning state. The transition rules are owned by `09-PROGRESSION.md`.
+Exam preparation may expose higher-demand or full-test tasks before mastery for diagnosis, familiarization, pacing, strategy, stamina, or readiness estimation. Exposure does not alter certified learning state unless the normal evidence rules are independently satisfied.
 
 ## L1-agnostic canonical learner
 
 The canonical learner model is independent of first language.
 
-First-language information may improve explanation, transfer-error detection, pronunciation remediation, or localization. It remains contextual input and cannot create a different canonical definition of IELTS competence.
+First-language information may improve explanation, localization, transfer-error hypotheses, and pronunciation remediation. It cannot create a different definition of IELTS competence.
 
 ## Same outcomes, different paths
 
-Learners may receive different:
+Learners may receive different practice selections, review schedules, scaffolds, remediation, difficulty progression, sequencing, and pacing.
 
-- practice selections;
-- review schedules;
-- remediation;
-- difficulty progression;
-- within-band sequencing;
-- pacing.
-
-They must still reach the same canonical target outcomes for the same target skill and band.
+They must still meet the same canonical target for the same skill and band.
 
 Adaptation personalizes the path, not the standard.
 
 ## Model boundary
 
-This file defines who the learner is conceptually. It intentionally does not define database fields, event history, transition algorithms, or storage. Those are runtime/implementation concerns unless their semantics affect learning progression, in which case `09-PROGRESSION.md` owns them.
+This file defines who the learner is conceptually. It does not define database fields, event history, scoring algorithms, or storage. Those are implementation concerns unless their semantics affect learning, assessment, or progression, in which case the relevant canonical owner defines the behavior.

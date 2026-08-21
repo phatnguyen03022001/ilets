@@ -1,59 +1,43 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, reference contracts between concrete learning content and canonical objects, lesson/unit composition, Practice/Assessment Item representation, Stimulus representation, reusable Error/Remediation Pattern representation, Feedback Artifact semantics, and evidence-record shape
-DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md
-DOES_NOT_OWN: canonical skill/knowledge/band rules, curriculum sequence, practice pedagogy, assessment sufficiency, learner-state transitions, persistence/API/database schemas
+OWNS: conceptual content-instance model, reference contracts between concrete content and canonical objects, Learning Unit, Practice/Assessment Item, Stimulus, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, and EvidenceFact representation
+DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
+DOES_NOT_OWN: canonical skill/knowledge/band rules, curriculum sequence, learning-mechanism policy, assessment eligibility/sufficiency, learner-state transitions, persistence/API/database schemas
 
 # 10 — Content Model
 
 ## Purpose
 
-Define how concrete learning/tutoring content **references** the canonical learning model without becoming a second source of truth.
+Define how concrete learning, tutoring, and measurement objects reference the canonical learning system without becoming a second source of truth.
 
-The specification has two levels:
+The specification separates reusable canonical semantics from replaceable instances:
 
 ```text
 Canonical definitions
   Skill Leaf
   Knowledge Object
   Curriculum Node
+  Learning Mechanism
   Practice Type
   Assessment Type
 
-Concrete/supporting content
+Concrete/supporting instances
   Learning Unit
   Stimulus
+  ScaffoldingProfile
+  ExposureContext
   Practice Item
   Assessment Item
   Error Pattern
   Remediation Pattern
   Feedback Artifact
   Attempt
-  Evidence Record
+  Observation
+  EvidenceFact
 ```
-
-Concrete/supporting objects consume canonical definitions. They never redefine them.
 
 ## Reference-first rule
 
-Every content object must identify the canonical target(s) that justify its existence.
-
-Examples:
-
-```text
-Practice Item
-  → practice_type_id
-  → target_skill_leaf_ids / target_knowledge_ids
-  → curriculum_node_id when assigned in a pathway
-```
-
-```text
-Assessment Item
-  → assessment_type_id
-  → target_skill_leaf_ids / target_knowledge_ids
-  → target_band when the claim is band-specific
-```
-
-If a content object cannot identify what canonical target it serves, it is not valid Blueprint-aligned content.
+Every concrete object identifies the canonical target(s) and policy objects that justify its existence. Concrete content may instantiate semantics; it may not redefine them.
 
 # `LearningUnit`
 
@@ -69,26 +53,18 @@ prerequisite_refs
 content_sequence
 practice_item_refs
 assessment_item_refs
-error_pattern_refs where useful
-remediation_pattern_refs where useful
+error_pattern_refs
+remediation_pattern_refs
 completion_intent
 ```
 
-Rules:
-
-- objectives reference Skill/Knowledge semantics instead of rewriting them;
-- a unit may contain explanations, examples, practice, retrieval, transfer, remediation, and assessment;
-- a unit is not a new curriculum authority;
-- multiple units may instantiate the same Curriculum Node for different delivery modes/learner needs;
-- completing a unit does not imply mastery unless valid Assessment evidence says so.
-
-The product may call a Learning Unit a "lesson"; the canonical concept remains delivery-neutral.
+Completion is not mastery. Multiple Learning Units may instantiate the same Curriculum Node for different delivery modes or learner contexts.
 
 # `Stimulus`
 
 A Stimulus is source material the learner reads, hears, views, analyzes, or responds to.
 
-Examples include Reading passages, Listening recordings/transcripts, charts/tables/diagrams/maps, Writing prompts, Speaking cue cards/questions, worked examples, model responses, and sentence/paragraph material used in focused drills.
+Examples include passages, recordings/transcripts, charts/tables/maps, Writing prompts, Speaking questions/cue cards, model responses, worked examples, and sentence/paragraph material.
 
 Conceptual fields:
 
@@ -100,22 +76,60 @@ source_or_provenance
 content
 language_properties
 difficulty_parameters
-rights_or_usage_metadata where required
+rights_or_usage_metadata
 ```
 
-A Stimulus may be reused across Practice and Assessment only when reuse does not invalidate evidence independence.
+A Stimulus may be reused across Practice and Assessment only when reuse does not invalidate independence, novelty, or the inference intended from the later attempt.
 
-Examples formerly attached directly to a Knowledge Object are represented as Stimuli or explanatory content referencing that Knowledge Object; the example is replaceable content, not part of object identity.
+# `ScaffoldingProfile`
+
+A ScaffoldingProfile records material support available during an item/attempt.
+
+Conceptual dimensions may include:
+
+```text
+content_support
+structural_support
+lexical_support
+response_support
+hints
+worked_example_access
+feedback_timing
+attempt/retry support
+timing support
+```
+
+The profile exists because a correct response with material support has a different inference scope from independent performance.
+
+Scaffolding is not inherently bad. It is a learning tool whose presence must remain visible when Assessment interprets an Observation.
+
+# `ExposureContext`
+
+ExposureContext records material prior exposure relevant to learning, novelty, retry, or transfer inference.
+
+Conceptual fields:
+
+```text
+item_seen_before
+stimulus_seen_before
+prior_feedback_exposure
+similarity_or_novelty_dimensions
+prior_attempt_refs
+context_variation
+```
+
+Exact-item novelty is not equivalent to transfer. The material dimensions depend on the claim.
 
 # `PracticeItem`
 
-A Practice Item is a concrete instance of a canonical Practice Type.
+A Practice Item is a concrete instance of a Practice Type and may declare the Learning Mechanisms it instantiates.
 
 Conceptual fields:
 
 ```text
 id
 practice_type_id
+learning_mechanism_refs
 target_skill_leaf_ids
 target_knowledge_ids
 curriculum_node_id
@@ -123,55 +137,58 @@ stimulus_refs
 prompt_or_instruction
 response_contract
 difficulty_parameters
-scaffold_level
-error_pattern_refs when targeting known errors
-remediation_pattern_ref when the item is remedial
+scaffolding_profile
+exposure_context
+error_pattern_refs
+remediation_pattern_ref
 feedback_contract
-answer_or_model_reference where appropriate
+answer_or_model_reference
 ```
 
-## Practice Item invariants
+Invariants:
 
 1. `practice_type_id` resolves to `07-PRACTICE.md`.
-2. Target IDs resolve to canonical Skill/Knowledge objects.
-3. Difficulty may vary without silently changing the canonical target.
-4. Scaffolding is represented because heavily scaffolded work cannot later be mistaken for independent assessment evidence.
-5. Generated and authored items obey the same reference/quality contract.
-6. Item instances are replaceable; Practice Type semantics remain stable.
+2. mechanism refs resolve to canonical `LM-*` where declared.
+3. target IDs resolve to canonical Skill/Knowledge objects.
+4. difficulty/scaffolding may vary without changing the target.
+5. generated and authored items obey the same contract.
+6. item instances are replaceable.
 
 # `AssessmentItem`
 
-An Assessment Item is a concrete measurement instance of a canonical Assessment Type.
+An Assessment Item is a concrete measurement instance of an Assessment Type.
 
 Conceptual fields:
 
 ```text
 id
 assessment_type_id
+claim_scope
 target_skill_leaf_ids
 target_knowledge_ids
-target_band when applicable
+target_band
 stimulus_refs
 prompt_or_task
 response_contract
 conditions
+scaffolding_profile
+exposure_context
 scoring_reference
 answer_key_or_rubric_reference
 independence_group
 ```
 
-## Assessment Item invariants
+Invariants:
 
-1. `assessment_type_id` resolves to `08-ASSESSMENT.md`.
-2. The item samples the capability it claims to measure.
-3. Band semantics reference `05-BANDS.md`; they are not copied into the item definition.
-4. `conditions` record material factors such as timing, assistance, and full-task vs partial-task status.
-5. `independence_group` or equivalent metadata lets Assessment judge independence across demonstrations.
-6. An item does not decide certification; it produces evidence consumed by `AT-05` and Progression.
+- the item samples the capability it claims to measure;
+- Band semantics are referenced from `05-BANDS.md`;
+- conditions preserve timing, assistance, partial/full-task status, and other material context;
+- independence/novelty metadata allows `08-ASSESSMENT.md` to judge the claim correctly;
+- the item itself never decides mastery or certification.
 
 # `ErrorPattern`
 
-An Error Pattern is reusable tutoring/content knowledge about a recurring learner mistake or misconception. It is **not** intrinsic Skill/Knowledge identity and may change with population, L1, task context, empirical evidence, or product localization.
+An Error Pattern is reusable tutoring knowledge about a recurring learner mistake or misconception.
 
 Conceptual fields:
 
@@ -184,24 +201,16 @@ applicability_context
 example_refs
 detection_hints
 likely_causes where evidence supports them
-severity_or_priority when useful
+priority when useful
 evidence_or_provenance
-locale_or_l1_scope when relevant
+locale_or_l1_scope
 ```
 
-Rules:
-
-- target references are mandatory;
-- an Error Pattern may target one or many canonical objects;
-- population/L1-specific patterns must declare that scope rather than changing canonical learning requirements;
-- a pattern is supporting tutoring knowledge, not proof that every learner has the error;
-- observations from learner attempts may instantiate/match a pattern without changing the pattern's supporting status.
-
-This is the active home for legacy per-leaf `common_errors` and Knowledge `common_misconceptions` semantics when they are useful enough to retain or re-author.
+An Error Pattern is a hypothesis/supporting pattern, not proof that a learner has the error. Population/L1-specific patterns must declare their scope.
 
 # `RemediationPattern`
 
-A Remediation Pattern is a reusable content/tutoring strategy for correcting a known error or weak target. It is not a prerequisite rule, Band threshold, or canonical Skill definition.
+A Remediation Pattern is a reusable tutoring strategy for a diagnosed weak target or Error Pattern.
 
 Conceptual fields:
 
@@ -209,55 +218,41 @@ Conceptual fields:
 id
 target_skill_leaf_ids
 target_knowledge_ids
-error_pattern_refs when applicable
+error_pattern_refs
+learning_mechanism_refs
 practice_type_refs
 explanation_or_stimulus_refs
 scaffold_strategy
 recommended_sequence
 success_check
-variant_or_locale_scope when relevant
+scope
 evidence_or_provenance
 ```
 
-Rules:
-
-- remediation must point back to canonical targets;
-- Practice Types are referenced rather than redefined;
-- success checks may produce formative evidence but certification still follows `08-ASSESSMENT.md`;
-- remediation may differ by learner context/L1 without altering canonical target semantics;
-- remediation patterns are replaceable and can be empirically improved independently of Skill/Knowledge identity.
-
-This is the active home for legacy leaf `remediation` semantics after the structural refactor.
+It may recommend mechanisms and Practice Types but cannot redefine prerequisites, Band thresholds, or mastery rules.
 
 # `FeedbackArtifact`
 
-A Feedback Artifact is guidance generated from a learner attempt.
+Feedback is guidance derived from an Attempt/Observation.
 
 Conceptual fields:
 
 ```text
 attempt_ref
+observation_refs
 target_refs
 observed_performance
 gap_or_error
-matched_error_pattern_refs when applicable
-evidence_reference
+matched_error_pattern_refs
 feedback_message
-recommended_action_refs
-remediation_pattern_refs when applicable
-confidence when materially relevant
+recommended_action_intent
+recommended_mechanism_refs
+recommended_practice_type_refs
+remediation_pattern_refs
+uncertainty when material
 ```
 
-Feedback may be authored by AI, deterministic rules, a human, or a combination.
-
-## Feedback invariants
-
-- point to canonical targets rather than inventing a parallel rubric;
-- distinguish observed evidence from inference;
-- be actionable when formative;
-- avoid giving away cognitive work when retrieval/transfer is the target;
-- surface material uncertainty;
-- recommend canonical next actions/Practice Types/Remediation Patterns by reference where useful.
+Feedback must distinguish observed performance from inferred cause. It should be actionable when formative and must not perform the learner's required cognitive operation on the learner's behalf.
 
 Feedback is runtime/supporting output, not canonical learning truth.
 
@@ -265,82 +260,119 @@ Feedback is runtime/supporting output, not canonical learning truth.
 
 An Attempt is a learner-instance event against a Practice Item or Assessment Item.
 
-The semantic contract must connect:
+Conceptual fields:
 
 ```text
-learner
-item
+learner_ref
+item_ref
 response
-conditions
-time
-automated/human evaluation refs
+started_at
+completed_at
+scaffolding_profile
+exposure_context
+evaluation_refs
 ```
 
-Attempt history and mastery consequences belong to `09-PROGRESSION.md` and runtime implementation. This spec does not prescribe storage.
+An Attempt records what the learner did. It is not automatically evidence.
 
-# `EvidenceRecord`
+# `Observation`
 
-An Evidence Record is the normalized measurement output from an assessment attempt.
+An Observation is a normalized measurement result derived from an Attempt before evidence admission.
 
-It references:
+Conceptual fields:
 
-- assessment item/type;
-- target IDs;
-- criterion outcomes;
-- target band where relevant;
-- confidence where required;
-- attempt conditions;
-- time;
-- scorer/evaluation provenance sufficient for validation.
+```text
+id
+attempt_ref
+assessment_type_ref
+claim_candidate_refs
+target_refs
+criterion_outcomes
+raw_result
+conditions
+scaffolding_profile
+exposure_context
+scorer_or_evaluator_provenance
+uncertainty
+observed_at
+```
 
-`08-ASSESSMENT.md` determines validity/sufficiency. `09-PROGRESSION.md` consumes the resulting decision.
+Observations preserve history. A scoring/policy change may alter downstream interpretation without rewriting the original observation.
+
+# `EvidenceFact`
+
+An EvidenceFact is a claim-scoped admission of an Observation under `08-ASSESSMENT.md`.
+
+Conceptual fields:
+
+```text
+id
+observation_ref
+claim_scope
+eligibility_status
+eligibility_reason
+inference_scope
+policy_version
+admitted_at
+```
+
+One Observation may produce EvidenceFacts for multiple compatible claims or no EvidenceFact at all.
+
+EvidenceFact is historical admissible evidence. It is not MasteryEstimate, ReadinessEvaluation, or Certification.
+
+The legacy umbrella term `EvidenceRecord` should not be used for new design because it hides the Observation-versus-EvidenceFact boundary.
 
 # Content composition
 
-A typical semantic flow may be composed as:
+A typical flow is:
 
 ```text
 Curriculum Node
      ↓
 Learning Unit
-     ├── explanation / examples / Stimuli
+     ├── explanation / Stimuli
      ├── Practice Items
-     ├── Error/Remediation Patterns when needed
-     ├── retrieval / transfer items
+     ├── Error / Remediation Patterns
      └── Assessment Items
               ↓
-          Evidence Records
+            Attempt
               ↓
-        learner-state decision
+          Observation
+              ↓
+          EvidenceFact
+              ↓
+   Mastery / Readiness evaluation
+              ↓
+       learner-state decision
 ```
 
-This is not a required UI screen flow.
+This is not a required UI screen flow or persistence schema.
 
 # Difficulty model
 
-Concrete content may express difficulty through linguistic complexity, amount of information, abstraction, distractor strength, response length, target integration, timing pressure, scaffold/cue availability, novelty, and transfer distance.
+Concrete content may express difficulty through linguistic complexity, information load, abstraction, distractor strength, response length, target integration, timing pressure, scaffold/cue availability, novelty, and transfer distance.
 
-Difficulty metadata supports selection/calibration. It does not create a Band definition.
+Difficulty metadata supports selection and calibration. It does not define a Band.
 
 # Content quality requirements
 
-A content/supporting object is acceptable only when:
+A concrete/supporting object is acceptable only when:
 
-- canonical target references are valid;
-- it does not introduce contradictory teaching rules;
-- language/task conditions match stated purpose;
-- answer key/rubric/model is internally valid where applicable;
+- canonical references resolve;
+- it does not introduce contradictory teaching/scoring rules;
+- task/variant conditions match purpose;
+- answer key/rubric/model is valid where applicable;
 - assessment contexts do not leak answers;
-- Academic vs General Training scope is respected;
-- external provenance/rights are known where needed;
-- difficulty is plausible for intended use;
-- error/remediation claims declare population/context scope when not universal;
-- it can be retired/replaced without changing canonical learning truth.
+- provenance/rights are known where needed;
+- difficulty and scaffolding are plausible for intended use;
+- exposure/reuse does not invalidate the intended evidence claim;
+- error/remediation claims declare population/context scope when non-universal;
+- it can be replaced without changing canonical learning truth.
 
 # Generated content boundary
 
-AI generation is an instance-generation mechanism, not a source of authority. Generated exercises, explanations, error hypotheses, and remediation suggestions must pass the same reference/quality contract as authored content and cannot amend Skill, Knowledge, Band, Curriculum, Practice, Assessment, or Progression semantics.
+AI generation is an instance-generation mechanism, not authority. Generated exercises, explanations, feedback, error hypotheses, and remediation suggestions must pass the same reference, rights, quality, and evidence-context contract as authored content.
 
 # No persistence contract
 
-Names and fields here are conceptual contracts. They do not require matching database tables, classes, JSON payloads, or service boundaries one-to-one. Implementation may choose storage/API designs freely while preserving these semantics.
+Names and fields here are conceptual contracts. They do not require one-to-one SQL tables, classes, JSON payloads, services, or language-specific types. Cross-language implementation uses explicit contracts under the repository governance rules in `CONSTITUTION.md`.

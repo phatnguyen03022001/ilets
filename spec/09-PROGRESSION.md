@@ -1,96 +1,69 @@
 STATUS: CANONICAL
-OWNS: learner runtime-state semantics, mastery-state transitions, per-skill band advancement and regression, prerequisite gating behavior, adaptive scheduling semantics, review scheduling, certification status, and exam-preparation mode
-DEPENDS_ON: 01-LEARNER-MODEL.md, 05-BANDS.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md
-DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, curriculum object ordering, practice taxonomy, assessment sufficiency or scoring, concrete data-storage implementation
+OWNS: learner runtime-state semantics, MasteryEstimate semantics, GapEvaluation and ActionIntent semantics, per-skill band advancement/regression, prerequisite gating behavior, adaptive scheduling, review policy, certification state, and exam-preparation mode
+DEPENDS_ON: 01-LEARNER-MODEL.md, 05-BANDS.md, 06-CURRICULUM.md, 08-ASSESSMENT.md
+DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, curriculum object ordering, learning mechanisms/practice taxonomy, assessment eligibility/sufficiency/scoring, or concrete data-storage implementation
 
 # 09 — Progression
 
 ## Purpose
 
-Define **when learner state changes** after valid learning and assessment events.
+Define when learner state changes and which semantic next-action objective follows after Assessment has interpreted the available evidence.
 
-Progression is a semantic state model, not a database design and not a storage service.
+Progression emits learner-state decisions, `GapEvaluation`, and `ActionIntent`. It does not choose the downstream Learning Mechanism or Practice Type; that selection is owned by `07-PRACTICE.md`.
 
-It references canonical objects by ID and never redefines them.
+Progression is a semantic state model, not a database schema.
 
 ## Core rule: progression is per skill
 
-Band progression is independent for:
+Listening, Reading, Writing, and Speaking progress independently.
+
+A learner may legitimately hold an uneven profile. The IELTS overall band may be calculated for planning/information using `02-IELTS-MODEL.md`, but it is never a hard learning-progression gate.
+
+## State layers
+
+The runtime model keeps these layers distinct:
 
 ```text
-Listening
-Reading
-Writing
-Speaking
-```
-
-A learner may legitimately hold an uneven profile such as:
-
-```text
-Listening 6
-Reading   7
-Writing   5
-Speaking  6
-```
-
-A stronger skill must not be blocked because another skill is weaker.
-
-The IELTS overall band may be calculated for informational/planning purposes from the four section bands, using the external rule in `02-IELTS-MODEL.md`, but the overall band is **not a learning-progression gate**.
-
-## Runtime state model
-
-### `LeafMasteryState`
-
-Per Skill Leaf:
-
-```text
-leaf_id
-mastery_state
-confidence
-assessment_evidence_refs
-last_assessed
-```
-
-Canonical mastery-state progression:
-
-```text
-not_started
+Attempt history
     ↓
-practicing
+Observation / EvidenceFact history       owned semantically by 08
     ↓
-emerging
+MasteryEstimate                          owned here
     ↓
-mastered
+ReadinessEvaluation                      produced by 08
+    ↓
+Certification / GapEvaluation / ActionIntent
 ```
 
-A mastered leaf may regress to `emerging` when later valid evidence shows that the capability is no longer held reliably.
+Historical evidence is not overwritten merely because the current interpretation changes.
 
-The thresholds that make evidence sufficient are owned by `08-ASSESSMENT.md`.
+# `MasteryEstimate`
 
-### `KnowledgeState`
+A MasteryEstimate is a current, derived, uncertainty-aware interpretation of capability for a scoped Skill Leaf or Knowledge Object.
 
-Per Knowledge Object:
+Conceptual fields:
 
 ```text
-knowledge_id
-state
-confidence
-evidence_refs
+scope_ref
+current_support_state
+uncertainty
+supporting_evidence_fact_refs
+blocking_or_conflicting_refs
+computed_at
+policy_version
 ```
 
-Canonical states:
+Recommended support states:
 
 ```text
-not_acquired
-    ↓
+unknown
 learning
-    ↓
-acquired
+currently_supported
 ```
 
-Later evidence may return an inadequately retained object to `learning`.
+`unknown` does not mean weak. `currently_supported` means current admissible evidence supports the scoped mastery claim; it does not mean immutable mastery forever.
 
-### `BandCertificationState`
+# `BandCertificationState`
 
 Per `(skill, band)`:
 
@@ -98,219 +71,197 @@ Per `(skill, band)`:
 skill
 band
 status
+claim_evaluation_ref
 certification_evidence_refs
+certified_at
 ```
 
 Canonical status:
 
 ```text
 not_started
-    ↓
 in_progress
-    ↓
 certified
 ```
 
-Certification is current-state truth, not an irrevocable badge.
-
-If later valid evidence shows regression below the certified band's floor, status returns:
-
-```text
-certified → in_progress
-```
-
-Re-certification then requires a fresh valid certification evidence set under `08-ASSESSMENT.md`.
-
-There is no separate `revoked` status. Historical attainment is preserved separately.
-
-### `OverallLearnerState`
-
-Conceptually includes:
-
-- current certified band per skill;
-- Skill Leaf mastery-state map;
-- Knowledge Object state map;
-- band certification states;
-- certification history;
-- exam-preparation mode/state;
-- due-review queue;
-- current curriculum recommendations.
-
-This is a semantic model. It does not prescribe SQL tables, event sourcing, document storage, or any implementation technology.
-
-## State transitions
-
-### `not_started → practicing`
-
-Occurs when the learner meaningfully attempts practice targeting the canonical Skill Leaf.
-
-Merely viewing content does not necessarily count as practice.
-
-### `practicing → emerging`
-
-Occurs when valid assessment evidence begins to show the target capability but the certification/mastery evidence standard has not yet been satisfied.
-
-### `emerging → mastered`
-
-Occurs when `08-ASSESSMENT.md` reports that the Skill Leaf evidence satisfies the canonical sufficiency and confidence policy for the relevant target.
-
-Progression consumes the assessment result; it does not reimplement the scoring rule.
-
-### `mastered → emerging`
-
-Occurs after later valid evidence demonstrates meaningful regression.
-
-Regression is a learning-state change, not deletion of history.
-
-## Band advancement
-
-A skill advances from Band N toward Band N+1 when:
-
-1. the current Band-N exit conditions owned by `05-BANDS.md` have valid certification evidence;
-2. `08-ASSESSMENT.md` reports the evidence set as sufficient and confidence-valid;
-3. the per-skill `BandCertificationState` is set to `certified` for Band N;
-4. curriculum recommendations may then prioritize appropriate Band-(N+1) work for that skill.
-
-This does not require other skills to certify Band N first.
-
-## Certification history
+Certification is internal learning-system recognition that the skill-band claim is currently `SUPPORTED` under `08-ASSESSMENT.md`. It is not an official IELTS result or guaranteed future exam score.
 
 Current certification and historical attainment are separate.
 
-`certification_history` records point-in-time attainment, including:
+# Band advancement
 
-- skill;
-- band;
-- evidence reference;
-- certification time;
-- later regression/re-certification events where applicable.
+A skill-band becomes `certified` when:
 
-If current performance regresses, prior attainment remains in history while current certification status reverts to `in_progress`.
+1. `05-BANDS.md` defines the target threshold;
+2. `08-ASSESSMENT.md` evaluates the corresponding claim as `SUPPORTED`;
+3. no required claim condition remains blocked;
+4. Progression records the current certification and its evidence/provenance.
 
-This avoids the false choice between erasing prior achievement and pretending current capability has not changed.
+Curriculum completion count is not a certification requirement. A learner who directly demonstrates the target capability may skip unnecessary acquisition stages. Required prerequisites constrain dependent learning paths; they are not paperwork that must be completed after the capability is already demonstrated.
 
-## Prerequisite gating
+After Band N is certified, the system may prioritize Band N+1 work for that skill without waiting for other skills.
 
-Curriculum dependency classification is owned by `06-CURRICULUM.md`.
+# GapEvaluation
+
+A GapEvaluation classifies what the current learner state actually requires. It is not synonymous with “the learner got something wrong.”
+
+Canonical classes:
+
+```text
+ABILITY_GAP
+PREREQUISITE_GAP
+EVIDENCE_GAP
+CONFLICTING_EVIDENCE
+STALE_EVIDENCE
+SCAFFOLD_DEPENDENCE
+TRANSFER_GAP
+FLUENCY_GAP
+EXAM_CONDITION_GAP
+```
+
+Semantics:
+
+- `ABILITY_GAP` — current admissible evidence shows below-requirement target performance.
+- `PREREQUISITE_GAP` — a Required prerequisite is materially missing for the dependent learning target.
+- `EVIDENCE_GAP` — capability is unresolved because evidence is insufficient, not because weakness is established.
+- `CONFLICTING_EVIDENCE` — material valid evidence supports incompatible interpretations.
+- `STALE_EVIDENCE` — historical support exists but needs refresh for a current claim.
+- `SCAFFOLD_DEPENDENCE` — performance is carried by support that the target claim requires the learner to perform without.
+- `TRANSFER_GAP` — practiced performance does not generalize to a materially different required context.
+- `FLUENCY_GAP` — target quality is broadly present but speed, automaticity, rhythm, or processing efficiency limits performance.
+- `EXAM_CONDITION_GAP` — timing, integration, stamina, or exam-format conditions reduce performance without necessarily implying a missing underlying skill.
+
+# ActionIntent
+
+GapEvaluation maps to an explicit planning intent before downstream practice/assessment selection.
+
+Canonical intents:
+
+```text
+ACQUIRE_PREREQUISITE
+REMEDIATE
+COLLECT_EVIDENCE
+RESOLVE_CONFLICT
+REASSESS
+FADE_SCAFFOLD
+EXPAND_CONTEXT
+BUILD_FLUENCY
+EXAM_PREPARE
+CONSOLIDATE
+ADVANCE
+```
+
+Representative mapping:
+
+| Gap / state | Default ActionIntent |
+|---|---|
+| `PREREQUISITE_GAP` | `ACQUIRE_PREREQUISITE` |
+| `ABILITY_GAP` | `REMEDIATE` or `CONSOLIDATE` based on diagnosis |
+| `EVIDENCE_GAP` | `COLLECT_EVIDENCE` |
+| `CONFLICTING_EVIDENCE` | `RESOLVE_CONFLICT` |
+| `STALE_EVIDENCE` | `REASSESS` |
+| `SCAFFOLD_DEPENDENCE` | `FADE_SCAFFOLD` |
+| `TRANSFER_GAP` | `EXPAND_CONTEXT` |
+| `FLUENCY_GAP` | `BUILD_FLUENCY` |
+| `EXAM_CONDITION_GAP` | `EXAM_PREPARE` |
+| target currently supported with remaining consolidation need | `CONSOLIDATE` |
+| target currently supported and next target eligible | `ADVANCE` |
+
+This mapping is a semantic default, not a hardcoded recommender algorithm.
+
+# Required prerequisites
+
+Dependency classification is owned by `06-CURRICULUM.md`.
 
 Runtime behavior:
 
-- **Required** prerequisite → hard gate until the prerequisite's required learner state is satisfied;
-- **Recommended** prerequisite → influences ordering/recommendation but does not block;
+- **Required** prerequisite → hard gate for dependent learning when its absence would make the learning ineffective;
+- **Recommended** prerequisite → ordering signal, not a blocker;
 - **Independent** → no gate.
 
-Hard gates must remain minimal. Adaptation may route around Recommended dependencies but may not bypass Required ones.
+Evidence can accelerate the path. If assessment already demonstrates the dependent capability or prerequisite adequately, the learner need not complete redundant instructional stages.
 
-## Adaptive within-band planning
+# Next-action policy
 
-Within a band, the system may personalize:
+A next action must be explainable as:
 
-- node order where prerequisites permit;
-- practice type selection;
-- difficulty;
-- review frequency;
-- remediation;
-- skill emphasis;
-- pace;
-- assessment timing.
+```text
+learner target
++ current evidence state
++ GapEvaluation
++ prerequisite status
+→ ActionIntent
+```
 
-Adaptation must never:
+`07-PRACTICE.md` then maps a learning-oriented ActionIntent to suitable Learning Mechanism(s) and Practice Type(s). Evidence-oriented intents may instead trigger an Assessment action.
 
-- change the canonical target outcome;
-- remove a required Skill Leaf;
-- redefine a Band threshold;
-- treat practice completion as mastery;
-- bypass Required prerequisites;
-- convert exam-preparation exposure into certification.
+The system must not route every uncertainty state into remediation.
 
-Same outcomes, different paths.
+# Learner agency and plan stability
 
-## Next-action policy
+The system should make a strong recommendation while preserving practical learner control where the action set remains valid.
 
-A learner's next recommendation should be explainable using canonical references.
+A learner may be allowed to swap, shorten, skip, or change skill among eligible alternatives. Such behavior changes planning context; it does not create evidence of ability or inability.
 
-Representative actions:
+Repeated skipping or abandonment is a preference/friction signal. It may justify a different eligible activity or delivery pattern but cannot lower the canonical standard.
 
-### Advance
+A current plan should remain stable enough to trust. Replanning should follow material learner/evidence state change rather than every minor scoring fluctuation.
 
-Select a Curriculum Node whose Required prerequisites are satisfied and whose targets move the learner toward the current per-skill band goal.
+# Review scheduling
 
-### Remediate
+Spacing applies only where a target is meaningfully reviewable through repeated retrieval or repeated performance.
 
-Target a weak or regressed Skill Leaf using an appropriate Practice Type and the enabling Knowledge Objects that explain the gap.
+A review system may expand or shorten intervals using performance history, but there is no universal spacing formula across vocabulary, grammar, writing organization, speaking fluency, and integrated IELTS tasks.
 
-### Review
+Suitable reviewable targets may use spaced retrieval; other targets may use targeted reassessment, transfer work, or performance practice. Exact mechanism/type selection is downstream Practice authority.
 
-Schedule retrieval for due Skill/Knowledge targets where retention is at risk.
+# Exam Preparation mode
 
-### Assess
+Exam Preparation may expose higher-demand or integrated tasks before certification for diagnosis, pacing, familiarity, stamina, strategy, or readiness estimation.
 
-Collect evidence when a target is near mastery or existing evidence has become stale/insufficient.
-
-### Exam prepare
-
-Expose the learner to timed, integrated, or higher-demand exam tasks without changing certification status unless the normal evidence standard is independently met.
-
-## Review scheduling
-
-Long-term retention uses performance-informed spacing rather than a fixed universal calendar.
-
-A review system should:
-
-- schedule retrieval before knowledge/capability is fully lost;
-- expand intervals after successful retrieval;
-- shorten intervals after weak retrieval;
-- prioritize repeatedly regressing targets;
-- keep review distinct from new acquisition.
-
-`PT-17` is the canonical spaced-retrieval Practice Type; other practice types may also be scheduled for review when appropriate.
-
-Exact scheduling algorithms and interval formulas are implementation/calibration concerns unless future evidence shows they must become canonical learning policy.
-
-## Exam Preparation mode
-
-Learning Progression and Exam Preparation are independent concepts.
-
-Exam Preparation may:
-
-- expose higher-band tasks before certification;
-- schedule `PT-06`, `PT-11`, `PT-15`, `PT-23`;
-- use `AT-07` full mocks;
-- prioritize timing, task familiarity, stamina, and strategy;
-- diagnose likely test-day performance.
+It may request downstream timed/integrated Practice or a full readiness Assessment.
 
 Exam Preparation must never:
 
 - unlock a higher band by exposure alone;
-- satisfy a missing Required prerequisite;
-- treat a single mock as certification;
-- modify the canonical Band threshold;
-- conceal uncertainty in readiness estimates.
+- satisfy a missing Required prerequisite by completion alone;
+- treat one mock as certification;
+- rewrite a Band threshold;
+- convert an unresolved evidence state into certainty.
 
-## Regression policy
+# Staleness, conflict, and regression
 
-Regression can occur at Skill Leaf, Knowledge Object, or current skill-band certification level when later valid evidence shows loss of capability.
+These are different conditions.
 
-Response to regression:
+### Staleness
 
-1. preserve historical evidence;
-2. update current state honestly;
-3. identify the canonical objects involved;
-4. schedule targeted review/remediation;
-5. collect fresh evidence;
+Stale evidence means the current claim needs refresh. It does **not** mean the learner regressed.
+
+### Conflict
+
+Conflicting evidence means the system does not yet know which interpretation is reliable. It triggers a discriminating evidence intent rather than majority-vote averaging.
+
+### Regression
+
+Regression requires later admissible evidence showing that a previously supported capability is now below the required current threshold.
+
+When regression is established:
+
+1. preserve historical evidence and prior attainment;
+2. update the current MasteryEstimate honestly;
+3. move affected current certification from `certified` to `in_progress` when the skill-band claim is no longer supported;
+4. classify the relevant GapEvaluation;
+5. emit the appropriate ActionIntent;
 6. re-certify only through the normal Assessment policy.
 
-## Explainability invariant
+Absence of recent evidence alone never revokes historical attainment.
 
-Every progression decision must be explainable through:
+# Certification history
 
-```text
-learner state
-+ canonical target IDs
-+ prerequisite status
-+ assessment evidence
-+ band requirement
-→ state transition / next recommendation
-```
+Certification history records point-in-time attainment with evidence and policy provenance. Later regression or re-certification adds history; it does not erase earlier events.
 
-No transition may depend on an untraceable duplicate definition of the learning target.
+# Explainability invariant
+
+Every state transition and ActionIntent must be reconstructable from canonical target references, evidence interpretation, and prerequisite status.
+
+No transition may depend on duplicate learning definitions or opaque “AI decided” state change.

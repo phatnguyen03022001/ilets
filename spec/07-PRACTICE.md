@@ -1,120 +1,152 @@
 STATUS: CANONICAL
-OWNS: how capability is trained, six learning phases, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, and feedback timing for learning
-DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md
+OWNS: how capability is trained, learning phases, Learning Mechanism taxonomy, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, and feedback timing for learning
+DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 09-PROGRESSION.md
 DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, assessment sufficiency/certification, learner-state transitions, or concrete generated exercise instances
 
 # 07 — Practice
 
 ## Purpose
 
-Define **how canonical capability is trained**.
+Define how canonical capability is trained.
 
-Practice is not Assessment. A learner performance may sometimes later yield valid evidence, but `08-ASSESSMENT.md` alone owns whether evidence is sufficient for mastery/certification.
+Practice is selected because of a diagnosed learning need, not because a learner merely belongs to a band. The canonical selection chain is:
 
-Practice Types are reusable training patterns. Concrete items are instances under `10-CONTENT-MODEL.md`.
+```text
+GapEvaluation / ActionIntent     owned by 09-PROGRESSION
+            ↓
+Learning Mechanism              owned here
+            ↓
+Practice Type                   owned here
+            ↓
+Concrete Practice Item          owned by 10-CONTENT-MODEL
+```
+
+A Learning Mechanism is a learning process. A Practice Type is an executable activity pattern that may instantiate one or more mechanisms. They are not interchangeable.
+
+Practice is not Assessment. A performance may later yield admissible evidence, but `08-ASSESSMENT.md` alone decides whether an observation becomes evidence and whether the evidence supports a claim.
 
 # Canonical learning phases
 
-Every Practice Type has exactly one primary phase and may support additional phases.
+Every Practice Type has one primary phase and may support additional phases.
 
-- **Acquisition** — initial construction of a new capability/knowledge pattern; high scaffolding and prompt corrective feedback are often appropriate.
-- **Consolidation** — stabilize newly acquired capability through focused varied repetition and correction.
-- **Retrieval** — actively recall/reproduce after delay before feedback is revealed.
+- **Acquisition** — initial construction of a new capability or knowledge pattern.
+- **Consolidation** — stabilize newly acquired capability through focused varied use and correction.
+- **Retrieval** — actively recall or reproduce after delay before feedback.
 - **Transfer** — apply learning in a new, less scaffolded, or more integrated context.
-- **Fluency** — increase speed/automaticity/rhythm while preserving quality.
+- **Fluency** — increase speed, automaticity, rhythm, or processing efficiency without sacrificing target quality.
 - **Exam Readiness** — perform under IELTS-like timing, integration, stamina, and independence constraints.
 
-Exam Readiness is a practice phase. Exam Preparation is a learner mode owned by `09-PROGRESSION.md` and remains non-certifying by exposure alone.
+Exam Readiness is a practice phase. Exam Preparation is a learner mode owned by `09-PROGRESSION.md`.
+
+# Canonical Learning Mechanisms
+
+| ID | Mechanism | Use when | Do not infer |
+|---|---|---|---|
+| `LM-01` | Worked example | learner needs a model of successful performance or attention guidance | copying a model proves independent performance |
+| `LM-02` | Active retrieval | a reviewable target should be recalled or reproduced from memory | every target belongs in a flashcard scheduler |
+| `LM-03` | Spaced review | a suitable reviewable target has repeated retrieval history | one fixed spacing formula fits all learning objects |
+| `LM-04` | Contrast / discrimination | learner confuses near alternatives or misses a discriminating cue | random variety is useful by itself |
+| `LM-05` | Controlled production | recognition exists but production is unstable | constrained success proves free production |
+| `LM-06` | Guided production | learner needs failure-relevant support to produce the target | support should remain indefinitely |
+| `LM-07` | Scaffold fading | performance depends materially on a support that should be removed | all scaffolds should disappear at once |
+| `LM-08` | Variation / transfer | learner must generalize beyond the practiced context | novelty alone proves transfer |
+| `LM-09` | Interleaving | discrimination or flexible selection benefits from mixing sufficiently stable targets | arbitrary mixing always improves learning |
+| `LM-10` | Self-explanation | reasoning or discrimination becomes more observable through explanation | every item needs a reflection prompt |
+| `LM-11` | Deliberate revision / reproduction | corrected productive output has learning value | every error requires rewrite/re-record |
+| `LM-12` | Fluency rehearsal | target quality is sufficiently stable and efficiency/rhythm is limiting performance | speed compensates for weak underlying quality |
+
+Mechanism selection must follow the GapEvaluation and ActionIntent. A wrong answer is not automatically a remediation command; insufficient evidence, stale evidence, prerequisite failure, transfer failure, and scaffold dependence require different actions.
+
+AI tutor behavior is delivery/runtime capability, not a Learning Mechanism. AI may instantiate mechanisms but must not replace the learner's required cognitive operation.
 
 # Feedback timing
 
 - Acquisition: generally immediate, specific, actionable.
-- Consolidation: prompt feedback with increasing self-correction/retrieval first.
+- Consolidation: prompt feedback with increasing self-correction before reveal.
 - Retrieval: require an authentic retrieval attempt before feedback.
-- Transfer: increasingly delayed/batched where immediate intervention would disrupt independence.
-- Fluency: avoid excessive interruption; emphasize post-attempt patterns.
+- Transfer: increasingly delayed/batched when immediate intervention would destroy independence.
+- Fluency: avoid excessive interruption; review patterns after the attempt.
 - Exam Readiness: preserve exam-like independence during the attempt; feedback primarily post-task.
 
-The goal is effective timing for the learning stage, not universal immediacy.
-
-# Practice Type canonical fields
-
-Each Practice Type owns stable ID/name, primary phase, supported phases, mode, applies-to scope, core learning objective, canonical target bindings, reinforcing Knowledge Objects where relevant, and feedback pattern.
+Feedback depth follows failure type. Do not correct every detectable issue when doing so would overload the learner or derail the current learning objective.
 
 # Canonical Practice Type registry
 
 Abbreviations: `Aq` Acquisition, `Co` Consolidation, `Re` Retrieval, `Tr` Transfer, `Fl` Fluency, `ER` Exam Readiness.
 
-| ID | Type | Primary / supported phases | Mode / scope | Canonical targets / reinforcement | Feedback pattern |
+| ID | Type | Primary / supported phases | Mode / scope | Typical mechanisms | Canonical target role |
 |---|---|---|---|---|---|
-| `PT-01` | Scaffolded/guided writing | Aq / Aq, Co | individual, adaptive / writing | Writing acquisition, especially `W-GRA-01`, `W-GRA-02`, `W-GRA-03`, `W-CC-01`, `W-CC-02`, `W-TA-01`, `W-TR-01`; reinforces relevant `K-GRA-*`, `K-VOC-*` objects | immediate, scaffolded |
-| `PT-02` | Sentence-combining drill | Aq / Aq, Fl | individual / writing | `W-GRA-02`, `W-GRA-03`, `W-GRA-07`; `K-GRA-003`, `K-GRA-004`, `K-GRA-020`, `K-GRA-021` | immediate |
-| `PT-03` | Paraphrase task | Co / Co, Tr | individual / writing | `W-LR-03`, `W-CC-04`; `K-VOC-020`, `K-VOC-041` | prompt, then increasingly self-check |
-| `PT-04` | Error-correction exercise | Co / Co, Re | individual / writing | Writing grammar/lexical accuracy leaves such as `W-GRA-01`–`W-GRA-07`, `W-LR-05`; relevant grammar/spelling objects | immediate after learner diagnosis attempt |
-| `PT-05` | Redraft after feedback | Tr / Co, Tr | individual / writing | integrated Writing capability across Task Achievement/Response, Coherence/Cohesion, Lexical Resource, Grammar | feedback on first draft, independent application in redraft |
-| `PT-06` | Timed Writing task | ER / ER, Tr | timed / writing | integrated Academic Writing Task 1/Task 2 capability | post-task |
-| `PT-07` | Pronunciation/minimal-pair drill | Aq / Aq, Re | individual / speaking | `S-P-01`, `S-P-02`; `K-PHON-010`, `K-PHON-011`, `K-PHON-012` | immediate |
-| `PT-08` | Shadowing | Fl / Aq, Fl | individual / speaking | `S-P-03`, `S-P-04`, `S-FC-01`; `K-PHON-040`, `K-PHON-041` | light immediate support in acquisition; pattern review after fluent attempts |
-| `PT-09` | Long-turn practice | Co / Co, Tr, Fl | timed / speaking | `S-FC-02`, `S-FC-04`, `S-GRA-02`, `S-GRA-03`, `S-LR-02` | calibrated, mostly post-turn |
-| `PT-10` | Q&A / role-play | Co / Co, Tr | mixed / speaking | `S-FC-03`, `S-FC-04`, `S-FC-05`, `S-LR-01`, `S-LR-04`, `S-GRA-04` | conversational; avoid breaking every utterance |
-| `PT-11` | Timed mock Speaking | ER / ER | timed / speaking | integrated Speaking capability across Parts 1, 2, and 3 | post-task |
-| `PT-12` | Skim/scan/gist-detail speed drill | Fl / Aq, Fl | timed / listening, reading | `L-COMP-01`, `L-COMP-02`, `R-COMP-01`, `R-COMP-02`; may reinforce `K-VOC-010` | immediate on objective result, strategy review after set |
-| `PT-13` | Comprehension question set | Co / Co, Re | individual / listening, reading | receptive comprehension/question-type leaves including `L-COMP-*`, `L-QT-*`, `R-COMP-*`, `R-QT-*`; relevant vocabulary | immediate for objective items after response |
-| `PT-14` | Note-taking from lecture/text | Tr / Co, Tr | individual / listening, reading | `L-COMP-06`, `R-COMP-05`, `R-COMP-06`; `K-VOC-011` | post-attempt comparison/feedback |
-| `PT-15` | Timed section/passage practice | ER / ER, Fl | timed / listening, reading | integrated receptive leaves under section/passage timing | post-section/passage |
-| `PT-16` | Distractor/error review | Re / Re, Co | individual / listening, reading | `L-COMP-05`, `R-QT-02`, `R-QT-03` and related reasoning errors | explanation after learner justification attempt |
-| `PT-17` | Spaced retrieval | Re / Re, Co | adaptive / knowledge + dependent skills | relevant `K-VOC-*` / `K-GRA-*` objects and their dependent Skill Leaves | immediate after retrieval attempt |
-| `PT-18` | Collocation/word-formation drill | Aq / Aq, Co | individual / knowledge, writing | `W-LR-02`, `W-LR-05`; `K-VOC-020`, `K-VOC-030` | immediate |
-| `PT-19` | Gap-fill/completion | Co / Co, Re | individual / knowledge, listening, reading | `W-LR-05`, `L-QT-01`, `L-QT-05`, `R-QT-05`; relevant grammar/vocabulary objects | immediate after attempt |
-| `PT-20` | Interleaved mixed set | Tr / Tr, Re | mixed / cross | any explicitly selected canonical target IDs | item/set feedback without destroying discrimination demand |
-| `PT-21` | Adaptive practice set | Co / Co, Re, Tr | adaptive / cross | any explicitly selected targets from learner state | adaptive; timing follows selected type/phase |
-| `PT-22` | Diagnostic checkpoint practice | Re / Re, Co | diagnostic / cross | explicitly sampled Skill/Knowledge targets used to expose gaps | feedback after sample; diagnostic measurement semantics, if used, belong to `AT-04` |
-| `PT-23` | Full mock test | ER / ER | timed / cross | integrated all four IELTS skills under exam-like conditions | post-test only |
+| `PT-01` | Scaffolded/guided writing | Aq / Aq, Co | individual, adaptive / writing | `LM-01`, `LM-06`, `LM-07` | Writing acquisition and controlled support |
+| `PT-02` | Sentence-combining drill | Aq / Aq, Fl | individual / writing | `LM-05`, `LM-12` | grammatical production/control |
+| `PT-03` | Paraphrase task | Co / Co, Tr | individual / writing | `LM-04`, `LM-05`, `LM-08` | lexical/cohesive flexibility |
+| `PT-04` | Error-correction exercise | Co / Co, Re | individual / writing | `LM-02`, `LM-04`, `LM-10` | diagnosis and correction of language errors |
+| `PT-05` | Redraft after feedback | Tr / Co, Tr | individual / writing | `LM-11`, `LM-07`, `LM-08` | apply feedback in new production |
+| `PT-06` | Timed Writing task | ER / ER, Tr | timed / writing | `LM-08` | integrated Writing under independence/timing |
+| `PT-07` | Pronunciation/minimal-pair drill | Aq / Aq, Re | individual / speaking | `LM-04`, `LM-02` | pronunciation discrimination/production |
+| `PT-08` | Shadowing | Fl / Aq, Fl | individual / speaking | `LM-01`, `LM-12` | only pronunciation/prosody/fluency targets where imitation is relevant |
+| `PT-09` | Long-turn practice | Co / Co, Tr, Fl | timed / speaking | `LM-06`, `LM-07`, `LM-08`, `LM-12` | sustained Speaking production |
+| `PT-10` | Q&A / role-play | Co / Co, Tr | mixed / speaking | `LM-05`, `LM-06`, `LM-08` | responsive Speaking production |
+| `PT-11` | Timed mock Speaking | ER / ER | timed / speaking | `LM-08` | integrated Speaking under exam-like conditions |
+| `PT-12` | Skim/scan/gist-detail speed drill | Fl / Aq, Fl | timed / listening, reading | `LM-04`, `LM-12` | selective receptive processing |
+| `PT-13` | Comprehension question set | Co / Co, Re | individual / listening, reading | `LM-02`, `LM-04` | receptive comprehension/question-type work |
+| `PT-14` | Note-taking from lecture/text | Tr / Co, Tr | individual / listening, reading | `LM-08`, `LM-10` | information selection and integration |
+| `PT-15` | Timed section/passage practice | ER / ER, Fl | timed / listening, reading | `LM-08`, `LM-12` | receptive work under section timing |
+| `PT-16` | Distractor/error review | Re / Re, Co | individual / listening, reading | `LM-04`, `LM-10` | discriminate why an alternative failed |
+| `PT-17` | Spaced retrieval | Re / Re, Co | adaptive / suitable reviewable targets | `LM-02`, `LM-03` | retention of reviewable Knowledge/Skill targets |
+| `PT-18` | Collocation/word-formation drill | Aq / Aq, Co | individual / knowledge, writing | `LM-04`, `LM-05` | lexical production and discrimination |
+| `PT-19` | Gap-fill/completion | Co / Co, Re | individual / knowledge, receptive skills | `LM-02`, `LM-05` | constrained retrieval/application |
+| `PT-20` | Interleaved mixed set | Tr / Tr, Re | mixed / cross | `LM-09`, `LM-04`, `LM-08` | flexible selection across targets |
+| `PT-21` | Adaptive practice set | Co / Co, Re, Tr | adaptive / cross | depends on selected GapEvaluation | container for evidence-based activity selection |
+| `PT-22` | Diagnostic checkpoint practice | Re / Re, Co | diagnostic / cross | depends on uncertainty sampled | low-friction sampling; measurement interpretation belongs to `AT-04` |
+| `PT-23` | Full mock test | ER / ER | timed / cross | none as a default learning mechanism | broad exam-readiness / re-evidence activity with learning side-effects |
 
-Wildcards such as `L-COMP-*` above denote a target family, not a stable object ID. Any concrete binding must resolve the family to explicit canonical IDs before execution or evidence recording.
+Concrete bindings must resolve target families to explicit stable Skill/Knowledge IDs before execution or evidence recording.
 
-## Phase coverage invariant
+# Selection rules
 
-- Acquisition: `PT-01`, `PT-02`, `PT-07`, `PT-18`.
-- Consolidation: `PT-03`, `PT-04`, `PT-09`, `PT-10`, `PT-13`, `PT-19`, `PT-21`.
-- Retrieval: `PT-16`, `PT-17`, `PT-22`.
-- Transfer: `PT-05`, `PT-14`, `PT-20`.
-- Fluency: `PT-08`, `PT-12`.
-- Exam Readiness: `PT-06`, `PT-11`, `PT-15`, `PT-23`.
-
-Coverage does not imply equal practice volume; selection follows learner need.
+1. **Ability gap** — choose a mechanism that targets the demonstrated failure pattern; do not default to reteaching prerequisites.
+2. **Prerequisite gap** — acquire or repair the required Knowledge/Skill prerequisite before dependent work when the dependency is truly Required.
+3. **Insufficient evidence** — use a low-friction diagnostic or assessment action; do not label the learner weak.
+4. **Conflicting evidence** — choose a discriminating task that can separate plausible explanations.
+5. **Stale evidence** — collect the smallest useful representative refresh before remediation.
+6. **Scaffold dependence** — identify the support carrying performance, fade it selectively, then re-evidence.
+7. **Transfer gap** — vary context, reduce pattern repetition, and use unseen or materially different conditions when the claim requires generalization.
+8. **Fluency gap** — use rehearsal only after target quality is sufficiently stable.
+9. **Exam-condition gap** — use timed/integrated practice without redefining underlying mastery.
 
 # Binding model
 
 ```text
 Curriculum Node
       ↓
-Skill Leaf / Knowledge Object target
+Skill Leaf / Knowledge Object
+      ↓
+GapEvaluation + ActionIntent
+      ↓
+Learning Mechanism
       ↓
 Practice Type
       ↓
 Concrete Practice Item
 ```
 
-Rules:
+Practice Types reference canonical targets; they do not copy Skill/Knowledge definitions. A node may use multiple Practice Types. A Practice Type may support multiple objects. Adaptive selection may vary order, mechanism, type, difficulty, scaffold, and frequency while preserving the target standard.
 
-1. bind by stable IDs;
-2. Practice Types never copy Skill/Knowledge definitions;
-3. a node may use multiple Practice Types across phases;
-4. a Practice Type may support multiple canonical objects;
-5. concrete items reference both type and explicit target IDs;
-6. adaptive selection may vary order/frequency/difficulty but may not remove required target capability.
+# Difficulty and scaffolding
 
-`PT-22` and `AT-04` are intentionally different: the former is a reusable **practice/sampling format**; the latter is the **measurement interpretation** of diagnostic evidence.
+Difficulty may vary through scaffold amount, linguistic complexity, distractor quality, integration, time pressure, novelty/transfer distance, response length, and cue availability.
 
-# Difficulty progression
+Harder is not automatically higher-band truth. Band ownership remains in `05-BANDS.md`.
 
-Valid difficulty dimensions include scaffold amount, lexical/syntactic complexity, distractor quality, integration, time pressure, novelty/transfer distance, response length, and cue availability. Harder practice is not automatically higher-band truth; Band ownership remains in `05-BANDS.md`.
+Scaffolding must be represented explicitly enough that guided success cannot later masquerade as independent evidence. The concrete `ScaffoldingProfile` representation is owned by `10-CONTENT-MODEL.md`.
 
-# Deliberate-practice and AI invariants
+# Practice invariants
 
-Practice should make the target capability, success condition, error pattern, and intended next change understandable to the learner. Raw repetition volume is not a learning strategy by itself.
-
-AI may generate examples, explain errors, provide feedback, and select practice, but must not perform the cognitive operation on the learner's behalf when that would defeat retrieval, reasoning, planning, or independent production.
-
-Concrete prompts/items/examples/remediation messages belong to `10-CONTENT-MODEL.md`, not this taxonomy.
+- practice completion is not mastery;
+- same-item retry is primarily recovery/learning, not automatic transfer evidence;
+- shadowing is used only where pronunciation/prosody/fluency makes it relevant;
+- dictation-like activity is used only when decoding/segmentation/detail perception is implicated;
+- full mocks are broad readiness/evidence activities, not substitutes for targeted intervention;
+- learner preference may influence suitable options but cannot override target requirements;
+- repeated learner friction or skipping is a planning signal, not ability evidence;
+- mechanism diversity is justified by learning need, diminishing returns, or transfer—not by a novelty quota.

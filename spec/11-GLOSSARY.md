@@ -5,7 +5,7 @@ DOES_NOT_OWN: the behavioral rules or object inventories behind those terms
 
 # 11 — Glossary
 
-This file is the canonical vocabulary for the active specification. Definitions are intentionally concise; behavioral detail remains in the owning domain spec.
+This file is the canonical vocabulary for the active specification. Behavioral detail remains in the owning domain spec.
 
 ## Authority and documentation
 
@@ -17,117 +17,133 @@ This file is the canonical vocabulary for the active specification. Definitions 
 
 **Historical / archived** — preserved prior material with no active authority.
 
-**SSOT** — single source of truth. In this repository SSOT is distributed by explicit domain ownership, not by copying all truth into one file.
+**SSOT** — single source of truth distributed by explicit domain ownership rather than duplicated across files.
 
-**Semantic ownership** — responsibility for defining a particular rule, object, threshold, or concept.
+**Semantic ownership** — responsibility for defining a rule, object, threshold, or concept.
 
-**Reference** — use of a canonical object or semantic by link/ID without redefining it.
+**Reference** — use of a canonical semantic by link/ID without redefining it.
 
 ## IELTS
 
-**IELTS Band** — proficiency score on the IELTS 0–9 scale; the structured learning program in this Blueprint targets Bands 3–9.
+**IELTS Band** — proficiency score on the IELTS 0–9 scale; the structured learning program targets Bands 3–9.
 
-**Section band** — the band score for one of Listening, Reading, Writing, or Speaking.
+**Section band** — band score for Listening, Reading, Writing, or Speaking.
 
-**Overall band** — the IELTS-reported combination of the four section bands according to the official averaging/rounding rule; informational for learning progression, not a progression gate.
+**Overall band** — IELTS-reported combination of the four section bands; informational for learning progression, not a progression gate.
 
-**Academic** — IELTS Academic variant; the fully specified initial variant of this Blueprint.
+**Academic** — IELTS Academic variant; the fully specified initial variant.
 
-**General Training / GT** — IELTS General Training variant; shares Listening and Speaking with Academic but differs in Reading and Writing where specified by IELTS.
+**General Training / GT** — IELTS General Training variant; shared Listening/Speaking with variant differences in Reading/Writing.
 
-**Task 1** — first Writing task; Academic uses visual-information description, General Training uses a letter/situation response.
+**Task 1 / Task 2** — the two Writing tasks; exact variant semantics are owned by `02-IELTS-MODEL.md`.
 
-**Task 2** — essay response to a point of view, argument, or problem.
-
-**TA** — Task Achievement, Writing Task-1 criterion.
-
-**TR** — Task Response, Writing Task-2 criterion.
-
-**CC** — Coherence and Cohesion.
-
-**LR** — Lexical Resource.
-
-**GRA** — Grammatical Range and Accuracy.
-
-**FC** — Fluency and Coherence, Speaking criterion.
+**TA / TR / CC / LR / GRA / FC** — Task Achievement / Task Response / Coherence and Cohesion / Lexical Resource / Grammatical Range and Accuracy / Fluency and Coherence.
 
 ## Canonical learning domains
 
-**Knowledge** — what must be known: enabling language concepts such as grammar, vocabulary, and phonology.
+**Knowledge** — enabling language knowledge such as grammar, vocabulary, and phonology.
 
-**Skill** — what must be demonstrated in Listening, Reading, Writing, or Speaking.
+**Skill** — capability demonstrated in Listening, Reading, Writing, or Speaking.
 
-**Band threshold** — the required quality of performance for a skill/task at a target IELTS band.
+**Band threshold** — required quality of performance for a target skill/task at a target band.
 
 **Curriculum** — canonical orchestration of when Skill and Knowledge objects are sequenced.
 
 **Practice** — how canonical capability is trained.
 
-**Assessment** — how demonstrated capability is measured and how evidence validity/sufficiency is judged.
+**Assessment** — how demonstrated capability is measured and how observations become admissible evidence for claims.
 
-**Progression** — how learner runtime state advances, regresses, certifies, and selects next actions.
+**Progression** — how learner state, current mastery interpretation, certification, gaps, and next actions change over time.
 
-**Content Model** — conceptual representation of concrete/supporting learning, assessment, tutoring, and feedback objects that reference canonical definitions.
+**Content Model** — conceptual representation of concrete learning, tutoring, measurement, and feedback instances.
 
-## Canonical objects and supporting content contracts
+## Canonical objects
 
-**Skill Leaf** — atomic capability unit, identified by a stable `W-*`, `S-*`, `L-*`, or `R-*` ID.
+**Skill Leaf** — atomic capability unit identified by stable `W-*`, `S-*`, `L-*`, or `R-*` ID.
 
-**Knowledge Object** — atomic enabling-knowledge unit, identified by a stable `K-GRA-*`, `K-VOC-*`, or `K-PHON-*` ID.
+**Knowledge Object** — atomic enabling-knowledge unit identified by stable `K-GRA-*`, `K-VOC-*`, or `K-PHON-*` ID.
 
-**Curriculum Node** — canonical orchestration step, identified by a stable `C-B<band>-<nn>` ID.
+**Curriculum Node** — orchestration step identified by stable `C-B<band>-<nn>` ID.
 
-**Practice Type** — reusable training pattern, identified by a stable `PT-*` ID.
+**Learning Mechanism** — learning process such as active retrieval, contrast, guided production, scaffold fading, or transfer variation; identified by stable `LM-*` ID and owned by `07-PRACTICE.md`.
 
-**Assessment Type** — reusable measurement strategy, identified by a stable `AT-*` ID.
+**Practice Type** — reusable executable activity pattern identified by stable `PT-*`; may instantiate one or more Learning Mechanisms.
+
+**Assessment Type** — reusable measurement strategy identified by stable `AT-*`.
+
+## Concrete/supporting representations
 
 **Learning Unit** — delivery-neutral grouping of concrete content around a Curriculum Node.
 
-**Practice Item** — concrete instance of a Practice Type targeting canonical Skill/Knowledge objects.
+**Stimulus** — material presented to the learner such as a passage, recording, visual, prompt, or example.
 
-**Assessment Item** — concrete instance of an Assessment Type targeting canonical Skill/Knowledge/Band semantics.
+**ScaffoldingProfile** — explicit representation of material support available during learning/performance.
 
-**Stimulus** — source material presented to the learner, such as a passage, recording, visual, prompt, or example.
+**ExposureContext** — representation of prior item/stimulus/feedback exposure and material novelty/variation dimensions.
 
-**Error Pattern** — reusable supporting tutoring/content knowledge describing a recurring learner error or misconception and explicitly referencing the canonical Skill/Knowledge targets it concerns; it is not part of Skill/Knowledge identity.
+**Practice Item** — concrete instance of a Practice Type targeting canonical objects.
 
-**Remediation Pattern** — reusable supporting tutoring/content strategy for correcting a weak target or Error Pattern through referenced canonical targets, Practice Types, scaffolds, and success checks; it does not redefine mastery or prerequisites.
+**Assessment Item** — concrete instance of an Assessment Type for a defined claim/target scope.
 
-**Feedback Artifact** — runtime feedback tied to an Attempt and canonical targets; not canonical learning truth.
+**Error Pattern** — reusable supporting hypothesis/pattern describing a recurring mistake or misconception; not proof a learner has that error.
 
-**Attempt** — learner-instance event against a Practice Item or Assessment Item, including the response, conditions, time, and evaluation references needed to interpret what happened.
+**Remediation Pattern** — reusable tutoring strategy referencing targets, mechanisms, practice types, scaffolds, and success checks.
 
-**Evidence Record** — normalized assessment output tied to an Attempt and canonical target, containing enough measurement context for Assessment to judge validity/sufficiency and Progression to consume the result.
+**Feedback Artifact** — runtime guidance tied to learner performance; not canonical learning truth.
 
-## Learning and mastery
+## Evidence and epistemic state
 
-**Mastery** — reliably demonstrated criterion-referenced capability, not time spent or content consumed.
+**Attempt** — learner-instance event against a Practice or Assessment Item.
 
-**Mastery state** — current Skill Leaf runtime state: `not_started`, `practicing`, `emerging`, or `mastered`.
+**Observation** — normalized measurement of what happened in an Attempt before evidence admission.
 
-**Knowledge state** — current Knowledge Object runtime state: `not_acquired`, `learning`, or `acquired`.
+**EvidenceFact** — an Observation admitted for a specific claim/purpose under Assessment eligibility rules.
 
-**Certification** — current recognition that sufficient valid evidence satisfies a skill-band exit standard.
+**EvidenceRequirement** — claim-scoped logical conditions that evidence must satisfy before the claim is supported.
 
-**Certification history** — point-in-time record of prior certifications retained even if current capability later regresses.
+**Evidence eligibility** — decision that an Observation may be used for a specific claim/purpose.
 
-**Regression** — later valid evidence showing a previously held capability is no longer held reliably enough for the current state.
+**Inference scope** — the exact claim/context/generalization that an EvidenceFact can legitimately support.
 
-**Re-certification** — fresh certification after regression, using the normal evidence standard rather than restoring status automatically.
+**MasteryEstimate** — current, derived, uncertainty-aware interpretation of capability from admissible evidence; not a raw evidence container.
 
-**Exit criterion** — observable target that must be met to leave a task/skill band state; threshold semantics are owned by `05-BANDS.md`.
+**ReadinessEvaluation** — claim-scoped Assessment outcome: `INSUFFICIENT_EVIDENCE`, `CONFLICTING_EVIDENCE`, `STALE_EVIDENCE`, `NOT_YET_SUPPORTED`, or `SUPPORTED`.
 
-## Prerequisites and adaptation
+**Insufficient evidence** — required information is missing; not evidence of weakness.
 
-**Required prerequisite** — hard dependency whose absence makes dependent learning ineffective and cannot reasonably be worked around adaptively. Canonical Skill/Knowledge `requires` edges are interpreted as Required prerequisites.
+**Conflicting evidence** — material valid evidence supports incompatible interpretations and must be resolved rather than averaged away.
 
-**Recommended prerequisite** — beneficial dependency used for ordering but not a hard gate. Curriculum `Depends` entries are Recommended by default unless explicitly marked Required.
+**Stale evidence** — historical support exists but is not current enough for a present claim; not proof of regression.
+
+**Not yet supported** — current relevant evidence exists and falls below the scoped requirement.
+
+**Supported** — current admissible evidence satisfies the scoped claim; never a guarantee of a future official IELTS result.
+
+**Confidence** — calibrated uncertainty associated with a measurement/evaluation when it can affect a decision; model self-report alone is not calibration.
+
+## Learning and progression
+
+**Certification** — current internal recognition that a skill-band learning claim is `SUPPORTED`; not an official IELTS result.
+
+**Certification history** — point-in-time record of prior internal certifications retained across later state change.
+
+**Regression** — later admissible evidence shows a previously supported capability is now below the required current threshold.
+
+**Re-certification** — fresh support/certification after established regression using the normal Assessment policy.
+
+**GapEvaluation** — classification of what kind of learning/evidence problem exists, such as ability, prerequisite, evidence, conflict, staleness, scaffold dependence, transfer, fluency, or exam-condition gap.
+
+**ActionIntent** — semantic next-action objective derived from learner state/GapEvaluation before choosing a Learning Mechanism or Practice Type.
+
+**Required prerequisite** — hard dependency whose absence makes dependent learning ineffective and cannot reasonably be bypassed adaptively.
+
+**Recommended prerequisite** — beneficial ordering dependency that does not hard-block learning.
 
 **Independent** — no prerequisite relationship.
 
-**Adaptive sequencing** — runtime personalization of order, difficulty, practice, review, or pacing while preserving canonical targets and Required prerequisites.
+**Adaptive sequencing** — personalization of order, mechanism, practice, difficulty, review, scaffold, or pacing while preserving canonical targets.
 
-**Same outcomes, different paths** — principle that learners may follow different routes but must meet the same target standard for the same skill/band.
+**Same outcomes, different paths** — learners may follow different routes but must meet the same target standard for the same skill/band.
 
 ## Learning phases
 
@@ -137,40 +153,36 @@ This file is the canonical vocabulary for the active specification. Definitions 
 
 **Retrieval** — active recall/reproduction after delay.
 
-**Transfer** — application in new or less scaffolded contexts.
+**Transfer** — application in new or materially different contexts.
 
-**Fluency** — development of speed/automaticity without sacrificing the target quality standard.
+**Fluency** — increased speed/automaticity/rhythm without sacrificing target quality.
 
-**Exam Readiness** — practice phase using exam-like conditions for timing, integration, familiarity, and stamina.
+**Exam Readiness** — practice under exam-like timing, integration, stamina, and independence conditions.
 
-**Exam Preparation** — learner mode that may expose higher-demand tasks for readiness/diagnosis without certifying higher mastery.
+**Exam Preparation** — learner mode that may expose higher-demand tasks without automatically certifying mastery.
 
-## Assessment
+## Assessment roles
 
-**Formative assessment** — measurement used primarily to guide ongoing learning.
+**Formative assessment** — measurement primarily used to guide ongoing learning.
 
-**Diagnostic assessment** — measurement used to locate current strengths, gaps, and uncertainty.
+**Diagnostic assessment** — measurement used to reduce uncertainty or classify the kind of gap.
 
-**Readiness assessment** — exam-like measurement estimating current test performance; non-certifying by itself.
+**Readiness assessment** — measurement under target/exam-like conditions used to estimate current performance.
 
-**Mastery portfolio** — `AT-05`, accumulated sufficient evidence used to support certification.
+**Mastery portfolio** — `AT-05`, cumulative claim evaluation over admissible EvidenceFacts.
 
-**Evidence sufficiency** — requirement that the evidence set contains enough independent valid demonstrations for the target claim.
+**Blueprint Inference** — pedagogical claim beyond what official IELTS explicitly states.
 
-**Confidence** — calibrated degree of certainty attached to a measurement judgment when uncertainty can affect the decision.
+**Evidence-Based Interpretation** — interpretation closely grounded in evidence but not a direct official statement.
 
-**Blueprint Inference** — pedagogical claim derived beyond what the official IELTS source explicitly states.
-
-**Evidence-Based Interpretation** — interpretation closely grounded in external evidence but not a direct official statement.
-
-**Official Evidence** — fact or standard directly established by an authoritative IELTS source.
+**Official Evidence** — fact/standard directly established by an authoritative IELTS source.
 
 ## Representation boundaries
 
-**Single representation** — each canonical object is defined once and referenced elsewhere by stable ID.
+**Single representation** — each canonical object is defined once and referenced elsewhere by stable identity.
 
-**Canonical/runtime separation** — distinction between reusable Blueprint definitions and per-learner/per-attempt state.
+**Canonical/runtime separation** — distinction between reusable specification truth and learner/attempt-specific state.
 
-**Variant overlay** — variant-specific semantics layered on shared canonical concepts without duplicating the shared core.
+**Variant overlay** — variant-specific semantics layered on shared concepts without duplicating the shared core.
 
-**Localization overlay** — L1- or locale-specific explanation/remediation layered on the L1-agnostic canonical learning requirement.
+**Localization overlay** — locale/L1-specific explanation/remediation layered on the L1-agnostic canonical requirement.
