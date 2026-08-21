@@ -1,7 +1,7 @@
 STATUS: CANONICAL
 OWNS: the four-skill capability taxonomy, Skill Leaf identity, atomic objectives, skill/component membership, variant-specific capability overlays, and Skill-to-Skill prerequisite edges
 DEPENDS_ON: 02-IELTS-MODEL.md
-DOES_NOT_OWN: Knowledge Object definitions or resolution, band thresholds, cognitive/load heuristics, common-error/remediation content, practice types, assessment strategies, learner state, curriculum ordering
+DOES_NOT_OWN: official task/question-family identity, Knowledge Object definitions or resolution, band thresholds, content-family coverage, cognitive/load heuristics, common-error/remediation content, practice types, assessment strategies, learner state, or curriculum ordering
 
 # 03 — Skills
 
@@ -10,6 +10,8 @@ DOES_NOT_OWN: Knowledge Object definitions or resolution, band thresholds, cogni
 Define **what the learner must be able to demonstrate** across Listening, Reading, Writing, and Speaking.
 
 Vocabulary, grammar, and phonology are enabling knowledge and are owned by `04-KNOWLEDGE.md`.
+
+Official IELTS task/question families are external exam identities owned by `02-IELTS-MODEL.md`. A Skill Leaf may support several official families; family/content coverage must not be inferred from leaf existence alone.
 
 ## Canonical inventory
 
@@ -27,7 +29,7 @@ General Training does not create a fifth skill and does not duplicate shared Rea
 
 ## Atomic Skill Leaf rule
 
-A Skill Leaf represents one independently useful capability. Decompose further only while a node still contains multiple independent objectives or cannot be independently taught, practiced, assessed, and remediated. Stop when further splitting no longer improves those properties. Do not target an arbitrary leaf count.
+A Skill Leaf represents one independently useful capability. Decompose further only while a node still contains multiple independent objectives or cannot be independently taught, practiced, assessed, and remediated. Stop when further splitting no longer improves those properties. Do not split a capability merely to mirror every exam UI/question-family label.
 
 ## Canonical Skill Leaf fields
 
@@ -42,16 +44,16 @@ A Skill Leaf canonically owns only:
 
 The following are intentionally not identity-level Skill authority:
 
+- official task/question family identity → `02-IELTS-MODEL.md`;
 - band relevance or Band-N mastery quality → `05-BANDS.md`;
 - enabling Knowledge Object resolution → `04-KNOWLEDGE.md`;
 - practice binding → `07-PRACTICE.md`;
 - assessment strategy/evidence → `08-ASSESSMENT.md`;
 - learner mastery state → `09-PROGRESSION.md`;
 - curriculum position → `06-CURRICULUM.md`;
-- common errors, examples, remediation scripts, scaffold choices → concrete content/tutoring semantics in `10-CONTENT-MODEL.md`;
+- concrete family/subformat content coverage → `10-CONTENT-MODEL.md` plus `../design/08-coverage-and-support.md`;
+- common errors, examples, remediation scripts, scaffold choices → `10-CONTENT-MODEL.md`;
 - cognitive-level and learning-load estimates → optional planning metadata unless future evidence promotes them to canonical policy.
-
-This prevents the Skill Leaf from becoming a cross-domain mega-object.
 
 # Listening
 
@@ -70,7 +72,7 @@ This prevents the Skill Leaf from becoming a cross-domain mega-object.
 
 | ID | Capability | Atomic objective |
 |---|---|---|
-| `L-QT-01` | Form/note/table/flow-chart completion | Fill gaps from the recording while respecting form and word limits. |
+| `L-QT-01` | Form/note/table/flow-chart/summary completion | Fill structured completion gaps from the recording while respecting layout, grammar, and stated word limits. |
 | `L-QT-02` | Multiple choice | Select correct single or multiple options while managing distractors. |
 | `L-QT-03` | Matching | Match recorded information to speakers, categories, or options. |
 | `L-QT-04` | Map/plan/diagram labelling | Apply spatial and directional language to a visual. |
@@ -90,7 +92,7 @@ This prevents the Skill Leaf from becoming a cross-domain mega-object.
 | `L-QT-04` | `L-COMP-02` |
 | `L-QT-05` | `L-COMP-02` |
 
-Listening decomposition separates comprehension capability from question-type execution strategy. Receptive analytic decomposition is Blueprint inference grounded in the official test format; official score truth remains in `02-IELTS-MODEL.md` and Band interpretation in `05-BANDS.md`.
+Listening decomposition separates comprehension capability from question-type execution strategy. Receptive analytic decomposition is Blueprint inference grounded in the official test format; official score/family truth remains in `02-IELTS-MODEL.md` and Band interpretation in `05-BANDS.md`.
 
 # Reading
 
@@ -112,8 +114,8 @@ Listening decomposition separates comprehension capability from question-type ex
 | `R-QT-01` | Matching headings | Match paragraph meaning to headings by main idea rather than keyword coincidence. |
 | `R-QT-02` | True / False / Not Given | Distinguish supported, contradicted, and absent factual information. |
 | `R-QT-03` | Yes / No / Not Given | Distinguish agreement, disagreement, and absence for writer views/claims. |
-| `R-QT-04` | Matching information/features/endings | Map distributed information across the passage accurately. |
-| `R-QT-05` | Completion & short answer | Extract and fit text evidence within grammatical and word-limit constraints. |
+| `R-QT-04` | Matching distributed information | Map information accurately across matching-information, matching-features, and matching-sentence-ending task structures. |
+| `R-QT-05` | Completion & short answer | Extract and fit text evidence within grammatical, structural, and word-limit constraints. |
 | `R-QT-06` | Multiple choice | Evaluate options against passage evidence, including inferential variants. |
 
 ## Reading prerequisite edges
@@ -132,6 +134,8 @@ Listening decomposition separates comprehension capability from question-type ex
 | `R-QT-06` | `R-COMP-03`, `R-COMP-04` |
 
 `R-QT-02` and `R-QT-03` remain distinct because one targets factual information and the other writer stance.
+
+`R-QT-04` and `R-QT-05` deliberately group transferable cognitive strategy rather than duplicating Skill Leaves for every official UI family. `02-IELTS-MODEL.md` keeps those official families distinct and `10-CONTENT-MODEL.md` keeps their executable content coverage independently checkable.
 
 Academic and General Training reuse these Reading leaves. Their difference is external corpus/context distribution and score conversion, not a second reading-cognition ontology. GT context-transfer requirements are owned by `06-CURRICULUM.md` and concrete variant/context tagging by `10-CONTENT-MODEL.md`.
 
@@ -199,9 +203,9 @@ Other Speaking dependencies are enabling Knowledge Objects and are resolved in `
 
 | ID | Capability | Atomic objective |
 |---|---|---|
-| `W-TA-01` | Identify key visual features | Select the most important trends, differences, stages, or comparisons in an Academic Task-1 visual. |
-| `W-TA-02` | Write an Academic overview | Summarize the main patterns clearly and separately from supporting detail. |
-| `W-TA-03` | Report features with data | Support selected visual features with accurate, relevant figures or details. |
+| `W-TA-01` | Identify key visual features | Select the most important trends, differences, stages, changes, or comparisons in an Academic Task-1 visual. |
+| `W-TA-02` | Write an Academic overview | Summarize the main patterns/features clearly and separately from supporting detail. |
+| `W-TA-03` | Report features with supporting detail | Support selected visual features with accurate, relevant figures or non-numeric details as the visual requires. |
 
 ## Task Response — Task 2 shared core
 
@@ -290,11 +294,13 @@ Task 2 uses the shared `W-TR-*` and shared Writing criteria/capabilities for bot
 
 ## Ownership invariants
 
+- `02-IELTS-MODEL.md` owns official exam task/question-family identity.
 - `04-KNOWLEDGE.md` is the sole owner of Skill→Knowledge resolution.
 - `05-BANDS.md` is the sole owner of Band-N quality/exit thresholds, including variant-specific Task-1 overlays.
 - `06-CURRICULUM.md` may sequence Skill Leaves but may not redefine them.
 - `07-PRACTICE.md` may bind Practice Types to leaves but may not redefine them.
 - `08-ASSESSMENT.md` may measure leaves but may not redefine them.
 - `09-PROGRESSION.md` tracks learner state by leaf ID but may not redefine the target capability.
+- `10-CONTENT-MODEL.md` tracks executable family/context/subformat content without creating parallel Skill definitions.
 
 No downstream owner may create a parallel Skill Leaf definition.
