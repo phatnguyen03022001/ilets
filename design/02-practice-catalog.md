@@ -1,17 +1,15 @@
 STATUS: CANONICAL
-OWNS: initial user-facing practice-mode catalog, mode counts, default durations, mode-to-learning-role mapping, variant-aware packaging, and product-level catalog change policy
-DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, 01-skill-features.md
-DOES_NOT_OWN: Learning Mechanism definitions, Practice Type semantics, mastery/evidence rules, skill thresholds, concrete item content, or scheduling implementation
+OWNS: initial user-facing practice-mode catalog, mode identity/count, default duration envelopes, mode-to-learning-role mapping, variant/delivery-aware packaging, and catalog change policy
+DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, 01-skill-features.md, 04-application-flows.md
+DOES_NOT_OWN: live IELTS facts, Learning Mechanism definitions, Practice Type semantics, evidence sufficiency, Skill/Band thresholds, concrete item content, planner eligibility/ranking, or scheduling implementation
 
 # Practice Catalog
 
 ## Purpose
 
-Define the concrete practice choices the learner sees in the initial product.
+Define the concrete practice choices the learner sees. Canonical Practice Types/Mechanisms remain learning truth; this file packages them into understandable product modes.
 
-The learning specification owns canonical Practice Types and Learning Mechanisms. This document owns the **user-facing catalog** that packages those semantics into understandable activities.
-
-The initial product retains exactly **28 practice modes**:
+The initial catalog contains **28 modes**:
 
 ```text
 Listening   6
@@ -23,120 +21,97 @@ Shared      4
 Total      28
 ```
 
-Academic/General Training differences resolve inside a mode when the learner interaction is materially the same. Do not create duplicate modes merely to mirror a variant label.
+Variant/delivery differences resolve inside an existing mode when the learner interaction remains materially the same.
 
-# Listening — 6 modes
+# Listening — 6
 
 | ID | Mode | Default duration | Learning role | Typical canonical backing |
 |---|---|---:|---|---|
-| `PM-L01` | Dictation | 5–12 min | detail discrimination, lexical segmentation, spelling | `PT-13`, `PT-19`, Retrieval/Contrast |
-| `PM-L02` | Gist Sprint | 3–6 min | main idea and discourse-level listening | `PT-12`, Fluency/Transfer |
+| `PM-L01` | Dictation | 5–12 min | detail discrimination, segmentation, spelling | `PT-13`, `PT-19`, Retrieval/Contrast |
+| `PM-L02` | Gist Sprint | 3–6 min | main idea/discourse listening | `PT-12`, Fluency/Transfer |
 | `PM-L03` | Detail & Completion | 5–10 min | explicit detail, completion, word-limit control | `PT-13`, `PT-19` |
-| `PM-L04` | Paraphrase & Distractor | 5–10 min | paraphrase recognition and distractor rejection | `PT-16`, Contrast/Self-explanation |
-| `PM-L05` | Map / Diagram | 5–10 min | spatial language and structured detail | `PT-13` |
-| `PM-L06` | Timed Section | 10–35 min | integrated exam-condition performance | `PT-15`, Exam Readiness |
+| `PM-L04` | Paraphrase & Distractor | 5–10 min | paraphrase recognition/distractor rejection | `PT-16`, Contrast/Self-explanation |
+| `PM-L05` | Map / Diagram | 5–10 min | spatial language/structured detail | `PT-13` |
+| `PM-L06` | Timed Section | 10–35 min | integrated listening under exam-like conditions | `PT-15`, Exam Readiness |
 
-Listening is shared by Academic and General Training.
-
-# Reading — 6 modes
+# Reading — 6
 
 | ID | Mode | Default duration | Learning role | Typical canonical backing |
 |---|---|---:|---|---|
-| `PM-R01` | Skim Sprint | 3–5 min | topic, purpose, paragraph gist | `PT-12`, Fluency |
+| `PM-R01` | Skim Sprint | 3–5 min | topic/purpose/paragraph gist | `PT-12`, Fluency |
 | `PM-R02` | Scan & Detail Hunt | 4–8 min | explicit information location | `PT-12`, `PT-13` |
-| `PM-R03` | T/F/NG + Y/N/NG | 6–12 min | evidence classification and stance logic | `PT-13`, `PT-16`, Contrast |
-| `PM-R04` | Headings & Structure | 6–12 min | paragraph function and text organization | `PT-13`, Transfer |
-| `PM-R05` | Paraphrase / Inference / Stance | 6–12 min | inferential comprehension beyond keyword matching | `PT-13`, `PT-16`, Self-explanation |
-| `PM-R06` | Timed Reading | 15–60 min by scope | variant-aware passage/section/full Reading performance under timing | `PT-15`, Exam Readiness |
+| `PM-R03` | T/F/NG + Y/N/NG | 6–12 min | evidence/stance classification | `PT-13`, `PT-16`, Contrast |
+| `PM-R04` | Headings & Structure | 6–12 min | paragraph function/text organization | `PT-13`, Transfer |
+| `PM-R05` | Paraphrase / Inference / Stance | 6–12 min | inferential reasoning beyond keyword matching | `PT-13`, `PT-16`, Self-explanation |
+| `PM-R06` | Timed Reading | 15–60 min by scope | variant-aware passage/section/full Reading performance | `PT-15`, Exam Readiness |
 
-## Reading variant resolution
+## Reading variant packaging
 
-Shared modes may use either variant's content, but `PM-R06` must identify the selected variant and scope.
+`PM-R06` identifies selected variant and scope.
 
-Academic configurations sample Academic passage characteristics.
+Concrete GT content uses the GT section/context classes owned externally by `../spec/02-IELTS-MODEL.md` and represented as content context in `../spec/10-CONTENT-MODEL.md`.
 
-General Training configurations sample the official GT context progression:
+A focused activity may target one context. A whole-Reading readiness activity must use a complete applicable variant configuration and normal Assessment policy.
 
-```text
-Section 1  everyday/social-survival texts
-Section 2  workplace texts
-Section 3  longer general-interest text
-```
-
-A focused GT activity may target one section/context. A GT readiness activity that claims whole-Reading coverage must include all required section/context classes and later use the GT scoring/evidence policy.
-
-# Writing — 6 modes
+# Writing — 6
 
 | ID | Mode | Default duration | Learning role | Typical canonical backing |
 |---|---|---:|---|---|
-| `PM-W01` | Prompt & Plan | 5–10 min | variant-aware task analysis, position/purpose, required-content organization | `PT-01`, Guided production |
-| `PM-W02` | Sentence & Grammar Lab | 5–10 min | structural accuracy/range and correction | `PT-02`, `PT-04`, Controlled production |
-| `PM-W03` | Lexical & Paraphrase Lab | 5–10 min | collocation, precision, paraphrase, spelling, task-appropriate register | `PT-03`, `PT-18` |
-| `PM-W04` | Paragraph & Cohesion Builder | 8–15 min | organization, reference, cohesion, development | `PT-01`, `PT-05` |
-| `PM-W05` | Guided Draft & Redraft | 15–30 min | scaffolded variant-aware production followed by revision | `PT-01`, `PT-05`, Scaffold fading |
-| `PM-W06` | Timed Writing | 20 min Task 1 / 40 min Task 2 | independent full-task performance for selected variant | `PT-06`, Exam Readiness |
+| `PM-W01` | Prompt & Plan | 5–10 min | variant-aware task/purpose/content planning | `PT-01`, Guided production |
+| `PM-W02` | Sentence & Grammar Lab | 5–10 min | structural accuracy/range/correction | `PT-02`, `PT-04`, Controlled production |
+| `PM-W03` | Lexical & Paraphrase Lab | 5–10 min | collocation, precision, paraphrase, spelling/register | `PT-03`, `PT-18` |
+| `PM-W04` | Paragraph & Cohesion Builder | 8–15 min | organization/reference/cohesion/development | `PT-01`, `PT-05` |
+| `PM-W05` | Guided Draft & Redraft | 15–30 min | scaffolded variant-aware production + revision | `PT-01`, `PT-05`, Scaffold fading |
+| `PM-W06` | Timed Writing | about 20 min Task 1 / 40 min Task 2 | independent full-task performance under selected target conditions | `PT-06`, Exam Readiness |
 
-## Writing variant resolution
+## Writing variant packaging
 
-`PM-W01`, `PM-W05`, and `PM-W06` resolve `TargetProfile.test_variant` before creating a Task-1 activity.
-
-Academic Task 1 targets:
+Task-1 mode instantiation resolves:
 
 ```text
-W-TA-01 / W-TA-02 / W-TA-03
+Academic → W-TA-01 / W-TA-02 / W-TA-03
+GT       → W-GT1-01 / W-GT1-02 / W-GT1-03 + shared Writing capability
 ```
 
-General Training Task 1 targets:
+A GT planning activity covers recipient/purpose/required content/register rather than Academic visual-overview behavior.
 
-```text
-W-GT1-01 / W-GT1-02 / W-GT1-03
-```
+## Writing delivery packaging
 
-A GT Prompt & Plan must expose recipient, relationship, communicative purpose, all prompt bullet points, and register choice. It must not require an Academic visual overview.
+For exam-readiness uses, `PM-W06` records the selected supported delivery/input condition when material, such as typed computer response or an eligible handwriting-rehearsal path.
 
-Task 2 uses the shared Writing capability where the canonical model is shared.
+Delivery packaging changes interaction conditions, not Writing criteria or Band truth.
 
-# Speaking — 6 modes
+# Speaking — 6
 
 | ID | Mode | Default duration | Learning role | Typical canonical backing |
 |---|---|---:|---|---|
-| `PM-S01` | Pronunciation Contrast | 5–10 min | phoneme/stress/intonation discrimination and production | `PT-07`, Contrast/Controlled production |
-| `PM-S02` | Shadowing | 5–12 min | rhythm, connected speech, stress, fluency imitation | `PT-08`, Fluency rehearsal |
-| `PM-S03` | Part-1 Quick Response | 5–10 min | spontaneous short response and familiar-topic flexibility | `PT-10`, Retrieval/Fluency |
-| `PM-S04` | Part-2 Long Turn | 5–10 min | planning + sustained 1–2 minute response | `PT-09`, Transfer/Fluency |
-| `PM-S05` | Part-3 Discussion | 8–15 min | abstract explanation, comparison, justification | `PT-10`, Transfer |
-| `PM-S06` | Full Speaking Mock | 11–14 min | integrated Parts 1–3 exam-condition performance | `PT-11`, Exam Readiness |
+| `PM-S01` | Pronunciation Contrast | 5–10 min | phoneme/stress/intonation discrimination/production | `PT-07`, Contrast/Controlled production |
+| `PM-S02` | Shadowing | 5–12 min | rhythm/connected speech/stress/fluency imitation | `PT-08`, Fluency rehearsal |
+| `PM-S03` | Part-1 Quick Response | 5–10 min | spontaneous short response | `PT-10`, Retrieval/Fluency |
+| `PM-S04` | Part-2 Long Turn | 5–10 min | planning + sustained long turn | `PT-09`, Transfer/Fluency |
+| `PM-S05` | Part-3 Discussion | 8–15 min | abstract explanation/comparison/justification | `PT-10`, Transfer |
+| `PM-S06` | Full Speaking Mock | 11–14 min | integrated Parts 1–3 readiness | `PT-11`, Exam Readiness |
 
-Speaking is shared by Academic and General Training.
-
-# Shared — 4 modes
+# Shared — 4
 
 | ID | Mode | Default duration | Learning role | Typical canonical backing |
 |---|---|---:|---|---|
 | `PM-X01` | Vocabulary / Grammar Review | 5–10 min | spaced retrieval for suitable Knowledge Objects | `PT-17`, `PT-18`, `PT-19` |
-| `PM-X02` | Error Remediation | 5–15 min | target a classified recurring error with a new corrective action | `PT-04` plus referenced RemediationPattern |
-| `PM-X03` | Adaptive Mixed Set | 10–20 min | interleave eligible targets selected from current learner state | `PT-20`, `PT-21` |
-| `PM-X04` | Full IELTS Mock | approximately 165 min for integrated written sections; Speaking may be scheduled separately | variant-aware whole-test readiness, pacing, stamina, integration | `PT-23`, readiness-only by default |
+| `PM-X02` | Error Remediation | 5–15 min | classified error → fresh corrective action | `PT-04` + RemediationPattern |
+| `PM-X03` | Adaptive Mixed Set | 10–20 min | interleave eligible targets from current learner state | `PT-20`, `PT-21` |
+| `PM-X04` | Full IELTS Mock | about 150 min for Listening+Reading+Writing; Speaking follows the applicable separate/scheduled test configuration | variant/delivery-aware whole-test readiness | `PT-23`, readiness-only by default |
 
-`PM-X04` must resolve Academic vs General Training before Reading and Writing Task 1 content is created. A mixed-variant mock is invalid unless explicitly a non-certifying comparison exercise.
+The complete external IELTS timing is owned by `../spec/02-IELTS-MODEL.md`. Catalog duration is a planning envelope, not external-exam authority.
 
-# Media is a source, not another practice taxonomy
+`PM-X04` resolves variant before Reading/Writing Task 1 are instantiated. It also records supported delivery interaction where material. A mixed variant is invalid for a normal full-test readiness claim.
 
-YouTube/owned media does not create a parallel set of practice modes.
+# Media source rule
 
-Eligible media can instantiate existing modes such as:
-
-- `PM-L01` Dictation;
-- `PM-L02` Gist Sprint;
-- `PM-S02` Shadowing;
-- `PM-S04` retell/long-turn variants when the prompt is appropriately transformed;
-- `PM-X01` vocabulary review extracted from authorized transcript/content.
-
-Media-specific eligibility is owned by `03-media-youtube.md`.
+Media does not create another practice taxonomy. Eligible media instantiates suitable existing modes under `03-media-youtube.md`.
 
 # Evidence-role labels
 
-Each concrete practice activity must expose one of these product labels:
+Each concrete activity exposes one product role:
 
 ```text
 TRAINING_ONLY
@@ -145,57 +120,45 @@ DIAGNOSTIC
 READINESS_ONLY
 ```
 
-`EVIDENCE_ELIGIBLE` means the attempt may produce an Observation/EvidenceFact if Assessment conditions are satisfied; it never means automatic mastery contribution.
+`EVIDENCE_ELIGIBLE` means Assessment may admit the resulting Observation under its normal policy; it does not imply automatic evidence/mastery contribution.
 
-# Practice selection
+# Selection boundary
 
-The product selection pipeline is:
+The Planner in `04-application-flows.md` owns hard eligibility and ranking.
 
-```text
-GapEvaluation
-  ↓
-ActionIntent
-  ↓
-Learning Mechanism
-  ↓
-eligible Practice Mode(s)
-  ↓
-variant/context filter when material
-  ↓
-constraints: time, skill focus, accessibility, prior exposure, fatigue
-  ↓
-concrete Practice Item
-```
+After an ActionIntent has valid eligible candidates, this catalog answers **which user-facing mode packages the chosen learning action**.
 
-Wrong answer → mode is forbidden as a direct mapping. The system must first determine whether the problem is ability, prerequisite, evidence, conflict, staleness, scaffold dependence, transfer, fluency, or exam condition.
+A mode must not independently:
 
-# Retry policy
+- bypass prerequisites;
+- select the wrong variant/delivery configuration;
+- reinterpret GapEvaluation;
+- create certification;
+- convert a CoverageGap into learner weakness.
 
-A retry must be labelled by purpose:
+# Retry purpose
+
+Retries are labelled by purpose:
 
 - **recovery retry** — correct misunderstanding with support;
 - **faded retry** — reduce scaffold;
-- **retention retry** — retrieve after time;
-- **transfer retry** — new item/context testing generalization;
+- **retention retry** — retrieve after delay;
+- **transfer retry** — new material/context for generalization;
 - **re-evidence attempt** — fresh admissible sample for a claim.
 
-A same-item immediate retry is normally recovery evidence, not independent transfer evidence.
+Immediate same-item retry is normally recovery, not independent transfer evidence.
 
-# Duration policy
+# Duration boundary
 
-Durations in this catalog are UX defaults for planning and expectation-setting. They do not define learning dosage, mastery, or certification.
+Catalog durations are UX/planning defaults. They do not define dosage, mastery, or certification.
 
-The scheduler may shorten or lengthen an activity when the concrete task demands it, but should not silently turn a focused mode into an unbounded session.
+# Catalog change rule
 
-# Catalog quality rule
+A new mode requires at least one materially distinct learner-visible reason:
 
-The catalog should remain small enough that a learner can understand it and large enough to expose materially different learning actions.
+- different goal;
+- different interaction model;
+- task family not representable clearly by existing interaction;
+- distinct learning/evidence role.
 
-A new mode requires at least one of:
-
-- a distinct learner goal;
-- a distinct interaction model;
-- a distinct exam task family that cannot be represented clearly by an existing mode;
-- a distinct learning/evidence role visible to the learner.
-
-Do not create a new mode merely for a new topic, content source, Band, variant label, or generated template.
+Do not create a mode solely for a topic, source, Band, variant label, delivery label, or generated template.
