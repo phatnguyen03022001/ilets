@@ -1,45 +1,43 @@
 STATUS: CANONICAL
-OWNS: learner runtime-state semantics, MasteryEstimate semantics, GapEvaluation and ActionIntent semantics, per-skill band advancement/regression, prerequisite gating behavior, adaptive scheduling, review policy, certification state, and exam-preparation mode
+OWNS: learner-state semantics, MasteryEstimate, GapEvaluation, ActionIntent, per-skill Band advancement/regression, prerequisite-gating semantics, semantic review state, certification history/current state, and Exam Preparation mode semantics
 DEPENDS_ON: 01-LEARNER-MODEL.md, 05-BANDS.md, 06-CURRICULUM.md, 08-ASSESSMENT.md
-DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, curriculum object ordering, learning mechanisms/practice taxonomy, assessment eligibility/sufficiency/scoring, or concrete data-storage implementation
+DOES_NOT_OWN: Skill/Knowledge definitions, Band thresholds, curriculum ordering, Practice selection, Assessment eligibility/scoring, product planner candidate eligibility/ranking, UX scheduling, or storage schema
 
 # 09 — Progression
 
 ## Purpose
 
-Define when learner state changes and which semantic next-action objective follows after Assessment has interpreted the available evidence.
+Define when learner interpretation changes and which **semantic next-action objective** follows after Assessment has interpreted current evidence.
 
-Progression emits learner-state decisions, `GapEvaluation`, and `ActionIntent`. It does not choose the downstream Learning Mechanism or Practice Type; that selection is owned by `07-PRACTICE.md`.
+Progression emits learner state, `GapEvaluation`, and `ActionIntent`. It does not choose a UI feature, Practice Mode, concrete item, or ranked DailyPlan candidate.
 
-Progression is a semantic state model, not a database schema.
-
-## Core rule: progression is per skill
+# Per-skill progression
 
 Listening, Reading, Writing, and Speaking progress independently.
 
-A learner may legitimately hold an uneven profile. The IELTS overall band may be calculated for planning/information using `02-IELTS-MODEL.md`, but it is never a hard learning-progression gate.
+Overall IELTS Band may be relevant to TargetProfile planning, but it is not a synchronized four-skill advancement gate.
 
-## State layers
-
-The runtime model keeps these layers distinct:
+# State layers
 
 ```text
 Attempt history
-    ↓
-Observation / EvidenceFact history       owned semantically by 08
-    ↓
-MasteryEstimate                          owned here
-    ↓
-ReadinessEvaluation                      produced by 08
-    ↓
-Certification / GapEvaluation / ActionIntent
+  ↓
+Observation / EvidenceFact         Assessment
+  ↓
+MasteryEstimate                    Progression
+  ↓
+ReadinessEvaluation                Assessment
+  ↓
+Certification / GapEvaluation / ActionIntent   Progression
+  ↓
+Product Planner                    design/04
 ```
 
-Historical evidence is not overwritten merely because the current interpretation changes.
+No layer rewrites the historical evidence owned upstream.
 
 # `MasteryEstimate`
 
-A MasteryEstimate is a current, derived, uncertainty-aware interpretation of capability for a scoped Skill Leaf or Knowledge Object.
+A MasteryEstimate is the current uncertainty-aware interpretation of one scoped Skill Leaf or Knowledge Object.
 
 Conceptual fields:
 
@@ -53,7 +51,7 @@ computed_at
 policy_version
 ```
 
-Recommended support states:
+Support states:
 
 ```text
 unknown
@@ -61,7 +59,7 @@ learning
 currently_supported
 ```
 
-`unknown` does not mean weak. `currently_supported` means current admissible evidence supports the scoped mastery claim; it does not mean immutable mastery forever.
+`unknown` is not weak. `currently_supported` is a current evidence interpretation, not permanent mastery.
 
 # `BandCertificationState`
 
@@ -76,7 +74,7 @@ certification_evidence_refs
 certified_at
 ```
 
-Canonical status:
+Status:
 
 ```text
 not_started
@@ -84,26 +82,22 @@ in_progress
 certified
 ```
 
-Certification is internal learning-system recognition that the skill-band claim is currently `SUPPORTED` under `08-ASSESSMENT.md`. It is not an official IELTS result or guaranteed future exam score.
-
-Current certification and historical attainment are separate.
+Certification means the internal skill-Band claim is currently `SUPPORTED` under Assessment policy. It is not an official IELTS result or guarantee.
 
 # Band advancement
 
-A skill-band becomes `certified` when:
+A skill-Band becomes `certified` when:
 
-1. `05-BANDS.md` defines the target threshold;
-2. `08-ASSESSMENT.md` evaluates the corresponding claim as `SUPPORTED`;
+1. `05-BANDS.md` defines the threshold;
+2. `08-ASSESSMENT.md` returns `SUPPORTED` for the corresponding claim;
 3. no required claim condition remains blocked;
-4. Progression records the current certification and its evidence/provenance.
+4. Progression records current state + evidence/policy provenance.
 
-Curriculum completion count is not a certification requirement. A learner who directly demonstrates the target capability may skip unnecessary acquisition stages. Required prerequisites constrain dependent learning paths; they are not paperwork that must be completed after the capability is already demonstrated.
+Curriculum completion count is not a certification requirement. Valid evidence may accelerate past redundant acquisition stages.
 
-After Band N is certified, the system may prioritize Band N+1 work for that skill without waiting for other skills.
+After Band N certification, Band N+1 work for that skill may become semantically eligible without waiting for other skills.
 
-# GapEvaluation
-
-A GapEvaluation classifies what the current learner state actually requires. It is not synonymous with “the learner got something wrong.”
+# `GapEvaluation`
 
 Canonical classes:
 
@@ -119,21 +113,21 @@ FLUENCY_GAP
 EXAM_CONDITION_GAP
 ```
 
-Semantics:
+Meanings:
 
-- `ABILITY_GAP` — current admissible evidence shows below-requirement target performance.
-- `PREREQUISITE_GAP` — a Required prerequisite is materially missing for the dependent learning target.
-- `EVIDENCE_GAP` — capability is unresolved because evidence is insufficient, not because weakness is established.
-- `CONFLICTING_EVIDENCE` — material valid evidence supports incompatible interpretations.
-- `STALE_EVIDENCE` — historical support exists but needs refresh for a current claim.
-- `SCAFFOLD_DEPENDENCE` — performance is carried by support that the target claim requires the learner to perform without.
-- `TRANSFER_GAP` — practiced performance does not generalize to a materially different required context.
-- `FLUENCY_GAP` — target quality is broadly present but speed, automaticity, rhythm, or processing efficiency limits performance.
-- `EXAM_CONDITION_GAP` — timing, integration, stamina, or exam-format conditions reduce performance without necessarily implying a missing underlying skill.
+- `ABILITY_GAP` — admissible current evidence is below the target capability requirement;
+- `PREREQUISITE_GAP` — a Required prerequisite is materially unresolved for dependent learning;
+- `EVIDENCE_GAP` — evidence is insufficient; weakness is not established;
+- `CONFLICTING_EVIDENCE` — material admissible evidence supports incompatible interpretations;
+- `STALE_EVIDENCE` — historical support needs refresh for a current claim;
+- `SCAFFOLD_DEPENDENCE` — material support is carrying performance required independently;
+- `TRANSFER_GAP` — capability does not generalize to a materially required context;
+- `FLUENCY_GAP` — underlying quality is broadly present but automaticity/speed/rhythm/processing efficiency limits performance;
+- `EXAM_CONDITION_GAP` — timing, integration, stamina, test-interface/input mode, or other exam-condition demand reduces performance without necessarily implying missing underlying capability.
 
-# ActionIntent
+Delivery-mode unfamiliarity belongs under `EXAM_CONDITION_GAP` when it is the material cause. Do not create a second ability taxonomy for computer/handwriting/remote delivery.
 
-GapEvaluation maps to an explicit planning intent before downstream practice/assessment selection.
+# `ActionIntent`
 
 Canonical intents:
 
@@ -151,12 +145,12 @@ CONSOLIDATE
 ADVANCE
 ```
 
-Representative mapping:
+Default semantic mapping:
 
-| Gap / state | Default ActionIntent |
+| State/gap | ActionIntent |
 |---|---|
 | `PREREQUISITE_GAP` | `ACQUIRE_PREREQUISITE` |
-| `ABILITY_GAP` | `REMEDIATE` or `CONSOLIDATE` based on diagnosis |
+| `ABILITY_GAP` | `REMEDIATE` or `CONSOLIDATE` according to diagnosis |
 | `EVIDENCE_GAP` | `COLLECT_EVIDENCE` |
 | `CONFLICTING_EVIDENCE` | `RESOLVE_CONFLICT` |
 | `STALE_EVIDENCE` | `REASSESS` |
@@ -164,104 +158,109 @@ Representative mapping:
 | `TRANSFER_GAP` | `EXPAND_CONTEXT` |
 | `FLUENCY_GAP` | `BUILD_FLUENCY` |
 | `EXAM_CONDITION_GAP` | `EXAM_PREPARE` |
-| target currently supported with remaining consolidation need | `CONSOLIDATE` |
-| target currently supported and next target eligible | `ADVANCE` |
+| supported target with useful stability work | `CONSOLIDATE` |
+| supported target with next target semantically available | `ADVANCE` |
 
-This mapping is a semantic default, not a hardcoded recommender algorithm.
+This table defines semantic intent, not a recommender score/ranking algorithm.
 
 # Required prerequisites
 
 Dependency classification is owned by `06-CURRICULUM.md`.
 
-Runtime behavior:
+Progression semantics:
 
-- **Required** prerequisite → hard gate for dependent learning when its absence would make the learning ineffective;
-- **Recommended** prerequisite → ordering signal, not a blocker;
-- **Independent** → no gate.
+- **Required** → unresolved prerequisite produces a dependent-learning gate;
+- **Recommended** → ordering signal, not a canonical hard block;
+- **Independent** → no prerequisite relation.
 
-Evidence can accelerate the path. If assessment already demonstrates the dependent capability or prerequisite adequately, the learner need not complete redundant instructional stages.
+Evidence may satisfy/resolve a prerequisite without requiring the learner to replay redundant lessons.
 
-# Next-action policy
+The product Planner consumes these gates; it does not redefine them.
 
-A next action must be explainable as:
+# Next-action explanation
+
+A semantic next action is reconstructable as:
 
 ```text
-learner target
-+ current evidence state
-+ GapEvaluation
-+ prerequisite status
+TargetProfile condition
++ Assessment evidence state
++ prerequisite state
+→ GapEvaluation
 → ActionIntent
 ```
 
-`07-PRACTICE.md` then maps a learning-oriented ActionIntent to suitable Learning Mechanism(s) and Practice Type(s). Evidence-oriented intents may instead trigger an Assessment action.
+`07-PRACTICE.md` maps learning-oriented intents to Learning Mechanisms/Practice Types. Assessment-oriented intents may trigger additional measurement.
 
-The system must not route every uncertainty state into remediation.
+`design/04-application-flows.md` then performs product hard eligibility, candidate generation, and ranking.
 
-# Learner agency and plan stability
+Uncertainty must not be routed automatically to remediation.
 
-The system should make a strong recommendation while preserving practical learner control where the action set remains valid.
+# Learner behavior boundary
 
-A learner may be allowed to swap, shorten, skip, or change skill among eligible alternatives. Such behavior changes planning context; it does not create evidence of ability or inability.
+Skipping, preference, abandonment, or repeated friction may influence product planning but are not ability evidence.
 
-Repeated skipping or abandonment is a preference/friction signal. It may justify a different eligible activity or delivery pattern but cannot lower the canonical standard.
+Progression does not lower target standards because the learner avoids a task.
 
-A current plan should remain stable enough to trust. Replanning should follow material learner/evidence state change rather than every minor scoring fluctuation.
+# Review state
 
-# Review scheduling
+Spacing/review applies only where repeated retrieval or repeated performance is meaningful.
 
-Spacing applies only where a target is meaningfully reviewable through repeated retrieval or repeated performance.
+No universal review formula applies to vocabulary, grammar, writing organization, speaking fluency, and integrated IELTS tasks.
 
-A review system may expand or shorten intervals using performance history, but there is no universal spacing formula across vocabulary, grammar, writing organization, speaking fluency, and integrated IELTS tasks.
-
-Suitable reviewable targets may use spaced retrieval; other targets may use targeted reassessment, transfer work, or performance practice. Exact mechanism/type selection is downstream Practice authority.
+Progression may determine that a target is due for review/reassessment. Concrete scheduling time, mode choice, and activity ranking are downstream product/Practice concerns.
 
 # Exam Preparation mode
 
-Exam Preparation may expose higher-demand or integrated tasks before certification for diagnosis, pacing, familiarity, stamina, strategy, or readiness estimation.
+Exam Preparation may expose higher-demand/integrated conditions before certification for:
 
-It may request downstream timed/integrated Practice or a full readiness Assessment.
+- diagnosis;
+- timing/pacing;
+- interface/input familiarity;
+- strategy;
+- stamina;
+- target-condition readiness.
 
-Exam Preparation must never:
+It may request timed/integrated Practice or readiness Assessment.
 
-- unlock a higher band by exposure alone;
-- satisfy a missing Required prerequisite by completion alone;
-- treat one mock as certification;
-- rewrite a Band threshold;
-- convert an unresolved evidence state into certainty.
+It never:
 
-# Staleness, conflict, and regression
+- unlocks a higher Band by exposure;
+- satisfies a Required prerequisite by completion alone;
+- turns a mock into automatic certification;
+- rewrites Band thresholds;
+- converts unresolved evidence into certainty.
 
-These are different conditions.
+# Staleness, conflict, regression
 
-### Staleness
+## Staleness
 
-Stale evidence means the current claim needs refresh. It does **not** mean the learner regressed.
+Evidence is too old for the current claim. Refresh is needed; regression is not established.
 
-### Conflict
+## Conflict
 
-Conflicting evidence means the system does not yet know which interpretation is reliable. It triggers a discriminating evidence intent rather than majority-vote averaging.
+Material evidence supports incompatible interpretations. Resolve with discriminating evidence rather than averaging the conflict away.
 
-### Regression
+## Regression
 
-Regression requires later admissible evidence showing that a previously supported capability is now below the required current threshold.
+Regression requires later admissible evidence establishing that previously supported current capability is now below requirement.
 
-When regression is established:
+When established:
 
-1. preserve historical evidence and prior attainment;
-2. update the current MasteryEstimate honestly;
-3. move affected current certification from `certified` to `in_progress` when the skill-band claim is no longer supported;
-4. classify the relevant GapEvaluation;
-5. emit the appropriate ActionIntent;
-6. re-certify only through the normal Assessment policy.
+1. preserve historical evidence/attainment;
+2. update current MasteryEstimate;
+3. move affected current certification from `certified` to `in_progress` when the claim is no longer supported;
+4. classify GapEvaluation;
+5. emit ActionIntent;
+6. re-certify only through normal Assessment policy.
 
-Absence of recent evidence alone never revokes historical attainment.
+Absence of recent evidence alone never establishes regression.
 
 # Certification history
 
-Certification history records point-in-time attainment with evidence and policy provenance. Later regression or re-certification adds history; it does not erase earlier events.
+Historical certifications remain point-in-time records with evidence/policy provenance. Regression/re-certification append history rather than rewriting prior attainment.
 
 # Explainability invariant
 
-Every state transition and ActionIntent must be reconstructable from canonical target references, evidence interpretation, and prerequisite status.
+Every learner-state transition and ActionIntent must be reconstructable from canonical target references, Assessment interpretation, and prerequisite state.
 
-No transition may depend on duplicate learning definitions or opaque “AI decided” state change.
+No transition may depend on a duplicated learning definition, ranker side effect, opaque model decision, UI completion state, or provider failure.
