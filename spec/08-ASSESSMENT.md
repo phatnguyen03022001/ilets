@@ -1,86 +1,90 @@
 STATUS: CANONICAL
-OWNS: how demonstrated capability is measured, Assessment Type taxonomy, Observation→EvidenceFact admission, claim-scoped EvidenceRequirement semantics, confidence/calibration policy, validity, readiness evaluation, and certification evidence construction
+OWNS: measurement semantics, Assessment Type taxonomy, Observation→EvidenceFact admission, diagnostic sampling semantics, claim-scoped EvidenceRequirement, confidence/calibration policy, readiness evaluation, and certification evidence construction
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
-DOES_NOT_OWN: Skill/Knowledge definitions, curriculum ordering, practice pedagogy, learner-state transitions, band-progression decisions, or concrete assessment-item storage
+DOES_NOT_OWN: Skill/Knowledge definitions, curriculum ordering, practice pedagogy, learner-state transitions, band-progression decisions, product UX durations, or concrete assessment-item storage
 
 # 08 — Assessment
 
 ## Purpose
 
-Define how demonstrated capability is measured and how evidence supports a scoped learning claim.
+Define how demonstrated capability is measured and how observations become evidence for a scoped claim.
 
-Assessment must preserve:
+The required separation is:
 
 ```text
 Attempt
   ↓
 Observation
-  ↓  eligibility / interpretation
+  ↓ eligibility / interpretation
 EvidenceFact
-  ↓  claim-scoped aggregation
-Mastery / Readiness evaluation
+  ↓ claim-scoped aggregation
+ReadinessEvaluation
   ↓
 Progression decision owned by 09-PROGRESSION
 ```
 
 An Attempt is not automatically evidence. Evidence is not automatically mastery. Mastery is not automatically exam readiness.
 
-# Core distinctions
+# Core objects
 
 ## Observation
 
-An Observation is what was measured from a learner attempt before evidence admission. It preserves response/result, conditions, scorer output, timing, assistance/scaffolding context, exposure context, variant/context, and provenance needed to interpret what happened.
+An Observation records what was measured before evidence admission. It preserves the result, conditions, scorer/evaluator output, assistance/scaffolding, exposure, variant/context, delivery conditions where material, and provenance required to interpret the attempt.
 
 ## EvidenceFact
 
-An EvidenceFact is an Observation admitted for a specific claim/purpose under an explicit eligibility rule.
+An EvidenceFact is an Observation admitted for a specific claim/purpose under an explicit eligibility policy.
 
-Eligibility is claim-scoped. The same Observation may be useful formative evidence but invalid for an independent Band-readiness claim.
+Eligibility is claim-scoped. The same Observation may be valid formative evidence and invalid for an independent Band-readiness claim.
 
-Historical EvidenceFacts remain historical facts. Later staleness changes what they support now; it does not rewrite what happened.
+Historical EvidenceFacts remain historical facts. Later staleness changes what they support **now**; it does not rewrite what happened.
 
 ## EvidenceRequirement
 
-An EvidenceRequirement defines what must be true for a scoped claim to be supported.
+An EvidenceRequirement defines the logical conditions that must hold for a scoped claim to be `SUPPORTED`.
 
-Requirements may include:
+Depending on the claim, conditions may include:
 
 - target/criterion coverage;
-- variant and task/context coverage;
-- appropriate task and context diversity;
-- independence from excessive support;
-- consistency where the claim requires stable performance;
-- recency where current capability matters;
-- transfer/generalization where the claim implies it;
-- minimum evaluator/scoring quality;
+- variant/task/section/context coverage;
+- task/context diversity;
+- independence from material support;
+- consistency when stable performance is claimed;
+- recency when current capability is claimed;
+- transfer/generalisation;
+- evaluator/scoring quality;
 - resolution of material conflicts;
-- required task/part/section coverage for integrated skills.
+- required part/task/section coverage;
+- delivery-condition coverage only when the claim explicitly includes that delivery condition.
 
-There is **no universal attempt count, confidence cutoff, recency window, or transfer distance** that applies to every target.
+There is **no universal attempt count, confidence cutoff, recency window, or transfer distance** for every target.
 
-Numeric thresholds are calibration policy and must be evidence-backed for the claim/evaluator where they are used. They are not architectural constants.
+Numeric thresholds are calibration policy. They must be evidence-backed and versioned for the claim/evaluator where used.
 
-### Materialization gate
+# EvidenceRequirement materialisation gate
 
-Before any `(variant, skill, band)` target can be `SUPPORTED_FOR_PRODUCT`, its high-consequence Band/readiness claim must resolve to a **versioned executable EvidenceRequirement**.
+Before a `(variant, skill, band)` target can be `SUPPORTED_FOR_PRODUCT`, every high-consequence readiness/Band claim used by that target must resolve to a **versioned executable EvidenceRequirement**.
 
-The materialized policy must let Core API answer, without a hidden model heuristic:
+The executable policy must let Core API answer without a hidden model heuristic:
 
 ```text
-which claim is being evaluated
-which variant/task/context coverage is required
-which EvidenceFacts are admissible
-which conditions are satisfied
-which conditions remain missing/stale/conflicting/below threshold
-which evaluator/calibration policy applies
-which policy version produced the result
+claim identity and scope
+applicable variant/task/context conditions
+admissible EvidenceFacts
+satisfied conditions
+missing conditions
+stale conditions
+material conflicts
+below-threshold conditions
+applicable evaluator/calibration policy
+policy version
 ```
 
-This rule does not introduce a universal threshold. It converts the claim-specific canonical requirement into an implementation-executable policy before production support is declared.
+Materialisation makes the canonical policy executable; it does not invent a universal threshold.
 
-## ReadinessEvaluation
+# ReadinessEvaluation
 
-A claim-scoped evaluation uses one of:
+A claim evaluation returns one of:
 
 ```text
 INSUFFICIENT_EVIDENCE
@@ -90,146 +94,168 @@ NOT_YET_SUPPORTED
 SUPPORTED
 ```
 
-- `INSUFFICIENT_EVIDENCE` — required observations are missing.
-- `CONFLICTING_EVIDENCE` — material valid evidence points in incompatible directions and the conflict is unresolved.
+- `INSUFFICIENT_EVIDENCE` — required evidence is missing.
+- `CONFLICTING_EVIDENCE` — material valid evidence supports incompatible interpretations.
 - `STALE_EVIDENCE` — historical support exists but is not sufficiently current for the present claim.
-- `NOT_YET_SUPPORTED` — relevant current evidence exists and is below the requirement.
+- `NOT_YET_SUPPORTED` — current relevant evidence exists and is below the requirement.
 - `SUPPORTED` — current admissible evidence satisfies the scoped requirement.
 
-These states must not be collapsed into a single percentage.
+These states must never be collapsed into one mastery/readiness percentage.
 
-`SUPPORTED` means the internal learning claim is currently supported. It is never a guaranteed future official IELTS result.
+`SUPPORTED` is an internal evidence statement, not a guaranteed future official IELTS result.
 
-# Canonical Assessment Type registry
+# Assessment Type registry
 
-| ID | Type | Kind | Scope | Evidence / role | Certification status |
-|---|---|---|---|---|---|
-| `AT-01` | Criterion-referenced productive performance | formative or summative | Writing, Speaking | complete productive performance scored by relevant criteria with uncertainty/provenance where automated | may contribute EvidenceFacts; never certifies by one attempt alone |
-| `AT-02` | Objective receptive item set | formative or summative | Listening, Reading | keyed item results, raw score, variant/context, current official section-band conversion when appropriate | may contribute EvidenceFacts within its sampled context |
-| `AT-03` | Knowledge probe | formative | Knowledge Objects / dependent leaves | retrieval, recognition, judgment, short production, targeted application | supports Knowledge claims; cannot replace target-skill evidence |
-| `AT-04` | Diagnostic checkpoint | diagnostic | cross-skill / knowledge | samples current strength, gap, uncertainty, and next evidence need | non-certifying |
-| `AT-05` | Mastery portfolio | cumulative claim evaluator | any target skill/band/knowledge scope | applies the relevant versioned EvidenceRequirement to accumulated EvidenceFacts | **certification evidence mechanism** |
-| `AT-06` | Human / human-verified productive assessment | optional summative/verification | Writing, Speaking | expert-scored performance or expert verification of uncertain automated judgment | may contribute valid productive EvidenceFacts |
-| `AT-07` | Full mock test | summative readiness | all four skills | variant-correct integrated exam-like observations and section estimates | non-certifying by itself; contributes only within normal eligibility/sufficiency rules |
+| ID | Type | Primary role | Scope | Certification relation |
+|---|---|---|---|---|
+| `AT-01` | Criterion-referenced productive performance | formative/summative productive measurement | Writing, Speaking | may contribute EvidenceFacts; one attempt never certifies by itself |
+| `AT-02` | Objective receptive item set | keyed receptive measurement | Listening, Reading | may contribute EvidenceFacts within sampled scope |
+| `AT-03` | Knowledge probe | enabling-knowledge measurement | Knowledge / dependent leaves | cannot replace target-skill evidence |
+| `AT-04` | Diagnostic checkpoint | reduce decision-relevant uncertainty | cross-skill / Knowledge | non-certifying as a diagnostic role |
+| `AT-05` | Mastery portfolio | evaluate accumulated evidence against EvidenceRequirement | any claim scope | certification evidence mechanism |
+| `AT-06` | Human / human-verified productive assessment | optional expert verification | Writing, Speaking | may contribute productive EvidenceFacts |
+| `AT-07` | Full mock test | integrated exam-readiness measurement | four skills | non-certifying by itself |
 
-# Type semantics
+# Type-specific rules
 
-## `AT-01` productive performance
+## `AT-01` Productive performance
 
-Writing/Speaking assessment must preserve criterion-level visibility. A global score cannot hide a materially weak required criterion.
+Writing/Speaking measurement preserves criterion-level visibility. A global score cannot hide a materially weak required criterion.
 
-Automated productive judgment must expose evaluator/model/rubric version and uncertainty sufficient for calibration and audit.
+Automated judgment records evaluator/model/rubric version and uncertainty/provenance sufficient for calibration and audit.
 
-## `AT-02` receptive item set
+## `AT-02` Receptive item set
 
-Uses deterministic keys where valid. Raw-score conversion references current external truth in `02-IELTS-MODEL.md`; test-version variation must not be hidden behind an invented immutable universal conversion.
+Uses deterministic keys where valid. Full-section Band inference uses the applicable current external scoring policy rather than an invented permanent conversion.
 
-Reading observations must preserve `test_variant` and material section/context metadata. An Academic Reading conversion cannot be applied to a General Training Band claim and vice versa.
+Reading observations preserve Academic/GT variant and material section/context. Academic and GT conversion policies are not interchangeable.
 
-## `AT-03` knowledge probe
+## `AT-03` Knowledge probe
 
-Measures enabling knowledge only. Passing a vocabulary, grammar, or phonology probe cannot certify an IELTS skill.
+Measures enabling knowledge. Passing a vocabulary, grammar, or phonology probe cannot certify Listening, Reading, Writing, or Speaking.
 
-## `AT-04` diagnostic checkpoint
+## `AT-04` Diagnostic checkpoint
 
-Answers what appears supported, below requirement, unknown, conflicting, or stale and what should be sampled next. Diagnosis is not a weakness generator.
+Diagnostic purpose is to reduce **decision-relevant uncertainty**, not to force a complete measurement of every capability before learning can begin.
 
-## `AT-05` mastery portfolio
+Required invariants:
 
-Evaluates a claim-specific EvidenceRequirement over admissible EvidenceFacts. It does not count attempts mechanically.
+1. **No cross-skill inference** — evidence from one scored skill cannot establish another scored skill merely because the skills correlate.
+2. **No variant substitution** — when a target includes a material Academic/GT-specific condition, diagnostic coverage must either sample it or leave it explicitly unresolved.
+3. **No fabricated completeness** — an unsampled, unusable, failed-capture, or evaluator-pending condition is reported as unresolved evidence state, not converted to weakness or an estimated score.
+4. **Quick diagnostic is provisional** — it may stop after enough information exists to produce a useful first route while preserving all unresolved target conditions.
+5. **Fuller baseline is still evidence-bounded** — completion means the baseline sampling flow ended; it does not mean every target claim became known.
+6. **Sampling ledger is explicit** — for each material target condition, the diagnostic result can distinguish at least `sampled`, `not_sampled`, `unusable`, and `pending_evaluation` where applicable.
+7. **Stop by decision value, not arbitrary completeness** — additional sampling may stop when expected decision value is low relative to learner burden, provided the unresolved state remains visible.
+8. **Certification remains normal Assessment** — a diagnostic Observation contributes to a higher-consequence claim only if the normal eligibility and EvidenceRequirement independently admit it.
 
-A portfolio may require repeated demonstrations, multiple task contexts, criterion coverage, independence, transfer, variant coverage, or section/part coverage when the claim makes those conditions material.
+Diagnostic output answers:
 
-## `AT-06` human verification
+```text
+what appears currently supported
+what is observed below requirement
+what is unknown/insufficient
+what is conflicting
+what is stale
+what material condition should be sampled next
+```
 
-Optional escalation for productive skills. Human review may verify/replace an uncertain automated judgment but is not mandatory for the core learning loop.
+It does not directly emit learner remediation without Progression interpreting the evidence state.
 
-## `AT-07` full mock
+## `AT-05` Mastery portfolio
 
-Measures broad readiness under integrated conditions. The mock must resolve the selected IELTS variant before Reading and Writing Task 1 are instantiated/scored.
+Applies a versioned EvidenceRequirement over admissible EvidenceFacts. It never certifies by mechanically counting attempts.
 
-One mock may provide useful Observations and EvidenceFacts; it cannot bypass claim-scoped sufficiency or automatically certify a skill/band.
+Repeated demonstrations, multiple contexts, independence, recency, transfer, criterion coverage, or variant coverage are required only when the claim makes them material.
+
+## `AT-06` Human verification
+
+Human expert scoring/verification is an optional escalation route. It may verify or replace an uncertain automated judgment but is not automatically required for every productive attempt.
+
+## `AT-07` Full mock
+
+A full mock resolves one valid IELTS variant before Reading and Writing Task 1 are instantiated/scored.
+
+It measures integrated readiness under exam-like conditions. One mock cannot bypass claim-scoped sufficiency or automatically certify a skill/Band.
 
 # Evidence eligibility
 
-An Observation becomes an EvidenceFact only when:
+An Observation becomes an EvidenceFact for a claim only when:
 
 1. the task samples the claimed capability;
-2. the task variant/context matches the claim where material;
-3. scoring aligns with the canonical criterion and correct external conversion;
+2. variant/task/context matches where material;
+3. scoring aligns with the canonical criterion and applicable external conversion;
 4. material conditions are known;
 5. assistance/scaffolding is compatible with the claim;
-6. the learner response is attributable to the learner;
+6. the response is attributable to the learner;
 7. evaluator quality is adequate for the intended consequence;
-8. exposure/retry history does not invalidate the inference being made;
+8. exposure/retry history does not invalidate the inference;
 9. provenance is sufficient for audit/recomputation;
-10. the observation is not used outside its designed scope.
+10. the Observation is not used outside its designed inference scope.
 
-A same-item retry may support recovery or retention while remaining weak evidence for unseen transfer. Guided success may support learning progress while remaining invalid for independent readiness.
+A guided attempt or same-item retry may be valuable learning evidence while remaining invalid for an independent unseen-transfer claim.
 
-# Negative, missing, conflicting, and stale evidence
+# Missing, negative, conflicting, and stale evidence
 
 - Missing evidence is not negative evidence.
-- One wrong response is not automatically proof of an ability gap.
+- One wrong response is not automatically an ability gap.
 - Stale evidence is not proof of regression.
-- Material conflicts are preserved until a discriminating assessment resolves them; do not average them away.
-- Historical observations and EvidenceFacts remain immutable enough for later governed reinterpretation.
+- Material conflicts remain explicit until discriminating evidence resolves them; do not average them away.
+- Historical Observations/EvidenceFacts remain immutable enough for governed reinterpretation.
 
 # Claim-scoped sufficiency
 
-## Writing — Academic
+## Academic Writing
 
-An Academic Writing Band claim must include enough admissible performance to cover:
+A Band claim covers:
 
 - Academic Task 1;
 - Task 2;
-- the applicable criterion-level Writing construct;
-- independence/recency/transfer conditions required by the versioned EvidenceRequirement.
+- applicable Writing criteria;
+- independence/recency/transfer conditions required by its EvidenceRequirement.
 
-Academic Task-1 evidence must sample `W-TA-*` capability and cannot be substituted by General Training letter evidence.
+Academic visual Task-1 evidence cannot be replaced by GT letter evidence.
 
-## Writing — General Training
+## General Training Writing
 
-A General Training Writing Band claim must include enough admissible performance to cover:
+A Band claim covers:
 
-- GT Task 1 letter capability: `W-GT1-01`, `W-GT1-02`, `W-GT1-03` plus shared Writing quality;
+- GT Task-1 capability `W-GT1-01`, `W-GT1-02`, `W-GT1-03` plus shared Writing quality;
 - Task 2;
-- the applicable criterion-level Writing construct;
-- independence/recency/transfer conditions required by the versioned EvidenceRequirement.
+- applicable Writing criteria;
+- independence/recency/transfer conditions required by its EvidenceRequirement.
 
-The GT Task-1 sample must include materially varied recipient/purpose/register conditions where the claim implies transferable letter control. Academic visual Task-1 evidence cannot satisfy the GT Task-1 condition.
+Where transferable letter control is claimed, evidence must vary recipient/purpose/register materially. Academic visual Task-1 evidence cannot satisfy this condition.
 
 ## Speaking
 
-A Speaking Band claim must represent the whole construct across Parts 1, 2, and 3 rather than one rehearsed slice.
+A Speaking Band claim represents the whole construct across Parts 1, 2, and 3 rather than one rehearsed slice.
 
-Repeated independent demonstrations are generally expected for a stable high-consequence claim, but exact count/recency are versioned calibration policy rather than universal constants.
+Exact demonstration count and recency are versioned calibration policy, not architectural constants.
 
 ## Listening
 
-A Listening Band claim requires admissible timed section evidence whose official conversion and sampled context support the claimed Band.
-
-A short practice set cannot be arithmetically inflated into a full-section Band claim.
+A Listening Band claim requires admissible timed section evidence whose scoring/context support the claimed Band. A short practice set cannot be arithmetically inflated into a full-section Band claim.
 
 ## Academic Reading
 
-An Academic Reading Band claim requires admissible evidence using Academic content/conditions and the Academic raw-score conversion where a full-section Band inference is made.
+A Band claim uses Academic content/conditions and the applicable Academic score conversion for full-section inference.
 
 ## General Training Reading
 
-A GT Reading Band claim requires admissible evidence using the GT raw-score conversion and sufficient sampling of the required GT context distribution:
+A Band claim uses the GT score conversion and enough GT context sampling for the scoped readiness claim, including the material distribution across:
 
 ```text
-Section 1  everyday/social-survival
+Section 1  everyday
 Section 2  workplace
 Section 3  longer general-interest
 ```
 
-A learner may demonstrate shared Reading leaves on Academic material, but those observations alone cannot establish GT whole-Reading readiness because variant context transfer and scoring remain unobserved.
+Shared Reading capability observed on Academic material may support compatible leaf-level claims but cannot by itself establish whole GT Reading readiness.
 
 ## Knowledge
 
-Knowledge claims require evidence appropriate to the object and intended use. Recognition, retrieval, and productive application may carry different inference scope. No universal accuracy percentage overrides a more suitable criterion.
+Knowledge evidence matches the object and inference required. Recognition, retrieval, and productive application may support different scopes.
 
 # Confidence and calibration
 
@@ -238,56 +264,52 @@ Confidence is meaningful only when calibrated against relevant outcomes.
 Rules:
 
 - model self-reported confidence is not calibration evidence;
-- low-quality or uncalibrated productive judgments cannot support high-consequence certification by themselves;
-- uncertainty may trigger re-sampling, alternative scoring, or optional human verification;
+- uncalibrated/low-quality productive judgment cannot support a higher-consequence claim by itself;
+- uncertainty may trigger re-sampling, alternative scoring, or human verification;
 - calibration is scoped by evaluator/model/rubric/task/population/variant where material;
-- threshold changes must preserve provenance so historical EvidenceFacts can be reinterpreted without rewriting observations.
+- policy/evaluator changes preserve provenance so historical observations can be reinterpreted without rewriting them.
 
-# Practice, readiness, and certification
+# Assessment roles are not interchangeable
 
-- **Formative assessment** guides learning.
-- **Diagnostic assessment** reduces uncertainty or identifies the kind of gap.
-- **Readiness assessment** estimates performance under target conditions.
-- **Certification evidence** uses `AT-05` to determine whether a scoped learning claim is `SUPPORTED`.
+- **Formative** — guides ongoing learning.
+- **Diagnostic** — reduces uncertainty/classifies evidence need.
+- **Readiness** — estimates performance under target conditions.
+- **Certification evidence** — `AT-05` evaluates whether the scoped claim is `SUPPORTED`.
 
-These roles are not interchangeable.
-
-A learner may learn from a full mock without becoming certified. A learner may hold a current certification while one later poor attempt creates conflict or a need for refresh rather than immediate automatic regression.
+A full mock can teach without certifying. A diagnostic can expose a strong sample without becoming an automatic Band claim.
 
 # Evidence collection strategy
 
-Collect new evidence when it can materially change a decision.
+Collect new evidence when it can materially change a decision:
 
-- insufficient evidence → collect the smallest useful missing sample;
-- conflicting evidence → use a discriminating assessment;
-- stale evidence → use a representative refresh;
-- observed-below-requirement → collect learning evidence after useful intervention or when diagnosis needs refinement;
-- supported claim → stop when additional evidence has poor value relative to learner burden, unless the claim requires ongoing refresh.
-
-Evidence collection is not free. Learner burden and operational cost matter after semantic sufficiency is preserved.
+- insufficient evidence → smallest useful missing sample;
+- conflict → discriminating assessment;
+- staleness → representative refresh;
+- observed below requirement → re-evidence after useful intervention or when diagnosis needs refinement;
+- supported claim → stop when added evidence has poor value relative to learner burden unless refresh is required.
 
 # AI assessment boundary
 
-AI may be a primary automated assessor for repeated feedback and sampling, but it is not assessment truth.
+AI may automate feedback and measurement; it is not assessment authority.
 
-Objective items use deterministic keys where possible. Productive assessment must be benchmarked, versioned, confidence-aware, and fail closed for claims above demonstrated evaluator quality.
+Objective items use deterministic keys where possible. Productive evaluation must be benchmarked, versioned, uncertainty-aware, and fail closed above demonstrated evaluator quality.
 
-If no eligible evaluator route exists, the correct result is delayed/insufficient/unavailable evidence—not silent substitution with a lower-quality route.
+If no eligible evaluation route exists, the truthful result is pending/unavailable/insufficient evidence—not a fake score or silent lower-quality fallback.
 
 # Output consumed by Progression
 
-A claim evaluation supplied to `09-PROGRESSION.md` exposes:
+A claim evaluation exposes:
 
 ```text
 claim_scope
-variant/context scope when material
+variant/context scope where material
 readiness_status
 supporting_evidence_fact_refs
 blocking_conditions
 material_conflicts
 recency_state
-confidence/calibration refs when relevant
+confidence/calibration refs where relevant
 policy/evaluator version
 ```
 
-Progression consumes this result. It does not rescore observations or invent a second evidence policy.
+`09-PROGRESSION.md` consumes this result. Progression does not rescore observations or create a second evidence policy.
