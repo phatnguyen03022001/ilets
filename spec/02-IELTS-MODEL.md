@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: external IELTS test structure, variants, section scoring model, official criteria, delivery facts, and exam facts the learning system must respect
+OWNS: external IELTS test structure, standard variants, delivery modes, section/overall scoring facts, official assessment criteria, and exam/administrative facts the learning system must respect
 DEPENDS_ON: 00-PRODUCT.md
-DOES_NOT_OWN: pedagogical skill decomposition, learning-band overlays, curriculum, practice strategy, mastery evidence policy, learner progression
+DOES_NOT_OWN: pedagogical skill decomposition, learning-band overlays, curriculum, practice strategy, evidence sufficiency, learner progression, product-support policy, or UI/runtime behavior
 
 # 02 — IELTS Model
 
@@ -9,57 +9,89 @@ DOES_NOT_OWN: pedagogical skill decomposition, learning-band overlays, curriculu
 
 Record the external IELTS reality that constrains the learning system.
 
-This file separates official exam facts from internal pedagogical interpretation. Other specs consume these facts; they must not redefine them.
+This file answers **what IELTS externally is**. It does not decide how the product teaches, plans, admits evidence, or declares support.
 
-External facts in this document were rechecked against official IELTS material on **2026-08-22**.
+External facts were rechecked against official IELTS material on **2026-08-22**. Supporting source provenance is recorded in `../evidence/2026-08-22-ielts-official-baseline.md`.
 
-## Standard IELTS variants
+# Standard variants
 
-The intended complete standard-IELTS construct contains two active variants:
+The intended complete standard-IELTS construct contains two variants:
 
 - **IELTS Academic**;
 - **IELTS General Training**.
 
-Listening and Speaking are shared between Academic and General Training. Reading and Writing differ by variant.
+Listening and Speaking are shared between them. Reading and Writing differ where the external exam differs.
 
-Shared learning concepts must remain shared. Variant-specific differences are represented only where the exam actually differs.
+A delivery mode is not a third variant.
 
-Academic may be released first, but release ordering is a product-support concern and must not be expressed here as if General Training were a future or optional exam construct.
+# Four scored sections and overall score
 
-## Four scored sections
-
-IELTS reports separate band scores for:
+IELTS reports separate Band scores for:
 
 1. Listening;
 2. Reading;
 3. Writing;
 4. Speaking.
 
-The overall band score is computed from the four section band scores using IELTS's official averaging and rounding rules. The overall score is an exam result summary; the learning system does not treat it as a synchronized progression gate.
+The overall Band is the arithmetic mean of the four section Bands rounded to the nearest whole or half Band. Current official rounding examples/rules include:
 
-## Delivery baseline — 2026
+- an average ending in `.25` rounds up to the next half Band;
+- an average ending in `.75` rounds up to the next whole Band.
 
-IELTS announced that from **mid-2026** paper-based IELTS will no longer be offered, with exact rollout timing varying by market. IELTS on computer is therefore the standard delivery baseline for exam-readiness design.
+The overall score is an external test-result summary. It is not itself evidence that every underlying learning capability is equally strong.
 
-Selected markets may offer a **Writing on Paper** option. This is a delivery/input-mode option, not a different language construct or scoring standard.
+# Delivery modes — 2026 external baseline
 
-Canonical consequences:
+Delivery changes how the learner performs the test, not what language proficiency the Band scale means.
 
-- exam-readiness interaction must support computer-delivered timing/navigation as the default;
-- handwriting-specific practice is an optional delivery overlay only when relevant to the learner's booked option;
-- paper-era answer-transfer mechanics must not be encoded as universal capability requirements;
-- a delivery-mode change does not redefine Skill, Band, Assessment, or Progression semantics.
+## Test-centre computer
 
-## Test timing baseline
+IELTS announced on **2026-03-05** that from mid-2026 the standard paper-based test will no longer be offered, with exact transition timing varying by market. Test-centre computer delivery is therefore the default current delivery baseline.
 
-The overall test remains approximately 2 hours 45 minutes, with section timing broadly:
+For standard computer delivery:
 
-- Listening: approximately 30 minutes;
-- Reading: 60 minutes;
-- Writing: 60 minutes;
-- Speaking: approximately 11–14 minutes.
+- Listening, Reading, and Writing are completed through the computer interface;
+- Speaking remains a human examiner interaction;
+- the move to computer does not change the skills assessed, test construct, or interpretation of results.
 
-Delivery details can vary. Learning semantics should not depend on obsolete paper-specific mechanics unless a live delivery option materially changes what the learner must do.
+## Test-centre computer with Writing on Paper
+
+Selected markets may offer **Writing on Paper** as an option within IELTS on computer:
+
+- Listening and Reading remain computer-delivered;
+- Writing tasks are displayed on screen but answers are handwritten on the official answer sheet;
+- Writing task types, timing, scoring, and criteria are unchanged;
+- the option applies to Academic and General Training where offered;
+- it is not currently offered for IELTS for UKVI;
+- current guidance requires a Writing One Skill Retake to use the same Writing delivery mode as the original eligible test.
+
+Writing on Paper is an input/delivery overlay, not a different Writing construct.
+
+## IELTS Online Academic
+
+IELTS Online is a remote delivery option for **IELTS Academic only** in supported countries.
+
+Current external conditions include:
+
+- the Academic test format, timing, questions, marking criteria, and Band interpretation remain equivalent to the Academic construct;
+- Listening, Reading, and Writing are completed remotely through the online test platform;
+- Speaking is conducted in real time by a trained IELTS examiner through a secure video call;
+- receiving organisations decide whether they accept IELTS Online results;
+- IELTS Online is not currently accepted for visa/immigration purposes;
+- General Training is not currently offered as IELTS Online.
+
+Acceptance/purpose constraints are external target conditions, not new Skill or Band definitions.
+
+# Timing baseline
+
+The complete test is approximately **2 hours 45 minutes** in total. Section timing is broadly:
+
+- Listening — approximately 30 minutes;
+- Reading — 60 minutes;
+- Writing — 60 minutes;
+- Speaking — approximately 11–14 minutes.
+
+Delivery-specific interaction mechanics may vary and must not be confused with language-construct requirements.
 
 # Listening
 
@@ -67,14 +99,14 @@ Delivery details can vary. Learning semantics should not depend on obsolete pape
 
 Listening contains 40 questions in four parts, 10 questions per part. Recordings are heard once.
 
-The progression of contexts is:
+The context progression is:
 
 - Part 1 — everyday/social conversation;
 - Part 2 — everyday/social monologue;
 - Part 3 — educational/training conversation;
 - Part 4 — academic monologue.
 
-Canonical question families include:
+Major question families include:
 
 - multiple choice;
 - matching;
@@ -87,30 +119,30 @@ Listening is shared between Academic and General Training.
 
 ## Scoring
 
-Each correct answer earns one mark and the raw score out of 40 is converted to the IELTS band scale.
+Each correct answer earns one mark. The raw score out of 40 is converted to the IELTS Band scale and reported in whole/half Bands.
 
-Official IELTS publishes average anchor marks and warns that exact boundaries may vary slightly by test version.
+Current official average anchors include:
 
-| Listening band | Official average anchor /40 |
+| Listening Band | Average anchor /40 |
 |---|---:|
 | 5 | 16 |
 | 6 | 23 |
 | 7 | 30 |
 | 8 | 35 |
 
-Half bands and other whole bands are obtained through the live test's conversion, not by treating an internally interpolated table as immutable official truth.
+IELTS states that the precise mark needed may vary slightly between test versions. These anchors therefore are not an immutable universal conversion table.
 
 # Reading
 
-Reading contains 40 questions and allows 60 minutes. Academic and General Training are graded on the same 0–9 band scale but use different text characteristics and typical raw-score requirements.
+Reading contains 40 questions and allows 60 minutes. Academic and General Training use the same Band scale but differ in text/context characteristics and typical raw-score requirements.
 
-## Shared Reading question families
+## Shared interaction families
 
-Both variants use the major Reading interaction families represented by IELTS material, including:
+Major Reading question families include:
 
 - multiple choice;
-- identifying information: True / False / Not Given;
-- identifying writer views/claims: Yes / No / Not Given;
+- True / False / Not Given;
+- Yes / No / Not Given;
 - matching information;
 - matching headings;
 - matching features;
@@ -120,17 +152,15 @@ Both variants use the major Reading interaction families represented by IELTS ma
 - diagram label completion where applicable;
 - short answer.
 
-A shared question family does not imply a shared corpus/context distribution or shared raw-score conversion.
+Shared interaction families do not imply identical text distributions or raw-score conversions.
 
 ## Academic Reading
 
-Academic Reading uses three passages and 60 minutes.
+Academic Reading uses three passages. Texts are academically oriented and may increase in complexity.
 
-Texts are academically oriented and may increase in complexity. The product must preserve Academic passage characteristics when creating practice/readiness evidence.
+Current official average anchors include:
 
-Official average Academic anchor marks:
-
-| Academic Reading band | Official average anchor /40 |
+| Academic Reading Band | Average anchor /40 |
 |---|---:|
 | 5 | 15 |
 | 6 | 23 |
@@ -139,32 +169,28 @@ Official average Academic anchor marks:
 
 ## General Training Reading
 
-General Training Reading has **three sections of increasing difficulty** and 40 questions in 60 minutes.
+General Training Reading has three sections of increasing difficulty:
 
-External context structure:
+- **Section 1** — short texts on everyday topics needed for life in an English-speaking environment;
+- **Section 2** — workplace-related texts;
+- **Section 3** — one longer, more complex text on a topic of general interest.
 
-- **Section 1** — two or three short texts, or several shorter texts, on everyday topics needed for life in an English-speaking environment, such as notices, advertisements, and timetables;
-- **Section 2** — two texts focused on work contexts, such as job descriptions, contracts, staff development, and training material;
-- **Section 3** — one longer and more complex text on a topic of general interest, commonly descriptive or instructive and sourced from newspapers, magazines, books, or online resources.
+Current official guidance describes a total text length of approximately **2150–2750 words**.
 
-The total GT Reading text length is approximately **2150–2750 words** according to current official format guidance.
+Current official average anchors include:
 
-Official average General Training anchor marks include:
-
-| GT Reading band | Official average anchor /40 |
+| GT Reading Band | Average anchor /40 |
 |---|---:|
 | 4 | 15 |
 | 5 | 23 |
 | 6 | 30 |
 | 7 | 35 |
 
-General Training typically requires more correct answers for the same band because its text characteristics differ from Academic Reading.
-
-Canonical product implication: GT Reading may reuse shared Reading capabilities and question engines, but a GT readiness claim must sample the GT section/context distribution and use the GT score conversion. Academic-only passage exposure is not sufficient GT variant coverage.
+IELTS notes that General Training commonly requires more correct answers for a given Band than Academic Reading because the text characteristics differ.
 
 # Writing
 
-Writing contains two tasks and both must be completed.
+Writing contains two tasks and allows 60 minutes.
 
 IELTS uses four Writing criteria:
 
@@ -173,60 +199,46 @@ IELTS uses four Writing criteria:
 - Lexical Resource;
 - Grammatical Range and Accuracy.
 
-Criteria are equally weighted within a task. **Task 2 contributes twice as much as Task 1** to the Writing section score.
-
-Detailed learning thresholds derived from these criteria are owned by `05-BANDS.md`.
+The criteria are equally weighted within each task. Task 2 contributes more weight to the Writing section result than Task 1; current IELTS guidance describes Task 2 as carrying twice the weight of Task 1.
 
 ## Academic Writing
 
-### Academic Task 1
+### Task 1
 
-The learner describes or explains visual information. The minimum response is 150 words and the expected planning allocation is roughly 20 minutes.
+The learner describes or explains visual information. Minimum response length is 150 words; the expected time allocation is roughly 20 minutes.
 
-The external construct requires selection and communication of key information/features and an appropriate overview of the visual information.
+### Task 2
 
-### Academic Task 2
-
-The learner responds to a point of view, argument, or problem. The minimum response is 250 words and the expected allocation is roughly 40 minutes.
+The learner responds to a point of view, argument, or problem. Minimum response length is 250 words; the expected allocation is roughly 40 minutes.
 
 ## General Training Writing
 
-### General Training Task 1
+### Task 1
 
-The learner is given a situation and writes a **letter of at least 150 words**, normally in about 20 minutes.
+The learner is given a situation and writes a letter of at least 150 words, normally in about 20 minutes.
 
-The prompt provides **three bullet points** describing information/functions that must be covered.
-
-The required style may be:
+The prompt supplies three bullet points/content functions to cover. Appropriate style may be:
 
 - personal;
 - semi-formal;
 - formal.
 
-The appropriate style depends on the relationship to the recipient and the communicative purpose.
+Style depends on the relationship to the recipient and communicative purpose. The task may involve requesting/providing information, expressing needs or preferences, complaints, opinions, or related practical purposes.
 
-The task may require the learner to:
+### Task 2
 
-- ask for and/or provide general factual information;
-- express needs, wants, likes, or dislikes;
-- express opinions, views, complaints, or related purposes.
+The learner writes an essay of at least 250 words in response to a point of view, argument, or problem, normally in about 40 minutes.
 
-Task Achievement includes how effectively the letter achieves its purpose and covers the required content. Audience, purpose, register/style, organization, and required-point coverage are therefore variant-specific capability requirements and must not be replaced by Academic visual-feature/overview behavior.
-
-### General Training Task 2
-
-The learner writes a semi-formal/neutral discursive essay of at least 250 words in response to a point of view, argument, or problem, normally in about 40 minutes.
-
-The underlying Task-2 learning construct is substantially shared with Academic, while prompt domains and expected framing may differ in concrete content.
+Task 2 substantially shares the same scored Writing criteria with Academic Task 2, while concrete prompt framing may differ.
 
 # Speaking
 
-Speaking is a recorded face-to-face interview with a certified examiner and is shared across Academic and General Training.
+Speaking is a recorded, human-examiner interaction shared across Academic and General Training.
 
 It has three parts:
 
 - Part 1 — interview/questions on familiar personal topics;
-- Part 2 — individual long turn on a topic, with one minute to prepare and a target long turn of up to about two minutes;
+- Part 2 — individual long turn, with one minute to prepare and a target response of up to about two minutes;
 - Part 3 — extended discussion related to the Part-2 topic.
 
 IELTS Speaking uses four equally weighted criteria:
@@ -236,58 +248,55 @@ IELTS Speaking uses four equally weighted criteria:
 - Grammatical Range and Accuracy;
 - Pronunciation.
 
-Detailed learning thresholds are owned by `05-BANDS.md`.
+Delivery may be in person at a test centre or, for IELTS Online Academic, a secure live video call with a trained examiner. The underlying Speaking construct and criteria remain the same.
 
 # One Skill Retake
 
 One Skill Retake reuses one existing IELTS section; it does not create a fifth skill or a new learning construct.
 
-Current external eligibility/administrative facts include:
+Current eligibility/administrative facts include:
 
-- the learner first completes a full IELTS test at a centre offering One Skill Retake;
-- the original full test is IELTS on computer;
-- only one skill may be retaken once per original test;
-- the One Skill Retake must be completed within **60 days** of the original full test;
-- availability and organization acceptance may vary by location/receiving institution.
-
-These conditions affect TargetProfile/product guidance and exam-preparation flow. They do not redefine the selected skill's learning standard.
+- the learner first completes a full eligible IELTS-on-computer test at a participating centre;
+- only one skill may be retaken once per original full test;
+- the retake must be completed within **60 days** of the original full test;
+- availability varies by location;
+- receiving organisations may apply their own acceptance requirements;
+- current UKVI acceptance is available for Academic and General Training computer tests in selected locations;
+- where Writing on Paper is used and a Writing One Skill Retake is available, current guidance requires the same Writing delivery mode as the original eligible test.
 
 # UKVI boundary
 
-IELTS for UKVI Academic/General Training uses the same language-test construct/results as the corresponding standard variant while adding administrative/security conditions.
+IELTS for UKVI Academic/General Training uses the corresponding language-test construct while adding administrative/security/test-location conditions for UK immigration purposes.
 
-Those external conditions may constrain a TargetProfile or booking guidance but do not create a parallel learning curriculum.
+Those conditions do not create a parallel learning curriculum or a different Band definition.
 
 # Band scale
 
-IELTS uses a 0–9 band scale with whole and half bands.
+IELTS uses Bands 0–9 with whole and half Band reporting.
 
-For this learning system:
+For this repository:
 
-- Bands 0–2 are retained as diagnostic/external boundaries;
-- Bands 3–9 are the structured learning range;
-- official descriptor/scoring facts remain external truth;
-- statements about what should be taught at a band are learning decisions owned outside this file.
+- the external 0–9 scale remains IELTS truth;
+- Bands 3–9 are the chosen structured learning-program range, owned as a learning decision outside this file;
+- detailed teaching expectations by Band belong to `05-BANDS.md`, not here.
 
-# Official fact vs Blueprint inference
+# Official fact vs learning interpretation
 
-For Writing and Speaking, IELTS publishes analytic criteria/descriptors that support direct criterion-level interpretation.
+For Writing and Speaking, IELTS publishes analytic criteria/descriptors that support criterion-level interpretation.
 
-For Listening and Reading, the public scoring model is primarily raw-score conversion rather than a complete public analytic comprehension descriptor per band. Therefore:
+For Listening and Reading, public scoring is primarily raw-score conversion rather than a complete public analytic comprehension descriptor for every Band.
 
-- raw-score conversion and test format can be Official Evidence;
-- direct implications of the format may be Evidence-Based Interpretation;
-- detailed receptive learning abilities assigned to bands are Blueprint Inference and must be labelled accordingly in `05-BANDS.md`.
+Therefore downstream learning documents must distinguish:
 
-# External source baseline
+- **Official Evidence** — directly established external fact/descriptor/scoring guidance;
+- **Evidence-Based Interpretation** — close educational interpretation;
+- **Blueprint Inference** — pedagogical detail beyond explicit IELTS publication.
 
-Primary official sources for this model include:
+# Change rule
 
-- IELTS — Academic test format;
-- IELTS — General Training test format and detailed Reading/Writing pages;
-- IELTS — scoring in detail;
-- IELTS — official sample-test resources;
-- IELTS — One Skill Retake guidance;
-- IELTS — 2026 test-delivery update announcing the transition away from paper-based IELTS.
+If IELTS changes a live test variant, delivery option, scoring rule, task/section format, One Skill Retake condition, or other external fact relevant to learning/product behavior:
 
-If IELTS changes the live exam format, delivery rules, scoring guidance, or variant definitions, this file is the first canonical owner that must be updated; dependent learning/product owners are then reviewed for consequences.
+1. update this external-truth owner first;
+2. refresh the dated evidence provenance;
+3. review affected Skill/Band/Curriculum/Assessment/design owners;
+4. do not preserve an obsolete external fact merely because downstream implementation already encoded it.
