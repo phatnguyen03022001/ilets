@@ -25,16 +25,20 @@ The capability is named for what the product needs, not after the vendor current
 
 # Provider lifecycle
 
-Every external capability/provider relationship is in one of:
+Every external capability/provider relationship is in exactly one of:
 
-- `DEFERRED` — known possible capability, but not required by the current implementation/release scope; no provider-selection work should occur until concrete demand exists;
-- `TBD` — capability is required for the current implementation/release direction but no provider is selected;
+- `DEFERRED` — known possible external capability/provider route, but not required by the current implementation/release scope; no provider-selection work should occur until concrete demand exists;
+- `TBD` — an external provider route is required for the current implementation/release direction but no provider is selected;
 - `CANDIDATE` — under evaluation, no activation authority;
 - `SELECTED_FOR_IMPLEMENTATION` — approved implementation choice behind the declared boundary;
 - `ACTIVATION_BLOCKED` — selected but release/legal/privacy/security/calibration gates are unresolved;
 - `ACTIVE` — production-enabled under the current support declaration;
 - `SUSPENDED` — temporarily disabled after a material gate/provider failure;
 - `RETIRED` — no longer used for new work.
+
+The lifecycle applies to the **external-provider relationship**, not to whether the underlying product capability exists. A first-party/local implementation may exist while an external provider route remains `DEFERRED`.
+
+The inventory `Status` column uses only the lifecycle tokens above. Technology choices, first-party availability, demand conditions, and implementation notes belong in the boundary/invariant column; prose in `Status` is invalid.
 
 `DEFERRED` is not a missing-provider error. Promoting a capability from `DEFERRED` requires an actual product/runtime/coverage need; the existence of a row in this inventory is not itself demand.
 
@@ -102,19 +106,19 @@ Portability does **not** require a generic multi-provider framework at bootstrap
 | Capability | Runtime owner | Status | Required boundary/invariant |
 |---|---|---|---|
 | Identity / credential custody | Core API integration | `TBD` | stable internal learner identity; provider ID never becomes learning identity |
-| PostgreSQL-compatible structured persistence | Core API | technology selected; provider `TBD` | migrations, PITR, logical export/restore, provider exit |
-| Object storage | Core API | `DEFERRED` until retained/large cross-unit artifacts require it | private references, retention/access policy, large artifacts outside normal JSON state |
+| PostgreSQL-compatible structured persistence | Core API | `TBD` | PostgreSQL semantics are selected; provider remains unselected; migrations, PITR, logical export/restore, provider exit |
+| Object storage | Core API | `DEFERRED` | external object storage is needed only when retained/large cross-unit artifacts require it; private references, retention/access policy, large artifacts outside normal JSON state |
 | AI / LLM productive evaluation | Evaluator | `TBD` | adapter boundary; output is Observation candidate, never certification |
-| Speech-to-text / acoustic analysis | Evaluator | `TBD` | quality/provenance/uncertainty preserved |
+| Speech-to-text / acoustic analysis | Evaluator | `TBD` | quality/provenance/uncertainty preserved; a separate provider is not required when the selected evaluator route already satisfies the capability |
 | Text-to-speech / generated audio | content/media tooling | `DEFERRED` | quality/provenance fit for intended learning role; owned/licensed audio may satisfy demand without TTS |
-| YouTube playback/metadata | Web + Core API | selected capability path for eligible embed/source use | IFrame/Data API compliance; no assumed arbitrary extraction |
-| Transactional email | Core API | `DEFERRED` until a concrete account/product notification flow requires it | transport only; provider templates own no product truth |
-| Product analytics | Web/Core API | `DEFERRED` or first-party minimal events until a provider is justified | minimal structured events; no raw learner-content shadow database |
-| Error monitoring | all runtime units | first-party/native initially; external provider `DEFERRED` | redact secrets/sensitive learner payloads by default |
-| Payments / billing | Core API | `DEFERRED` until monetization scope requires it | entitlement boundary cannot alter learning/evidence truth |
-| Hosting | deployable owners | `TBD` | hosting must not redefine deployable/service ownership; co-location is allowed by `06-implementation-stack.md` |
-| CDN | Web/asset delivery | `DEFERRED` until traffic/latency/asset requirements justify it | delivery optimization only; never content authority |
-| Feature flags | Core API/Web | first-party bounded implementation or `DEFERRED` | kill-switch/release use only; not a hidden policy engine |
+| YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | eligible embed/Data API path selected; activation still requires applicable live policy/product gates; no assumed arbitrary extraction |
+| Transactional email | Core API | `DEFERRED` | external email is selected only when a concrete account/product notification flow requires it; transport only; provider templates own no product truth |
+| Product analytics | Web/Core API | `DEFERRED` | first-party minimal structured events may exist without an external analytics provider; no raw learner-content shadow database |
+| Error monitoring | all runtime units | `DEFERRED` | native/first-party logging may be used initially; any external route redacts secrets/sensitive learner payloads by default |
+| Payments / billing | Core API | `DEFERRED` | external billing remains deferred until monetization scope requires it; entitlement boundary cannot alter learning/evidence truth |
+| Hosting | deployable owners | `TBD` | an external hosting route is required for deployment but provider is unselected; hosting must not redefine deployable/service ownership; co-location is allowed by `06-implementation-stack.md` |
+| CDN | Web/asset delivery | `DEFERRED` | external CDN remains deferred until traffic/latency/asset requirements justify it; delivery optimization only; never content authority |
+| Feature flags | Core API/Web | `DEFERRED` | first-party bounded flags/kill switches may exist without an external provider; external flag service requires demonstrated need and never becomes a hidden policy engine |
 
 Research may contain named vendor candidates. Canonical design must not repeat those names until a provider actually enters this lifecycle.
 
