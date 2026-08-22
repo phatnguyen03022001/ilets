@@ -7,6 +7,7 @@ on:
     paths:
       - contracts/http/public-v1.json
       - apps/web/package.json
+      - apps/web/pnpm-workspace.yaml
       - services/core-api/go.mod
       - tools/contracts/generate.sh
       - .github/workflows/bootstrap-artifacts.yml
@@ -27,9 +28,9 @@ jobs:
         with:
           node-version: '24.19.0'
       - run: corepack enable && corepack prepare pnpm@11.21.0 --activate
-      - name: Resolve locked web graph locally
+      - name: Install web dependency graph locally
         working-directory: apps/web
-        run: pnpm install --lockfile-only --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       - name: Generate contract bindings using repository-local command
         run: ./tools/contracts/generate.sh
       - name: Resolve Go module graph locally
