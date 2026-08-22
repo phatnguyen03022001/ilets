@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+export DATABASE_URL="${DATABASE_URL:-postgres://ilets:ilets@127.0.0.1:55432/ilets?sslmode=disable}"
+
+cleanup() {
+  docker compose -f "$ROOT/compose.dev.yml" down --volumes >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+
+python3 "$ROOT/tools/canonical/test_materialize.py"
+python3 "$ROOT/tools/canonical/materialize.py"
+
+cd "$ROOT/apps/web"
+corepack enable
+pnpm install --frozen-lockfile
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+
+cd "$ROOT"
+./tools/contracts/generate.sh
+./tools/db/generate.sh
+if ! git diff --exit-code -- \
+  apps/web/src/generated/public-v1.ts \
+  services/core-api/internal/httpapi/generated/public_v1.gen.go \
+  services/core-api/internal/db/sqlc/ \
+  tools/canonical/generated/; then
+  echo "generated artifacts drift from committed sources" >&2
+  exit 1
+fi
+
+cd "$ROOT/services/core-api"
+if [[ -n "$(gofmt -l .)" ]]; then
+  echo "Go sources need gofmt:" >&2
+  gofmt -l . >&2
+  exit 1
+fi
+go vet ./...
+go test ./...
+go build ./cmd/core-api
+
+cd "$ROOT"
+docker compose -f compose.dev.yml up -d --wait postgres
+./tools/db/migrate.sh
+
+cd "$ROOT/services/core-api"
+go run ./cmd/seed
+ILETS_INTEGRATION=1 go test ./...
+
+cd "$ROOT/apps/web"
+pnpm exec playwright install chromium
+pnpm e2e
