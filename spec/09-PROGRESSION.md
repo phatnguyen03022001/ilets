@@ -61,6 +61,14 @@ currently_supported
 
 `unknown` is not weak. `currently_supported` is a current evidence interpretation, not permanent mastery.
 
+The three-state field is a **projection**, not a replacement for Assessment epistemic detail:
+
+- `currently_supported` — current admissible evidence supports the scoped capability under the applicable policy;
+- `learning` — current admissible evidence establishes performance below the scoped requirement and learning/remediation is justified;
+- `unknown` — no justified supported/below-requirement conclusion exists, including insufficient, stale, conflicting, pending/unusable, or otherwise unresolved evidence.
+
+The underlying reason remains explicit through evidence/GapEvaluation references. Mapping stale or conflicting evidence to `unknown` must never erase that it is specifically stale or conflicting.
+
 # `BandCertificationState`
 
 Per `(skill, band)`:
@@ -82,7 +90,15 @@ in_progress
 certified
 ```
 
-Certification means the internal skill-Band claim is currently `SUPPORTED` under Assessment policy. It is not an official IELTS result or guarantee.
+This status is **current certification state**; historical attainment is recorded separately.
+
+- `not_started` — no meaningful claim/evidence cycle has begun for this skill-Band identity;
+- `in_progress` — the claim is not currently `SUPPORTED`; the referenced Assessment/Gap state explains whether this is insufficient, conflicting, stale, below requirement, or another unresolved condition;
+- `certified` — the current skill-Band claim is `SUPPORTED` under the applicable Assessment policy.
+
+Once a claim has evidence/certification history it does not return to `not_started` merely because current support later becomes unresolved.
+
+Certification is not an official IELTS result or guarantee.
 
 # Band advancement
 
@@ -92,6 +108,8 @@ A skill-Band becomes `certified` when:
 2. `08-ASSESSMENT.md` returns `SUPPORTED` for the corresponding claim;
 3. no required claim condition remains blocked;
 4. Progression records current state + evidence/policy provenance.
+
+If a previously `certified` claim later evaluates to any non-`SUPPORTED` state, current `BandCertificationState.status` becomes `in_progress` while historical certification remains intact. The **reason** for losing current support determines whether the situation is staleness, conflict, insufficient evidence, policy/scope change, or genuine regression.
 
 Curriculum completion count is not a certification requirement. Valid evidence may accelerate past redundant acquisition stages.
 
@@ -234,11 +252,11 @@ It never:
 
 ## Staleness
 
-Evidence is too old for the current claim. Refresh is needed; regression is not established.
+Evidence is too old for the current claim. Refresh is needed. A previously certified current claim therefore becomes `in_progress` until current support is re-established, while its historical certification record remains. This is **not regression**.
 
 ## Conflict
 
-Material evidence supports incompatible interpretations. Resolve with discriminating evidence rather than averaging the conflict away.
+Material evidence supports incompatible interpretations. Resolve with discriminating evidence rather than averaging the conflict away. A current certification cannot remain `certified` while the corresponding current claim is materially conflicting; history remains preserved.
 
 ## Regression
 
@@ -248,16 +266,18 @@ When established:
 
 1. preserve historical evidence/attainment;
 2. update current MasteryEstimate;
-3. move affected current certification from `certified` to `in_progress` when the claim is no longer supported;
+3. move affected current certification from `certified` to `in_progress` because the claim is no longer supported;
 4. classify GapEvaluation;
 5. emit ActionIntent;
 6. re-certify only through normal Assessment policy.
+
+A loss of current certification is not automatically regression. Staleness, insufficient evidence, material conflict, a changed claim scope, or a changed policy/threshold may remove current `SUPPORTED` status without proving learner capability declined.
 
 Absence of recent evidence alone never establishes regression.
 
 # Certification history
 
-Historical certifications remain point-in-time records with evidence/policy provenance. Regression/re-certification append history rather than rewriting prior attainment.
+Historical certifications remain point-in-time records with evidence/policy provenance. Loss of current support, regression, and re-certification append/relate history rather than rewriting prior attainment.
 
 # Explainability invariant
 
