@@ -57,6 +57,31 @@ cost / latency / operational efficiency
 
 Cost cannot rescue an ineligible provider. A cheaper fallback cannot silently lower the evidence/quality floor.
 
+# External-resource economy
+
+External services are used only for a capability that remains necessary after existing first-party/runtime resources are considered.
+
+Preferred route:
+
+```text
+existing first-party or deterministic capability
+        ↓
+existing ACTIVE/eligible provider route
+        ↓
+new provider only when a real capability/quality/reliability gap remains
+```
+
+Rules:
+
+1. do not send work to AI/STT/TTS or another paid provider when an exact deterministic/local path satisfies the same contract;
+2. reuse a prior valid provider result when the logical input, relevant source state, model/policy version, and freshness requirements make reuse correct;
+3. deduplicate retries by logical work identity so network retry cannot create duplicate provider cost;
+4. cache/derived output remains non-authoritative and is invalidated when the source/policy/model/version relevant to correctness changes;
+5. optional expensive work should be asynchronous, batched, rate-limited, or skipped before quality/evidence standards are lowered;
+6. collect provider latency/usage/cost by capability so a new route is justified by measured value rather than convenience;
+7. adding a second provider for the same capability requires an explicit reliability/quality/cost/exit benefit and must not create two semantic owners;
+8. provider optimization must consume the minimum necessary learner/source data.
+
 # Mandatory portability boundaries
 
 The first implementation treats these as mandatory strategic boundaries:
