@@ -158,7 +158,7 @@ Content Context identifies **where an IELTS construct is instantiated**, not a n
 | `CTX-WRITING-ACADEMIC-T1-VISUAL` | Academic Writing Task 1 visual-information context | Academic |
 | `CTX-WRITING-GT-T1-LETTER` | GT Writing Task 1 letter context | General Training |
 | `CTX-WRITING-T2` | Writing Task 2 construct; concrete prompt retains variant where material | shared/core |
-| `CTX-SPEAKING-SHARED` | shared IELTS Speaking construct/context | shared |
+| `CTX-SPEAKING-SHARED` | shared IELTS Speaking construct | shared |
 
 Rules:
 
