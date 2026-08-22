@@ -9,6 +9,7 @@ VERIFY_POSTGRES_PORT="${ILETS_VERIFY_POSTGRES_PORT:-55433}"
 export ILETS_E2E_CORE_PORT="${ILETS_E2E_CORE_PORT:-18080}"
 export ILETS_E2E_WEB_PORT="${ILETS_E2E_WEB_PORT:-13000}"
 export ILETS_POSTGRES_PORT="$VERIFY_POSTGRES_PORT"
+export PYTHONDONTWRITEBYTECODE=1
 export DATABASE_URL="postgres://ilets:ilets@127.0.0.1:${VERIFY_POSTGRES_PORT}/ilets?sslmode=disable"
 COMPOSE=(docker compose --project-name "$VERIFY_COMPOSE_PROJECT" -f "$ROOT/compose.dev.yml")
 VERIFY_TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ilets-verify.XXXXXX")"
