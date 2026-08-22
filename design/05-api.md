@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, and contract-materialization rules
-DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md, 08-coverage-and-support.md
+DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md
 DOES_NOT_OWN: learning truth, external task-family definitions, TargetProfile UX semantics, product coverage policy, evaluator algorithms, runtime lifecycle truth, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
 
 # API
@@ -87,7 +87,7 @@ A target-relative TargetProfile has at least one actual Band constraint. If no B
 
 `selected_skill_retake` selects focused preparation only. Eligibility-sensitive responses keep missing original-test/timing/location/delivery/purpose conditions unresolved rather than treating the selected skill as proof of One Skill Retake eligibility.
 
-`target-support` reports product support for the exact target scope, including delivery/purpose/eligibility conditions where applicable, plus blocking CoverageGap classes.
+`target-support` transports the current product-support result for the exact target scope, including applicable delivery/purpose/eligibility conditions and blocking CoverageGap classes. Product-support semantics remain owned by `08-coverage-and-support.md`; referencing that downstream result here does not make API the policy owner or create a reverse semantic-definition dependency.
 
 It is not learner readiness.
 
