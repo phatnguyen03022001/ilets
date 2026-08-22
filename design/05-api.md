@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: public/internal API resource model, route groups, operation semantics, request/response execution patterns, response/failure classes, async API behavior, idempotency/error conventions, content supply/validation/operations API semantics, and contract-materialization rules
+OWNS: public/internal API resource model, route groups, operation semantics, request/response execution patterns, response/failure classes, async API behavior, idempotency/error conventions, auth/session transport contract prerequisites, content supply/validation/operations API semantics, and contract-materialization/evolution rules
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md
 DOES_NOT_OWN: learning truth, external IELTS task-family definitions, content semantic identity/quality policy, TargetProfile UX semantics, product coverage policy, evaluator/generator algorithms, runtime lifecycle truth, privileged operational capability meaning or authorization role matrix, framework selection, persistence schema, provider choice, deployment technology, or exact wire schema after machine contracts exist
 
@@ -16,7 +16,7 @@ Define semantic API boundaries before implementation. The product exposes one le
 3. stable canonical/external IDs and exact content revision identity cross boundaries unchanged;
 4. creation/submission operations are idempotent where retry could duplicate history/cost;
 5. long work returns durable pending resources rather than unbounded requests;
-6. evidence states and CoverageGap are domain results, not generic failures;
+6. evidence states, target-resolution/support outcomes, content-assignment outcomes, and CoverageGap are domain results, not generic transport failures;
 7. browser never calls Python evaluator/generator/validator directly;
 8. variant, official family, Content Context, material Presentation Class, content revision, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
 9. API resources expose lifecycle/operational states owned by `04-application-flows.md` rather than redefining transition rules here;
@@ -52,7 +52,7 @@ Required checks once materialized:
 - deployed `/v1` compatibility policy;
 - contract version/provenance in integration verification.
 
-Machine schemas define transport shape, not IELTS learning/exam/content-quality truth.
+Machine schemas define transport shape, not IELTS learning/exam/content-quality truth. Generated clients/server bindings are derived and are regenerated/validated from the contract rather than manually patched into authority.
 
 ## Machine-contract applicability invariant
 
@@ -60,22 +60,42 @@ Machine contracts must preserve canonical applicability. A semantic dimension th
 
 Exact representation of absence, explicit not-applicable state, conditional requirement, or validation constraints belongs to the future machine contract. Transport convenience may not fabricate or erase canonical meaning.
 
+# Auth/session transport pre-contract gate
+
+Architecture remains provider-neutral, but the initial public OpenAPI security scheme and auth-sensitive browser behavior must not be guessed from framework defaults.
+
+Before the first public contract freezes security-sensitive transport, implementation must explicitly choose the initial credential/session transport well enough to determine:
+
+- credential custody and which unit may read/verify it;
+- browser cookie/header/storage behavior;
+- CSRF applicability;
+- CORS-with-credentials behavior;
+- session/logout revocation and invalidation;
+- guest→account transition/association behavior;
+- learner/admin/service credential separation;
+- service-to-service authentication where the actual deployment requires it;
+- secret/key/token rotation appropriate to the selected mechanism.
+
+OAuth, JWT, a hosted identity provider, opaque sessions, or another mechanism are not selected by this document. This is a required pre-contract implementation decision when exact security-scheme encoding depends on it, not permission for OpenAPI/code generation to invent the mechanism.
+
 # Request/response execution patterns
 
 These patterns translate the runtime execution invariants in `04-application-flows.md` into API operation behavior without pre-authoring exact OpenAPI fields.
+
+Safe bounded transport framing and credential extraction may occur before identity is known. Protected-resource-sensitive semantic processing follows the applicable authentication/access boundary so validation behavior cannot leak protected existence/data accidentally.
 
 ## Pattern 1 — synchronous read
 
 ```text
 Client
-  ↓ request/correlation context
+  ↓ bounded transport framing / request-correlation context / credential extraction
 authentication where required
   ↓
-authorization/access filtering
+authorization / access filtering where required
   ↓
-parse + structural validation
+parse + structural contract validation
   ↓
-authoritative resource query
+resource-sensitive semantic preconditions / authoritative query
   ↓
 canonical/applicability projection
   ↓
@@ -84,6 +104,7 @@ response
 
 Properties:
 
+- public anonymous reads may omit authentication where explicitly permitted;
 - no hidden product mutation occurs as a side effect of a read;
 - the operation has a bounded deadline;
 - access policy must not accidentally leak protected resource existence;
@@ -93,47 +114,63 @@ Properties:
 
 ```text
 Client
+  ↓ bounded transport framing / credential extraction
+authentication where required
   ↓
-authentication
+capability / authorization / access filtering where required
   ↓
-capability/access check
+structural contract validation
   ↓
-structural validation
-  ↓
-semantic preconditions
+resource-sensitive semantic preconditions
   ↓
 idempotency check where applicable
   ↓
 optimistic/concurrency check where applicable
   ↓
 authoritative transaction
+  ├─ product mutation
+  └─ required durable pending-work/outbox/recoverable marker where applicable
   ↓
 COMMIT
+  ↓
+post-commit dispatch where applicable
   ↓
 response
 ```
 
-A response claiming durable success is emitted only after the authoritative commit. Side effects that are explicitly asynchronous may remain pending without changing the meaning of the committed mutation.
+A response claiming durable success is emitted only after the authoritative commit. Required asynchronous continuation cannot be left to an unrecoverable post-commit registration step. Dispatch may occur after commit because durable work identity/marker is already established or recoverably derivable.
 
 ## Pattern 3 — asynchronously accepted operation
 
+Learner/admin initiated asynchronous work performs applicable auth/access checks and validation **before** authoritative acceptance:
+
 ```text
 POST / operation request
+  ↓ bounded transport framing / credential extraction
+authentication where required
   ↓
-validate + establish logical work identity
+capability / authorization / access filtering where required
   ↓
-persist work resource / pending state
+structural contract validation
+  ↓
+semantic preconditions
+  ↓
+establish logical work identity
+  ↓
+authoritative transaction
+  ├─ persist accepted resource/work state
+  └─ persist durable pending-work/outbox/recoverable marker
   ↓
 COMMIT
   ↓
 accepted/pending response
   ↓
-background/internal capability execution
+background/internal capability dispatch/execution
   ↓
 GET resource and/or SSE status
 ```
 
-Expensive evaluator/generator/validator work should not keep an unbounded HTTP request open when durable asynchronous semantics are appropriate.
+Expensive evaluator/generator/validator work should not keep an unbounded HTTP request open when durable asynchronous semantics are appropriate. Sending an HTTP request to Python/provider is not itself durable acceptance.
 
 ## Pattern 4 — idempotent create/submission
 
@@ -163,27 +200,29 @@ Core-side structural/work-identity validation
 owning Assessment/content/product policy interpretation
 ```
 
-Python cannot return authoritative certification, product support, learner-state transition, evidence-candidacy upgrade, or content activation merely because the internal request succeeded.
+Python cannot return authoritative certification, product support, learner-state transition, evidence-candidacy upgrade, or content activation merely because the internal request succeeded. Python does not mutate Core-owned persistence directly.
 
 ## Pattern 6 — privileged operation
 
 ```text
 public/admin operation
-  ↓
+  ↓ bounded transport framing / credential extraction
 authentication
   ↓
-applicable operational capability
+applicable operational capability / access check
   ↓
-current revision/state precondition
+structural contract validation
   ↓
-legal mutation + privileged audit
+current revision/state semantic precondition
+  ↓
+legal mutation + required privileged audit/work marker
   ↓
 COMMIT
   ↓
-response
+response / post-commit dispatch
 ```
 
-The capability semantics are owned by `04-application-flows.md`; this API does not invent role hierarchy or bypass authority.
+The capability semantics are owned by `04-application-flows.md`; this API does not invent role hierarchy or bypass authority. Admin UI cannot manipulate the authoritative DB/provider around Core API.
 
 ## Pattern 7 — SSE update
 
@@ -214,14 +253,16 @@ replay/idempotency protection
   ↓
 structural validation
   ↓
-authoritative event/work association
+authoritative event/work association + safe freshness checks where relevant
   ↓
-transaction + COMMIT
+transaction + durable audit/work state
   ↓
-response
+COMMIT
+  ↓
+bounded response
 ```
 
-A webhook endpoint is not created merely because webhooks are a common integration pattern. Provider callbacks remain bounded by the provider-neutral capability/authority rules in `07-third-party-services.md`.
+A webhook endpoint is not created merely because webhooks are a common integration pattern. Provider callback timestamps are not trusted as causal truth merely because they are present. Webhooks cannot create learner/product truth outside normal owning policy.
 
 # Execution trace levels
 
@@ -244,7 +285,7 @@ For a consequential operation, implementation must be able to reconstruct where 
 - structural validation and semantic preconditions;
 - idempotency/concurrency decision;
 - authoritative transaction/commit point;
-- asynchronous work identity and dispatch state;
+- durable asynchronous work identity/registration and dispatch state;
 - internal capability/provider invocation and response authority;
 - retry/fallback classification;
 - persisted result/failure state;
@@ -262,10 +303,11 @@ The transport completed and the requested domain operation/read succeeded under 
 
 ## B. Transport success + domain unresolved/negative
 
-The request executed correctly but the domain result is unresolved, pending, or legitimately negative, for example:
+The request executed correctly but the domain result is unresolved, pending, unavailable for the requested semantic reason, or legitimately negative, for example:
 
 - insufficient/conflicting/stale learner evidence;
 - unresolved TargetProfile condition;
+- target not supported for a fully resolved scope;
 - a valid CoverageGap result;
 - learner-specific content unavailable because novelty/independence fails;
 - evaluation/work still pending.
@@ -274,11 +316,11 @@ These states are not infrastructure errors merely because the desired product ou
 
 ## C. Operation-contract rejected
 
-The operation is not legally executable as requested, for example malformed/invalid input, unauthenticated/unauthorized access, missing capability, stale revision, invalid lifecycle transition, failed precondition, or incompatible semantic combination.
+The operation is not legally executable as requested, for example malformed input, unauthenticated identity, unauthorized/forbidden capability, stale revision, idempotency conflict, invalid lifecycle transition, failed precondition, or incompatible semantic combination.
 
 ## D. Infrastructure/transient failure
 
-The requested operation cannot currently establish its intended authoritative result because an infrastructure dependency is unavailable/ambiguous, for example database outage, internal evaluator/provider outage, or timeout whose remote result cannot yet be established safely.
+The requested operation cannot currently establish its intended authoritative result because an infrastructure dependency is unavailable/ambiguous, for example database outage, internal dependency/provider outage, or timeout whose remote result cannot yet be established safely.
 
 Infrastructure failure is never low learner performance, evidence of weakness, or automatic content-quality failure. When a timeout is ambiguous, the server/client must not assume the remote operation failed and retry unsafely.
 
@@ -463,7 +505,7 @@ Writing drafts may mutate before submission under revision control. Submission i
 
 Family/context/presentation/purpose/candidacy semantics come from the immutable referenced content revision/work configuration rather than client-supplied reclassification at submission time.
 
-Accepted submission corresponds to durable authoritative state before success acknowledgement. Later content retirement/revalidation does not rewrite the Attempt's revision reference.
+Accepted submission corresponds to durable authoritative state before success acknowledgement. If productive evaluation or another required async continuation follows, its durable work identity/marker is committed or recoverably derivable before the accepted response can rely on it. Later content retirement/revalidation does not rewrite the Attempt's revision reference.
 
 ## 7. Evaluations
 
@@ -548,7 +590,7 @@ POST   /v1/media-lessons
 GET    /v1/media-lessons/{media_lesson_id}
 ```
 
-MediaSource creation resolves provider identity/metadata, playability, rights, and transcript state. It does not imply copying/downloading media.
+MediaSource creation resolves provider identity/metadata, playability, rights, and transcript state. Learner/provider URL input is an untrusted reference and does not imply arbitrary fetch/download permission.
 
 MediaLesson creation requires an eligible source plus valid canonical target and Practice Mode mapping. Generated/derived lesson content enters normal content revision/validation semantics before learner assignment.
 
@@ -704,57 +746,75 @@ Mutable draft-like resources, TargetProfile, and mutable operational/admin metad
 
 A stale mutation is rejected rather than silently overwriting newer state. ContentRevision semantic payload itself is immutable once established under `spec/10` semantics; optimistic concurrency is not permission to overwrite it.
 
-# Error envelope
+# Domain results vs transport/operation failures
 
-Transport failures use one stable conceptual envelope:
-
-```text
-code
-title
-message
-details
-trace_id
-```
-
-Representative codes:
+Domain/result semantics are represented in normal resource/operation outputs when the request itself executed correctly. Examples include:
 
 ```text
-invalid_request
-invalid_attempt
-invalid_transition
-stale_revision
-source_unavailable
-source_not_eligible
-evaluation_pending
-evaluation_unavailable
-insufficient_evidence
-conflicting_evidence
-stale_evidence
-target_not_supported
-product_coverage_blocked
-rate_limited
+insufficient evidence
+conflicting evidence
+stale evidence
+TargetProfile condition unresolved
+target not supported for a fully resolved scope
+CoverageGap
+learner-specific content unavailable because novelty/independence fails
+evaluation/work pending
 ```
 
-Evidence/coverage/content eligibility states are often successful domain results rather than HTTP errors. Content validation/report/similarity reason details should remain reconstructable without freezing an oversized public error-code catalog before contracts require it.
+These are not inherently HTTP errors.
+
+Transport/operation failure semantics instead cover failures such as:
+
+```text
+malformed request
+unauthenticated
+unauthorized / forbidden capability
+invalid transition / failed precondition
+stale revision
+idempotency conflict
+rate limited
+dependency unavailable
+internal failure
+```
+
+Exact public failure-code catalog and HTTP mapping belong to the future machine contract. A transport error envelope may carry a stable non-sensitive code/title/message/details/correlation identity, but domain states must not be copied into that catalog merely for convenience.
 
 # HTTP conventions
 
-Target semantics:
+Conceptual target semantics include successful reads/creates/updates, accepted asynchronous operations, unauthenticated/forbidden access, malformed/contract-rejected input, concurrency/idempotency conflict, rate limiting, and infrastructure failure. Exact status mapping belongs to the machine contract.
 
-- `200` read/update success;
-- `201` created;
-- `202` accepted/pending asynchronous work;
-- `204` successful no-body operation where useful;
-- `400` malformed request;
-- `401` unauthenticated;
-- `403` authenticated but unauthorized/ineligible by access policy;
-- `404` absent/inaccessible resource;
-- `409` lifecycle/concurrency/idempotency conflict;
-- `422` structurally valid input violating operation contract;
-- `429` rate limit;
-- `5xx` infrastructure failure, never a learner score or fake content-quality judgment.
+A `5xx`-class infrastructure failure is never a learner score, learner weakness, CoverageGap, insufficient-evidence result, or fake content-quality judgment.
 
-Exact mapping belongs to the machine contract.
+# Machine-contract evolution and compatibility
+
+Each material machine boundary has exactly one contract authority. Contract changes are reviewed conceptually as **backward-compatible** or **breaking**; these are review concepts, not required public enums.
+
+Generally backward-compatible changes may include:
+
+- adding a genuinely optional/applicability-safe response field;
+- adding a new independent operation that does not alter existing operation meaning.
+
+Potentially breaking changes include:
+
+- removing or renaming a field/operation consumed by deployed clients;
+- narrowing previously valid input;
+- changing enum/status/domain-result meaning;
+- changing required/optional applicability in a way that changes valid semantics;
+- changing stable identifier meaning;
+- changing lifecycle/precondition semantics under an existing operation.
+
+Rules:
+
+1. transport optionality/requiredness may not violate canonical applicability merely to avoid a version change;
+2. deployed public `/v1` behavior cannot silently break existing consumers;
+3. a breaking deployed public contract requires an explicit version/rollout/migration strategy before activation;
+4. internal contracts may evolve faster but still require consumer/provider compatibility during rollout;
+5. generated bindings are regenerated/validated from the contract and never manually patched as interface authority;
+6. compatibility/conformance/drift checks enter root verification once the relevant contract/deployed consumer exists;
+7. deprecation or a new API version does not reinterpret historical ContentRevision, Attempt, Observation, EvidenceFact, or certification history;
+8. event contracts, if later introduced, require explicit producer/consumer compatibility rules rather than relying on undocumented payload tolerance.
+
+This file does not mandate one generic SemVer algorithm or code-generator library.
 
 # Pagination
 
@@ -765,14 +825,16 @@ Unbounded history/library/content/report collections use cursor pagination. Smal
 Forbidden without an explicit architecture change:
 
 - browser calling evaluator/generator/validator directly;
+- Next.js Route Handler/Server Action becoming a second product API or hidden domain-command owner;
 - endpoint per UI button;
 - provider/model names in public domain routes;
 - independently handwritten mirror DTOs across runtimes;
+- generated binding/client treated as semantic authority;
 - fake score zero on evaluator failure;
 - API shape becoming a second learner-state or content-quality definition;
 - API-owned thresholds or hidden per-skill target constraints without a canonical/product owner;
 - practice/UI action implicitly mutating TargetProfile/readiness;
-- CoverageGap represented as learner GapEvaluation;
+- CoverageGap represented as learner GapEvaluation or infrastructure error;
 - unresolved TargetProfile input represented as learner evidence insufficiency or fabricated product non-support;
 - ranker returning an activity that failed hard eligibility;
 - omitted content revision/family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
@@ -783,4 +845,5 @@ Forbidden without an explicit architecture change:
 - generator/validator output directly activating learner content;
 - generic admin validation bypass for a known hard failure;
 - one combined API ContentStatus that hides validation vs release vs operational-safety dimensions;
-- `completed diagnostic` represented as `complete learner baseline`.
+- `completed diagnostic` represented as `complete learner baseline`;
+- retrying an ambiguous/non-deduplicated mutation merely because the client timed out.
