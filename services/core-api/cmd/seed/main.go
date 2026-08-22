@@ -161,6 +161,7 @@ func requiredRefs(payload map[string]any) []string {
 			for _, value := range values {
 				if id, ok := value.(string); ok {
 					out = append(out, id)
+				}
 			}
 		}
 	}
