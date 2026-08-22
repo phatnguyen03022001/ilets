@@ -1,0 +1,45 @@
+name: bootstrap-artifacts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - contracts/http/public-v1.json
+      - apps/web/package.json
+      - services/core-api/go.mod
+      - tools/contracts/generate.sh
+      - .github/workflows/bootstrap-artifacts.yml
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - run: corepack enable && corepack prepare pnpm@11.21.0 --activate
+      - name: Resolve locked web graph
+        working-directory: apps/web
+        run: pnpm install --lockfile-only --no-frozen-lockfile
+      - name: Generate contract bindings
+        run: ./tools/contracts/generate.sh
+      - name: Resolve Go module graph
+        working-directory: services/core-api
+        run: go mod tidy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-generated
+          if-no-files-found: error
+          path: |
+            apps/web/pnpm-lock.yaml
+            apps/web/src/generated/public-v1.ts
+            services/core-api/go.mod
+            services/core-api/go.sum
+            services/core-api/internal/httpapi/generated/public_v1.gen.go
