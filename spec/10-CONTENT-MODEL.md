@@ -105,7 +105,8 @@ Rules:
 5. a validator's self-reported confidence or a generator's claim that its own output is valid is only an input signal, never validation authority by itself;
 6. validation reasons must remain reconstructable, but this specification does not freeze a large machine reason-code catalog before contracts require stable interoperability;
 7. validation burden is consequence-aware: higher-consequence use may require stronger applicable checks than low-consequence training, while every applicable universal hard failure remains blocking;
-8. exact validator count, voting scheme, model/provider, similarity threshold, confidence threshold, audit sample count, and operational retry policy are implementation/calibration concerns unless later evidence requires a canonical rule.
+8. current release/use eligibility resolves the applicable current validation policy and intended-use/consequence scope, then consumes the compatible decision/findings for that use; record recency alone is not authority, and a globally newest ValidationDecision must not silently override an unrelated scope. A finding that establishes an applicable universal hard failure remains blocking wherever that universal gate applies;
+9. exact validator count, voting scheme, model/provider, similarity threshold, confidence threshold, audit sample count, and operational retry policy are implementation/calibration concerns unless later evidence requires a canonical rule.
 
 The runtime orchestration of validation, activation, quarantine, revalidation, and retirement is owned by `design/04-application-flows.md`.
 
@@ -157,7 +158,7 @@ Content Context identifies **where an IELTS construct is instantiated**, not a n
 | `CTX-WRITING-ACADEMIC-T1-VISUAL` | Academic Writing Task 1 visual-information context | Academic |
 | `CTX-WRITING-GT-T1-LETTER` | GT Writing Task 1 letter context | General Training |
 | `CTX-WRITING-T2` | Writing Task 2 construct; concrete prompt retains variant where material | shared/core |
-| `CTX-SPEAKING-SHARED` | shared IELTS Speaking construct | shared |
+| `CTX-SPEAKING-SHARED` | shared IELTS Speaking construct/context | shared |
 
 Rules:
 
