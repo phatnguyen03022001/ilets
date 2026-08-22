@@ -17,7 +17,7 @@ Define semantic API boundaries before implementation. The product exposes one le
 4. creation/submission operations are idempotent where retry could duplicate history/cost;
 5. long work returns durable pending resources rather than unbounded requests;
 6. evidence states, target-resolution/support outcomes, content-assignment outcomes, and CoverageGap are domain results, not generic transport failures;
-7. browser never calls Python evaluator/generator/validator directly;
+7. browser/admin clients never call Python evaluator/generator/validator directly;
 8. variant, official family, Content Context, material Presentation Class, content revision, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
 9. API resources expose lifecycle/operational states owned by `04-application-flows.md` rather than redefining transition rules here;
 10. once materialized, machine-readable contracts own exact wire shape;
@@ -40,31 +40,42 @@ validation / generated bindings where useful
 consumer/provider implementation
 ```
 
-Public and internal evaluator/content-capability APIs may use separate contract files, but each boundary has exactly one exact machine authority.
+Public and internal evaluator/content-capability APIs may use separate HTTP contract files, but each boundary has exactly one exact machine authority.
 
 Required checks once materialized:
 
 - schema validation;
 - generated-artifact drift checks where generation is used;
 - stable canonical/external ID and content-revision compatibility;
+- canonical applicability/nullability preservation;
 - public/internal boundary separation;
 - consumer/provider conformance;
-- deployed `/v1` compatibility policy;
+- directional compatibility for every deployed/allowed version-skew direction;
 - contract version/provenance in integration verification.
 
 Machine schemas define transport shape, not IELTS learning/exam/content-quality truth. Generated clients/server bindings are derived and are regenerated/validated from the contract rather than manually patched into authority.
 
 ## Machine-contract applicability invariant
 
-Machine contracts must preserve canonical applicability. A semantic dimension that is legitimately `NOT_APPLICABLE` must not become required merely because a uniform transport shape is convenient. Conversely, a materially required dimension must not become optional merely because transport permits omission.
+Machine contracts preserve material distinctions among:
 
-Exact representation of absence, explicit not-applicable state, conditional requirement, or validation constraints belongs to the future machine contract. Transport convenience may not fabricate or erase canonical meaning.
+```text
+optional input not supplied
+explicitly NOT_APPLICABLE by canonical semantics
+UNKNOWN / unresolved
+required but absent or otherwise invalid
+present value
+```
+
+These states may use different exact wire representations later; they may not be collapsed when the distinction changes meaning. A semantic dimension that is legitimately not applicable must not become required merely because a uniform schema is convenient. A materially required dimension must not become optional merely because transport permits omission.
+
+Changing the meaning or mapping among absence, null, `NOT_APPLICABLE`, unresolved, invalid, and present values can be a breaking semantic contract change even when the JSON still validates. Generated TypeScript, Go, and Python consumers must preserve the distinction wherever material.
 
 # Auth/session transport pre-contract gate
 
 Architecture remains provider-neutral, but the initial public OpenAPI security scheme and auth-sensitive browser behavior must not be guessed from framework defaults.
 
-Before the first public contract freezes security-sensitive transport, implementation must explicitly choose the initial credential/session transport well enough to determine:
+Before the first public contract freezes security-sensitive transport, implementation explicitly chooses the initial credential/session transport well enough to determine:
 
 - credential custody and which unit may read/verify it;
 - browser cookie/header/storage behavior;
@@ -78,24 +89,33 @@ Before the first public contract freezes security-sensitive transport, implement
 
 OAuth, JWT, a hosted identity provider, opaque sessions, or another mechanism are not selected by this document. This is a required pre-contract implementation decision when exact security-scheme encoding depends on it, not permission for OpenAPI/code generation to invent the mechanism.
 
+# Request/access ordering
+
+Safe bounded transport framing, size checks, request-correlation setup, credential extraction, and public contract-level parsing may occur before identity is known. Protected-resource-sensitive semantic validation, existence checks, state inspection, and capability checks follow the applicable authentication/access boundary when earlier processing could disclose protected information.
+
+Public error behavior must not accidentally reveal:
+
+- whether another learner's protected resource exists;
+- privileged content existence/details;
+- admin capability configuration;
+- provider secrets or internal provider/runtime state.
+
+The exact future `403`/`404` or equivalent mapping belongs to the machine contract/security decision. The invariant is non-disclosure, not one status-code policy.
+
 # Request/response execution patterns
 
-These patterns translate the runtime execution invariants in `04-application-flows.md` into API operation behavior without pre-authoring exact OpenAPI fields.
-
-Safe bounded transport framing and credential extraction may occur before identity is known. Protected-resource-sensitive semantic processing follows the applicable authentication/access boundary so validation behavior cannot leak protected existence/data accidentally.
+These patterns translate `04-application-flows.md` into API operation behavior without pre-authoring exact OpenAPI fields.
 
 ## Pattern 1 — synchronous read
 
 ```text
 Client
-  ↓ bounded transport framing / request-correlation context / credential extraction
+  ↓ bounded framing / public parsing / credential extraction
 authentication where required
   ↓
 authorization / access filtering where required
   ↓
-parse + structural contract validation
-  ↓
-resource-sensitive semantic preconditions / authoritative query
+resource-sensitive validation + authoritative query
   ↓
 canonical/applicability projection
   ↓
@@ -105,16 +125,16 @@ response
 Properties:
 
 - public anonymous reads may omit authentication where explicitly permitted;
-- no hidden product mutation occurs as a side effect of a read;
+- reads have no hidden product mutation;
 - the operation has a bounded deadline;
-- access policy must not accidentally leak protected resource existence;
-- cache/derived reads may optimize delivery only when freshness/access semantics remain correct; cache never becomes authority.
+- access/error behavior does not leak protected existence;
+- cache/derived reads optimize delivery only when freshness/access semantics remain correct; cache never becomes authority.
 
 ## Pattern 2 — synchronous mutation
 
 ```text
 Client
-  ↓ bounded transport framing / credential extraction
+  ↓ bounded framing / credential extraction
 authentication where required
   ↓
 capability / authorization / access filtering where required
@@ -123,13 +143,11 @@ structural contract validation
   ↓
 resource-sensitive semantic preconditions
   ↓
-idempotency check where applicable
-  ↓
-optimistic/concurrency check where applicable
+idempotency + concurrency checks where applicable
   ↓
 authoritative transaction
   ├─ product mutation
-  └─ required durable pending-work/outbox/recoverable marker where applicable
+  └─ required durable pending-work/recoverable marker where applicable
   ↓
 COMMIT
   ↓
@@ -138,82 +156,86 @@ post-commit dispatch where applicable
 response
 ```
 
-A response claiming durable success is emitted only after the authoritative commit. Required asynchronous continuation cannot be left to an unrecoverable post-commit registration step. Dispatch may occur after commit because durable work identity/marker is already established or recoverably derivable.
+A response claiming durable success is emitted only after the authoritative commit. Required asynchronous continuation cannot be left to an unrecoverable post-commit registration step.
 
 ## Pattern 3 — asynchronously accepted operation
 
-Learner/admin initiated asynchronous work performs applicable auth/access checks and validation **before** authoritative acceptance:
-
 ```text
 POST / operation request
-  ↓ bounded transport framing / credential extraction
+  ↓ bounded framing / credential extraction
 authentication where required
   ↓
 capability / authorization / access filtering where required
   ↓
-structural contract validation
-  ↓
-semantic preconditions
+contract + semantic preconditions
   ↓
 establish logical work identity
   ↓
 authoritative transaction
   ├─ persist accepted resource/work state
-  └─ persist durable pending-work/outbox/recoverable marker
+  └─ persist durable pending-work/recoverable marker
   ↓
 COMMIT
   ↓
 accepted/pending response
   ↓
-background/internal capability dispatch/execution
+bounded background/internal execution
   ↓
-GET resource and/or SSE status
+GET resource and/or SSE update
 ```
 
-Expensive evaluator/generator/validator work should not keep an unbounded HTTP request open when durable asynchronous semantics are appropriate. Sending an HTTP request to Python/provider is not itself durable acceptance.
+Sending an HTTP request to Python/provider is not itself durable acceptance.
 
 ## Pattern 4 — idempotent create/submission
 
-Conceptually:
-
 ```text
-logical operation identity
+operation identity
++ actor/resource scope
 + compatible payload identity
 + current lifecycle state
         ↓
 one authoritative logical outcome
 ```
 
-A network retry must not duplicate an Attempt, EvidenceFact, one accepted logical ContentRevision, provider charge/work, or logically identical generation/validation/evaluation work. Retry of an operation known to be non-idempotent and not safely deduplicable is forbidden.
+The exact contract/bootstrap must define, for each applicable operation:
+
+- idempotency scope and operation identity;
+- actor/resource association;
+- payload-compatibility rule;
+- durable outcome/result/reference returned by replay;
+- record retention sufficient for the expected retry horizon;
+- conflict behavior for the same key/identity with incompatible payload.
+
+No universal TTL is frozen here. Idempotency records are operational support state, not learner truth. A network retry must not duplicate an Attempt, EvidenceFact, accepted ContentRevision, paid/provider work, or logically identical generation/validation/evaluation work.
 
 ## Pattern 5 — internal Go → Python capability call
 
 ```text
 Core API
-  ↓ exact internal contract
+  ↓ exact internal HTTP contract
 caller deadline + cancellation where safe
   ↓
 Evaluator / generator / validator capability
   ↓ bounded output + provenance/uncertainty
-Core-side structural/work-identity validation
+Core-side contract/work-identity validation
   ↓
 owning Assessment/content/product policy interpretation
 ```
 
-Python cannot return authoritative certification, product support, learner-state transition, evidence-candidacy upgrade, or content activation merely because the internal request succeeded. Python does not mutate Core-owned persistence directly.
+This is an internal capability, not a public product API. Core API is the permitted product caller; browser and admin UI do not call it directly. Deployment restricts reachability according to the selected topology. If the boundary crosses an untrusted/shared network, caller/service authentication and authorization are required. A private trusted/co-located transport may use a smaller mechanism only when its actual trust boundary makes that safe. This design does not freeze mTLS, JWT, or a service mesh.
+
+Python output remains non-authoritative for certification, product support, learner-state transition, evidence admission, content activation, or final DailyPlan state. Python does not query or mutate the authoritative product database directly.
 
 ## Pattern 6 — privileged operation
 
 ```text
 public/admin operation
-  ↓ bounded transport framing / credential extraction
+  ↓ bounded framing / credential extraction
 authentication
   ↓
 applicable operational capability / access check
   ↓
-structural contract validation
-  ↓
-current revision/state semantic precondition
+contract + current-state preconditions
   ↓
 legal mutation + required privileged audit/work marker
   ↓
@@ -222,47 +244,33 @@ COMMIT
 response / post-commit dispatch
 ```
 
-The capability semantics are owned by `04-application-flows.md`; this API does not invent role hierarchy or bypass authority. Admin UI cannot manipulate the authoritative DB/provider around Core API.
+Capability semantics are owned by `04-application-flows.md`; this API does not invent role hierarchy or bypass authority. Admin UI cannot manipulate authoritative DB/provider state around Core API.
 
 ## Pattern 7 — SSE update
 
 ```text
-authoritative state/version change
+authoritative state change
   ↓
-event/update hint
+scoped event/update hint
   ↓
-client
+authorized SSE stream
   ↓
-resource remains readable as current durable truth
+client refresh/presentation
+  ↓
+durable resource GET remains truth
 ```
 
-SSE delivery may be duplicated, delayed, reordered, or disconnected without becoming product-state authority.
+Where the stream carries protected state, it authenticates/authorizes the connection and filters events to the learner/admin resources/capabilities the caller may observe. Payloads contain only the minimum information needed to identify the relevant update and must never expose another learner's resource or privileged state.
+
+SSE events may be duplicated, delayed, reordered, or lost. Reconnect/resume cursors and event IDs are transport state, not product authority. Event/resource revision correlation may help clients discard stale hints, but a durable resource GET restores current truth. The exact event envelope belongs to one machine authority when materialized.
+
+Because this SSE stream is delivered over the public HTTP API, its route/envelope belongs to the public HTTP contract. Do not create `contracts/events` merely for SSE. A separate event contract is justified only by a genuinely separate cross-unit asynchronous event boundary.
 
 ## Pattern 8 — inbound webhook, conditional
 
-Inbound webhooks exist only when an actually selected external capability requires callbacks.
+Inbound webhooks exist only when an actually selected external capability requires callbacks. Detailed provider authentication/replay/egress/ingress semantics are owned by `07-third-party-services.md`.
 
-When used:
-
-```text
-provider callback
-  ↓
-signature/authentication verification
-  ↓
-replay/idempotency protection
-  ↓
-structural validation
-  ↓
-authoritative event/work association + safe freshness checks where relevant
-  ↓
-transaction + durable audit/work state
-  ↓
-COMMIT
-  ↓
-bounded response
-```
-
-A webhook endpoint is not created merely because webhooks are a common integration pattern. Provider callback timestamps are not trusted as causal truth merely because they are present. Webhooks cannot create learner/product truth outside normal owning policy.
+At the API boundary, a callback must be authenticated according to its provider contract, bounded/validated, associated with authoritative work, idempotent/replay-safe, and committed through normal Core policy before it can affect product state. Callback timestamps/provider success are not product authority.
 
 # Execution trace levels
 
@@ -274,22 +282,10 @@ L1  semantic API operation/resource
 L2  exact transport contract once materialized
 L3  Core API authoritative execution/transaction
 L4  internal capability/provider invocation where applicable
-L5  resulting canonical/product state propagation + learner/admin response
+L5  resulting product state propagation + learner/admin response
 ```
 
-For a consequential operation, implementation must be able to reconstruct where material:
-
-- initiator and semantic operation;
-- stable resource/work/content/attempt/target identities crossing boundaries;
-- authentication/access/capability decision;
-- structural validation and semantic preconditions;
-- idempotency/concurrency decision;
-- authoritative transaction/commit point;
-- durable asynchronous work identity/registration and dispatch state;
-- internal capability/provider invocation and response authority;
-- retry/fallback classification;
-- persisted result/failure state;
-- caller response class and later SSE/resource update.
+For a consequential operation, implementation can reconstruct where material: initiator/operation; stable resource/work/content/attempt/target identities; auth/access decision; validation/preconditions; idempotency/concurrency decision; commit point; durable async registration/dispatch state; internal/provider invocation; retry/fallback class; persisted result/failure; caller response and later SSE/resource update.
 
 Trace/log data is operational evidence only; it never becomes learner/product semantic authority.
 
@@ -322,23 +318,13 @@ The operation is not legally executable as requested, for example malformed inpu
 
 The requested operation cannot currently establish its intended authoritative result because an infrastructure dependency is unavailable/ambiguous, for example database outage, internal dependency/provider outage, or timeout whose remote result cannot yet be established safely.
 
-Infrastructure failure is never low learner performance, evidence of weakness, or automatic content-quality failure. When a timeout is ambiguous, the server/client must not assume the remote operation failed and retry unsafely.
+Infrastructure failure is never low learner performance, evidence of weakness, or automatic content-quality failure. An ambiguous timeout does not prove remote failure and cannot authorize unsafe retry.
 
 # Deadline, retry, fallback, and backpressure semantics
 
-Every material network/provider boundary ultimately declares:
+Every material network/provider boundary ultimately declares caller deadline, safe cancellation, transient/permanent/ambiguous retry classification, idempotency/deduplication, bounded retry/backoff when eligible, safe fallback, and capacity/backpressure behavior.
 
-- caller deadline;
-- cancellation propagation where safe;
-- retry eligibility and classification: transient, permanent, or ambiguous;
-- idempotency/deduplication behavior;
-- exponential backoff/jitter where retry is appropriate;
-- safe fallback behavior;
-- backpressure/capacity behavior.
-
-Exact timeout/retry counts/budgets are implementation/operational policy until measured evidence justifies freezing them. A retry cannot lower content/evidence/evaluator quality or turn ambiguous work into a duplicate logical operation.
-
-Rate limiting may protect abuse, cost, provider quotas, and capacity. Exact limits are deployment/operations policy; rate limiting must not be used to fabricate learner failure or silently accept work that was not durably accepted.
+Exact timeout/retry counts/budgets are implementation/operational policy until measured evidence justifies freezing them. A retry cannot lower content/evidence/evaluator quality or turn ambiguous work into a duplicate logical operation. Rate limiting may protect abuse, cost, quotas, and capacity but cannot fabricate learner failure or silently accept undurable work.
 
 # Public resource groups
 
@@ -355,35 +341,9 @@ PUT    /v1/target-profile
 GET    /v1/target-support
 ```
 
-`target-profile` represents, where supplied/material:
+`target-profile` represents supplied/material TargetProfile constraints from `00-learning-experience.md`: standard variant, delivery/purpose constraints, overall/per-skill lower-bound Band constraints, test date, selected One Skill Retake focus, and concurrency revision where applicable.
 
-```text
-test_variant
-delivery_mode
-purpose_or_receiving_rule
-target_overall_band          lower-bound constraint
-per-skill minimums           lower-bound constraints
-test_date
-selected_skill_retake        preparation focus, not eligibility proof
-revision/version
-```
-
-Band fields preserve the TargetProfile semantics owned by `00-learning-experience.md`: `7.0` means `>= 7.0`, not exact equality. The API must not expand an overall target into hidden equal per-skill minima. Any derived working/planning profile is separately identified as non-authoritative and cannot mutate real target constraints without an explicit target update.
-
-For **target-relative planning, readiness, or product-support evaluation**, a TargetProfile is sufficiently resolved only when it has both:
-
-1. a resolved standard `test_variant`: Academic or General Training; and
-2. at least one actual Band constraint: `target_overall_band` and/or one real per-skill minimum.
-
-If the standard variant is unresolved, the variant-specific target remains an unresolved target condition. If no actual Band constraint is known, the readiness target remains unresolved. APIs may still support genuinely variant-independent/shared/foundational/diagnostic work where valid, but neither missing condition may be silently completed with a default.
-
-Incomplete target input is not learner evidence insufficiency and is not automatically a product CoverageGap. `/v1/target-support` therefore cannot produce a complete target-relative support conclusion until the target-resolution minimum is met; it preserves/surfaces the unresolved target condition instead of fabricating `target_not_supported`, CoverageGap, or another product failure. Exact transport representation and HTTP behavior belong to the future machine contract.
-
-`selected_skill_retake` selects focused preparation only. Eligibility-sensitive responses keep missing original-test/timing/location/delivery/purpose conditions unresolved rather than treating the selected skill as proof of One Skill Retake eligibility.
-
-`target-support` transports the current product-support result for the sufficiently resolved target scope, including applicable delivery/purpose/eligibility conditions and blocking CoverageGap classes. Product-support semantics remain owned by `08-coverage-and-support.md`; referencing that downstream result here does not make API the policy owner or create a reverse semantic-definition dependency.
-
-It is not learner readiness.
+For target-relative planning/readiness/support, the standard variant plus at least one real Band constraint must be resolved. Missing target input remains unresolved rather than being silently defaulted, converted to learner evidence insufficiency, or fabricated as CoverageGap. `target-support` transports the support result owned downstream by `08-coverage-and-support.md`; it is not learner readiness.
 
 ## 2. Diagnostics
 
@@ -392,24 +352,7 @@ POST   /v1/diagnostic-runs
 GET    /v1/diagnostic-runs/{diagnostic_run_id}
 ```
 
-Creation selects the product diagnostic shape and optional focus constraints.
-
-Result semantics include:
-
-- run lifecycle state from `04-application-flows.md`;
-- TargetProfile/reference used for sampling;
-- Observations/evaluation status by sampled activity;
-- stable family/context refs for samples where material;
-- a material target-condition sampling ledger that distinguishes at least:
-  - `sampled`;
-  - `not_sampled`;
-  - `unusable`;
-  - `pending_evaluation`;
-- resulting evidence states/next evidence need where available.
-
-Diagnostic is an activity purpose, not an evidence-admission shortcut. A diagnostic result may expose admitted evidence only when the activity was an evidence candidate and normal Assessment policy admitted the resulting Observation.
-
-A `completed` diagnostic does not mean every condition is known or certified.
+A diagnostic exposes its lifecycle, sampling TargetProfile/reference, sample identities/observations/evaluation status, and a material sampling ledger distinguishing at least `sampled`, `not_sampled`, `unusable`, and `pending_evaluation` where applicable. `completed` means the run ended, not that the learner model/target is complete or certified.
 
 ## 3. Daily plan
 
@@ -417,26 +360,7 @@ A `completed` diagnostic does not mean every condition is known or certified.
 GET /v1/daily-plan
 ```
 
-Optional request inputs may include duration preset and an eligible focus override.
-
-Response semantics include:
-
-- plan identity;
-- TargetProfile revision/reference;
-- learner/evidence state reference used to compute it;
-- activity cards;
-- reason codes;
-- estimated duration;
-- canonical targets;
-- official family/Content Context refs where material;
-- exact content revision references for resolved activities;
-- delivery refs where material;
-- primary activity purpose;
-- evidence candidacy;
-- unresolved target conditions;
-- CoverageGap indicator where applicable.
-
-DailyPlan is the output of the staged Planner contract. It must not collapse hard eligibility and ranking into one opaque recommendation score.
+Response semantics preserve plan/TargetProfile/learner-state references, eligible activity cards, reason codes, canonical/content/variant/delivery identities where material, primary purpose, evidence candidacy, unresolved target conditions, and CoverageGap indication. Hard eligibility and ranking remain distinct as owned by `04-application-flows.md`.
 
 ## 4. Learning sessions
 
@@ -456,33 +380,9 @@ POST   /v1/practice-activities
 GET    /v1/practice-activities/{practice_activity_id}
 ```
 
-A PracticeActivity resolves:
+A PracticeActivity resolves exact content revision, canonical target, applicable official family/context/presentation/variant/delivery identities, stimulus/response conditions, scaffolding/exposure state, `primary_activity_purpose`, and `evidence_candidacy`.
 
-```text
-practice mode
-exact content revision
-canonical target refs
-external task/question-family refs where material
-Content Context ref where material
-Presentation Class refs where material
-variant where material
-delivery condition where readiness-relevant
-stimulus/source
-response conditions
-scaffolding/exposure state
-primary_activity_purpose    TRAINING | DIAGNOSTIC | ASSESSMENT | READINESS
-evidence_candidacy          NOT_EVIDENCE_CANDIDATE | ASSESSMENT_MAY_ADMIT
-```
-
-Primary purpose and evidence candidacy are orthogonal. `ASSESSMENT` means focused measurement/re-measurement is the product purpose; it still does not admit evidence by itself. `ASSESSMENT_MAY_ADMIT` is pre-attempt candidacy only; actual EvidenceFact admission remains an Assessment result after real assistance/exposure/evaluator/provenance conditions are known.
-
-Evidence candidacy is part of the immutable activity/item configuration for an attempt. The client, evaluator, ranker, or Core API may not retroactively switch `NOT_EVIDENCE_CANDIDATE` to `ASSESSMENT_MAY_ADMIT` because the observed result is favorable.
-
-There is no API field whose semantic meaning is “certification-contributing before Assessment”. Certification contribution is derived downstream from admitted EvidenceFacts and the applicable EvidenceRequirement.
-
-Official family identity must not be reconstructed from a broad Skill Leaf when the leaf serves several external families.
-
-Direct browsing may create an eligible activity but cannot satisfy unrelated target conditions. Activity creation fails closed or selects another eligible revision if learner-specific exposure/novelty/operational state makes the requested content ineligible.
+Purpose and evidence candidacy are orthogonal. The client/evaluator/server cannot retroactively upgrade candidacy after observing a favorable result. Actual EvidenceFact admission remains Assessment authority.
 
 ## 6. Attempts
 
@@ -493,19 +393,7 @@ PATCH  /v1/attempts/{attempt_id}
 POST   /v1/attempts/{attempt_id}/submissions
 ```
 
-The resource exposes the legal state from `04-application-flows.md`; this file does not define a second lifecycle diagram.
-
-Writing drafts may mutate before submission under revision control. Submission is explicit, idempotent, and records actual:
-
-- exact assigned content revision;
-- assistance/scaffolding;
-- exposure/retry context;
-- delivery mode/input mode where material;
-- timestamps/response provenance required by Assessment.
-
-Family/context/presentation/purpose/candidacy semantics come from the immutable referenced content revision/work configuration rather than client-supplied reclassification at submission time.
-
-Accepted submission corresponds to durable authoritative state before success acknowledgement. If productive evaluation or another required async continuation follows, its durable work identity/marker is committed or recoverably derivable before the accepted response can rely on it. Later content retirement/revalidation does not rewrite the Attempt's revision reference.
+Draft mutation uses concurrency control. Submission is explicit/idempotent and preserves exact assigned revision plus material assistance, exposure/retry, delivery/input, timing, and response provenance. Accepted submission corresponds to durable authoritative state; required async continuation is already durably discoverable/recoverable before acknowledgement.
 
 ## 7. Evaluations
 
@@ -513,15 +401,7 @@ Accepted submission corresponds to durable authoritative state before success ac
 GET /v1/evaluations/{evaluation_id}
 ```
 
-Public output may expose:
-
-- status;
-- learner-meaningful criterion observations;
-- feedback;
-- uncertainty/quality state where useful;
-- retry/unavailable state.
-
-It does not expose chain-of-thought, secrets, or irrelevant provider internals.
+Public output may expose status, learner-meaningful observations/feedback, uncertainty/quality state where useful, and retry/unavailable state. It does not expose chain-of-thought, secrets, or irrelevant provider internals.
 
 ## 8. Progress and gaps
 
@@ -530,13 +410,7 @@ GET /v1/progress
 GET /v1/gaps
 ```
 
-`progress` exposes target conditions, per-skill current support/current certification state, certification history, evidence freshness, and unresolved requirements.
-
-Current certification and certification history are distinct. A historical certification can remain visible while current status is `in_progress` because the corresponding present claim is stale, conflicting, insufficient, below requirement, or otherwise non-`SUPPORTED`. Only `09-PROGRESSION.md` determines whether a loss of current support constitutes regression.
-
-`gaps` exposes learner GapEvaluation + explainable ActionIntent.
-
-CoverageGap remains separate. The API does not invent one mastery percentage to replace claim states.
+`progress` exposes target conditions, current per-skill support/certification state, history, freshness, and unresolved requirements. `gaps` exposes learner GapEvaluation + ActionIntent. CoverageGap remains separate.
 
 ## 9. Review
 
@@ -544,15 +418,7 @@ CoverageGap remains separate. The API does not invent one mastery percentage to 
 GET /v1/review-queue
 ```
 
-Each item declares one semantic queue kind:
-
-```text
-knowledge_retrieval
-error_remediation
-re_evidence
-```
-
-and references canonical targets plus the recommended action intent/mode where available.
+Items preserve their semantic queue kind: `knowledge_retrieval`, `error_remediation`, or `re_evidence`, plus canonical target/action references where available.
 
 ## 10. Mocks
 
@@ -561,25 +427,7 @@ POST   /v1/mock-runs
 GET    /v1/mock-runs/{mock_run_id}
 ```
 
-A MockRun preserves:
-
-- primary activity purpose `READINESS` for a normal mock;
-- evidence candidacy for the configured run/sections;
-- exact content revisions used by the run;
-- resolved test variant;
-- external family configuration for the run;
-- Content Context distribution where material;
-- material Presentation Class coverage where applicable;
-- delivery mode/interaction conditions when material;
-- full-test or selected-section scope;
-- actual completion/abandonment state;
-- section observations/readiness outputs at their valid scope.
-
-Readiness purpose does not imply evidence admission. A mock Observation can contribute to a claim only when the configured run/section is an evidence candidate and normal Assessment policy admits the actual Observation.
-
-Full mocks cannot mix Academic and GT Reading/Task 1 accidentally or silently omit a required Speaking part from a claimed whole-Speaking mock.
-
-One Skill Retake preparation scopes to one existing skill; it does not create another Skill type or assert administrative eligibility.
+MockRun preserves `READINESS` purpose for normal mocks, evidence candidacy, exact content revisions, resolved variant, applicable family/context/presentation/delivery scope, actual completion state, and section outputs at their valid scope. Readiness purpose never admits evidence automatically.
 
 ## 11. Media
 
@@ -590,46 +438,26 @@ POST   /v1/media-lessons
 GET    /v1/media-lessons/{media_lesson_id}
 ```
 
-MediaSource creation resolves provider identity/metadata, playability, rights, and transcript state. Learner/provider URL input is an untrusted reference and does not imply arbitrary fetch/download permission.
-
-MediaLesson creation requires an eligible source plus valid canonical target and Practice Mode mapping. Generated/derived lesson content enters normal content revision/validation semantics before learner assignment.
+MediaSource creation resolves provider identity/metadata, playability, rights, and transcript state through the eligible media/provider boundaries. A URL is an untrusted reference, not arbitrary fetch/download authority. Generated lesson content enters normal revision/validation policy before assignment.
 
 ## 12. Content supply and operations
 
-This group exposes product/runtime content work without making the API, AI, or an operator the content-quality authority.
-
-Representative semantic resources/operations:
+Representative semantic operations:
 
 ```text
 GET    /v1/admin/content-revisions
 GET    /v1/admin/content-revisions/{content_revision_id}
 PATCH  /v1/admin/content-revisions/{content_revision_id}
-
 POST   /v1/admin/content-generation-requests
 GET    /v1/admin/content-generation-requests/{generation_request_id}
-
 POST   /v1/admin/content-validation-runs
 GET    /v1/admin/content-validation-runs/{validation_run_id}
-
 POST   /v1/content-reports
 GET    /v1/admin/content-reports
 PATCH  /v1/admin/content-reports/{content_report_id}
 ```
 
-Exact wire fields and any additional subresources belong to machine contracts. Each privileged content operation requires the applicable privileged operational capability defined by `04-application-flows.md`; this file does not define roles or a role-to-capability matrix.
-
-These route semantics establish the boundary:
-
-- content-revision reads expose identity, lineage/origin, canonical bindings, current applicable validation evidence, release/assignment/operational eligibility, and reconstructable provenance as authorized;
-- `PATCH content-revisions` may change only authorized operational/release metadata owned downstream; it cannot mutate the immutable semantic payload of that revision;
-- a material content correction creates a new ContentRevision through the applicable content-supply path rather than patching historical semantics;
-- GenerationRequest represents a concrete supply demand, constraints, provenance/work identity, and resulting candidate refs; it is not evidence that generation is mandatory or that generated output is valid/active;
-- validation-run resources represent execution/status/results of applicable validation work and preserve validator/policy provenance; a generator's self-check is only one possible signal;
-- content reports preserve reporter/context/evidence sufficient for operational triage without mutating learner evidence or automatically proving the report correct;
-- quarantine/stop-assignment, revalidation, release activation, replacement, and retirement behavior follow `04-application-flows.md`; this API must not invent a second combined ContentStatus lifecycle;
-- authorization implementation determines which authenticated identities receive the applicable operational capabilities without redefining those capability meanings.
-
-No API operation may provide a generic bypass that turns a known applicable hard validation failure into assignable learner content. Authorized operators repair the cause/change legitimate intended use, then revalidate under the applicable policy.
+Exact fields/subresources belong to machine contracts. Privileged capability meaning, content lifecycle, quarantine/revalidation/release/retirement, and the prohibition on validation bypass are owned by `04-application-flows.md`. API operations cannot mutate historical ContentRevision semantic payload or turn generator/validator/operator output directly into active learner content.
 
 # Server event stream
 
@@ -637,184 +465,94 @@ No API operation may provide a generic bypass that turns a known applicable hard
 GET /v1/event-stream
 ```
 
-SSE may deliver status/update notifications for evaluation, media analysis, diagnostics, mocks, content generation/validation operations, and derived plan/progress refresh.
-
-Persistent truth remains queryable through normal resources; SSE is not state authority and reconnect is safe.
+This route is part of the public HTTP API contract. It follows Pattern 7: protected streams are access-scoped, payloads are minimum-necessary, cross-learner/admin leakage is forbidden, delivery is non-authoritative, and durable resource reads recover truth after loss/reorder/reconnect. The future HTTP machine contract owns the exact SSE envelope/correlation semantics.
 
 # Internal evaluator/content capability API
 
-Normal caller: Go Core API only.
+Normal product caller: Go Core API only.
 
 ```text
 POST /internal/v1/evaluations
 POST /internal/v1/media-analyses
-POST /internal/v1/content-generations       when this capability is implemented/needed
-POST /internal/v1/content-validations       when this capability is implemented/needed
+POST /internal/v1/content-generations       when implemented/needed
+POST /internal/v1/content-validations       when implemented/needed
 GET  /internal/v1/health
 ```
 
-Generation/validation endpoints are optional capability boundaries. Their existence in semantic API design does not make AI generation or external model use a product coverage requirement.
+Generation/validation endpoints are optional capability boundaries. This route group is internal, not browser/admin/public internet product surface. Deployment reachability and service authentication follow Pattern 5 and `06-implementation-stack.md`.
 
-## Evaluation request semantics
+## Evaluation request/response semantics
 
-References include:
+Requests preserve work/attempt/content revision identities, canonical target IDs, material family/context/presentation/variant/delivery scope, actual response/assistance/exposure conditions, evaluator configuration reference, and requested observation families. Applicability is preserved rather than filled with fabricated values.
 
-```text
-evaluation/work identity
-attempt identity
-exact content revision identity
-canonical target IDs
-external task/question-family refs where material
-Content Context ID where material
-Presentation Class refs where material
-variant where material
-actual delivery/input condition where material
-assessment/practice context
-response or secure response reference
-scaffold/exposure conditions
-rubric/evaluator configuration reference
-requested observation families
-```
+Responses contain bounded status/Observation candidates, criterion measurements, permitted derived analysis references, uncertainty/quality flags, evaluator/model provenance, and diagnostics. They never carry authoritative learner certification, product support, Band advancement, evidence candidacy/admission, content activation, or final plan state.
 
-The evaluator consumes these identities; it does not infer/relabel the exam family, activity purpose, or evidence candidacy from free-form prompt/response content when authoritative item/work metadata already exists. Applicability is preserved: context-neutral content does not receive a fabricated Content Context/family/variant solely to make the request uniform, while any materially required identity remains present.
+## Content generation/validation/media semantics
 
-## Evaluation response semantics
-
-Python returns bounded measurement output:
-
-```text
-evaluation identity
-status
-Observation candidates preserving content/target/family/context provenance
-criterion measurements
-transcript/acoustic/text-analysis refs where appropriate
-uncertainty/quality flags
-model/evaluator provenance
-diagnostics
-```
-
-Python never returns authoritative learner certification, product support, Band advancement, evidence candidacy upgrades, content activation, or final DailyPlan state.
-
-## Content generation semantics
-
-Input is a bounded ContentDemand/GenerationRequest already constrained by Core API/product policy, such as:
-
-```text
-work identity
-intended use/consequence
-canonical target refs
-official family/context/presentation refs where applicable
-variant/delivery scope where material
-difficulty/scaffold/diversity requirements
-prohibited/reuse/source constraints
-authorized source/context refs
-```
-
-Output is candidate semantic content plus origin/model/tool provenance and diagnostics. It is not an active ContentRevision until Core API persists the candidate/revision and applicable validation/release policy passes.
-
-The generator may not invent unresolved canonical target meaning, relax required conditions, or classify its own output as product-supported.
-
-## Content validation semantics
-
-Input identifies the exact ContentRevision, intended use/consequence scope, validation policy/version, and authorized supporting material.
-
-Output may contain validation findings/signals, similarity measurements, answer/rubric checks, language/construct checks, uncertainty, and validator provenance. It does not decide Assessment evidence admission, learner mastery, product coverage, or content release activation beyond the authority explicitly granted to the owning deterministic validation policy.
-
-A generated candidate being checked by the same model/process that generated it does not create independent confidence merely because the process returns `pass`.
-
-## Media-analysis semantics
-
-Input contains permitted transcript/text/media metadata or another authorized reference. Output may propose segments, difficulty metadata, vocabulary, canonical targets, and generated prompts. Core API validates eligibility and normal content revision/validation requirements before saving assignable product state.
+Generation receives a Core-constrained demand and returns candidate content plus provenance; it cannot activate content or invent unresolved canonical meaning. Validation receives exact revision/intended-use/policy context and returns findings/signals/provenance, not learner/evidence/product authority. Media analysis receives only authorized text/media references/data and returns bounded proposals; Core applies normal eligibility and content policy.
 
 # Idempotency
 
-Require an idempotency key/equivalent stable client operation for operations where retry can duplicate learner history or paid/provider work, including:
+Use a stable idempotency key/equivalent operation identity where retry can duplicate learner history or cost, including diagnostic/session creation where duplicates matter, attempt submission, mock creation, cost-bearing media work, generation, and validation.
 
-- diagnostic run creation;
-- learning-session creation when duplicate creation matters;
-- attempt submission;
-- mock-run creation;
-- media-source/media-lesson creation with provider/evaluator cost;
-- content generation requests where retry could duplicate generated inventory/provider cost;
-- content validation runs where retry could duplicate paid validation work.
-
-Retry cannot create duplicate attempts, EvidenceFacts, paid evaluator/generator work, or semantically duplicated revision records for one logical accepted operation.
+The future exact contract/bootstrap must instantiate Pattern 4 for each applicable operation. Retry cannot create duplicate attempts, EvidenceFacts, paid work, or semantically duplicate accepted revisions for one logical operation.
 
 # Optimistic concurrency
 
-Mutable draft-like resources, TargetProfile, and mutable operational/admin metadata use revision/version semantics where concurrent/stale updates are possible.
-
-A stale mutation is rejected rather than silently overwriting newer state. ContentRevision semantic payload itself is immutable once established under `spec/10` semantics; optimistic concurrency is not permission to overwrite it.
+Mutable draft-like resources, TargetProfile, and mutable operational/admin metadata use resource-revision semantics where stale updates are possible. A stale mutation is rejected rather than silently overwriting newer state. This resource revision is not API contract version, ContentRevision, database schema version, provider/model version, or idempotency/work identity.
 
 # Domain results vs transport/operation failures
 
-Domain/result semantics are represented in normal resource/operation outputs when the request itself executed correctly. Examples include:
+Domain/result states such as insufficient/conflicting/stale evidence, unresolved target condition, target non-support/CoverageGap, learner-specific content unavailability, and evaluation pending are normal semantic outcomes when the request executed correctly.
 
-```text
-insufficient evidence
-conflicting evidence
-stale evidence
-TargetProfile condition unresolved
-target not supported for a fully resolved scope
-CoverageGap
-learner-specific content unavailable because novelty/independence fails
-evaluation/work pending
-```
-
-These are not inherently HTTP errors.
-
-Transport/operation failure semantics instead cover failures such as:
-
-```text
-malformed request
-unauthenticated
-unauthorized / forbidden capability
-invalid transition / failed precondition
-stale revision
-idempotency conflict
-rate limited
-dependency unavailable
-internal failure
-```
-
-Exact public failure-code catalog and HTTP mapping belong to the future machine contract. A transport error envelope may carry a stable non-sensitive code/title/message/details/correlation identity, but domain states must not be copied into that catalog merely for convenience.
-
-# HTTP conventions
-
-Conceptual target semantics include successful reads/creates/updates, accepted asynchronous operations, unauthenticated/forbidden access, malformed/contract-rejected input, concurrency/idempotency conflict, rate limiting, and infrastructure failure. Exact status mapping belongs to the machine contract.
+Transport/operation failures cover malformed input, authentication/access failure, invalid transition/precondition, stale revision, idempotency conflict, rate limit, dependency unavailability, and internal failure. Exact public codes/status mappings belong to the future contract and must respect the non-disclosure rule above.
 
 A `5xx`-class infrastructure failure is never a learner score, learner weakness, CoverageGap, insufficient-evidence result, or fake content-quality judgment.
 
 # Machine-contract evolution and compatibility
 
-Each material machine boundary has exactly one contract authority. Contract changes are reviewed conceptually as **backward-compatible** or **breaking**; these are review concepts, not required public enums.
+Compatibility is directional. A change is safe only for the deployed caller/provider combinations that must coexist; “additive in YAML” is not sufficient evidence.
 
-Generally backward-compatible changes may include:
+For each affected boundary, review as applicable:
 
-- adding a genuinely optional/applicability-safe response field;
-- adding a new independent operation that does not alter existing operation meaning.
+```text
+old client  → new server
+new client  → old server
+new server  → old client
+old server  → new client
+```
 
-Potentially breaking changes include:
+For Web↔Go this means old/new Web and old/new Go combinations. For Go↔Python it means old/new Go and old/new Python combinations whenever deployment can overlap them. Server→client response/SSE compatibility is evaluated separately from client→server request compatibility.
 
-- removing or renaming a field/operation consumed by deployed clients;
-- narrowing previously valid input;
-- changing enum/status/domain-result meaning;
-- changing required/optional applicability in a way that changes valid semantics;
-- changing stable identifier meaning;
-- changing lifecycle/precondition semantics under an existing operation.
+Compatibility analysis covers at least:
+
+- unknown response fields and whether deployed consumers ignore/preserve/reject them safely;
+- unknown/new enum, status, reason, or domain-result values;
+- newly required request fields;
+- newly optional fields and whether absence changes semantics;
+- narrowed validation or accepted-value ranges;
+- changed default behavior;
+- changed null/absence/`NOT_APPLICABLE`/unresolved semantics;
+- removed/renamed fields or operations;
+- changed response-state meaning;
+- changed lifecycle/precondition/authorization applicability;
+- changed stable identifier meaning.
+
+Adding a response field is compatible only when affected deployed consumers tolerate it. Adding an enum/status value is compatible only when the contract and every affected deployed consumer explicitly tolerate unknown/new values or otherwise handle the new value safely. Generated clients/types are not assumed tolerant; generation output and runtime behavior must be verified.
 
 Rules:
 
-1. transport optionality/requiredness may not violate canonical applicability merely to avoid a version change;
-2. deployed public `/v1` behavior cannot silently break existing consumers;
-3. a breaking deployed public contract requires an explicit version/rollout/migration strategy before activation;
-4. internal contracts may evolve faster but still require consumer/provider compatibility during rollout;
-5. generated bindings are regenerated/validated from the contract and never manually patched as interface authority;
-6. compatibility/conformance/drift checks enter root verification once the relevant contract/deployed consumer exists;
-7. deprecation or a new API version does not reinterpret historical ContentRevision, Attempt, Observation, EvidenceFact, or certification history;
-8. event contracts, if later introduced, require explicit producer/consumer compatibility rules rather than relying on undocumented payload tolerance.
+1. transport optionality/requiredness cannot violate canonical applicability to avoid a version change;
+2. deployed `/v1` behavior cannot silently break a supported consumer direction;
+3. a breaking deployed boundary change requires an explicit version/rollout/migration strategy before activation;
+4. internal contracts may evolve faster, but cannot assume atomic Go/Python replacement unless deployment explicitly guarantees it;
+5. generated bindings are derived from one contract authority and do not eliminate runtime version skew;
+6. compatibility/conformance tests cover every version-skew combination the selected rollout permits;
+7. DB migrations support the application/schema compatibility window required by that rollout;
+8. deprecation/new transport versions do not reinterpret historical ContentRevision, Attempt, Observation, EvidenceFact, or certification history;
+9. a genuinely separate event contract, if introduced later, has its own producer/consumer compatibility rules; SSE alone remains under the public HTTP contract.
 
-This file does not mandate one generic SemVer algorithm or code-generator library.
+Exact version numbers, rollout technology, compatibility window, and generator library remain future contract/deployment work. This file does not mandate one SemVer algorithm.
 
 # Pagination
 
@@ -824,26 +562,25 @@ Unbounded history/library/content/report collections use cursor pagination. Smal
 
 Forbidden without an explicit architecture change:
 
-- browser calling evaluator/generator/validator directly;
-- Next.js Route Handler/Server Action becoming a second product API or hidden domain-command owner;
+- browser/admin calling evaluator/generator/validator directly;
+- Next.js Route Handler/Server Action becoming a second product API or domain-command owner;
 - endpoint per UI button;
 - provider/model names in public domain routes;
 - independently handwritten mirror DTOs across runtimes;
-- generated binding/client treated as semantic authority;
+- generated binding/client treated as semantic authority or assumed compatibility evidence;
 - fake score zero on evaluator failure;
-- API shape becoming a second learner-state or content-quality definition;
-- API-owned thresholds or hidden per-skill target constraints without a canonical/product owner;
-- practice/UI action implicitly mutating TargetProfile/readiness;
+- API shape becoming a second learner-state/content-quality definition;
+- API-owned thresholds or hidden per-skill target constraints;
 - CoverageGap represented as learner GapEvaluation or infrastructure error;
 - unresolved TargetProfile input represented as learner evidence insufficiency or fabricated product non-support;
 - ranker returning an activity that failed hard eligibility;
-- omitted content revision/family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
-- fabricated family/context/presentation/variant identity where the upstream semantic is legitimately not applicable;
-- client/evaluator silently reclassifying immutable item family identity;
-- client/evaluator/server retroactively upgrading evidence candidacy after observing performance;
-- mutable PATCH of a historical ContentRevision semantic payload;
+- omitting a material content revision/family/context/presentation/delivery identity;
+- fabricating a family/context/presentation/variant value for a legitimately non-applicable dimension;
+- client/evaluator reclassifying immutable item family or evidence candidacy;
+- mutable PATCH of historical ContentRevision semantic payload;
 - generator/validator output directly activating learner content;
 - generic admin validation bypass for a known hard failure;
-- one combined API ContentStatus that hides validation vs release vs operational-safety dimensions;
+- one combined ContentStatus hiding validation/release/operational dimensions;
 - `completed diagnostic` represented as `complete learner baseline`;
-- retrying an ambiguous/non-deduplicated mutation merely because the client timed out.
+- retrying ambiguous/non-deduplicated mutation merely because a client timed out;
+- treating additive schema or generated-code success as proof of deployed compatibility.
