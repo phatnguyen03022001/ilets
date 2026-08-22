@@ -40,7 +40,7 @@ Web
 
 The evaluator does not certify Band, mutate learner progression, declare product coverage, activate content, or choose the final next action.
 
-Logical ownership survives deployment co-location. Running Web, Core API, and Evaluator on one machine/platform does not authorize browser→Python bypass, Python mutation of Core-owned durable state, hidden shared-memory product state, or omission of the declared machine boundary between independently owned runtime units.
+These flows obey the logical ownership and co-location invariant owned by `06-implementation-stack.md`. Deployment topology cannot change the legal caller/callee direction or semantic authority defined here.
 
 # Runtime execution patterns
 
@@ -229,8 +229,7 @@ Expected containment does not promise infrastructure that has not been selected:
 - database failure before commit produces no durable-success acknowledgement;
 - ambiguous database/network outcome is reconciled with authoritative idempotency/work identity before retry can create another logical operation;
 - cache failure falls back to authoritative state where operationally feasible and never changes truth;
-- telemetry failure cannot rewrite business truth; only an explicitly required security/audit invariant may make absence of required durable audit block a consequential operation;
-- co-located process failure does not permit another unit to seize or mutate that unit's semantic authority through undocumented in-memory coupling.
+- telemetry failure cannot rewrite business truth; only an explicitly required security/audit invariant may make absence of required durable audit block a consequential operation.
 
 # Planner decision contract
 
@@ -840,24 +839,6 @@ Content generation/validation/assignment failures should likewise remain domain/
 
 Infrastructure failure is never represented as score zero or generic learner failure. An unresolved target field should use target-resolution semantics rather than pretending the product rejected a fully specified target.
 
-# Runtime ownership invariant
+# Implementation-boundary reference
 
-```text
-TypeScript
-  browser interaction/rendering/capture
-  authorized admin/operations presentation
-
-Go
-  public API + durable product state
-  deterministic scoring
-  Assessment policy execution
-  Progression execution
-  Planner orchestration
-  content demand/reuse/assignment + operational eligibility orchestration
-
-Python
-  bounded AI/audio/text evaluation and media analysis
-  bounded content-generation/validation capability only when invoked through declared internal contracts
-```
-
-Cross-language data crosses explicit contracts. The same semantic rule is not independently maintained in multiple runtimes. Python or another generator/validator may produce candidates/signals; Core API remains responsible for applying product policy and preserving authoritative content/assignment state.
+Runtime allocation, co-location, framework/tooling, database access ownership, and cross-runtime implementation boundaries are owned by `06-implementation-stack.md`. These flows require implementations to preserve their declared authority and exact machine contracts; no runtime may recreate or bypass the product/learning semantics owned here and upstream.
