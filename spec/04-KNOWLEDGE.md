@@ -108,6 +108,8 @@ The canonical phonology graph is L1-agnostic. L1-specific contrast priorities be
 
 This is the sole canonical mapping from Skill Leaf knowledge needs to Knowledge Objects.
 
+An edge in this mapping means the Knowledge Object is a **universal intrinsic prerequisite for the Skill Leaf across the leaf's applicable canonical scope**. It is therefore eligible to become a Required prerequisite downstream. Knowledge that is useful only for a particular variant, topic, presentation class, prompt, stimulus, or content instance does **not** belong in this universal mapping; Curriculum/Content may select it explicitly where material.
+
 ## Writing
 
 | Skill Leaf | Resolved Knowledge Objects |
@@ -123,11 +125,12 @@ This is the sole canonical mapping from Skill Leaf knowledge needs to Knowledge 
 | `W-GRA-03` | `K-GRA-004`, `K-GRA-021`, `K-GRA-005`, `K-GRA-006`, `K-GRA-007`, `K-GRA-031` |
 | `W-GRA-04` | `K-GRA-050`, `K-GRA-051`, `K-GRA-052`, `K-GRA-053`, `K-GRA-054`, `K-GRA-055` |
 | `W-GRA-05` | `K-GRA-032`, `K-GRA-040`, `K-GRA-041` |
-| `W-TA-03` | `K-GRA-064` |
 | `W-GRA-07` | `K-GRA-005`, `K-GRA-006`, `K-GRA-007`, `K-GRA-062`, `K-GRA-063` |
 | `W-GT1-02` | `K-VOC-040` |
 
 `W-GT1-01` and `W-GT1-03` are task-capability leaves whose direct knowledge needs are covered by the shared lexical/grammar/cohesion targets selected for the concrete letter; they do not require a new letter-specific Knowledge Object.
+
+`W-TA-03` has no universal single Knowledge prerequisite beyond shared Writing knowledge. Comparatives (`K-GRA-064`), tense/aspect, data language, process language, and spatial language are selected when the concrete Academic Task-1 presentation/stimulus makes them material; a process/map task must not be hard-gated by comparatives merely because another Task-1 presentation uses them heavily.
 
 ## Speaking
 
@@ -145,16 +148,18 @@ This is the sole canonical mapping from Skill Leaf knowledge needs to Knowledge 
 
 ## Reading
 
-| Skill Leaf | Resolved Knowledge Objects |
-|---|---|
-| `R-COMP-06` | `K-VOC-011` |
+No Reading Skill Leaf currently has an additional **universal variant-independent** Knowledge prerequisite in this mapping.
 
-General Training Reading context diversity is a curriculum/content condition, not a separate Knowledge Object.
+In particular, shared `R-COMP-06` does not universally require `K-VOC-011` Academic vocabulary: Academic and General Training reuse the leaf, while their corpus/context vocabulary differs. The Academic route may explicitly schedule `K-VOC-011`; GT uses the applicable general/topic/workplace lexical content and context distribution without inheriting a hidden Academic-vocabulary hard gate.
+
+General Training Reading context diversity is a curriculum/content/evidence condition, not a separate Knowledge Object.
 
 Listening currently has no explicit Knowledge prerequisite edge in the frozen graph; its direct prerequisites are intra-skill capability edges in `03-SKILLS.md`.
 
 ## Dependency semantics
 
-This file defines the dependency graph. Whether a dependency is a runtime hard gate is decided by `06-CURRICULUM.md` using the minimum-gate `Required` / `Recommended` / `Independent` policy, then enforced by `09-PROGRESSION.md`.
+This file defines universal Knowledge prerequisite edges. `06-CURRICULUM.md` may add explicit context/variant learning targets and Recommended node ordering, but it may not reinterpret a context-specific useful Knowledge Object as an intrinsic Required edge for every instance of a shared Skill Leaf.
 
-Object identity and prerequisite semantics are canonical. Difficulty, time-to-learn, frequency, examples, misconceptions, localization priority, and remediation catalogs are empirical/content concerns unless future evidence explicitly promotes them.
+Required / Recommended / Independent gate semantics are consumed by `06-CURRICULUM.md` and enforced by `09-PROGRESSION.md`.
+
+Object identity and prerequisite semantics are canonical. Difficulty, time-to-learn, frequency, examples, misconceptions, localization priority, context-specific lexical sets, and remediation catalogs are empirical/content concerns unless future evidence explicitly promotes them.
