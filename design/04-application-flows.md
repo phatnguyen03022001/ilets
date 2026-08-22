@@ -62,13 +62,28 @@ Planning is a staged decision. Later stages may not redefine truth established b
 
 ## Stage 1 — target/support resolution
 
-Resolve the current TargetProfile version, including variant and delivery mode when material, and the product-support state for that exact scope.
+Resolve the current target context and TargetProfile revision.
 
-A product CoverageGap remains a product condition; it is never converted into learner weakness.
+A target is fully resolved for target-relative planning/support only when `00-learning-experience.md`'s minimum holds: standard variant is known and at least one real Band constraint is known.
+
+Keep these two failure classes distinct:
+
+```text
+missing/unknown learner target constraint
+    = unresolved target condition
+    ≠ product CoverageGap
+
+known resolved target + product cannot serve it
+    = CoverageGap / target support condition
+```
+
+If variant or all Band constraints remain unresolved, the Planner may offer only genuinely variant-independent/shared/foundational/diagnostic actions whose eligibility does not require the missing target condition. It cannot silently choose Academic/GT semantics, manufacture a Band target, or make a complete target-support/readiness claim.
+
+Once the target scope is sufficiently resolved, resolve delivery mode/purpose/One-Skill-Retake eligibility conditions where material and the product-support state for that exact scope. Missing learner/external target information remains unresolved; an actual product inability remains a CoverageGap.
 
 ## Stage 2 — target-condition expansion
 
-Expand the target into unresolved per-skill/variant/external-purpose conditions.
+Expand the resolved/known target constraints into per-skill/variant/external-purpose conditions while preserving unresolved input explicitly.
 
 An overall Band alone may correspond to multiple valid four-skill combinations. The planner must not invent hidden per-skill minima. Any working per-skill planning profile follows the separate non-authoritative planning-profile semantics in `00-learning-experience.md`.
 
@@ -81,7 +96,7 @@ Consume canonical outputs from Assessment and Progression. Planning does not res
 Remove candidates that violate any applicable hard condition:
 
 - Required prerequisite;
-- target variant/task compatibility;
+- target variant/task compatibility when variant is known/material;
 - delivery-mode compatibility for exam-readiness work when material;
 - product coverage/support constraint;
 - primary-purpose/evidence-candidacy compatibility for the requested action;
@@ -93,6 +108,7 @@ Remove candidates that violate any applicable hard condition:
 Examples:
 
 - Academic visual Task-1 practice is not eligible as GT Task-1 readiness work;
+- variant-specific Task-1 work is not eligible while target variant is unresolved unless the learner explicitly selects it as non-target exploratory content;
 - typing-only mock behavior is not sufficient delivery-mode practice when the learner explicitly targets eligible Writing on Paper;
 - IELTS Online Academic exam-readiness is not eligible for a GT target or a target purpose that requires a test-centre route;
 - a failed microphone capture cannot become eligible Speaking evidence by ranking it highly;
@@ -101,6 +117,8 @@ Examples:
 ## Stage 5 — candidate generation
 
 Generate valid learning or assessment candidates for the current ActionIntent. Multiple modes may satisfy the same intent; candidate generation may vary delivery but not the target standard.
+
+When target resolution is incomplete, candidate generation is restricted to work that does not require inventing the unresolved condition.
 
 ## Stage 6 — ranking
 
@@ -124,6 +142,7 @@ A ranker may reorder eligible candidates. It may never:
 - alter GapEvaluation or ReadinessEvaluation;
 - reinterpret evaluator output;
 - hide a CoverageGap;
+- invent/resolve missing target constraints;
 - lower a target threshold;
 - convert preference into ability evidence;
 - ignore a material variant/delivery constraint;
@@ -132,19 +151,21 @@ A ranker may reorder eligible candidates. It may never:
 
 ## Stage 7 — plan/explanation
 
-A plan records enough state/target references and reason information to reconstruct why every activity was eligible and selected.
+A plan records enough state/target references and reason information to reconstruct why every activity was eligible and selected, including which target conditions remained unresolved when the plan was produced.
 
 Tie-breaking should be deterministic/stable enough that unchanged learner state does not create arbitrary plan churn.
 
 # Flow A — target setup and diagnostic
 
 ```text
-1. Web collects TargetProfile + planning constraints
-2. Core API validates variant/delivery/purpose combination against known external/product support
-3. Core API persists TargetProfile revision
-4. unsupported product conditions are surfaced as CoverageGap
+1. Web collects known TargetProfile fields + planning constraints
+2. Core API validates known variant/delivery/purpose combinations without inventing missing fields
+3. Core API persists TargetProfile/target-context revision + unresolved target conditions
+4. actual unsupported product conditions are surfaced as CoverageGap;
+   missing learner target information remains an unresolved target condition
 5. learner selects quick/full diagnostic UX shape
-6. Core API selects variant-correct diagnostic items
+6. Core API selects only items compatible with the known target context;
+   variant-specific sampling waits for variant resolution unless explicitly exploratory
 7. learner attempts items
 8. objective L/R items may score deterministically
 9. eligible W/S attempts may use Evaluator
@@ -152,21 +173,23 @@ Tie-breaking should be deterministic/stable enough that unchanged learner state 
 11. Assessment applies diagnostic sampling/eligibility semantics
 12. Progression derives only justified learner-state interpretation
 13. Planner executes stages 1–7
-14. Web shows sampled and unresolved conditions truthfully
+14. Web shows sampled, unresolved-target, evidence, and product-coverage conditions distinctly
 ```
 
 Diagnostic is a primary activity purpose. Whether a diagnostic Observation is admissible for a higher-consequence claim is a separate Assessment decision based on its pre-declared evidence candidacy and actual attempt conditions.
 
-A completed diagnostic run is not synonymous with a complete learner model or certification.
+A completed diagnostic run is not synonymous with a complete learner model, a resolved TargetProfile, or certification.
 
 # Flow B — Daily Plan
 
 ```text
-TargetProfile
+known TargetProfile / target context
   ↓
-product support + unresolved target conditions
+resolved + unresolved target conditions
   ↓
-GapEvaluation / ActionIntent
+product support where evaluable
+  ↓
+GapEvaluation / ActionIntent where evidence permits
   ↓
 hard eligibility
   ↓
@@ -194,7 +217,7 @@ DELIVERY_MODE_PREPARATION
 PRODUCT_COVERAGE_BLOCKED
 ```
 
-`PRODUCT_COVERAGE_BLOCKED` is not a learner GapEvaluation.
+`PRODUCT_COVERAGE_BLOCKED` is not a learner GapEvaluation and is not used for merely missing TargetProfile input.
 
 Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do not mark skipped requirements satisfied.
 
@@ -326,7 +349,7 @@ Evaluator access never implies authorization to download/copy arbitrary media.
 # Flow I — mock/readiness
 
 ```text
-TargetProfile variant + delivery target when material
+resolved TargetProfile variant + delivery target when material
   ↓
 MockRun
   ↓
@@ -345,7 +368,7 @@ GapEvaluation
 exam-preparation plan
 ```
 
-`READINESS` is the primary purpose of a normal mock; it is not an automatic evidence decision. A mock Observation contributes to a claim only when pre-declared as an evidence candidate and independently admitted by normal Assessment policy.
+A normal target-relative full mock requires a resolved variant. `READINESS` is the primary purpose of a normal mock; it is not an automatic evidence decision. A mock Observation contributes to a claim only when pre-declared as an evidence candidate and independently admitted by normal Assessment policy.
 
 A mixed Academic/GT mock is invalid for normal full-test readiness unless explicitly created as non-certifying comparison practice.
 
@@ -353,7 +376,7 @@ Delivery-mode practice may change interaction conditions without changing scorin
 
 # Flow J — target supported/unresolved
 
-For every TargetProfile condition:
+For every known TargetProfile condition:
 
 ```text
 current admissible evidence
@@ -361,11 +384,13 @@ current admissible evidence
 SUPPORTED | unresolved evidence state
 ```
 
-When all learner evidence conditions are supported, the app may state that current evidence supports the declared target profile **only if product-support wording remains separately truthful**.
+Target-input uncertainty and learner-evidence uncertainty remain separate. A missing target variant/Band condition is not converted into `INSUFFICIENT_EVIDENCE` about learner capability.
+
+When all learner evidence conditions are supported, the app may state that current evidence supports the declared target profile **only if the target itself is sufficiently resolved and product-support wording remains separately truthful**.
 
 It must never state that the learner is guaranteed an external result.
 
-When product capability is missing, route generation stops at the CoverageGap rather than manufacturing an invalid activity.
+When product capability is missing for a resolved requested scope, route generation stops at the CoverageGap rather than manufacturing an invalid activity.
 
 # Legal lifecycle state machines
 
@@ -418,7 +443,7 @@ created → in_progress → completed
                     └→ unavailable
 ```
 
-`completed` means the sampling flow ended, not that all learner claims are known.
+`completed` means the sampling flow ended, not that all learner claims or target fields are known.
 
 ## MockRun
 
@@ -491,7 +516,7 @@ target_not_supported
 product_coverage_blocked
 ```
 
-Infrastructure failure is never represented as score zero or generic learner failure.
+Infrastructure failure is never represented as score zero or generic learner failure. An unresolved target field should use target-resolution semantics rather than pretending the product rejected a fully specified target.
 
 # Runtime ownership invariant
 
