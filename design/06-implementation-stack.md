@@ -126,17 +126,23 @@ Python returns bounded result/signals plus provenance/model/evaluator identity a
 
 ## Authoritative state → async work
 
-Implementation preserves the distinct states defined by `04-application-flows.md`:
+Implementation preserves the distinct points defined by `04-application-flows.md`:
 
 ```text
 authoritative mutation
-required durable work identity/marker
+required durable logical work identity/marker
+execution-attempt claim/fence
 dispatch attempt
 remote/capability execution
-result reconciliation
+completion received
+Core result reconciliation
+accepted result
+required downstream semantic continuation materialized or recoverable
 ```
 
-Required continuation is durably registered with or recoverably derivable from committed state before acknowledgement depends on it. Timeout does not prove remote non-execution. Retry/reconciliation reuses logical work/idempotency identity and preserves execution-attempt/fencing state where overlapping executions are possible.
+Required continuation is durably registered with or recoverably derivable from committed state before acknowledgement depends on it. Observing pending work is not dispatch ownership: where duplicate execution is not deliberately allowed, one execution attempt is decisively claimed/fenced under authoritative state or an equivalent serialization invariant before dispatch. Timeout does not prove remote non-execution. Retry/reconciliation reuses logical work/idempotency identity and preserves distinct execution-attempt/fencing state where overlapping executions are possible.
+
+An accepted capability completion that requires Observation/Assessment/Progression or another semantic continuation cannot be marked as a permanently self-contained success unless the required downstream state is already committed or is deterministically/recoverably derivable from durable accepted-result state. Replay/reconstruction is idempotent.
 
 ## Cache boundary
 
@@ -184,7 +190,7 @@ Telemetry delivery failure normally does not rewrite a valid transaction; an exp
 
 ## Time/clock boundary
 
-Cross-language durable timestamps use timezone-aware absolute instants once serialized by machine contract. Wall clock is not causal ordering, idempotency identity, or optimistic-concurrency identity. Recency/expiry names its policy/clock where material.
+Cross-language durable timestamps use timezone-aware absolute instants once serialized by machine contract. Wall clock is not causal ordering, idempotency identity, optimistic-concurrency identity, or execution-claim authority. Recency/expiry names its policy/clock where material.
 
 ## File/request-size boundary
 
@@ -250,7 +256,7 @@ Core-owned facts committed under one authoritative transaction/invariant, includ
 
 ## AUTHORITATIVE_ASYNC_STATE
 
-Core-owned work state progresses asynchronously while dispatch/capability execution may lag. One logical work identity remains authoritative.
+Core-owned work state progresses asynchronously while dispatch/capability execution may lag. One logical work identity remains authoritative; execution-attempt claim/fencing and downstream recovery prevent worker races or crashes from creating divergent semantic outcomes.
 
 ## DERIVED_EVENTUALLY_CONSISTENT
 
@@ -274,9 +280,11 @@ Retention/deletion has one authoritative product decision for the affected data 
 - external processors/providers under `07-third-party-services.md`;
 - backup/restore reconciliation.
 
+Current deletion/tombstone/retention eligibility also participates in live async result reconciliation. A late evaluator/provider/callback completion cannot resurrect deleted learner data, recreate active object/media references, create new Observation/EvidenceFact state from data no longer eligible for use, reactivate deleted/quarantined content, or repopulate active derived stores contrary to current deletion policy. Minimum historical/audit provenance may remain only when the applicable policy permits it.
+
 Derived stores cannot silently resurrect deleted data into active product use. Restore procedures reconcile restored data against current deletion/tombstone state before normal active use. Historical semantic records needed for integrity may be retained only under an explicit applicable product/security/data policy rather than accidental persistence.
 
-This architecture does not invent retention durations or legal obligations.
+Deletion is therefore a reconciliation fence where consequential, not merely eventual background cleanup. This architecture does not invent retention durations or legal obligations.
 
 # Configuration boundary
 
@@ -317,12 +325,12 @@ Review classes are:
 When applicable:
 
 - bounded deadlines/input/concurrency/backpressure and safe retry/idempotency;
-- transaction ownership, commit-before-success, durable async recoverability, stale-write/ambiguous-outcome handling;
+- transaction ownership, commit-before-success, durable async recoverability, exclusive execution-attempt claiming where required, accepted-result/downstream-continuation recovery, stale-write/ambiguous-outcome handling;
 - parameterized SQL, bounded DB connections, migrations/schema compatibility when schema exists;
 - auth/access boundaries, least privilege, secrets, production transport protection, browser/session controls, safe external-boundary enforcement;
 - structured logs/correlation, health, running build/contract identity, dependency locking/reproducibility;
 - contract compatibility/conformance and canonical-registry drift verification once materialized;
-- security-critical configuration validation and data-lifecycle enforcement for implemented stores.
+- security-critical configuration validation and data-lifecycle/deletion-fence enforcement for implemented stores/work.
 
 ## Production-gate concerns
 
@@ -405,8 +413,11 @@ Owns learner/admin `/v1`, authoritative product DB access, durable learner/targe
 - transaction boundaries align to product invariants and required durable work/audit markers;
 - decisive idempotency admission/replay association is atomic with the authoritative mutation/outcome it protects, or enforced by an equivalent serialization invariant; preflight lookup alone is insufficient;
 - decisive optimistic-concurrency comparison is atomic with the guarded mutation; application-memory read/compare followed by an unrelated write is insufficient;
+- assignment from a plan/reference rechecks current mutable hard eligibility before assignment and preserves assignment-time content/eligibility provenance separately from plan-time provenance;
 - learner-specific reservation/assignment state used to protect novelty/independence is serialized with its decisive eligibility/assignment decision as required by `04-application-flows.md`;
-- async completion acceptance is guarded by authoritative logical-work/current execution-fencing state so duplicate or superseded result delivery cannot create a second learner outcome;
+- where duplicate execution is not intentionally allowed, one execution attempt is authoritatively claimed/fenced before dispatch; reading pending state is not sufficient ownership;
+- async completion acceptance is guarded by authoritative logical-work/current execution/deletion/content-eligibility fencing so duplicate, superseded, or now-ineligible result delivery cannot create a second or resurrected learner outcome;
+- accepted capability results that require downstream semantics commit the needed semantic artifacts atomically or persist enough authoritative/recoverable continuation state for deterministic idempotent reconstruction; upstream completion cannot permanently strand missing Observation/EvidenceFact/Progression state;
 - provider/network calls are outside DB atomicity;
 - connection management is bounded/observable;
 - indexes/query optimization follow real measured access paths;
@@ -456,6 +467,7 @@ SSE is selected for server→Web update hints under the public HTTP contract. We
 
 - each boundary has one exact machine authority;
 - SSE remains in the public HTTP authority;
+- learner-safe projections encode upstream reveal policy rather than deriving pedagogical/evidence reveal timing from nullable/internal fields;
 - generated bindings/validators are derived and drift-checked;
 - every allowed old/new consumer-provider skew is tested rather than inferred from additive schema shape;
 - public breaking change requires explicit rollout/migration/version handling;
@@ -508,7 +520,7 @@ idempotency operation identity
 async work identity
 ```
 
-They can be correlated where useful but have different ownership and change semantics. A DB migration does not imply canonical change; a new API version does not rewrite historical learner/content meaning; revalidation need not create a new ContentRevision; provider/model replacement cannot redefine canonical truth.
+They can be correlated where useful but have different ownership and change semantics. Plan-time provenance may reference several of these/current state revisions and assignment-time provenance may differ; neither creates a generic universal version. A DB migration does not imply canonical change; a new API version does not rewrite historical learner/content meaning; revalidation need not create a new ContentRevision or overwrite an earlier ValidationDecision; provider/model replacement cannot redefine canonical truth.
 
 # Partial deployment and version skew
 
@@ -530,14 +542,16 @@ Database migrations likewise support the application/schema compatibility window
 Implement `04-application-flows.md` without assuming broker infrastructure:
 
 ```text
-authoritative DB work state
+authoritative DB logical-work state
 + durable work/recoverable registration where needed
-+ idempotent bounded dispatch
-+ fenced result reconciliation
++ decisive execution-attempt claim/fence
++ bounded dispatch
++ fenced result reconciliation against current eligibility/deletion state
++ durable accepted-result/downstream continuation recovery
 + SSE/resource status
 ```
 
-Race-sensitive operations use transaction/conditional-write/equivalent serialization controls rather than timing or preflight assumptions. Async retries preserve execution identity/fencing where overlap is possible, and novelty-sensitive reservations are reconciled separately from actual ExposureContext. Cross-process correctness does not rely on in-memory mutexes alone. Memory use is bounded for requests, media, queues, caches, and external outputs.
+Race-sensitive operations use transaction/conditional-write/equivalent serialization controls rather than timing or preflight assumptions. Multiple workers observing pending state cannot silently double-own one exclusive execution attempt. Intentional replacement/speculative executions use distinct identities/fences. Async retries preserve execution identity/fencing where overlap is possible, novelty-sensitive reservations are reconciled separately from actual ExposureContext, and stale DailyPlan references are rechecked against current eligibility before assignment. Cross-process correctness does not rely on in-memory mutexes alone. Memory use is bounded for requests, media, queues, caches, and external outputs.
 
 # Security engineering baseline
 
@@ -558,7 +572,7 @@ Before public auth contract materialization, make the credential/session transpo
 
 Each runnable unit exposes deployment-appropriate process/readiness health without claiming downstream semantic correctness it did not check.
 
-Privacy-safe telemetry may include request/work/execution correlation, runtime/unit, operation, duration, result/failure/reconciliation class, non-sensitive error code, and consequential software/contract/config/provider provenance. Stale/superseded async completions are observable where needed to reconstruct why they were rejected. Metrics cover relevant latency, failures, DB pressure, backlog, retries, provider use/cost, and capacity.
+Privacy-safe telemetry may include request/work/execution correlation, execution-claim/dispatch state, runtime/unit, operation, duration, result/failure/reconciliation class, downstream-recovery state, non-sensitive error code, and consequential software/contract/config/provider provenance. Stale/superseded/deletion-fenced async completions are observable where needed to reconstruct why they were rejected. Metrics cover relevant latency, failures, DB pressure, backlog, retries, provider use/cost, and capacity.
 
 Before product support, incident handling can detect, contain/degrade safely, preserve accepted work, recover, verify, and record material cause/follow-up. Operational history is not canonical learning truth.
 
@@ -569,6 +583,8 @@ Before applicable support promotion:
 - backup/restore is verified for authoritative/retained consequential data;
 - migration/deploy failure has rollback or forward-recovery procedure;
 - network/provider ambiguity stays pending/unresolved until safely reconciled;
+- execution claiming prevents accidental duplicate dispatch when exclusive execution is required;
+- accepted-result recovery prevents crashes from permanently stranding required downstream semantic state;
 - capacity/backpressure prevents unbounded queues/concurrency;
 - measurable latency/throughput/backlog/cost objectives exist for the intended release without architecture inventing numeric thresholds;
 - builds are reproducible from pinned/locked dependencies;
@@ -606,7 +622,8 @@ Vitest
 React Testing Library where material
 Next.js production build
 Playwright critical E2E
-security-sensitive browser/input/hidden-content projection tests where material
+security-sensitive browser/input/hidden-content projection + reveal-policy tests where material
+stale-plan/current-eligibility user-flow tests where material
 public-contract conformance/compatibility once materialized
 ```
 
@@ -620,8 +637,14 @@ race tests where material
 build core-api
 DB/migration/query integration once persistence exists
 atomic idempotency + optimistic-concurrency race tests where material
-async duplicate/late/superseded completion reconciliation tests where material
+stale-plan → current quarantine/eligibility assignment tests where material
+exclusive execution-attempt claim / duplicate-dispatch race tests where material
+async duplicate/late/superseded/deletion-fenced completion reconciliation tests where material
+crash after accepted completion → idempotent downstream continuation recovery tests where material
 novelty reservation/assignment race + exposure reconciliation tests where material
+content quarantine before/after submission + affected evidence consequence tests where material
+ValidationDecision revalidation-history and content-validation burden tests where material
+duplicate downstream semantic replay tests where material
 ```
 
 ## Python
@@ -645,11 +668,11 @@ canonical owner/source extraction + ID/reference validation
 consumer/provider conformance
 public/internal directional compatibility for allowed version skew
 null/applicability/unknown-enum behavior where material
-learner/public hidden-content projection conformance
+learner/public hidden-content projection/reveal conformance
 cross-unit integration
 ```
 
-Boundary verification also exercises auth/access ordering, forbidden bypasses, internal evaluator reachability/auth according to actual principals/reachability, durable async recovery/fencing, DB ownership, SSE access isolation, data-lifecycle reconciliation, security-critical config failure, fixture data/rights constraints, and privacy-safe observability.
+Boundary verification also exercises auth/access ordering, forbidden bypasses, internal evaluator reachability/auth according to actual principals/reachability, durable async registration/claiming/recovery/fencing, stale-plan assignment recheck, content-incident in-flight consequences, ValidationDecision history plus universal/consequence-specific content validation, DB ownership, SSE access/isolation/non-completion semantics, deletion/tombstone reconciliation against restore and late callbacks, security-critical config failure, fixture data/rights constraints, and privacy-safe observability.
 
 # Root verification
 
