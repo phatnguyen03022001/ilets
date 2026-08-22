@@ -56,6 +56,17 @@ test_date                    optional
 selected_skill_retake        optional preparation focus on one existing skill
 ```
 
+## Target-resolution minimum
+
+A persisted TargetProfile used for **target-relative planning, readiness, or product-support evaluation** contains:
+
+1. a resolved standard `test_variant`: Academic or General Training; and
+2. at least one actual Band constraint: `target_overall_band` and/or one real per-skill minimum.
+
+If the learner does not yet know the variant, the product keeps the variant-specific target unresolved. Shared/foundational diagnostic or learning work may still be offered where it is genuinely variant-independent, but the system must not choose Academic/GT Task-1/Reading conditions silently or claim complete target readiness/support.
+
+If the learner knows the variant but no Band constraint yet, diagnostic/foundational work may still be offered against that partial context, but the product must not fabricate a readiness target.
+
 ## Band-constraint semantics
 
 Band constraints are **lower bounds**, not exact-equality goals:
@@ -64,8 +75,6 @@ Band constraints are **lower bounds**, not exact-equality goals:
 target_overall_band = 7.0       means required/desired overall result >= 7.0
 minimum_writing_band = 6.5      means Writing result >= 6.5
 ```
-
-A persisted TargetProfile used for target-relative planning/readiness contains at least one Band constraint: `target_overall_band` and/or one real per-skill minimum. If the learner does not yet know any target Band constraint, the product keeps the target unresolved rather than inventing one; diagnostic/foundational work may still be offered without claiming target readiness.
 
 An overall target alone does **not** imply four equal per-skill minima. Multiple section-Band combinations can satisfy the same official overall Band after the applicable rounding rule.
 
@@ -104,8 +113,8 @@ Current external variant/delivery/One-Skill-Retake facts are owned by `../spec/0
 
 Capture only information that changes planning or target interpretation:
 
-- Academic or General Training;
-- overall target and/or real per-skill minima;
+- Academic or General Training when known;
+- overall target and/or real per-skill minima when known;
 - receiving/purpose requirement when relevant;
 - intended/booked delivery mode when known and material;
 - test date if fixed;
@@ -114,6 +123,8 @@ Capture only information that changes planning or target interpretation:
 - available study time;
 - accessibility requirements;
 - optional L1 context and temporary focus preference.
+
+Unknown target fields remain unknown; onboarding convenience never licenses a hidden default variant or Band requirement.
 
 Target setup should normally remain a short flow; the initial UX target is roughly **3–5 minutes** when the learner already knows their requirements.
 
