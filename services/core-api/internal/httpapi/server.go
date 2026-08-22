@@ -23,6 +23,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
+	publicv1 "github.com/phatnguyen03022001/ilets/services/core-api/internal/httpapi/generated"
 )
 
 const (
@@ -45,6 +46,12 @@ type Server struct {
 	origins map[string]struct{}
 	log     *slog.Logger
 }
+
+type generatedServer struct {
+	server *Server
+}
+
+var _ publicv1.ServerInterface = (*generatedServer)(nil)
 
 type ctxKey string
 
@@ -76,18 +83,71 @@ func New(pool *pgxpool.Pool, cfg Config, logger *slog.Logger) http.Handler {
 	r := chi.NewRouter()
 	r.Use(s.requestLog)
 	r.Use(s.browserBoundary)
-	r.Get("/healthz", s.health)
-	r.Post("/v1/session", s.bootstrapSession)
-	r.Get("/v1/me", s.getMe)
-	r.Get("/v1/target-profile", s.getTargetProfile)
-	r.Put("/v1/target-profile", s.putTargetProfile)
-	r.Get("/v1/practice-modes", s.listPracticeModes)
-	r.Post("/v1/practice-activities", s.createPracticeActivity)
-	r.Get("/v1/practice-activities/{practice_activity_id}", s.getPracticeActivity)
-	r.Post("/v1/attempts", s.createAttempt)
-	r.Get("/v1/attempts/{attempt_id}", s.getAttempt)
-	r.Post("/v1/attempts/{attempt_id}/submissions", s.submitAttempt)
-	return r
+	return publicv1.HandlerWithOptions(&generatedServer{server: s}, publicv1.ChiServerOptions{
+		BaseRouter:       r,
+		ErrorHandlerFunc: generatedBoundaryError,
+	})
+}
+
+func generatedBoundaryError(w http.ResponseWriter, r *http.Request, err error) {
+	paramName := ""
+	switch typed := err.(type) {
+	case *publicv1.RequiredHeaderError:
+		paramName = typed.ParamName
+	case *publicv1.InvalidParamFormatError:
+		paramName = typed.ParamName
+	case *publicv1.TooManyValuesForParamError:
+		paramName = typed.ParamName
+	}
+	if paramName == "Idempotency-Key" {
+		writeError(w, r, http.StatusBadRequest, "INVALID_IDEMPOTENCY_KEY", "valid Idempotency-Key required")
+		return
+	}
+	writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "invalid request parameters")
+}
+
+func (g *generatedServer) GetHealth(w http.ResponseWriter, r *http.Request) {
+	g.server.health(w, r)
+}
+
+func (g *generatedServer) CreateAttempt(w http.ResponseWriter, r *http.Request, _ publicv1.CreateAttemptParams) {
+	g.server.createAttempt(w, r)
+}
+
+func (g *generatedServer) GetAttempt(w http.ResponseWriter, r *http.Request, _ publicv1.AttemptId) {
+	g.server.getAttempt(w, r)
+}
+
+func (g *generatedServer) SubmitAttempt(w http.ResponseWriter, r *http.Request, _ publicv1.AttemptId, _ publicv1.SubmitAttemptParams) {
+	g.server.submitAttempt(w, r)
+}
+
+func (g *generatedServer) GetMe(w http.ResponseWriter, r *http.Request) {
+	g.server.getMe(w, r)
+}
+
+func (g *generatedServer) CreatePracticeActivity(w http.ResponseWriter, r *http.Request, _ publicv1.CreatePracticeActivityParams) {
+	g.server.createPracticeActivity(w, r)
+}
+
+func (g *generatedServer) GetPracticeActivity(w http.ResponseWriter, r *http.Request, _ publicv1.PracticeActivityId) {
+	g.server.getPracticeActivity(w, r)
+}
+
+func (g *generatedServer) ListPracticeModes(w http.ResponseWriter, r *http.Request) {
+	g.server.listPracticeModes(w, r)
+}
+
+func (g *generatedServer) BootstrapSession(w http.ResponseWriter, r *http.Request) {
+	g.server.bootstrapSession(w, r)
+}
+
+func (g *generatedServer) GetTargetProfile(w http.ResponseWriter, r *http.Request) {
+	g.server.getTargetProfile(w, r)
+}
+
+func (g *generatedServer) PutTargetProfile(w http.ResponseWriter, r *http.Request) {
+	g.server.putTargetProfile(w, r)
 }
 
 func (s *Server) requestLog(next http.Handler) http.Handler {
