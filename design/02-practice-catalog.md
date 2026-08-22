@@ -120,10 +120,18 @@ Exactly one primary purpose describes **why the activity is being scheduled/pres
 ```text
 TRAINING
 DIAGNOSTIC
+ASSESSMENT
 READINESS
 ```
 
-This is a product/UX purpose, not an Assessment judgment.
+Meanings:
+
+- `TRAINING` — acquisition, consolidation, retrieval, transfer, fluency, remediation, or other learning work is primary;
+- `DIAGNOSTIC` — reducing decision-relevant uncertainty/classifying what should be sampled or addressed next is primary;
+- `ASSESSMENT` — focused measurement/re-measurement of a scoped capability/claim is primary without necessarily simulating whole target/exam conditions;
+- `READINESS` — performance under target-like integrated/timed/exam conditions is primary.
+
+This is a product/activity-purpose classification, not an Assessment admission or certification judgment.
 
 ## Evidence candidacy
 
@@ -136,13 +144,18 @@ ASSESSMENT_MAY_ADMIT
 
 `ASSESSMENT_MAY_ADMIT` is only a pre-attempt candidacy designation. After the learner performs the activity, `08-ASSESSMENT.md` still decides claim-scoped eligibility from actual task fit, assistance/scaffolding, exposure/retry history, evaluator quality, provenance, and other material conditions.
 
-Therefore:
+The two dimensions are orthogonal. Any purpose may be configured with either candidacy value when semantically justified; the candidacy choice must be made before observing the learner result.
 
-- `TRAINING + NOT_EVIDENCE_CANDIDATE` is normal for guided acquisition/recovery work;
-- `TRAINING + ASSESSMENT_MAY_ADMIT` is valid for independent practice deliberately configured to produce potentially admissible evidence;
-- `DIAGNOSTIC + ASSESSMENT_MAY_ADMIT` is valid when a diagnostic sample also satisfies normal Assessment eligibility;
-- `READINESS + ASSESSMENT_MAY_ADMIT` is valid for an eligible timed task/mock sample;
-- `DIAGNOSTIC` or `READINESS` never implies evidence admission by itself.
+Examples:
+
+- `TRAINING + NOT_EVIDENCE_CANDIDATE` — guided acquisition/recovery work;
+- `TRAINING + ASSESSMENT_MAY_ADMIT` — independent practice deliberately configured as a potential evidence source;
+- `DIAGNOSTIC + ASSESSMENT_MAY_ADMIT` — a diagnostic sample that may also satisfy normal Assessment eligibility;
+- `ASSESSMENT + ASSESSMENT_MAY_ADMIT` — focused re-evidence/mastery sampling;
+- `READINESS + ASSESSMENT_MAY_ADMIT` — eligible timed task/mock sample;
+- `READINESS + NOT_EVIDENCE_CANDIDATE` — exam-familiarization simulation whose configuration is not suitable for formal evidence.
+
+Purpose never implies evidence admission by itself.
 
 There is no pre-attempt `CERTIFICATION_CONTRIBUTING` role. Certification contribution exists only after Assessment admits evidence and evaluates the applicable EvidenceRequirement.
 
