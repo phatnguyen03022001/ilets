@@ -92,6 +92,8 @@ The first implementation treats these as mandatory strategic boundaries:
 
 Object storage, email, analytics, observability, payments, hosting, and other external capabilities should also remain replaceable where practical, but the three above require explicit exit design from the beginning.
 
+Portability does **not** require a generic multi-provider framework at bootstrap. For one selected provider, the minimum sufficient shape is a narrow capability interface/port, one adapter, provider-independent internal identity/state, and a credible export/exit path. Dynamic routing, provider registries, weighted failover, or multiple simultaneously active adapters require a demonstrated need.
+
 # Initial capability inventory
 
 | Capability | Runtime owner | Status | Required boundary/invariant |
