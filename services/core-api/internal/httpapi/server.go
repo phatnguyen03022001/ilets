@@ -20,7 +20,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
+	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 )
 
 const (
@@ -175,8 +177,14 @@ func (s *Server) bootstrapSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(r.Context())
-	if _, err = tx.Exec(r.Context(), `INSERT INTO learners(learner_id) VALUES($1)`, learnerID); err == nil {
-		_, err = tx.Exec(r.Context(), `INSERT INTO sessions(session_id,learner_id,token_digest,expires_at) VALUES($1,$2,$3,$4)`, sessionID, learnerID, digest[:], expires)
+	queries := sqlcdb.New(tx)
+	if err = queries.InsertLearner(r.Context(), learnerID); err == nil {
+		err = queries.InsertSession(r.Context(), sqlcdb.InsertSessionParams{
+			SessionID:   sessionID,
+			LearnerID:   learnerID,
+			TokenDigest: digest[:],
+			ExpiresAt:   pgtype.Timestamptz{Time: expires, Valid: true},
+		})
 	}
 	if err != nil {
 		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot establish session")
@@ -197,8 +205,7 @@ func (s *Server) authenticate(r *http.Request) (string, bool) {
 		return "", false
 	}
 	digest := sha256.Sum256([]byte(cookie.Value))
-	var learner string
-	err = s.db.QueryRow(r.Context(), `SELECT learner_id FROM sessions WHERE token_digest=$1 AND revoked_at IS NULL AND expires_at>now()`, digest[:]).Scan(&learner)
+	learner, err := sqlcdb.New(s.db).AuthenticateSession(r.Context(), digest[:])
 	return learner, err == nil
 }
 
@@ -220,26 +227,34 @@ func (s *Server) getMe(w http.ResponseWriter, r *http.Request) {
 }
 
 func claimIdempotency(ctx context.Context, tx pgx.Tx, learner, operation, key string, payloadHash []byte) (string, bool, error) {
-	var inserted int
-	err := tx.QueryRow(ctx, `INSERT INTO idempotency_operations(learner_id,operation,idempotency_key,payload_hash) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING RETURNING 1`, learner, operation, key, payloadHash).Scan(&inserted)
+	queries := sqlcdb.New(tx)
+	_, err := queries.ClaimIdempotency(ctx, sqlcdb.ClaimIdempotencyParams{
+		LearnerID:      learner,
+		Operation:      operation,
+		IdempotencyKey: key,
+		PayloadHash:    payloadHash,
+	})
 	if err == nil {
 		return "", true, nil
 	}
 	if !errors.Is(err, pgx.ErrNoRows) {
 		return "", false, err
 	}
-	var stored []byte
-	var outcome *string
-	if err = tx.QueryRow(ctx, `SELECT payload_hash,outcome_resource_id FROM idempotency_operations WHERE learner_id=$1 AND operation=$2 AND idempotency_key=$3 FOR UPDATE`, learner, operation, key).Scan(&stored, &outcome); err != nil {
+	row, err := queries.LockIdempotency(ctx, sqlcdb.LockIdempotencyParams{
+		LearnerID:      learner,
+		Operation:      operation,
+		IdempotencyKey: key,
+	})
+	if err != nil {
 		return "", false, err
 	}
-	if !bytes.Equal(stored, payloadHash) {
+	if !bytes.Equal(row.PayloadHash, payloadHash) {
 		return "", false, fmt.Errorf("payload conflict")
 	}
-	if outcome == nil || *outcome == "" {
+	if row.OutcomeResourceID == nil || *row.OutcomeResourceID == "" {
 		return "", false, fmt.Errorf("idempotency outcome missing")
 	}
-	return *outcome, false, nil
+	return *row.OutcomeResourceID, false, nil
 }
 
 func requireIdempotency(w http.ResponseWriter, r *http.Request) (string, bool) {
