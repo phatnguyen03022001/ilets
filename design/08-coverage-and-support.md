@@ -165,6 +165,39 @@ For each scoped target, evaluate every applicable condition independently.
 
 `NOT_APPLICABLE` requires an explicit reason for the scoped target.
 
+# Derived reachability invariant
+
+Coverage must be derivable from canonical identities and declared applicability rather than a manually maintained completeness matrix.
+
+For each in-scope canonical target/object, coverage tooling should be able to determine which downstream relationships are **applicable** and then verify the required reachable path. A representative learning-target path is:
+
+```text
+Skill / enabling Knowledge where applicable
+→ Curriculum route
+→ trainable intervention / Practice
+→ measurable Assessment path where the claim requires measurement
+→ Progression consequence
+→ product/content/runtime conditions required by the scoped target
+```
+
+The validator must distinguish:
+
+```text
+APPLICABLE + edge/path absent   = MISSING / blocking gap
+explicitly NOT_APPLICABLE       = allowed only with owner-derived reason
+applicability unresolved         = UNKNOWN, never silently satisfied
+```
+
+Rules:
+
+1. absence of an edge or implementation artifact never defaults to `NOT_APPLICABLE`;
+2. `NOT_APPLICABLE` must be derivable from canonical semantics or carry an explicit reason owned by the relevant rule;
+3. not every object requires every edge: for example, enabling Knowledge may not require a direct Band-certifying Assessment when its role is only prerequisite/supporting, but its downstream purpose must remain reachable;
+4. a Skill Leaf that is applicable to an in-scope target cannot be considered complete if it is orphaned from required Curriculum/Practice/Assessment/Progression reachability;
+5. derived reports are verification artifacts, not new authority and must not become manually edited SSOTs.
+
+This invariant is intended for static/repository validation as machine-readable manifests/contracts materialize. The canonical rule lives here; tooling merely proves it.
+
 # Official-family closure
 
 Skill coverage and official-family coverage are independent dimensions.
