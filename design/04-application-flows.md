@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
-DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 03-media-youtube.md
+DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
 DOES_NOT_OWN: API field schemas, learning/mastery truth, product coverage declaration, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
 
 # Application Flows
@@ -70,7 +70,7 @@ A product CoverageGap remains a product condition; it is never converted into le
 
 Expand the target into unresolved per-skill/variant/external-purpose conditions.
 
-An overall Band alone may correspond to multiple valid four-skill combinations. The planner must not invent hidden per-skill minima.
+An overall Band alone may correspond to multiple valid four-skill combinations. The planner must not invent hidden per-skill minima. Any working per-skill planning profile follows the separate non-authoritative planning-profile semantics in `00-learning-experience.md`.
 
 ## Stage 3 — evidence interpretation
 
@@ -84,7 +84,7 @@ Remove candidates that violate any applicable hard condition:
 - target variant/task compatibility;
 - delivery-mode compatibility for exam-readiness work when material;
 - product coverage/support constraint;
-- evidence-role constraint;
+- primary-purpose/evidence-candidacy compatibility for the requested action;
 - rights/privacy/source eligibility;
 - accessibility/capture feasibility;
 - immutable lifecycle condition;
@@ -95,7 +95,8 @@ Examples:
 - Academic visual Task-1 practice is not eligible as GT Task-1 readiness work;
 - typing-only mock behavior is not sufficient delivery-mode practice when the learner explicitly targets eligible Writing on Paper;
 - IELTS Online Academic exam-readiness is not eligible for a GT target or a target purpose that requires a test-centre route;
-- a failed microphone capture cannot become eligible Speaking evidence by ranking it highly.
+- a failed microphone capture cannot become eligible Speaking evidence by ranking it highly;
+- an activity configured `NOT_EVIDENCE_CANDIDATE` cannot be selected to satisfy a `COLLECT_EVIDENCE` action merely because its expected score is favorable.
 
 ## Stage 5 — candidate generation
 
@@ -126,6 +127,7 @@ A ranker may reorder eligible candidates. It may never:
 - lower a target threshold;
 - convert preference into ability evidence;
 - ignore a material variant/delivery constraint;
+- upgrade evidence candidacy/admission;
 - certify a learner.
 
 ## Stage 7 — plan/explanation
@@ -152,6 +154,8 @@ Tie-breaking should be deterministic/stable enough that unchanged learner state 
 13. Planner executes stages 1–7
 14. Web shows sampled and unresolved conditions truthfully
 ```
+
+Diagnostic is a primary activity purpose. Whether a diagnostic Observation is admissible for a higher-consequence claim is a separate Assessment decision based on its pre-declared evidence candidacy and actual attempt conditions.
 
 A completed diagnostic run is not synonymous with a complete learner model or certification.
 
@@ -198,16 +202,19 @@ Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do 
 
 ```text
 1. Web starts PracticeActivity
-2. Core API returns item + target + variant/context + conditions + evidence-role label
+2. Core API returns item + target + variant/context + conditions
+   + primary_activity_purpose + evidence_candidacy
 3. learner performs task
 4. Web submits Attempt with actual scaffold/exposure/delivery metadata
 5. Core API or Evaluator produces Observation
-6. training-only → feedback/remediation/review handling
-   evidence-eligible → Assessment eligibility/inference
+6. NOT_EVIDENCE_CANDIDATE → feedback/remediation/review handling only
+   ASSESSMENT_MAY_ADMIT  → Assessment evaluates actual claim-scoped eligibility/inference
 7. Progression updates interpretation only when justified
 8. Planner derives next target-relevant action
 9. Web presents outcome without fabricating a micro Band change
 ```
+
+Primary purpose (`TRAINING`, `DIAGNOSTIC`, or `READINESS`) does not determine evidence admission. Assessment may reject a candidate Observation after seeing actual assistance/exposure/evaluator/provenance conditions; a favorable result cannot retroactively upgrade a non-candidate activity.
 
 Submission/retry is idempotent where network repetition could duplicate history or cost.
 
@@ -255,7 +262,7 @@ raw result
   ↓
 Observation with variant/context/conditions
   ↓
-Assessment eligibility/inference scope
+Assessment eligibility/inference scope when evidence-candidate
   ↓
 EvidenceFact when valid
 ```
@@ -331,12 +338,14 @@ Speaking shared construct
   ↓
 section observations / estimates
   ↓
-ReadinessEvaluation
+ReadinessEvaluation where evidence candidacy + normal eligibility permit
   ↓
 GapEvaluation
   ↓
 exam-preparation plan
 ```
+
+`READINESS` is the primary purpose of a normal mock; it is not an automatic evidence decision. A mock Observation contributes to a claim only when pre-declared as an evidence candidate and independently admitted by normal Assessment policy.
 
 A mixed Academic/GT mock is invalid for normal full-test readiness unless explicitly created as non-certifying comparison practice.
 
@@ -433,15 +442,15 @@ requested → resolving/analyzing → ready
 
 ## BandCertificationState
 
-Per skill/Band, current state follows Progression:
+Per skill/Band, current state follows `../spec/09-PROGRESSION.md`:
 
 ```text
-not_started → in_progress → certified
-                     ↑          │
-                     └──────────┘  only after later admissible evidence establishes regression
+not_started → in_progress ↔ certified
 ```
 
-Staleness alone does not execute regression.
+`certified` is valid only while the corresponding current claim is `SUPPORTED`. If the current claim becomes stale, conflicting, insufficient, below requirement, or otherwise non-`SUPPORTED`, current state returns to `in_progress` while certification history remains intact.
+
+The transition reason preserves meaning. Staleness/conflict/insufficient evidence do **not** establish regression; regression exists only when Progression's regression rule is satisfied by later admissible evidence. Once a claim has evidence/history, it does not return to `not_started` merely because current support is lost.
 
 # Transition invariants
 
