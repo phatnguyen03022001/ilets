@@ -110,13 +110,15 @@ COMMIT
   ↓
 acknowledge accepted/pending
   ↓
-bounded asynchronous dispatch/execution
+decisively claim/fence one execution attempt where exclusive dispatch is required
   ↓
-bounded eligible retry/backoff
+bounded dispatch/execution
+  ↓
+bounded eligible retry/backoff or explicitly controlled replacement/speculative attempt
   ↓
 reconcile only a current legal completion
   ↓
-persist result / unavailable / unresolved failure state
+persist accepted result + required recoverable semantic continuation
   ↓
 SSE update hint and/or resource refresh
 ```
@@ -126,12 +128,15 @@ Provider webhooks use their own provider-authentication/replay semantics rather 
 Rules:
 
 - an HTTP request being sent or a provider invocation being attempted is not durable work acceptance;
+- reading `pending` is not an execution claim: where duplicate execution is not intentionally permitted, one dispatcher must decisively claim/lease/fence an execution attempt under authoritative state or an equivalent serialization invariant before dispatch, so concurrent dispatchers cannot both believe they exclusively own the same attempt;
 - retry preserves one logical work identity and cannot duplicate accepted learner work, EvidenceFacts, content revisions, or paid/provider work;
 - retry eligibility distinguishes transient, permanent, and ambiguous outcomes;
 - exponential backoff and jitter are used where repeated immediate retry would worsen a transient route; exact budgets/counts remain implementation policy;
 - a timeout does not prove the remote operation failed, so ambiguous outcomes remain unresolved until authoritative state can be established safely;
 - when retries/replacements can overlap, Core preserves enough logical-work and execution-attempt identity/state to fence completion: only a result matching the expected authoritative work and current legal execution state may transition current work;
+- intentional speculative/hedged/replacement execution, if later allowed, uses distinct execution identity/fencing and makes duplicate work/cost explicit and controlled rather than arising from a worker race;
 - duplicate delivery of an already accepted result is idempotent; a late/stale result from a superseded execution cannot overwrite a newer accepted result or independently create Observation/EvidenceFact state, though it may be retained as operational provenance;
+- when an accepted capability result requires downstream semantic continuation, the accepted result plus enough durable state to complete or reconstruct that continuation is committed atomically or made deterministically recoverable before the logical work is considered semantically complete; downstream replay is idempotent and cannot duplicate Observation, EvidenceFact, or learner-state transitions;
 - cancellation propagates where safe, but cancellation of a caller connection does not roll back work already authoritatively committed;
 - infrastructure/provider failure is not learner failure, a fake score, or a content-quality judgment.
 
@@ -150,12 +155,14 @@ bounded response + provenance/quality/uncertainty
         ↓
 Core API validates contract + work/execution association
         ↓
-Core reconciles against current authoritative work state
+Core reconciles against current authoritative work/deletion/content-eligibility state
+        ↓
+accepted result + recoverable downstream continuation
         ↓
 Assessment / content / product policy interprets an accepted result
 ```
 
-HTTP/network success from Python establishes only that a bounded capability response arrived. It does not make evaluator/generator/validator output authoritative learner evidence, certification, content activation, or product support. Evaluator execution must not mutate Core-API-owned product persistence directly.
+HTTP/network success from Python establishes only that a bounded capability response arrived. It does not make evaluator/generator/validator output authoritative learner evidence, certification, content activation, product support, or a completed semantic operation. Evaluator execution must not mutate Core-API-owned product persistence directly.
 
 Every network/provider boundary declares a caller deadline, retry eligibility/classification, idempotency behavior, safe fallback, and capacity/backpressure behavior when material. A separate circuit-breaker product is not required at bootstrap; circuit-breaker behavior may be introduced for repeatedly failing external routes when measured need justifies it.
 
@@ -193,7 +200,7 @@ SSE
 Web refresh/presentation
 ```
 
-SSE is delivery, not state authority. Persistent current state remains queryable through resources, duplicate/reordered hints are tolerated, and reconnect cannot fabricate a transition.
+SSE is delivery, not state authority or semantic completion. Persistent current state remains queryable through resources, duplicate/reordered hints are tolerated, and reconnect cannot fabricate a transition.
 
 ## F. Scheduled/background work
 
@@ -203,6 +210,7 @@ When used:
 
 - duplicate-sensitive execution has one logical work identity;
 - required work is durably registered/recoverably discoverable before another committed operation relies on it;
+- where one execution attempt must be exclusive, authoritative claim/fencing precedes dispatch rather than relying on multiple workers observing `pending`;
 - execution is bounded and observable;
 - retries are safe/idempotent or are not performed;
 - current/last outcome remains inspectable where operationally material;
@@ -225,7 +233,7 @@ When asynchronous/provider demand exceeds safe execution capacity:
 - cross-runtime/provider work cannot rely on distributed transactions by default;
 - retry must not assume the first call failed solely because the caller timed out;
 - provider/network partitions or ambiguous acknowledgement preserve pending/unknown operational truth until resolved safely;
-- wall-clock timestamps may support audit/recency but do not by themselves establish global causal ordering, idempotency identity, or concurrency correctness;
+- wall-clock timestamps may support audit/recency but do not by themselves establish global causal ordering, idempotency identity, concurrency correctness, or dispatch ownership;
 - event/derived/provider state may lag authoritative Core-API state and must expose pending/stale/unavailable semantics honestly;
 - distributed locks, leader election, Saga orchestration, or other distributed coordination are introduced only when an actual invariant spans multiple independent authorities and simpler single-owner transaction/work semantics cannot satisfy it.
 
@@ -239,6 +247,7 @@ Expected containment does not promise infrastructure that has not been selected:
 - external-provider failure produces bounded degradation or unresolved work state and cannot authorize a lower-quality fallback;
 - database failure before commit produces no durable-success acknowledgement;
 - ambiguous database/network outcome is reconciled with authoritative idempotency/work identity before retry can create another logical operation;
+- accepted capability completion cannot become permanently stranded from required Observation/Assessment/Progression continuation; recovery reconstructs or replays missing downstream work idempotently from durable authoritative state;
 - cache failure falls back to authoritative state where operationally feasible and never changes truth;
 - telemetry failure cannot rewrite business truth; only an explicitly required security/audit invariant may make absence of required durable audit block a consequential operation.
 
@@ -359,7 +368,27 @@ A ranker may reorder eligible candidates. It may never:
 
 ## Stage 7 — plan/explanation
 
-A plan records enough state/target/content-revision references and reason information to reconstruct why every activity was eligible and selected, including which target conditions remained unresolved when the plan was produced.
+A DailyPlan is a snapshot/recommendation produced from named state, not assignment authority. It records enough provenance to reconstruct why each activity was eligible and selected at plan time, including where material the TargetProfile/target-context revision, learner/Progression state reference/version, content/release state, product support/coverage version, content-revision references, and unresolved conditions used by planning.
+
+Before actual PracticeActivity/AssessmentActivity assignment or learner exposure, Core re-evaluates every **current** hard condition that can change. This includes where material current target context, learner/evidence state, product coverage/support scope, ContentRevision release and quarantine/operational state, rights/source eligibility, learner exposure/novelty/independence and reservation state, and delivery/capture feasibility.
+
+The assignment boundary is therefore:
+
+```text
+plan candidate/reference when one exists
+        ↓
+current hard-eligibility re-evaluation
+        ↓
+decisive reservation/assignment where applicable
+        ↓
+learner-safe projection
+        ↓
+delivery / actual exposure
+```
+
+A previously eligible plan item that is now ineligible is not executed merely because it remains in a saved plan; Core reselects another eligible action or exposes the truthful current blocker. Plan-time explanation remains historical provenance, not present eligibility. A full plan regeneration is unnecessary when a smaller current eligibility/reselection check is sufficient. No plan TTL is frozen.
+
+Assignment records the exact current eligibility/content revision actually used; plan provenance and assignment authority remain distinct.
 
 Tie-breaking should be deterministic/stable enough that unchanged learner state does not create arbitrary plan churn.
 
@@ -405,7 +434,7 @@ valid activity candidate generation
   ↓
 ranking
   ↓
-coherent DailyPlan + reason codes
+coherent DailyPlan + reason codes + plan-time provenance
 ```
 
 Representative reason codes include:
@@ -427,22 +456,23 @@ PRODUCT_COVERAGE_BLOCKED
 
 `PRODUCT_COVERAGE_BLOCKED` is not a learner GapEvaluation and is not used for merely missing TargetProfile input.
 
-Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do not mark skipped requirements satisfied.
+Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do not mark skipped requirements satisfied. Starting an activity from this plan still crosses the current assignment eligibility boundary above.
 
 # Flow C — ordinary practice attempt
 
 ```text
-1. Web starts PracticeActivity
-2. Core API returns exact item revision + target + variant/context + conditions
-   + primary_activity_purpose + evidence_candidacy
-3. learner performs task
-4. Web submits Attempt with actual scaffold/exposure/delivery metadata
-5. Core API or Evaluator produces Observation
-6. NOT_EVIDENCE_CANDIDATE → feedback/remediation/review handling only
+1. Web requests PracticeActivity from a current candidate/plan item
+2. Core API rechecks current hard eligibility and performs decisive reservation/assignment where applicable
+3. Core API returns the exact assigned item revision + target + variant/context + conditions
+   + primary_activity_purpose + evidence_candidacy through the learner-safe API projection
+4. learner performs task
+5. Web submits Attempt with actual scaffold/exposure/delivery metadata
+6. Core API or Evaluator produces Observation
+7. NOT_EVIDENCE_CANDIDATE → feedback/remediation/review handling only
    ASSESSMENT_MAY_ADMIT  → Assessment evaluates actual claim-scoped eligibility/inference
-7. Progression updates interpretation only when justified
-8. Planner derives next target-relevant action
-9. Web presents outcome without fabricating a micro Band change
+8. Progression updates interpretation only when justified
+9. Planner derives next target-relevant action
+10. Web presents outcome without fabricating a micro Band change
 ```
 
 Primary purpose (`TRAINING`, `DIAGNOSTIC`, `ASSESSMENT`, or `READINESS`) does not determine evidence admission. `ASSESSMENT` means focused measurement is the activity purpose; it does not mean the resulting Observation is already admitted. Assessment may reject a candidate Observation after seeing actual assistance/exposure/evaluator/provenance conditions; a favorable result cannot retroactively upgrade a non-candidate activity.
@@ -463,15 +493,19 @@ authoritative transaction
   ↓ COMMIT
 ACK accepted/pending
   ↓
-bounded dispatch / one or more execution attempts as policy permits
+decisive execution-attempt claim/fence
+  ↓
+bounded dispatch / one or more explicitly identified execution attempts as policy permits
   ↓
 criterion observations + provenance + uncertainty
   ↓
 Core API validates contract + logical-work/execution association
   ↓
-Core API fences/reconciles result against current authoritative evaluation state
+Core API fences/reconciles result against current authoritative evaluation/deletion/content-eligibility state
   ↓
-accepted result only → Assessment → EvidenceFact / ReadinessEvaluation
+persist accepted result + Observation or recoverable downstream-continuation source/marker
+  ↓
+Assessment → EvidenceFact / ReadinessEvaluation where eligible
   ↓
 Progression → learner-state interpretation
   ↓
@@ -485,10 +519,12 @@ Rules:
 - accepted learner work and required evaluation continuation are durably discoverable before learner-visible acceptance;
 - pending/unavailable are valid non-score states;
 - timeout/provider failure never becomes a low learner score and does not by itself prove an execution did no work;
+- normal competing workers cannot silently double-dispatch the same exclusive execution attempt; any intentionally concurrent replacement/speculative execution is separately identified/fenced;
 - retries/replacements preserve the same logical evaluation work while retaining distinct execution-attempt identity/provenance whenever executions can overlap;
 - exactly one current legal completion may satisfy the logical evaluation outcome; duplicate delivery of that accepted completion is idempotent;
 - a late or stale completion from a superseded execution cannot overwrite the accepted result, reopen terminal work, or independently create Observation/EvidenceFact state;
-- no progression occurs from failed, stale, superseded, or invalid evaluator output;
+- accepting a result does not permit a crash gap that permanently strands required semantic continuation: accepted result/Observation and/or durable recoverable continuation state must allow idempotent reconstruction of missing Assessment/EvidenceFact/Progression consequences;
+- no progression occurs from failed, stale, superseded, deleted/ineligible, or invalid evaluator output;
 - fallback must meet the same applicable quality/privacy floor.
 
 # Flow E — objective Listening/Reading attempt
@@ -636,9 +672,13 @@ sufficient content for required target/context/difficulty/diversity?
                     ↓
               pool admission / release eligibility
         ↓
+current hard eligibility for the actual learner/use
+        ↓
 learner-specific exposure/novelty/independence eligibility
         ↓
 decisive reservation/assignment under required serialization
+        ↓
+learner-safe projection
         ↓
 delivery
         ↓
@@ -652,11 +692,11 @@ Rules:
 1. generation is optional; a release may be fully supplied by authored/imported/deterministic assets when they satisfy coverage and operational requirements;
 2. generation/import is requested only when actual content demand remains after eligible pool reuse, or may be pre-generated/batched from demonstrated future demand so learner requests do not unnecessarily wait on generation;
 3. reuse optimization must never override target/family/context/presentation/difficulty/diversity/rights/evidence requirements;
-4. content validation and assignment are separate: a globally valid revision can still be ineligible for a specific learner/use because of exposure, independence, or novelty requirements;
+4. content validation and assignment are separate: a globally valid revision can still be ineligible for a specific learner/use because of exposure, independence, novelty, quarantine, target/product-support change, or another current hard condition;
 5. corpus similarity is not a universal rejection rule; similarity facts are interpreted against the intended learning/evidence purpose;
 6. generator output and validator signals cannot activate content by themselves; Core-API-owned deterministic product policy applies the owning semantic/coverage rules;
 7. higher-consequence use requires the stronger applicable validation/evidence conditions defined upstream; low-consequence training does not require unrelated high-consequence checks;
-8. every assigned activity resolves the exact immutable revision before learner exposure;
+8. every assigned activity resolves the exact immutable revision and current release/operational eligibility before learner exposure, regardless of whether an older DailyPlan referenced it;
 9. when eligibility depends on learner-specific unseen/exposure/independence/uniqueness or reservation state, the decisive eligibility decision and reservation/assignment are atomic or serialized enough that concurrent requests cannot both consume the same protected opportunity incorrectly;
 10. reservation/assignment for delivery is not actual learner exposure. A failed/disconnected delivery must not fabricate `seen`; actual ExposureContext follows `spec/10-CONTENT-MODEL.md`;
 11. a reservation may temporarily exclude concurrent assignment until it is reconciled/released; exact reservation timeout/recovery mechanism remains implementation policy.
@@ -672,13 +712,17 @@ Representative flow:
 ```text
 Attempt / learner report / operational signal / validator-policy regression
         ↓
-triage material risk
+triage material risk + affected use stages
         ↓
-stop new assignment when warranted
+new ValidationDecision when policy/revalidation is rerun on unchanged semantic content
         ↓
-preserve historical revision + Attempt/evidence references
+recompute current release/use eligibility
         ↓
-investigate / revalidate
+preserve historical ContentRevision + ValidationDecisions + learner facts
+        ↓
+apply consequence to current reservations / in-flight work / evidence as applicable
+        ↓
+investigate / revalidate / replace
         ├─ same semantic revision verified → restore eligible assignment when release permits
         ├─ material content fix required → create new ContentRevision → validate → activate when eligible
         └─ no safe/valid route → retire from new assignment
@@ -686,7 +730,17 @@ investigate / revalidate
                          replacement/supply demand if coverage needs it
 ```
 
-Do not collapse validation state, release eligibility, and operational safety into one global ContentStatus enum. A revision may be semantically validated yet not activated for a release, or may have been active and later be quarantined operationally pending investigation.
+Do not collapse validation state, release eligibility, operational safety, or incident consequence into one global ContentStatus/defect enum. A revision may be semantically validated yet not activated for a release, or may have been active and later be quarantined operationally pending investigation.
+
+Incident consequence is scoped by the discovered defect and the current use stage, not merely by `stop new assignment`:
+
+- **new assignment** — a known material risk blocks new reservation/assignment whenever the affected use is no longer eligible;
+- **reserved but not exposed** — reservation may be cancelled/reconciled when continuing exposure is unsafe, rights/security invalid, semantically invalid, or otherwise prohibited for that use; cancellation does not fabricate learner exposure;
+- **already exposed / draft in progress** — preserve what the learner already received/worked on, but stop/replace/mark unavailable when continuing the task would be unsafe, rights/security invalid, answer-compromised, or semantically invalid; a minor non-semantic defect need not have the same consequence;
+- **submitted Attempt / pending or running Evaluation** — preserve the historical submission, but block, narrow, invalidate for the affected claim/use, or re-route scoring/evaluation/evidence processing when the defect makes the intended inference invalid; infrastructure/content incident does not rewrite the Attempt as learner failure;
+- **existing Observation / EvidenceFact / historical completion** — preserve historical records; when the defect changes historical inference validity, Assessment/Progression re-evaluates current support/certification using explicit incident/provenance rather than deleting or mutating history.
+
+Incorrect answer keys/rubrics, prohibited answer leakage, canonical-binding errors, rights/privacy/security defects, independence contamination, and minor presentation defects can therefore have different consequences without requiring a universal defect taxonomy.
 
 Operational actors exercise only applicable privileged capabilities defined below. They are operators, not learning or Assessment authorities.
 
@@ -700,7 +754,7 @@ No authorized operator/admin action, regardless of role level, may bypass a know
 
 The cause must be repaired or the intended use changed legitimately, then the content/revision must pass the applicable policy again. A generic `override_validation` capability that converts a known hard failure into active learner content is forbidden.
 
-Historical learner facts are never repaired by mutating an old revision. If a later discovery changes how historical evidence should be interpreted, preserve the original Attempt/Observation and apply the owning Assessment/Progression policy with explicit provenance.
+Historical learner facts are never repaired by mutating an old revision or earlier ValidationDecision. If a later discovery changes how historical evidence should be interpreted, preserve the original Attempt/Observation/EvidenceFact and apply the owning Assessment/Progression policy with explicit provenance.
 
 # Privileged content-operation capabilities
 
@@ -758,6 +812,7 @@ Rules:
 - submission is idempotent;
 - submitted work is immutable for that Attempt identity;
 - `evaluating` is current processing state, not learner validity; if no current eligible execution is active while accepted work remains pending/retriable, processing may return to `submitted` rather than becoming `invalid` or remaining falsely stuck;
+- content incident may narrow/block current evaluation/evidence consequence without rewriting submitted learner work;
 - redraft/correction creates a new version/related attempt rather than rewriting submitted history;
 - evaluator/infrastructure failure is not `invalid` learner performance and does not require another learner Attempt.
 
@@ -776,9 +831,11 @@ The Evaluation identity is the logical evaluation resource and may have distinct
 Rules:
 
 - one execution-attempt timeout is ambiguous and does not by itself prove the logical Evaluation failed or that the remote attempt did no work;
-- Core accepts a completion only when it matches this Evaluation/logical work and the current legal execution/fencing state;
+- one exclusive execution attempt is claimed/fenced before normal dispatch; multiple workers observing pending work do not acquire the same execution merely by reading it;
+- Core accepts a completion only when it matches this Evaluation/logical work, the current legal execution/fencing state, and current deletion/content eligibility relevant to reconciliation;
 - duplicate delivery of the already accepted completion is idempotent and cannot duplicate Observation/EvidenceFact creation;
 - a late/stale completion from a superseded execution is non-authoritative for learner state and may be retained only as operational diagnostic/provenance;
+- `completed` means the logical Evaluation has an accepted durable outcome under its lifecycle; when required downstream semantic artifacts are not materialized in the same commit, recoverable continuation/reconstruction remains durably guaranteed and is not optional cleanup;
 - if an Evaluation becomes terminal `unavailable` or `invalid` and product policy later permits another evaluation, create another Evaluation identity linked to the same accepted Attempt/logical obligation rather than reopening the terminal identity or creating another learner Attempt;
 - linked Attempt processing reflects whether eligible evaluation work remains pending/running/accepted; evaluator infrastructure failure alone does not force Attempt `invalid`.
 
@@ -831,7 +888,8 @@ The transition reason preserves meaning. Staleness/conflict/insufficient evidenc
 - one service does not advance another owner’s lifecycle by direct database mutation;
 - consequential terminal transitions record reconstructable reason/provenance;
 - runtime completion state never substitutes for learning state;
-- content operational state changes never rewrite historical content revision identity.
+- upstream work completion with required downstream semantics carries durable recoverability until those semantics are materialized;
+- content operational state changes never rewrite historical content revision or validation-decision identity.
 
 # Result delivery
 
@@ -840,14 +898,24 @@ Immediate deterministic work may return synchronously.
 Long work uses the semantic pattern:
 
 ```text
-submit → durable accepted/pending state
-             ↓
-       async dispatch/work
-             ↓
-       SSE status/result
+submit / durable logical work
+        ↓
+execution attempt claimed/fenced
+        ↓
+dispatch attempted
+        ↓
+remote completion received when any
+        ↓
+completion accepted/rejected by Core
+        ↓
+required Observation/Assessment/Progression continuation durably materialized or recoverable
+        ↓
+learner-visible resource state
+        ↓
+SSE update hint
 ```
 
-Polling/resource refresh remains fallback. Persistent truth remains queryable independently of SSE delivery.
+These points are not synonyms: dispatch success is not semantic completion; HTTP `200` from Python is not a learner-state transition; Evaluation `completed` does not imply every downstream derived artifact was already written in the same transaction, but it does require durable recoverability of required continuation; SSE delivery is only a notification hint. Polling/resource refresh remains fallback and persistent truth remains queryable independently of SSE delivery.
 
 # Failure semantics
 
