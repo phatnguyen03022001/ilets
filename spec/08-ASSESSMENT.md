@@ -97,8 +97,10 @@ SUPPORTED
 - `INSUFFICIENT_EVIDENCE` — required evidence is missing.
 - `CONFLICTING_EVIDENCE` — material valid evidence supports incompatible interpretations.
 - `STALE_EVIDENCE` — historical support exists but is not sufficiently current for the present claim.
-- `NOT_YET_SUPPORTED` — current relevant evidence exists and is below the requirement.
+- `NOT_YET_SUPPORTED` — current relevant evidence does not satisfy the scoped requirement.
 - `SUPPORTED` — current admissible evidence satisfies the scoped requirement.
+
+`NOT_YET_SUPPORTED` is a claim-scoped evidence conclusion. It is not universal proof that the underlying capability is absent or false outside that scope.
 
 These states must never be collapsed into one mastery/readiness percentage.
 
@@ -195,12 +197,29 @@ An Observation becomes an EvidenceFact for a claim only when:
 
 A guided attempt or same-item retry may be valuable learning evidence while remaining invalid for an independent unseen-transfer claim.
 
+# Evidence independence and contamination
+
+Independence is a property of the **inference supported by demonstrations**, not a count of Attempt rows.
+
+Two performances are not materially independent merely because they have different Attempt IDs. Independence is narrowed when success can be reproduced from prior exposure rather than demonstrated capability, including material cases such as:
+
+- the same or trivially equivalent prompt/stimulus;
+- access to a prior answer/model response;
+- material corrective feedback followed by reconstruction of the same task;
+- memorized or substantially rehearsed response reuse;
+- generated correction/continuation that performs material target work for the learner;
+- another exposure relationship that makes the later success non-independent for the scoped claim.
+
+The consequence is claim-scoped. Contaminated or assisted success may remain valid formative/recovery evidence while being ineligible, or carrying narrower inference scope, for a claim requiring unaided independent or unseen-transfer performance.
+
+A same-task success after material corrective feedback cannot independently satisfy an EvidenceRequirement that requires unaided performance. Fresh evidence must use conditions whose novelty/assistance are sufficient for that claim; exact diversity thresholds remain versioned calibration policy rather than a universal attempt rule.
+
 # Missing, negative, conflicting, and stale evidence
 
 - Missing evidence is not negative evidence.
 - One wrong response is not automatically an ability gap.
 - Stale evidence is not proof of regression.
-- Material conflicts remain explicit until discriminating evidence resolves them; do not average them away.
+- Material conflicts remain explicit until discriminating evidence resolves them; do not average them away or select the more convenient interpretation.
 - Historical Observations/EvidenceFacts remain immutable enough for governed reinterpretation.
 
 # Claim-scoped sufficiency
