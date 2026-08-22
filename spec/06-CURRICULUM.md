@@ -1,7 +1,7 @@
 STATUS: CANONICAL
 OWNS: canonical learning pathway, Curriculum Node identity, recommended ordering, prerequisite classification for sequence, variant route overlays, and Band-3-to-9 orchestration of Skill and Knowledge objects
-DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
-DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, practice types, assessment sufficiency, learner-state transitions, or uncalibrated duration/load estimates
+DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
+DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, practice types, assessment sufficiency, learner-state transitions, product TargetProfile semantics, content-instance/context IDs, or uncalibrated duration/load estimates
 
 # 06 — Curriculum
 
@@ -42,7 +42,7 @@ Therefore two implementations reading the same node registry must derive the sam
 
 # Deterministic selector tokens
 
-The registry may use only the following declared compile-time selector tokens in target columns. They are **not canonical learning-object IDs** and must be fully expanded before runtime/content/assessment identity is materialized.
+The registry may use only the following declared compile-time selector tokens in target columns. They are **not canonical learning-object IDs** and must be fully expanded before downstream content, assessment, product, or runtime identity is materialized.
 
 ```text
 @task1-analysis
@@ -55,13 +55,14 @@ The registry may use only the following declared compile-time selector tokens in
 
 Rules:
 
-1. `@task1-*` selectors resolve from `TargetProfile.test_variant` using the Variant route overlay below;
-2. `@variant-reading-advanced-knowledge` resolves from the selected variant using the overlay below;
+1. `@task1-*` and `@variant-reading-advanced-knowledge` resolve from the selected standard IELTS variant (`Academic` or `General Training`) owned by `02-IELTS-MODEL.md`;
+2. a downstream product TargetProfile may carry the selected variant, but TargetProfile does not define selector meaning;
 3. `@band-phase-skill-set` is the deterministic union of all fully resolved Skill targets in preceding nodes of that same Band phase;
 4. `@band-phase-knowledge-set` is the deterministic union of all fully resolved explicit Knowledge targets in preceding nodes of that same Band phase;
-5. selector expansion is recursive until only canonical IDs remain; an unresolved selector at execution/content/assessment time is invalid;
-6. no new selector token may be invented ad hoc in a node row; adding one requires updating this selector contract and its complete resolution table;
-7. Required Skill/Knowledge dependencies inherited from `03-SKILLS.md`/`04-KNOWLEDGE.md` remain applicable after selector expansion and are not duplicated into the union.
+5. selector expansion is recursive until only canonical IDs remain; an unresolved selector at a variant-specific materialization boundary is invalid;
+6. if the variant is genuinely unresolved, shared nodes may still be used where their targets do not require a variant selector, but a selector-bearing node cannot be pretended resolved;
+7. no new selector token may be invented ad hoc in a node row; adding one requires updating this selector contract and its complete resolution table;
+8. Required Skill/Knowledge dependencies inherited from `03-SKILLS.md`/`04-KNOWLEDGE.md` remain applicable after selector expansion and are not duplicated into the union.
 
 # Canonical node registry
 
@@ -146,7 +147,7 @@ Rules:
 
 # Variant route overlay
 
-The base node registry remains one shared curriculum. Selector expansion is deterministic from `TargetProfile.test_variant`.
+The base node registry remains one shared curriculum. Selector expansion is deterministic from the selected standard IELTS variant owned by `02-IELTS-MODEL.md`. Product design may transport that variant choice but cannot redefine the mapping.
 
 ## Selector resolution table
 
@@ -157,18 +158,18 @@ The base node registry remains one shared curriculum. Selector expansion is dete
 | `@task1-global-control` | `W-TA-02` | `W-GT1-02` |
 | `@variant-reading-advanced-knowledge` | `K-VOC-011` | empty set |
 
-The empty-set GT resolution means there is no **single additional canonical Knowledge Object** universally required merely because the learner performs dense GT Reading. GT Section-1/2/3 vocabulary/register demand is represented through existing applicable Knowledge plus concrete content/context under `10-CONTENT-MODEL.md`; implementation must not invent a hidden GT vocabulary prerequisite.
+The empty-set GT resolution means there is no **single additional canonical Knowledge Object** universally required merely because the learner performs dense GT Reading. GT vocabulary/register demand is represented through existing applicable Knowledge plus concrete content/context downstream; implementation must not invent a hidden GT vocabulary prerequisite.
 
-Academic Task-1 tenses/data language and concrete visual-specific lexical choices are selected through the already-owned Skill→Knowledge dependencies and concrete content requirements; they are not extra undeclared selector semantics.
+Academic Task-1 tense/aspect, comparison, process, spatial, and concrete visual lexical needs are selected through applicable canonical Knowledge/content requirements when the specific presentation makes them material; they are not undeclared universal selector semantics.
 
 ## Reading context conditions
 
 Variant-specific Reading transfer is a **context/content/readiness condition**, not a hidden Knowledge dependency:
 
-- Academic readiness uses Academic passage/context distribution and full applicable official-family coverage;
-- GT readiness samples `CTX-READING-GT-S1-EVERYDAY`, `CTX-READING-GT-S2-WORKPLACE`, and `CTX-READING-GT-S3-GENERAL-INTEREST` as required by the scoped evidence/support claim.
+- Academic readiness uses the Academic Reading passage/corpus conditions owned by `02-IELTS-MODEL.md`;
+- General Training readiness preserves its external distribution across Section 1 everyday contexts, Section 2 workplace contexts, and Section 3 longer general-interest contexts.
 
-These context conditions are consumed by Content/Assessment/Coverage owners. They do not create prose edges in the Curriculum `Depends` graph.
+Downstream Content Model may assign stable content-context IDs to these already-owned external conditions. Those downstream IDs do not become Curriculum authority and are not required to interpret this route rule.
 
 ### GT phase expectations
 
@@ -201,7 +202,7 @@ Every Curriculum Node target cell contains only:
 
 Every non-empty `Depends` cell contains only stable `C-*` IDs that exist in this registry.
 
-Before a node is materialized into content/runtime work:
+Before a node is materialized into downstream content/runtime work:
 
 ```text
 node
@@ -219,10 +220,10 @@ Static validation should fail on:
 
 - unknown canonical IDs;
 - unknown selector tokens;
-- unresolved selectors at the execution boundary;
+- unresolved selectors at a required materialization boundary;
 - prose/free-text in target/dependency identity positions;
 - a `Depends` reference to a missing node;
 - a Recommended node cycle;
 - a variant expansion that includes the wrong Task-1 construct.
 
-New nodes require a distinct orchestration purpose, not merely another lesson/exercise. Concrete lessons and exercise instances belong to `10-CONTENT-MODEL.md`.
+New nodes require a distinct orchestration purpose, not merely another lesson/exercise. Concrete lessons and exercise instances belong downstream to the Content Model.
