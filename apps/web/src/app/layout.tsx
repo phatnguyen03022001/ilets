@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   description: "Deterministic Reading training bootstrap slice",
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const messages = await getMessages();
 
   return (
