@@ -22,7 +22,7 @@ Define semantic API boundaries before implementation. The product exposes one le
 9. API resources expose lifecycle/operational states owned by `04-application-flows.md` rather than redefining transition rules here;
 10. once materialized, machine-readable contracts own exact wire shape;
 11. API fields translate canonical/product semantics; they never invent thresholds, state meaning, applicability, validation authority, or evidence authority that lacks an upstream owner;
-12. content operations may change release/assignment/operational state but may not mutate the semantic payload of a historical ContentRevision in place.
+12. content operations may change non-semantic operational/release state but may not mutate an established ContentRevision semantic payload.
 
 # Implementation-start contract gate
 
@@ -143,9 +143,11 @@ structural contract validation
   ↓
 resource-sensitive semantic preconditions
   ↓
-idempotency + concurrency checks where applicable
+optional preflight idempotency / stale-revision rejection
   ↓
-authoritative transaction
+authoritative transaction or equivalent serialization boundary
+  ├─ decisive idempotency admission/replay/conflict decision where applicable
+  ├─ decisive expected-resource-revision comparison where applicable
   ├─ product mutation
   └─ required durable pending-work/recoverable marker where applicable
   ↓
@@ -158,6 +160,8 @@ response
 
 A response claiming durable success is emitted only after the authoritative commit. Required asynchronous continuation cannot be left to an unrecoverable post-commit registration step.
 
+Preflight lookups may reject duplicate/stale work early but are not the decisive concurrency boundary. For duplicate-sensitive or revision-guarded mutations, the operation-identity claim/replay decision and expected-revision comparison must be atomically coupled to the mutation or protected by an equivalent serialization invariant.
+
 ## Pattern 3 — asynchronously accepted operation
 
 ```text
@@ -169,10 +173,11 @@ capability / authorization / access filtering where required
   ↓
 contract + semantic preconditions
   ↓
-establish logical work identity
+optional preflight duplicate/stale rejection
   ↓
-authoritative transaction
-  ├─ persist accepted resource/work state
+authoritative transaction or equivalent serialization boundary
+  ├─ decisively admit/replay one logical operation
+  ├─ persist accepted resource/work state + logical work identity
   └─ persist durable pending-work/recoverable marker
   ↓
 COMMIT
@@ -206,7 +211,9 @@ The exact contract/bootstrap must define, for each applicable operation:
 - record retention sufficient for the expected retry horizon;
 - conflict behavior for the same key/identity with incompatible payload.
 
-No universal TTL is frozen here. Idempotency records are operational support state, not learner truth. A network retry must not duplicate an Attempt, EvidenceFact, accepted ContentRevision, paid/provider work, or logically identical generation/validation/evaluation work.
+The decisive claim of a previously unseen operation identity, its compatible-payload association, and the authoritative mutation/outcome it protects are transactionally/atomically coupled or protected by an equivalent serialization invariant. A separate preflight lookup is only an optimization. A crash after authoritative mutation cannot leave the idempotency outcome unassociated such that retry executes the mutation again.
+
+No universal TTL is frozen here. Idempotency records are operational support state, not learner truth. Replay after committed success returns or references the one authoritative logical outcome. The same operation identity with an incompatible payload fails closed. A network retry must not duplicate an Attempt, EvidenceFact, accepted ContentRevision, paid/provider work, or logically identical generation/validation/evaluation work.
 
 ## Pattern 5 — internal Go → Python capability call
 
@@ -217,12 +224,16 @@ caller deadline + cancellation where safe
   ↓
 Evaluator / generator / validator capability
   ↓ bounded output + provenance/uncertainty
-Core-side contract/work-identity validation
+Core-side contract + logical-work/execution association validation
+  ↓
+Core-side current-state/fencing reconciliation
   ↓
 owning Assessment/content/product policy interpretation
 ```
 
-This is an internal capability, not a public product API. Core API is the permitted product caller; browser and admin UI do not call it directly. Deployment restricts reachability according to the selected topology. If the boundary crosses an untrusted/shared network, caller/service authentication and authorization are required. A private trusted/co-located transport may use a smaller mechanism only when its actual trust boundary makes that safe. This design does not freeze mTLS, JWT, or a service mesh.
+This is an internal capability, not a public product API. Core API is the permitted product caller; browser and admin UI do not call it directly. Deployment reachability/service authorization follows the trust-boundary rules owned by `06-implementation-stack.md`; an `internal`, private-address, or co-located label is not by itself authorization.
+
+When retry/replacement executions may overlap, the machine contract preserves enough logical work/Evaluation association plus execution-attempt identity or equivalent fencing information for Core to reject stale/superseded completion deterministically. Duplicate delivery of an already accepted completion is idempotent.
 
 Python output remains non-authoritative for certification, product support, learner-state transition, evidence admission, content activation, or final DailyPlan state. Python does not query or mutate the authoritative product database directly.
 
@@ -326,6 +337,22 @@ Every material network/provider boundary ultimately declares caller deadline, sa
 
 Exact timeout/retry counts/budgets are implementation/operational policy until measured evidence justifies freezing them. A retry cannot lower content/evidence/evaluator quality or turn ambiguous work into a duplicate logical operation. Rate limiting may protect abuse, cost, quotas, and capacity but cannot fabricate learner failure or silently accept undurable work.
 
+# Learner/public content projection
+
+An authoritative internal ContentRevision is not automatically a learner-facing DTO. Public learner/activity responses use an actor/use-specific projection of the same exact revision identity.
+
+Before the applicable product/content policy permits reveal, learner/browser payloads exclude material whose disclosure would reveal an answer, invalidate the intended inference, or expose privileged execution state, including as applicable:
+
+- answer keys/reference answers;
+- hidden scoring references or rubrics not intended for learner display;
+- model answers whose early exposure would contaminate the task;
+- evaluator/system/validator instructions;
+- future feedback;
+- privileged validation/provenance details;
+- other hidden assessment material.
+
+Admin/evaluator projections remain capability/contract scoped. Projection does not create another ContentRevision or duplicate content truth; the exact DTO/reveal timing belongs to the future public/internal machine contracts and owning product/content policy.
+
 # Public resource groups
 
 The initial semantic API surface has 12 resource groups.
@@ -380,7 +407,7 @@ POST   /v1/practice-activities
 GET    /v1/practice-activities/{practice_activity_id}
 ```
 
-A PracticeActivity resolves exact content revision, canonical target, applicable official family/context/presentation/variant/delivery identities, stimulus/response conditions, scaffolding/exposure state, `primary_activity_purpose`, and `evidence_candidacy`.
+A PracticeActivity resolves an exact content revision and learner-safe projection plus canonical target, applicable official family/context/presentation/variant/delivery identities, stimulus/response conditions, scaffolding/exposure state, `primary_activity_purpose`, and `evidence_candidacy`.
 
 Purpose and evidence candidacy are orthogonal. The client/evaluator/server cannot retroactively upgrade candidacy after observing a favorable result. Actual EvidenceFact admission remains Assessment authority.
 
@@ -401,7 +428,7 @@ Draft mutation uses concurrency control. Submission is explicit/idempotent and p
 GET /v1/evaluations/{evaluation_id}
 ```
 
-Public output may expose status, learner-meaningful observations/feedback, uncertainty/quality state where useful, and retry/unavailable state. It does not expose chain-of-thought, secrets, or irrelevant provider internals.
+Public output may expose status, learner-meaningful observations/feedback, uncertainty/quality state where useful, and retry/unavailable state. It does not expose chain-of-thought, secrets, hidden evaluator instructions, or irrelevant provider internals. Evaluation/execution retry and terminal-state semantics are owned by `04-application-flows.md`.
 
 ## 8. Progress and gaps
 
@@ -447,7 +474,6 @@ Representative semantic operations:
 ```text
 GET    /v1/admin/content-revisions
 GET    /v1/admin/content-revisions/{content_revision_id}
-PATCH  /v1/admin/content-revisions/{content_revision_id}
 POST   /v1/admin/content-generation-requests
 GET    /v1/admin/content-generation-requests/{generation_request_id}
 POST   /v1/admin/content-validation-runs
@@ -457,7 +483,9 @@ GET    /v1/admin/content-reports
 PATCH  /v1/admin/content-reports/{content_report_id}
 ```
 
-Exact fields/subresources belong to machine contracts. Privileged capability meaning, content lifecycle, quarantine/revalidation/release/retirement, and the prohibition on validation bypass are owned by `04-application-flows.md`. API operations cannot mutate historical ContentRevision semantic payload or turn generator/validator/operator output directly into active learner content.
+Exact fields/subresources and operational state-transition surfaces belong to machine contracts. The representative surface intentionally does not define a generic `PATCH` on an established ContentRevision: semantic payload is immutable under `spec/10-CONTENT-MODEL.md`, while validation decisions, release eligibility, operational safety/quarantine, reports, revalidation, and retirement remain separate dimensions owned by `04-application-flows.md`.
+
+Privileged capability meaning, content lifecycle, quarantine/revalidation/release/retirement, and the prohibition on validation bypass are owned by `04-application-flows.md`. API operations cannot turn generator/validator/operator output directly into active learner content.
 
 # Server event stream
 
@@ -483,9 +511,9 @@ Generation/validation endpoints are optional capability boundaries. This route g
 
 ## Evaluation request/response semantics
 
-Requests preserve work/attempt/content revision identities, canonical target IDs, material family/context/presentation/variant/delivery scope, actual response/assistance/exposure conditions, evaluator configuration reference, and requested observation families. Applicability is preserved rather than filled with fabricated values.
+Requests preserve logical work/Evaluation identity, Attempt/content revision identities, canonical target IDs, material family/context/presentation/variant/delivery scope, actual response/assistance/exposure conditions, evaluator configuration reference, and requested observation families. When execution attempts may overlap, the internal contract also preserves execution-attempt/fencing association sufficient for Core to determine whether a completion is current, duplicate, stale, or superseded without guessing. Applicability is preserved rather than filled with fabricated values.
 
-Responses contain bounded status/Observation candidates, criterion measurements, permitted derived analysis references, uncertainty/quality flags, evaluator/model provenance, and diagnostics. They never carry authoritative learner certification, product support, Band advancement, evidence candidacy/admission, content activation, or final plan state.
+Responses contain bounded status/Observation candidates, criterion measurements, permitted derived analysis references, uncertainty/quality flags, evaluator/model provenance, and diagnostics. They never carry authoritative learner certification, product support, Band advancement, evidence candidacy/admission, content activation, or final plan state. Core reconciles response acceptance according to the lifecycle/fencing semantics in `04-application-flows.md` before creating downstream learner evidence.
 
 ## Content generation/validation/media semantics
 
@@ -499,7 +527,11 @@ The future exact contract/bootstrap must instantiate Pattern 4 for each applicab
 
 # Optimistic concurrency
 
-Mutable draft-like resources, TargetProfile, and mutable operational/admin metadata use resource-revision semantics where stale updates are possible. A stale mutation is rejected rather than silently overwriting newer state. This resource revision is not API contract version, ContentRevision, database schema version, provider/model version, or idempotency/work identity.
+Mutable draft-like resources, TargetProfile, and mutable operational/admin metadata use resource-revision semantics where stale updates are possible. A stale mutation is rejected rather than silently overwriting newer state.
+
+The decisive expected-resource-revision comparison is enforced atomically with the authoritative mutation through a transaction, conditional write, or equivalent serialization invariant. A read/compare in application memory followed by an unrelated later write is not sufficient; preflight stale detection is only an optimization. Two simultaneous writers using the same expected revision cannot both successfully mutate from it.
+
+This resource revision is not API contract version, ContentRevision, database schema version, provider/model version, or idempotency/work identity.
 
 # Domain results vs transport/operation failures
 
@@ -558,6 +590,8 @@ Exact version numbers, rollout technology, compatibility window, and generator l
 
 Unbounded history/library/content/report collections use cursor pagination. Small stable canonical catalogs may be returned in full.
 
+A cursor is derived transport state, not product authority. Where material it is interpreted only for the operation/query/filter/access scope that issued it and cannot bypass current authorization or resource visibility. Exact encoding, integrity/signing, expiration, and ordering semantics belong to the future contract/implementation.
+
 # API anti-patterns
 
 Forbidden without an explicit architecture change:
@@ -577,7 +611,8 @@ Forbidden without an explicit architecture change:
 - omitting a material content revision/family/context/presentation/delivery identity;
 - fabricating a family/context/presentation/variant value for a legitimately non-applicable dimension;
 - client/evaluator reclassifying immutable item family or evidence candidacy;
-- mutable PATCH of historical ContentRevision semantic payload;
+- mutating an established ContentRevision semantic payload through generic PATCH or another operational mutation;
+- serializing an unrestricted internal ContentRevision representation to a learner/browser surface;
 - generator/validator output directly activating learner content;
 - generic admin validation bypass for a known hard failure;
 - one combined ContentStatus hiding validation/release/operational dimensions;
