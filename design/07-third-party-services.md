@@ -60,6 +60,8 @@ cost / latency / operational efficiency
 
 Cost cannot rescue an ineligible route. A cheaper fallback cannot silently lower the applicable evidence/content/privacy/security floor.
 
+A paid external provider/service may be evaluated, but it may not move to an implementation or activation state that creates project spend without explicit authorization from the repository's USER authority. Cost approval is necessary but not sufficient: it does not override privacy, rights, security, quality, reliability, or product-support gates. This applies to AI, STT/TTS, hosted databases, identity, observability, email, storage, queues, analytics, hosting, and any other external provider route.
+
 # External-resource economy
 
 Preferred route when outcomes are equivalent:
