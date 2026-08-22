@@ -19,6 +19,7 @@ python3 "$ROOT/tools/test_verify_lenbands_founder_closure.py"
 python3 "$ROOT/tools/verify-lenbands-founder-closure.py"
 python3 "$ROOT/tools/canonical/test_materialize.py"
 python3 "$ROOT/tools/canonical/materialize.py"
+python3 "$ROOT/tools/canonical/materialize.py"
 
 cd "$ROOT/apps/web"
 corepack enable
@@ -30,6 +31,8 @@ pnpm test
 pnpm build
 
 cd "$ROOT"
+./tools/contracts/generate.sh
+./tools/db/generate.sh
 ./tools/contracts/generate.sh
 ./tools/db/generate.sh
 if ! git diff --exit-code -- \
@@ -56,6 +59,7 @@ cd "$ROOT"
 # resources before startup so migrations cannot accidentally reuse prior state.
 cleanup
 "${COMPOSE[@]}" up -d --wait postgres
+./tools/db/migrate.sh
 ./tools/db/migrate.sh
 
 cd "$ROOT/services/core-api"
