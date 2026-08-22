@@ -105,8 +105,24 @@ Rules:
 5. a validator's self-reported confidence or a generator's claim that its own output is valid is only an input signal, never validation authority by itself;
 6. validation reasons must remain reconstructable, but this specification does not freeze a large machine reason-code catalog before contracts require stable interoperability;
 7. validation burden is consequence-aware: higher-consequence use may require stronger applicable checks than low-consequence training, while every applicable universal hard failure remains blocking;
-8. current release/use eligibility resolves the applicable current validation policy and intended-use/consequence scope, then consumes the compatible decision/findings for that use; record recency alone is not authority, and a globally newest ValidationDecision must not silently override an unrelated scope. A finding that establishes an applicable universal hard failure remains blocking wherever that universal gate applies;
+8. current release/use eligibility resolves the currently applicable validation-policy version and intended-use/consequence scope from product/runtime policy, then consumes compatible ValidationDecision(s)/findings for that use. Decision timestamp ordering is not the source of current policy or scope, and a globally newest ValidationDecision must not silently override an unrelated scope. A finding that establishes an applicable universal hard failure remains blocking wherever that universal gate applies;
 9. exact validator count, voting scheme, model/provider, similarity threshold, confidence threshold, audit sample count, and operational retry policy are implementation/calibration concerns unless later evidence requires a canonical rule.
+
+The applicability chain is therefore:
+
+```text
+current release / intended use
+        ↓
+applicable validation-policy version
+        ↓
+applicable intended-use / consequence scope
+        ↓
+compatible ValidationDecision(s) / findings
+        ↓
+current release / use eligibility
+```
+
+This chain defines validation-decision applicability; downstream runtime policy owns activation/assignment and must preserve any required historical assignment provenance without turning ValidationDecision into mutable current state.
 
 The runtime orchestration of validation, activation, quarantine, revalidation, and retirement is owned by `design/04-application-flows.md`.
 
@@ -317,6 +333,8 @@ presentation_variation where material
 Exact-item novelty is not equivalent to meaningful transfer. A globally unique item may still be unsuitable for a learner who recently saw materially equivalent content or a model answer; conversely, intentionally similar content may remain useful for controlled learning when the intended inference does not require novelty.
 
 Reservation or assignment for delivery is not by itself proof that the learner actually saw the material. ExposureContext records actual material exposure when established; ambiguous delivery remains unresolved rather than being fabricated as seen or unseen.
+
+When an intended use requires proven unseen or sufficiently independent conditions, `UNKNOWN`, missing, or ambiguous material exposure state is not proof of unseen and must not be defaulted to `seen_before = false`. Until the owning downstream policy can establish sufficient exposure/novelty/independence state, that condition remains unresolved/ineligible for that consequence; training that does not require novelty may still remain eligible. `08-ASSESSMENT.md` owns evidence-independence consequences, while downstream product assignment owns learner-specific eligibility.
 
 # `PracticeItem`
 
@@ -645,7 +663,7 @@ Difficulty metadata does not define a Band.
 
 # Content validation semantics
 
-Validation policy is origin-neutral and intended-use-aware. Any ContentRevision exposed to a learner must satisfy every applicable universal semantic hard gate for that use.
+Validation policy is origin-neutral, applicability-aware, and intended-use/consequence-aware. Any ContentRevision exposed to a learner must satisfy every applicable universal semantic hard gate for that use.
 
 Universal gates include at least:
 
@@ -663,9 +681,9 @@ For Writing/Speaking or another open productive task, answer correctness does no
 
 Consequence-specific burden increases only where the intended use makes it material:
 
-- **lower-consequence training** — universal gates plus semantic quality sufficient for the selected learning mechanism;
+- **lower-consequence training** — universal gates plus semantic quality sufficient for the selected Learning Mechanism / Practice Type;
 - **transfer/novelty-sensitive use** — the above plus applicable context, novelty, exposure, and transfer validity;
-- **evidence-candidate use** — the above plus construct/scoring/evaluator validity, material condition observability, and applicable independence/contamination constraints;
+- **evidence-candidate use** — the above plus construct/scoring/evaluator validity and material condition observability sufficient for Assessment to decide eligibility; Assessment remains owner of evidence admission and independence consequence;
 - **readiness/Band/high-consequence evidence** — the strongest applicable calibration, provenance, independence, scoring, and claim-sufficiency conditions owned by `08-ASSESSMENT.md` and the applicable EvidenceRequirement.
 
 Validation does not admit an EvidenceFact or establish claim support. Assessment owns evidence admission/sufficiency. Similarity facts do not decide learner/use eligibility by themselves; assignment and Assessment consume them according to the intended consequence.
