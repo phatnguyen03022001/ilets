@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
+OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, feature-first source organization, cross-runtime naming/test/generated-code placement discipline, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
 DOES_NOT_OWN: learning/product truth, parser/materializer implementation, canonical-registry serialization details, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, package-manager lock state, or CI platform configuration
 
@@ -769,3 +769,284 @@ need architecture → microservice-per-feature
 ```
 
 Also do not add GraphQL beside REST, a Next.js product backend/BFF, duplicate Go/Python domain rules, direct Python/Next.js authoritative DB access, or frontend-owned Band/mastery/content eligibility without an explicit architecture change.
+
+# Feature-first source organization and naming discipline
+
+This section owns application source organization, dependency direction inside deployables, shared-code promotion, language-specific naming, generated-code placement, and test placement. It refines the responsibility-first repository topology in `../CONSTITUTION.md` without imposing identical folder trees across languages.
+
+## Master structural principle
+
+Organize application code primarily by product feature or capability ownership so ordinary changes remain local.
+
+Framework, transport, generated, and genuinely cross-feature infrastructure folders exist only where that framework or boundary actually owns the code. Inside a feature/capability, introduce additional layers only when dependencies, invariants, testability, or change boundaries require them.
+
+Do not create empty architecture layers to satisfy a template. A one-package capability, a two-file feature, or a small route composition is legal when it is cohesive.
+
+The shared mental model is:
+
+```text
+transport / framework shell
+        ↓
+feature or capability owner
+        ↓
+owned application / domain logic
+        ↓
+required infrastructure adapters
+```
+
+Generated machine-contract code remains a separate derived boundary. Feature-first is not feature-silo: database pools, HTTP clients, query-cache infrastructure, logging, design primitives, translations infrastructure, and provider SDK frameworks remain with their genuine cross-feature owner rather than being recreated per feature.
+
+## TypeScript / Web
+
+Preferred direction for new Web code:
+
+```text
+apps/web/src/
+├── app/
+├── features/
+├── components/
+│   └── ui/
+├── i18n/
+├── lib/
+└── generated/
+```
+
+Ownership:
+
+- `app/` owns Next.js routing, layouts, composition, and framework boundary behavior. Route files should not accumulate substantial product-feature state machines merely because they are entrypoints.
+- `features/` owns product-facing feature implementation and local change behavior.
+- `components/ui/` owns genuine reusable UI primitives, including selected shadcn materialization.
+- `i18n/` owns cross-feature translation plumbing/catalog integration.
+- `lib/` owns only precisely named, genuinely cross-cutting implementation glue. It is not a default home for code that lacks a feature owner.
+- `generated/` owns generated contract/types only and is never hand-edited.
+
+A feature may contain folders/files such as `components/`, `hooks/`, `queries.ts`, `mutations.ts`, `model.ts`, and `index.ts`, but none is mandatory. A small feature may contain only `form.tsx` and `api.ts`. Do not pre-create empty `components/`, `hooks/`, `services/`, `models/`, `types/`, or `utils/` merely for symmetry.
+
+Feature code may depend on generated contracts, approved shared primitives, approved cross-cutting infrastructure, and framework/library owners. Feature A must not import Feature B's private implementation. Cross-feature collaboration uses one of:
+
+1. an intentionally narrow exported feature surface;
+2. a higher-level composition/orchestration owner;
+3. a promoted shared semantic only after genuine shared ownership is established.
+
+Do not solve cross-feature imports by moving arbitrary code into `shared/`.
+
+### TypeScript naming
+
+Use project/framework-idiomatic TypeScript/React naming:
+
+```text
+folders/files                  kebab-case where framework convention permits
+React components/types/classes PascalCase
+variables/functions/hooks      camelCase
+hooks                          useXxx
+```
+
+Use normal semantic `camelCase` for ordinary constants. Use a special exported-constant convention only when it improves an established API/module convention; do not apply screaming constants mechanically.
+
+Canonical concept names remain stable: `TargetProfile`, `ContentRevision`, `ValidationDecision`, `PracticeActivity`, `Attempt`, `Observation`, `EvidenceFact`, and `EvidenceRequirement` are not casually renamed to local synonyms. Generated contract field names and serialized wire identity remain contract-owned.
+
+## Go / Core API
+
+Preferred direction as the Core API grows:
+
+```text
+services/core-api/
+├── cmd/core-api/
+├── internal/
+│   ├── httpapi/
+│   ├── session/
+│   ├── targetprofile/
+│   ├── practice/
+│   ├── attempt/
+│   ├── content/
+│   └── db/
+│       └── sqlc/
+└── migrations/
+```
+
+This is an ownership example, not a mandatory folder inventory. Create a capability package only when separation has real value. Do not create a package per table, package per endpoint, or visual-symmetry split.
+
+Preferred dependency direction is:
+
+```text
+httpapi / transport
+        ↓
+feature / application package
+        ↓
+owned deterministic logic
+        ↓
+required persistence / provider adapter
+```
+
+`sqlc` output is infrastructure, not domain authority. HTTP handlers own transport decoding/encoding, auth/access invocation, and response mapping; they do not become the permanent home of reusable business policy merely because they call it. Feature/domain logic must not depend on `http.Request`, `http.ResponseWriter`, or generated transport objects when the logic itself is transport-independent.
+
+Do not require every feature to contain `domain/`, `application/`, `service/`, `usecase/`, `ports/`, `adapters/`, `repository/`, or `controller/`. Introduce a boundary only when a real dependency/invariant/change boundary exists.
+
+Current concentrated `internal/httpapi/` code may remain as bounded bootstrap while one small implementation slice is cohesive. Extract a feature/capability package before that concentration becomes an ownership trap, including when any of these triggers occurs:
+
+- a second materially independent product capability adds substantial policy to the same transport package;
+- policy must be reused by a non-HTTP caller or orchestration path;
+- an invariant is materially easier to test without HTTP objects;
+- handler files begin coordinating multiple capability policies rather than transport concerns;
+- dependency cycles or broad imports appear because ownership is unclear.
+
+When extraction occurs, move coherent policy/invariants, not files merely to match the example tree.
+
+### Go naming
+
+Use idiomatic Go:
+
+```text
+package names          short lowercase semantic words; no underscores
+exported identifiers   PascalCase
+unexported identifiers camelCase
+```
+
+Prefer `targetprofile.Service` when `Service` is clear in package context instead of redundant forms such as `targetprofile.TargetProfileService`. Preserve the full canonical semantic name when shortening would create ambiguity. Avoid Java-style names such as `TargetProfileManagerImpl`, `ITargetProfileRepository`, and `AbstractAttemptService`.
+
+SQL/sqlc operation names express semantics such as `GetAttempt`, `LockAttemptForSubmission`, and `InsertObservation`, not placeholders such as `Query1`, `GetData`, or `DoUpdate`.
+
+## Python / future Evaluator
+
+Do not materialize the Python runtime merely to satisfy this structure. When `services/evaluator/` is implemented, prefer:
+
+```text
+services/evaluator/
+└── src/evaluator/
+    ├── api/
+    ├── capabilities/
+    │   ├── writing_evaluation/
+    │   ├── speaking_evaluation/
+    │   └── speech_analysis/
+    ├── providers/
+    ├── generated/
+    └── config.py
+```
+
+Ownership:
+
+- `api/` owns FastAPI transport only;
+- `capabilities/` owns evaluator-specific feature/capability implementations;
+- `providers/` owns external model/service/tool adapters only;
+- `generated/` owns exact machine-contract generated models and is never hand-edited;
+- `config.py` owns bounded implementation configuration, not product semantics.
+
+Do not create these folders before the runtime or a real capability needs them.
+
+### Python naming
+
+Use idiomatic Python:
+
+```text
+packages/modules       snake_case
+classes/types          PascalCase
+functions/variables    snake_case
+module constants       UPPER_SNAKE_CASE only for real module-level constants
+```
+
+Examples include `target_profile.py`, `writing_evaluation/`, `TargetProfile`, and `evaluate_submission()`. Generated aliases/wire names remain contract-owned.
+
+## Shared semantic naming across runtimes
+
+The rule is:
+
+```text
+SEMANTIC NAME IS SHARED.
+LANGUAGE SYNTAX IS IDIOMATIC.
+WIRE IDENTITY IS EXACT.
+```
+
+For example, canonical `TargetProfile` normally appears as:
+
+```text
+TypeScript  folder target-profile/   type TargetProfile   value targetProfile
+Go          package targetprofile    type TargetProfile   value targetProfile
+Python      module target_profile    class TargetProfile  value target_profile
+HTTP/JSON   exact names from the machine contract
+```
+
+Do not normalize all languages to one casing scheme. Do not invent a local synonym for an existing canonical/domain concept unless the canonical vocabulary itself changes.
+
+OpenAPI/JSON/event field identity is owned by the exact machine contract. Generated bindings may expose language-idiomatic identifiers while serialization remains exact. Do not maintain handwritten duplicate DTO naming truth.
+
+## Shared-code promotion and generic-name review
+
+Default to keeping code with its owning feature/capability. Promote code to a cross-feature location only when:
+
+1. at least two real consumers exist;
+2. their semantics are genuinely the same;
+3. ownership can be stated precisely;
+4. promotion does not create a generic abstraction with no stable meaning.
+
+Prefer semantic cross-cutting names such as `api`, `i18n`, `query`, `security`, and `generated` over generic `common`, `helpers`, or `utils`.
+
+The following names are review smells rather than automatic bans:
+
+```text
+BaseService
+BaseRepository
+BaseController
+AbstractManager
+GenericRepository
+Manager
+Engine
+Framework
+CommonUtils
+SharedHelpers
+Helper
+Utils
+Mapper
+Registry
+```
+
+An abstraction with such a name must still identify its precise semantic owner and the real boundary it removes. If it cannot, keep the code feature-local or use the selected mature library.
+
+At protected application roots, do not introduce generic dumping-ground directories such as `shared/`, `common/`, `base/`, `helpers/`, `utils/`, `services/`, or `managers/` merely to make imports convenient.
+
+## File/package splitting
+
+Split by reason to change, semantic ownership, dependency boundary, or testability/invariant boundary, not arbitrary line count. Do not create a 20-file feature because a style template says so, and do not retain unrelated responsibilities in one huge file merely to avoid folders.
+
+The feature/package dependency graph remains acyclic. Do not break a cycle by moving unrelated code into `common`, `shared`, `base`, or `core`. Resolve the actual semantic owner or move orchestration to the correct higher-level owner.
+
+## Database naming
+
+PostgreSQL naming should remain consistent and unsurprising:
+
+- `snake_case` tables and columns;
+- plural table names only if the existing schema consistently uses that convention;
+- stable explicit constraint/index names where operationally useful;
+- semantic SQL/sqlc operation names.
+
+Do not cosmetically rename the current schema merely to satisfy a style preference. Database names are storage implementation, not canonical semantic authority.
+
+## Tests and generated code
+
+Prefer tests near the implementation they own when the language/framework supports it:
+
+- TypeScript feature/component tests near the feature/component;
+- Go package tests in the corresponding package as `*_test.go`;
+- future Python tests near the capability/module or in a compact pytest structure that preserves ownership;
+- browser/DB/cross-runtime acceptance tests at the relevant integration/E2E boundary.
+
+Do not centralize all tests into one generic tree when ownership is clearer through colocation.
+
+Generated artifacts live in explicit generated locations. Never mix hand-authored business logic into generated files and never hand-edit generated outputs. The flow remains:
+
+```text
+OpenAPI / SQL / canonical owner
+        ↓
+generator / materializer
+        ↓
+explicit generated location
+```
+
+Root verification owns deterministic drift detection.
+
+## Structural enforcement and scale test
+
+Use lightweight deterministic verification only where false positives are low. Suitable checks include generated drift, protected top-level responsibility roots, forbidden language-silo roots, existing browser→Go/Python→DB boundary tests, read-only verification automation, and obvious new generic dumping-ground directories at protected application roots. Do not build a giant architecture linter or enforce subjective ownership through brittle grep.
+
+Normal code review remains responsible for semantic ownership, abstraction quality, and whether a boundary has become worth extracting.
+
+This structure must remain clear when adding General Training Reading, Listening practice, Writing evaluation, Speaking evaluation, diagnostic assessment, planner, content administration, account/identity, and full mocks. Those additions should create or extend obvious feature/capability owners while shared infrastructure remains centralized. They must not require a global manager class, giant capability switch, duplicated per-feature infrastructure stack, or identical language folder template.
