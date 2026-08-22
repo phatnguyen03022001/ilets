@@ -37,10 +37,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"h2">) {
   );
 }
 
-function CardDescription({
-  className,
-  ...props
-}: React.ComponentProps<"p">) {
+function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
       data-slot="card-description"

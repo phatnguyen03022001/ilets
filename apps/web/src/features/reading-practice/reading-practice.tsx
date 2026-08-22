@@ -77,7 +77,9 @@ export default function ReadingPractice() {
         },
       });
       if (response.error || !response.data) {
-        throw new Error(response.error?.error.message ?? t("errors.targetSave"));
+        throw new Error(
+          response.error?.error.message ?? t("errors.targetSave"),
+        );
       }
       return response.data;
     },
@@ -197,9 +199,7 @@ export default function ReadingPractice() {
     <main className="mx-auto grid min-h-screen max-w-3xl gap-6 px-4 py-10 sm:px-6">
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("syntheticNotice")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("syntheticNotice")}</p>
       </header>
 
       {currentError && (
@@ -232,13 +232,12 @@ export default function ReadingPractice() {
                 min="3"
                 max="9"
                 step="0.5"
-                {...targetForm.register("minimumReadingBand", { required: true })}
+                {...targetForm.register("minimumReadingBand", {
+                  required: true,
+                })}
               />
             </div>
-            <Button
-              type="submit"
-              disabled={!ready || targetMutation.isPending}
-            >
+            <Button type="submit" disabled={!ready || targetMutation.isPending}>
               {t("saveTarget")}
             </Button>
             {targetQuery.data && (
@@ -273,7 +272,9 @@ export default function ReadingPractice() {
       {activity && (
         <Card aria-labelledby="activity-heading">
           <CardHeader>
-            <CardTitle id="activity-heading">{activity.stimulus.title}</CardTitle>
+            <CardTitle id="activity-heading">
+              {activity.stimulus.title}
+            </CardTitle>
             <CardDescription className="text-base leading-7 text-foreground">
               {activity.stimulus.text}
             </CardDescription>
@@ -344,9 +345,7 @@ export default function ReadingPractice() {
                 max: attempt.observation.max_score,
               })}
             </p>
-            <p className="text-sm text-muted-foreground">
-              {t("trainingOnly")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("trainingOnly")}</p>
             {attempt.feedback?.map((feedback) => (
               <div className="rounded-lg border p-4" key={feedback.item_id}>
                 <p>
