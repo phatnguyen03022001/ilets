@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: third-party capability inventory, provider lifecycle/selection rules, external-infrastructure applicability triggers, portability boundaries, external ingress/egress and data-sharing constraints, provider failure/degradation semantics, and external-service activation requirements
+OWNS: third-party capability inventory, provider lifecycle/selection rules, external-infrastructure applicability triggers, portability boundaries, external ingress/egress and data-sharing constraints, provider failure/degradation semantics, external processor lifecycle/deletion obligations, and external-service activation requirements
 DEPENDS_ON: ../CONSTITUTION.md, 03-media-youtube.md, 04-application-flows.md, 06-implementation-stack.md
 DOES_NOT_OWN: provider legal terms themselves, learning/mastery semantics, public API wire shape, deployment implementation, pricing plans, historical provider candidates, internal runtime-boundary topology, or provider internal architecture
 
@@ -21,32 +21,24 @@ provider adapter
 external service
 ```
 
-The capability is named for what the product needs, not after the vendor currently considered or selected.
-
-A product capability being required does **not** imply that an external provider is required. First-party/local/hosting-native execution remains eligible whenever it satisfies the same semantic, quality, security, reliability, and operational contract. No paid GitHub feature or paid external service is an architecture requirement merely because the underlying concern is required.
+A required product capability does not imply a required external provider. First-party/local/hosting-native execution remains eligible when it satisfies the same semantic, quality, security, reliability, and operational contract. No paid external service is required merely because the underlying concern exists.
 
 # Provider lifecycle
 
 Every external capability/provider relationship is in exactly one of:
 
-- `DEFERRED` — known possible external capability/provider route, but not required by the current implementation/release scope; no provider-selection work should occur until concrete external-route demand exists;
-- `TBD` — an external provider route is required for the current implementation/release direction but no provider is selected;
+- `DEFERRED` — external route is known but not required by current implementation/release scope;
+- `TBD` — an external route is required but no provider is selected;
 - `CANDIDATE` — under evaluation, no activation authority;
 - `SELECTED_FOR_IMPLEMENTATION` — approved implementation choice behind the declared boundary;
-- `ACTIVATION_BLOCKED` — selected but release/legal/privacy/security/calibration gates are unresolved;
+- `ACTIVATION_BLOCKED` — selected but release/legal/privacy/security/calibration gates remain unresolved;
 - `ACTIVE` — production-enabled under the current support declaration;
 - `SUSPENDED` — temporarily disabled after a material gate/provider failure;
 - `RETIRED` — no longer used for new work.
 
-The lifecycle applies to the **external-provider relationship**, not to whether the underlying product capability exists. A first-party/local implementation may exist while an external provider route remains `DEFERRED`.
+The lifecycle applies to the external relationship, not the underlying capability. `DEFERRED` is not a product failure. Promoting `DEFERRED → TBD` requires a concrete reason an external route is needed rather than a checklist item or vendor preference.
 
-The inventory `External-provider status` column uses only the lifecycle tokens above. Technology choices, first-party availability, demand conditions, and implementation notes belong in the boundary/invariant column.
-
-`DEFERRED` is not a missing-provider error. Promoting a route from `DEFERRED` to `TBD` requires an actual reason that an external route is needed for the scoped implementation/release; the existence of a capability, checklist item, or inventory row is not that reason.
-
-Before `DEFERRED → TBD`, the implementation decision states why the existing first-party/local/selected route cannot or should not satisfy the applicable contract, considering quality, security, reliability, operational burden, portability, and total cost.
-
-Historical candidates in `research/` or `archive/` have no provider status until explicitly adopted here.
+Historical candidates in `research/` or `archive/` have no active status until adopted here.
 
 # Selection order
 
@@ -66,78 +58,76 @@ portability + exit feasibility
 cost / latency / operational efficiency
 ```
 
-Cost cannot rescue an ineligible provider. A cheaper fallback cannot silently lower the evidence/quality floor.
+Cost cannot rescue an ineligible route. A cheaper fallback cannot silently lower the applicable evidence/content/privacy/security floor.
 
 # External-resource economy
 
-External services are used only for a capability that remains necessary after existing first-party/runtime resources are considered.
-
-Preferred route:
+Preferred route when outcomes are equivalent:
 
 ```text
-existing first-party or deterministic capability
+existing deterministic / first-party capability
         ↓
-existing ACTIVE/eligible provider route
+existing ACTIVE eligible provider route
         ↓
-new provider only when a real capability/quality/reliability gap remains
+new provider only for a demonstrated gap
 ```
 
 Rules:
 
-1. do not send work to AI/STT/TTS or another paid provider when an exact deterministic/local path satisfies the same contract;
-2. reuse a prior valid provider result when logical input, source state, model/policy version, and freshness make reuse correct;
-3. deduplicate retries by logical work identity so network retry cannot create duplicate provider cost;
-4. cache/derived output remains non-authoritative and is invalidated when relevant source/policy/model/version changes;
-5. optional expensive work should be asynchronous, batched, rate-limited, or skipped before quality/evidence standards are lowered;
-6. collect provider latency/usage/cost by capability so a new route is justified by measured value;
-7. adding a second provider for one capability requires explicit reliability/quality/cost/exit benefit and cannot create two semantic owners;
-8. provider optimization consumes the minimum necessary learner/source data.
+1. do not send work externally when an exact local/deterministic path satisfies the same contract;
+2. reuse a valid prior result only when logical input, source state, model/policy version, access scope, and freshness make reuse correct;
+3. deduplicate retry by logical work identity so ambiguous/repeated calls do not duplicate provider cost/work;
+4. cache/provider output remains non-authoritative;
+5. optional expensive work may be delayed/batched/rate-limited/omitted before standards are lowered;
+6. measure latency/usage/cost by capability where provider operation is material;
+7. a second provider needs explicit quality/reliability/cost/exit value and never creates a second semantic owner;
+8. provider optimization still sends minimum necessary data.
 
 # External trust and data boundaries
 
-`06-implementation-stack.md` owns the general implementation-boundary model. This file owns the external-provider-specific trust/egress/ingress rules below.
+`06-implementation-stack.md` owns the generic runtime boundary. This file owns the detailed external-provider rules.
 
 ## External data egress
 
-Before learner/source/content data crosses to an external AI/STT/TTS/identity/storage/other processor route:
+Before learner/source/content data leaves controlled runtime for AI/STT/TTS/identity/storage/another processor:
 
-- the capability/provider relationship is selected/eligible for that use;
-- only the minimum necessary data for the declared purpose is sent;
-- rights/privacy/consent/retention conditions are satisfied where applicable;
+- the capability/provider relationship is selected and eligible for that use;
+- only minimum necessary data for the declared purpose is sent;
+- applicable rights/privacy/consent/retention conditions are satisfied;
 - provider/model/tool/version provenance is retained where consequential;
-- provider training/reuse/retention behavior is compatible with the declared policy;
-- provider credentials/secrets remain isolated from learner/product state and are never exposed to browser/client payloads;
-- retry uses one logical work identity so ambiguous/repeated network execution cannot duplicate cost or semantic work;
-- fallback is used only when the alternate route independently satisfies the same applicable quality/privacy/security floor.
+- provider training/reuse/retention behavior is compatible with declared policy;
+- credentials/secrets remain isolated from learner/product state and browser payloads;
+- retry uses one logical work identity and handles ambiguous outcomes safely;
+- fallback is used only when the alternate route independently meets the same applicable floor.
 
-Provider output is an untrusted/bounded external observation or capability signal until the owning Core/Assessment/content/product policy validates/interprets it. HTTP success, provider confidence, model self-assertion, or provider status does not create learner evidence, certification, content activation, or product support.
+Provider output is an untrusted bounded observation/signal until owning Core/Assessment/content/product policy validates/interprets it. HTTP success, provider confidence, model self-assertion, or provider status does not create learner evidence, certification, content activation, or product support.
 
 ## External URL/media ingress
 
-Learner/provider URLs are untrusted references, not authorization to access arbitrary network resources.
+Learner/provider URLs are untrusted references, not authorization for arbitrary network access.
 
-Any external resolver/fetch path must constrain as applicable:
+Any external resolver/fetch path constrains as applicable:
 
-- supported source/provider and allowed URL schemes;
-- redirects and final destination;
+- supported source/provider and URL schemes;
+- redirects/final destination;
 - private/internal/metadata-network reachability;
 - request/body/media size and execution time;
 - metadata/content provenance;
 - rights/source/product eligibility;
-- allowed extraction/download behavior.
+- permitted extraction/download behavior.
 
-The product does not assume arbitrary scraping/download from a URL merely because the URL resolves. Media/provider semantics remain subject to `03-media-youtube.md` where relevant.
+A resolvable URL does not imply scraping/download permission. Media-specific semantics remain subject to `03-media-youtube.md`.
 
 ## Provider callback / webhook ingress
 
-Inbound callbacks are conditional on a selected provider that actually requires them.
+Callbacks are conditional on a selected provider that actually requires them.
 
-When present, the boundary requires:
+When present:
 
 ```text
 provider callback
   ↓
-signature / provider authentication verification
+provider authentication / signature verification
   ↓
 replay + idempotency protection
   ↓
@@ -145,96 +135,105 @@ bounded structural validation
   ↓
 authoritative work/event association
   ↓
-safe freshness/timestamp checks where material
+safe freshness checks where material
   ↓
 Core-owned transaction + durable audit/state
   ↓
 bounded response
 ```
 
-Callback timestamps are external observations, not causal identity. A provider callback cannot directly advance learner Progression, certify Band, activate content, or mutate evidence outside the normal owning policy.
+Callback timestamps are external observations, not causal identity. Callback/provider success cannot directly advance Progression, certify Band, activate content, or mutate evidence outside normal policy.
 
 ## External identity/session boundary
 
-Identity capability is required, but an external identity provider is optional. OAuth/JWT/provider-specific mechanics exist only if selected. Before auth-sensitive machine-contract encoding is frozen, the initial credential/session transport decision required by `05-api.md` must resolve credential custody, browser transport/storage, revocation/logout, guest→account transition, CSRF/CORS implications, admin/service separation, and key/token rotation appropriate to the selected mechanism.
+Identity capability is required; external identity is optional. Provider-specific OAuth/JWT mechanics exist only if selected. The auth/session transport decision required by `05-api.md` must precede exact public security-contract encoding.
 
-Provider identity never becomes canonical learner identity; Core-owned stable `learner_id` remains the product reference.
+Provider identity never becomes canonical learner identity; Core-owned stable learner identity remains the product reference. Credential custody, revocation/logout, guest→account association, admin/service separation, and key/token handling follow the selected mechanism without redefining learning state.
 
-# External infrastructure trigger rules
+## External object/media processor boundary
 
-Required product/runtime concerns do not automatically require external infrastructure products. External routes remain `DEFERRED` until their trigger exists.
+External object/media storage or processing is eligible only behind Core-owned authoritative references/metadata and the data-lifecycle rules in `06-implementation-stack.md`. A storage/provider receipt does not activate content or mutate learner state.
 
-- **Identity / credential custody** — identity capability is required; external identity is conditional on the selected auth route. OAuth-specific flows exist only if OAuth is selected. JWT signing/rotation is conditional on JWT selection; any selected credential/session route still requires revocation/rotation semantics appropriate to that route.
-- **Managed PostgreSQL** — PostgreSQL-compatible persistence semantics are selected, but managed hosting is conditional. External management is justified by operational/recovery/cost needs, not by the database concern itself.
-- **Object storage** — external storage becomes required only when retained/large artifacts cannot be handled safely/practically by the selected deployment while preserving access, retention, backup, integrity, privacy, and orphan-reconciliation requirements.
-- **CDN / edge caching** — conditional on eligible asset traffic/latency/geographic delivery need; never used to cache private/authoritative state incorrectly.
-- **DNS / hosting / public edge** — concrete DNS/hosting is required only once a deployment/hostname exists. Hosting-native routing/TLS/abuse protection may satisfy the concern; no separate external gateway/load-balancer/WAF product is implied.
-- **WAF / dedicated DDoS protection** — conditional on public-edge risk/traffic/deployment; provider-native protection may satisfy the concern when adequate.
-- **Observability / error monitoring** — operational telemetry is required before support, but an external observability provider is optional; first-party/native logs/metrics may satisfy the contract.
-- **Email** — external transactional email is conditional on a concrete account/product notification flow.
-- **Provider callbacks / inbound webhooks** — conditional on a selected external provider requiring callback delivery.
-- **AI / LLM / STT / TTS** — external routes remain optional behind bounded ports; use only when local/deterministic capability cannot satisfy the required quality/coverage/operational contract.
-- **External feature flags** — conditional; bounded first-party flags/kill switches may satisfy safe rollout/degradation needs.
-- **External queue/broker/PubSub** — conditional on measured dispatch reliability, throughput, fan-out, or isolation need that DB-backed durable work/outbox semantics cannot satisfy. Async work alone is not the trigger.
-- **External API gateway/load balancer/reverse proxy** — conditional on actual deployment/public-edge/multiple-instance routing need, not on API existence itself.
+If direct browser byte transfer is later used, provider grants remain narrow/temporary and Core must authorize and reconcile the transfer before the artifact becomes usable. Public anonymous permanence is not implied.
+
+# External processor retention/deletion
+
+The authoritative product retention/deletion decision is owned at the product/runtime data boundary in `06-implementation-stack.md`. For every applicable external processor/provider, this owner must establish before activation:
+
+- what data/material may be retained or reused;
+- how deletion/export obligations for that route are executed/reconciled;
+- how ambiguous/provider-failed deletion is represented and retried safely;
+- how provider-side copies/backups/derived artifacts are handled according to the declared applicable policy;
+- how provider change/retirement prevents deleted/ineligible data from silently returning to active product use.
+
+No retention duration is invented here. Provider deletion completion is an external fact requiring appropriate confirmation/reconciliation, not automatic product truth merely because a request was sent.
+
+# Conditional AI/tool capability boundary
+
+No model tool execution is selected by this architecture. If introduced later:
+
+- prompt, learner, content, or provider text cannot grant tool authority;
+- tool capabilities are explicitly allowlisted/bounded by application policy;
+- network/file/secret/provider access is not inferred from model text;
+- tool requests and outputs remain untrusted until application validation;
+- model/tool execution cannot bypass Core authority, SSRF restrictions, provider eligibility, rights/privacy rules, or learner-data policy.
+
+# External infrastructure triggers
+
+External infrastructure products remain `DEFERRED` until their trigger exists.
+
+- **Identity** — external custody only if selected auth route needs it.
+- **Managed PostgreSQL** — managed hosting only if operations/recovery/cost justify it; PostgreSQL-compatible semantics remain selected independently.
+- **Object storage** — external route only when retained/large artifacts require it beyond selected deployment capabilities.
+- **CDN/edge cache** — eligible traffic/latency need only; never private/authoritative state authority.
+- **Hosting/DNS/public edge** — concrete provider only once deployment/hostname exists; no separate gateway/LB/WAF implied.
+- **WAF/DDoS service** — only if public-edge risk/deployment warrants a dedicated product.
+- **Observability** — telemetry is required before support, external provider is optional.
+- **Email** — only when a concrete product/account notification flow requires it.
+- **AI/LLM/STT/TTS** — optional behind bounded capability ports when local/deterministic execution cannot satisfy required contract.
+- **Feature-flag provider** — only if bounded first-party flags are insufficient.
+- **Queue/broker/PubSub** — only after measured dispatch reliability/throughput/fan-out need beyond durable DB work/recoverable dispatch.
+- **API gateway/load balancer/reverse proxy** — only when deployment/public-edge/multiple-instance routing needs it.
+- **Callbacks/webhooks** — only for a selected provider requiring callback delivery.
 
 # Mandatory portability boundaries
 
-The first implementation treats these as mandatory strategic boundaries regardless of whether the first concrete route is local, self-hosted, or external:
+The first implementation treats these as strategic portability boundaries regardless of whether the first route is local/self-hosted/external:
 
-1. **Database**;
-2. **AI/model capability used for consequential evaluation, and for bounded generation/validation when those routes are implemented**;
-3. **Identity**.
+1. Database;
+2. AI/model capability used for consequential evaluation and optional bounded generation/validation when implemented;
+3. Identity.
 
-This does not make runtime content generation mandatory. When AI/model capability is used for evaluation, generation, or validation, provider-specific semantics do not become canonical product/content truth.
-
-Object storage, email, analytics, observability, payments, hosting, edge/security, and other external capabilities should remain replaceable where practical, but the three above require explicit exit design from the beginning.
-
-Portability does not require a generic multi-provider framework at bootstrap. For one concrete route, minimum sufficient shape is a narrow capability interface/port where a real substitution boundary exists, provider-independent internal identity/state, and credible export/exit path. Dynamic routing, provider registries, weighted failover, or multiple simultaneously active adapters require demonstrated need.
+Portability does not require a generic multi-provider framework. Minimum shape is a narrow capability boundary where substitution is real, provider-independent product identity/state, and credible export/exit. Dynamic routing, weighted failover, and multiple active adapters require demonstrated need.
 
 # Initial capability inventory
 
 | Capability | Runtime owner | External-provider status | Required boundary/invariant |
 |---|---|---|---|
-| Identity / credential custody | Core API integration | `DEFERRED` | identity capability required, external custody not preselected; stable internal learner identity; provider ID never becomes learning identity; selected route must meet security/revocation/export requirements; OAuth/JWT mechanics only if selected |
-| PostgreSQL-compatible structured persistence | Core API | `DEFERRED` | PostgreSQL semantics selected; local/self-managed/managed deployment remains implementation choice; migrations, backup/restore/PITR where applicable, provider exit where external |
-| Object storage | Core API | `DEFERRED` | external object storage only when retained/large artifacts require it; private access, integrity/reference metadata, retention/deletion/backup/orphan-reconciliation policy |
-| AI / LLM productive evaluation | Evaluator | `DEFERRED` | external model provider not pre-required; adapter/portability boundary; minimum necessary data; output Observation candidate, never certification |
-| AI / LLM bounded content generation / model-assisted validation | Evaluator | `DEFERRED` | optional route only on concrete demand; candidate/signals non-authoritative; exact revision/provenance/policy identity preserved |
-| Speech-to-text / acoustic analysis | Evaluator | `DEFERRED` | local/selected evaluator/external routes eligible; minimum necessary data + quality/provenance/uncertainty preserved |
-| Text-to-speech / generated audio | content/media tooling | `DEFERRED` | quality/provenance fit; owned/licensed audio may satisfy demand without TTS |
-| YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | eligible embed/Data API capability path selected; activation still requires live policy/product gates; no assumed arbitrary extraction |
-| Transactional email | Core API | `DEFERRED` | only when concrete notification/account flow requires it; transport only |
-| Product analytics | Web/Core API | `DEFERRED` | first-party minimal events may exist; no raw learner-content shadow database |
-| Operational observability/error monitoring | all runtime units | `DEFERRED` | telemetry concern required before support, external provider optional; redact secrets/sensitive learner payloads |
-| Payments / billing | Core API | `DEFERRED` | deferred until monetization requires it; entitlement cannot alter learning/evidence truth |
-| Hosting / DNS / public edge | deployable owners | `DEFERRED` | provider/topology not selected; concrete deployment must satisfy TLS, routing, health, security, recovery, version visibility; separate gateway/LB/WAF not implied |
-| CDN / edge caching | Web/asset delivery | `DEFERRED` | only when eligible asset traffic/latency justifies it; delivery optimization, never authority |
-| WAF / dedicated DDoS service | public edge | `DEFERRED` | dedicated product only when risk/traffic/deployment justifies; hosting-native controls may satisfy concern |
-| Provider callback / inbound webhook handling | Core API | `DEFERRED` | only for selected provider requiring callbacks; signature/auth, replay/idempotency, authoritative association + audit required |
-| External queue / broker / PubSub | Core API dispatch | `DEFERRED` | only after measured reliability/throughput/fan-out need beyond durable DB work/outbox; never business-state authority |
-| Feature flags | Core API/Web | `DEFERRED` | first-party bounded flags/kill switches may exist; external service only on demonstrated need and never hidden policy engine |
+| Identity / credential custody | Core API integration | `DEFERRED` | stable internal learner identity; external route not preselected; selected route supports appropriate revocation/export/security |
+| PostgreSQL-compatible persistence hosting | Core API | `DEFERRED` | PostgreSQL semantics selected; hosting route remains deployment choice; provider exit/recovery if external |
+| Object storage | Core API | `DEFERRED` | only when retained/large artifacts require it; private access, integrity, lifecycle, backup/orphan reconciliation |
+| AI / LLM productive evaluation | Evaluator | `DEFERRED` | provider not pre-required; bounded adapter; minimum data; output never certification |
+| AI / LLM bounded generation / model-assisted validation | Evaluator | `DEFERRED` | optional demand-driven candidate/signals; provenance and exact revision/policy identity preserved |
+| Speech-to-text / acoustic analysis | Evaluator | `DEFERRED` | local/external routes eligible; quality/provenance/uncertainty preserved |
+| Text-to-speech / generated audio | content/media capability | `DEFERRED` | use only when content demand requires it and quality/provenance fit |
+| YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | supported embed/Data API capability path; activation still requires live policy/product gates; no arbitrary extraction |
+| Transactional email | Core API | `DEFERRED` | only for concrete notification/account flow; transport only |
+| Product analytics | Web/Core API | `DEFERRED` | minimal classified events; no raw learner-content shadow authority |
+| Operational observability | all runtime units | `DEFERRED` | telemetry concern required before support; external provider optional |
+| Payments / billing | Core API | `DEFERRED` | only when product monetization actually requires it; entitlement cannot alter learning/evidence truth |
+| Hosting / DNS / public edge | deployable owners | `DEFERRED` | concrete route must satisfy TLS/routing/health/security/recovery/version visibility |
+| CDN / edge caching | Web/assets | `DEFERRED` | only eligible derived/static assets under privacy/rights/freshness rules |
+| WAF / DDoS service | public edge | `DEFERRED` | dedicated service only when risk/deployment justifies it |
+| Provider callbacks | Core API | `DEFERRED` | only selected provider callbacks; auth/replay/association/audit required |
+| External queue / broker / PubSub | Core dispatch | `DEFERRED` | only beyond measured durable DB/recoverable-dispatch capability |
+| Feature flags | Core API/Web | `DEFERRED` | external provider optional; flags never hidden policy authority |
 
-Research may contain named vendor candidates. Canonical design does not repeat those names until a provider actually enters this lifecycle.
-
-# Identity requirements
-
-Regardless of implementation/provider route:
-
-- credential custody stays outside learning-domain records;
-- learning state references stable internal `learner_id`;
-- guest→account merge requires explicit identity-safe semantics;
-- same-email identities are not silently linked;
-- account export/deletion capability exists before a support declaration that depends on it;
-- privileged/admin access is a separate security boundary;
-- session design preserves safe revocation without unnecessary provider coupling;
-- least-privilege service/admin access and secret/key/token rotation/revocation match the actually selected credential mechanism.
-
-Exact token/session durations are implementation/security policy, not canonical constants.
+Research may contain named candidates; canonical design does not repeat them until a provider enters this lifecycle.
 
 # Learner data + AI processor rules
 
-When an external AI/data processor is used, default processor posture is:
+When an external AI/data processor is used:
 
 ```text
 training/reuse of learner content by processor = prohibited unless explicitly approved
@@ -245,94 +244,48 @@ provider/model provenance                      = required where material
 
 AI route selection follows privacy + semantic quality + reliability eligibility before cost/latency optimization.
 
-# Audio/media privacy
+Learner audio is ephemeral-by-default unless product purpose explicitly requires retention. Prefer temporary processing and persisted derived observations/provenance over permanent raw audio. Any retained audio has explicit lifecycle state and participates in deletion/backup reconciliation.
 
-Learner audio is ephemeral-by-default unless product purpose explicitly requires retention.
+# Durable external work, retry, and fallback
 
-Prefer local preview where practical, temporary processing, persisted derived observations/provenance rather than permanent raw audio, explicit retention state when retained, user-visible capture disclosure, and deletion/backup behavior that prevents deleted media from silently returning to normal use after restore.
+Learner-visible accepted submission corresponds to durable authoritative Core state plus required recoverable continuation before acknowledgement. Provider dispatch itself may occur later and outside the transaction.
 
-# Durable submission rule
+Third-party retry is bounded, deduplicated/idempotent, classified transient/permanent/ambiguous, observable, and tied to one logical work identity. A timeout does not prove remote failure or non-execution. Ambiguous outcomes remain unresolved until safe reconciliation.
 
-A learner-visible accepted submission corresponds to durable authoritative product state and required recoverable continuation before success acknowledgement.
+Fallback is valid only when a pre-approved route independently meets the same applicable quality/privacy/security floor. Otherwise the product remains delayed/unavailable or requests appropriate replacement/re-evidence; it does not fabricate a score or lower standards.
 
-```text
-authoritative transaction
-  ├─ Attempt / product work
-  └─ required pending-work/outbox/recoverable marker
-      ↓
-commit
-      ↓
-ACK accepted
-      ↓
-async provider/evaluator dispatch may continue
-```
+# Database, queue, analytics, and observability provider boundaries
 
-An evaluator/provider outage may delay evaluation. It must not lose accepted work or fabricate a score. Dispatch itself need not occur inside the transaction.
+Managed DB/provider recovery must preserve the Core commit boundary, tested restore, migration discipline, and credible provider exit before support. Cache, broker, analytics, search/vector stores never become learner/product authority.
 
-# Retry + fallback
+Async evaluation/generation/validation alone does not justify a broker. Dedicated dispatch infrastructure appears only after measured need; it never becomes business-state authority.
 
-Third-party retry is bounded, idempotent/deduplicated, classified transient/permanent/ambiguous, observable, tied to one logical work identity, and cost-aware after correctness. Exponential backoff/jitter applies where retrying immediately would worsen a transient route; exact retry budgets remain implementation policy.
-
-A timeout does not prove remote failure. Ambiguous outcomes remain unresolved until safe authoritative reconciliation.
-
-Fallback is valid only when a pre-approved route meets the same applicable quality/privacy/security floor. Otherwise product state remains delayed/unavailable or requests appropriate re-evidence/replacement.
-
-# Database/recovery baseline
-
-Initial structured durable product state uses PostgreSQL semantics behind a replaceable implementation boundary.
-
-Before production support, selected implementation demonstrates as applicable point-in-time recovery, independent logical export/backup, restore verification, safe migration discipline, provider exit/recovery test, and preservation of accepted learner work at application commit boundary.
-
-Cache, broker, analytics store, search index, or vector store cannot become authority for learner/product state.
-
-# Queue/broker rule
-
-Asynchronous evaluation/content generation/model-assisted validation does not itself justify a broker.
-
-Initial semantic direction:
-
-```text
-authoritative database state
-+ durable work/outbox/recoverable semantics
-+ idempotent bounded execution
-```
-
-Dedicated dispatch infrastructure appears only after measured reliability/throughput/fan-out need. DLQ semantics, Pub/Sub, or event-driven topology are consequences of that selected dispatch architecture, not bootstrap requirements. Dispatch infrastructure never becomes business-state authority.
-
-# Analytics + observability
-
-Keep separate product analytics, service/operational telemetry, privileged/admin audit, security events, provider/evaluator/generator/validator latency/cost, and learner-visible accepted-work state. Retention may differ by class. Sensitive payloads/secrets are redacted by default. External observability remains optional.
-
-# Payments + entitlements
-
-Tiers may differ in volume, optional depth, frequency, or expensive-capability access. They may not change canonical learning truth or silently lower evidence/content quality for the same intended consequence.
-
-Quota pressure may reduce optional work or delay noninteractive work. It cannot create a lower-quality scoring/content-validation route unless that route independently passes the same applicable eligibility floor.
+Product analytics, operational telemetry, privileged audit, security events, provider/evaluator cost/latency, and learner-visible accepted-work state remain separate classes with appropriate access/retention rules. External observability remains optional.
 
 # Provider failure product behavior
 
-An external-provider failure maps to retrying, delayed, degraded-safe, temporarily unavailable, or approved equivalent fallback. It never becomes fake learner failure/mastery, silent content loss/activation, or silent quality downgrade.
+Provider failure maps to bounded retry, delayed, degraded-safe, temporarily unavailable, or approved equivalent fallback. It never becomes fake learner weakness/mastery, silent content activation/loss, or silent quality downgrade.
 
 # Activation gate
 
-An external capability/provider may become `ACTIVE` only when the current product-support declaration confirms all applicable items:
+An external capability/provider may become `ACTIVE` only when the current release/support declaration confirms applicable:
 
 - terms/licensing/rights compatibility;
-- privacy/data-processing/learner-content reuse conditions;
+- privacy/data processing/content reuse conditions;
 - region/residency implications where material;
-- security/secrets/credential boundaries;
+- security/secrets/credential boundary;
 - minimum-necessary data and egress purpose;
 - availability/rate limits/quotas;
-- cost assumptions + kill switch;
+- measured cost assumptions + kill/degrade path;
 - deletion/export behavior;
 - backup/restore implications;
-- callback/webhook authenticity/replay behavior where applicable;
+- callback authenticity/replay behavior where applicable;
 - fallback/degraded behavior;
 - exit/portability path;
-- evaluator/content-generation/validation quality/calibration where applicable.
+- evaluator/generation/validation quality/calibration where applicable.
 
 # Replacement invariant
 
-Replacing an implementation/provider route must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, practice-mode IDs, content semantic identity/revision rules, learner identity, or historical runtime meaning.
+Replacing an external implementation/provider route must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature/practice IDs, content semantic identity/revision, learner identity, or historical runtime meaning.
 
-Provider/model/version changes preserve the provider-neutral boundary and compatibility/provenance needed by consumers. If provider replacement changes canonical learning/product/content semantics, the provider boundary was incorrectly designed.
+Provider/model/version changes preserve provider-neutral contract/provenance and compatibility required by consumers. If provider replacement changes canonical semantics, the provider boundary was incorrectly designed.
