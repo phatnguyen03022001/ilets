@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, runtime execution/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
-DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
+DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
 # Application Flows
 
@@ -39,6 +39,152 @@ Web
 ```
 
 The evaluator does not certify Band, mutate learner progression, declare product coverage, activate content, or choose the final next action.
+
+# Runtime execution patterns
+
+These patterns define legal end-to-end execution behavior. Exact HTTP fields/status mappings belong to `05-api.md` and future machine contracts; exact persistence technology belongs to implementation stack/deployment decisions.
+
+## A. Authoritative durable mutation
+
+```text
+caller / product action
+        ↓
+structural + semantic validation / preconditions
+        ↓
+authentication + authorization/capability where applicable
+        ↓
+idempotency + concurrency protection where applicable
+        ↓
+authoritative transaction
+        ↓
+COMMIT
+        ↓
+register/dispatch downstream side effects or work
+        ↓
+acknowledge success
+```
+
+A learner/product success acknowledgement must not precede the authoritative durable commit it claims succeeded. A later side effect may remain pending after the commit when the semantic operation is explicitly asynchronous, but accepted authoritative work must not disappear because a downstream provider is unavailable.
+
+## B. Asynchronous accepted work
+
+```text
+request
+  ↓
+validate + establish one logical work identity
+  ↓
+persist authoritative pending/work state
+  ↓
+COMMIT
+  ↓
+acknowledge accepted/pending
+  ↓
+bounded asynchronous execution
+  ↓
+bounded eligible retry/backoff
+  ↓
+persist result / unavailable / unresolved failure state
+  ↓
+SSE update hint and/or resource refresh
+```
+
+Rules:
+
+- retry preserves one logical work identity and cannot duplicate accepted learner work, EvidenceFacts, content revisions, or paid/provider work;
+- retry eligibility distinguishes transient, permanent, and ambiguous outcomes;
+- exponential backoff and jitter are used where repeated immediate retry would worsen a transient route; exact budgets/counts remain implementation policy;
+- a timeout does not prove the remote operation failed, so ambiguous outcomes remain unresolved until authoritative state can be established safely;
+- cancellation propagates where safe, but cancellation of a caller connection does not roll back work already authoritatively committed;
+- infrastructure/provider failure is not learner failure, a fake score, or a content-quality judgment.
+
+## C. Internal capability invocation
+
+```text
+Core API authoritative work/state
+        ↓
+exact internal machine contract
+        ↓
+deadline + cancellation context
+        ↓
+Evaluator capability
+        ↓
+bounded response + provenance/quality/uncertainty
+        ↓
+Core API validates contract + work identity
+        ↓
+Assessment / content / product policy interprets the result
+```
+
+HTTP/network success from Python establishes only that a bounded capability response arrived. It does not make evaluator/generator/validator output authoritative learner evidence, certification, content activation, or product support.
+
+Every network/provider boundary declares a caller deadline, retry eligibility/classification, idempotency behavior, safe fallback, and capacity/backpressure behavior when material. A separate circuit-breaker product is not required at bootstrap; circuit-breaker behavior may be introduced for repeatedly failing external routes when measured need justifies it.
+
+## D. Privileged operational mutation
+
+```text
+authenticated identity
+        ↓
+applicable privileged capability
+        ↓
+current state + preconditions
+        ↓
+legal operational mutation
+        ↓
+durable privileged audit
+        ↓
+COMMIT
+        ↓
+response
+```
+
+Capability remains distinct from learning authority, Assessment/evidence authority, validation-bypass authority, and historical ContentRevision mutation authority.
+
+## E. Event/status propagation
+
+```text
+authoritative state change
+        ↓
+event/update hint
+        ↓
+SSE
+        ↓
+Web refresh/presentation
+```
+
+SSE is delivery, not state authority. Persistent current state remains queryable through resources, duplicate/reordered hints are tolerated, and reconnect cannot fabricate a transition.
+
+## F. Scheduled/background work
+
+Scheduled, cron-like, batch, maintenance, or background work is allowed when a real product/operational need exists; no cron platform is required merely by this design.
+
+When used:
+
+- duplicate-sensitive execution has one logical work identity;
+- execution is bounded and observable;
+- retries are safe/idempotent or are not performed;
+- current/last outcome remains inspectable where operationally material;
+- background work cannot silently mutate learner/evidence/content meaning outside the normal owning policies and legal transitions.
+
+## G. Backpressure and capacity protection
+
+When asynchronous/provider demand exceeds safe execution capacity:
+
+- preserve already accepted authoritative work;
+- bound in-process/external concurrency and pending dispatch;
+- delay, rate-limit, or honestly reject new optional work according to product semantics;
+- expose backlog/pending/degraded state rather than creating unbounded memory/process/provider queues;
+- do not lower evaluation/content/evidence quality merely to drain backlog;
+- introduce dedicated queue/broker infrastructure only when measured reliability/throughput requirements justify it.
+
+## Distributed/network failure assumptions
+
+- network calls are not atomic database transactions;
+- cross-runtime/provider work cannot rely on distributed transactions by default;
+- retry must not assume the first call failed solely because the caller timed out;
+- provider/network partitions or ambiguous acknowledgement preserve pending/unknown operational truth until resolved safely;
+- wall-clock timestamps may support audit/recency but do not by themselves establish global causal ordering, idempotency identity, or concurrency correctness;
+- event/derived/provider state may lag authoritative Core-API state and must expose pending/stale/unavailable semantics honestly;
+- distributed locks, leader election, Saga orchestration, or other distributed coordination are introduced only when an actual invariant spans multiple independent authorities and simpler single-owner transaction/work semantics cannot satisfy it.
 
 # Planner decision contract
 
