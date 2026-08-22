@@ -285,6 +285,7 @@ func TestBootstrapReadingAcceptanceAndRedTeam(t *testing.T) {
 	server.Close()
 	server = httptest.NewServer(New(pool, Config{Environment: "test", WebOrigins: []string{testOrigin}, BuildVersion: "integration-restart"}, logger))
 	learnerA.base = server.URL
+	learnerB.base = server.URL
 	if got := learnerA.do(t, http.MethodGet, "/v1/me", nil, "", "").status; got != 200 {
 		t.Fatalf("session did not survive Core restart: %d", got)
 	}
