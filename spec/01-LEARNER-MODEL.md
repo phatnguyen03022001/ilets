@@ -51,7 +51,7 @@ Changing variant is an explicit learner target change, not an implicit planner o
 
 Skill capability references canonical Skill Leaves from `03-SKILLS.md`.
 
-The learner model requires the system to represent, as evidence permits, which leaves are unobserved, developing, currently supported, weak under a defined context, or in need of fresh evidence. This file does not define the measurement rule behind those states.
+The learner model requires the system to represent, as evidence permits, whether a leaf is unobserved/unresolved, under active learning, currently supported, observed below a defined requirement/context, or in need of fresh evidence. These are **conceptual learner conditions**, not an additional canonical state enum. `08-ASSESSMENT.md` owns evidence states and `09-PROGRESSION.md` owns `MasteryEstimate`, `GapEvaluation`, and transition semantics.
 
 Variant-specific leaves such as General Training Writing Task-1 capability are relevant only when the learner's target claim includes that construct.
 
@@ -96,7 +96,9 @@ Preference, skipping, abandonment, or friction are not ability evidence by thems
 
 The structured learning program targets Bands 3–9.
 
-Bands 0–2 remain diagnostic/external boundaries. A learner below the Band-3 structured entry range receives diagnosis and foundational remediation before entering the canonical Band-3 pathway. The band boundary is owned by `05-BANDS.md`.
+Bands 0–2 remain diagnostic/external boundaries and do not create Band-0/1/2 Curriculum Nodes, Band certifications, or a parallel lower-band learning taxonomy. A learner below the Band-3 structured entry range may receive diagnosis and foundational remediation **toward Band-3 entry** by using existing canonical Skill/Knowledge prerequisites with appropriately scaffolded content. If a need cannot be represented by the current canonical foundation, it remains unresolved/outside the structured route rather than causing implementation to invent a sub-Band-3 curriculum.
+
+The band boundary is owned by `05-BANDS.md`.
 
 # Starting state
 
