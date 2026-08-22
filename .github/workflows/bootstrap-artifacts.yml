@@ -1,6 +1,7 @@
-name: bootstrap-artifacts
+name: bootstrap-artifacts-readonly
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -11,16 +12,13 @@ on:
       - .github/workflows/bootstrap-artifacts.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   generate:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version: '1.27.0'
@@ -28,22 +26,21 @@ jobs:
         with:
           node-version: '24.19.0'
       - run: corepack enable && corepack prepare pnpm@11.21.0 --activate
-      - name: Resolve locked web graph
+      - name: Resolve locked web graph locally
         working-directory: apps/web
         run: pnpm install --lockfile-only --no-frozen-lockfile
-      - name: Generate contract bindings
+      - name: Generate contract bindings using repository-local command
         run: ./tools/contracts/generate.sh
-      - name: Resolve Go module graph
+      - name: Resolve Go module graph locally
         working-directory: services/core-api
         run: go mod tidy
-      - name: Commit generated artifacts
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add apps/web/pnpm-lock.yaml apps/web/src/generated/public-v1.ts services/core-api/go.mod services/core-api/go.sum services/core-api/internal/httpapi/generated/public_v1.gen.go
-          if git diff --cached --quiet; then
-            echo "generated artifacts already current"
-          else
-            git commit -m "Materialize generated bootstrap artifacts"
-            git push origin HEAD:main
-          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-generated-readonly
+          if-no-files-found: error
+          path: |
+            apps/web/pnpm-lock.yaml
+            apps/web/src/generated/public-v1.ts
+            services/core-api/go.mod
+            services/core-api/go.sum
+            services/core-api/internal/httpapi/generated/public_v1.gen.go
