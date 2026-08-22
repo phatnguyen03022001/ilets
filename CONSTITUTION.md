@@ -63,6 +63,18 @@ DEPENDS_ON: ...
 DOES_NOT_OWN: ...
 ```
 
+Metadata semantics are exact:
+
+- `OWNS` names the semantic authority this document is allowed to define;
+- `DOES_NOT_OWN` names nearby semantics that must resolve elsewhere rather than being redefined here;
+- `DEPENDS_ON` lists the **direct canonical semantic-definition prerequisites** required to define or interpret this owner's own rules correctly.
+
+`DEPENDS_ON` is **not** a runtime call graph, source-code import graph, transitive dependency closure, list of every file mentioned, or list of downstream consumers. A document may reference a downstream consumer, implementation artifact, evidence record, or supporting material without creating a reverse semantic dependency.
+
+Conversely, if this owner cannot define one of its canonical rules correctly without consuming another canonical owner's semantics, that direct owner belongs in `DEPENDS_ON` even when no runtime call exists.
+
+The canonical semantic-definition dependency graph must remain acyclic. Tooling must not infer service startup order, package imports, network direction, or data-flow direction from `DEPENDS_ON`.
+
 Do not add document bureaucracy such as author, editor, version, created-at, or last-reviewed metadata. Git is the history mechanism.
 
 `spec/DECISIONS.md` is supporting rationale and therefore uses supporting metadata instead.
@@ -558,6 +570,7 @@ A healthy repository lets a new session answer quickly:
 - Is this target MODELLED, COVERED, SUPPORTED_FOR_PRODUCT, or VALIDATED?
 - Is the semantic duplicated elsewhere?
 - Can material external claims be traced to inspectable provenance?
+- Can direct canonical semantic dependencies be identified without treating `DEPENDS_ON` as a runtime/import graph?
 - Can root verification prove the affected path?
 
 If the answer requires guessing from folders, reading hidden agent instructions, trusting AI/tool output as authority, reconciling three language-specific copies of one rule, or trusting an undeclared provider/coverage assumption, the architecture has regressed.
