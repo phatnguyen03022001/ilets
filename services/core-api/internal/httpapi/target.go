@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 )
 
 func (s *Server) getTargetProfile(w http.ResponseWriter, r *http.Request) {
@@ -76,25 +77,44 @@ func (s *Server) putTargetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(r.Context())
+	queries := sqlcdb.New(tx)
 	created := false
+	params := sqlcdb.InsertTargetProfileParams{
+		LearnerID:            learner,
+		TestVariant:          variant,
+		TargetOverallBand:    bands["target_overall_band"],
+		MinimumListeningBand: bands["minimum_listening_band"],
+		MinimumReadingBand:   bands["minimum_reading_band"],
+		MinimumWritingBand:   bands["minimum_writing_band"],
+		MinimumSpeakingBand:  bands["minimum_speaking_band"],
+	}
 	if expected == 0 {
-		tag, execErr := tx.Exec(r.Context(), `INSERT INTO target_profiles(learner_id,test_variant,target_overall_band,minimum_listening_band,minimum_reading_band,minimum_writing_band,minimum_speaking_band,resource_revision) VALUES($1,$2,$3,$4,$5,$6,$7,1) ON CONFLICT DO NOTHING`, learner, variant, bands["target_overall_band"], bands["minimum_listening_band"], bands["minimum_reading_band"], bands["minimum_writing_band"], bands["minimum_speaking_band"])
+		rows, execErr := queries.InsertTargetProfile(r.Context(), params)
 		if execErr != nil {
 			writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot update target profile")
 			return
 		}
-		if tag.RowsAffected() != 1 {
+		if rows != 1 {
 			writeError(w, r, 409, "STALE_RESOURCE_REVISION", "target profile already exists")
 			return
 		}
 		created = true
 	} else {
-		tag, execErr := tx.Exec(r.Context(), `UPDATE target_profiles SET test_variant=$2,target_overall_band=$3,minimum_listening_band=$4,minimum_reading_band=$5,minimum_writing_band=$6,minimum_speaking_band=$7,resource_revision=resource_revision+1,updated_at=now() WHERE learner_id=$1 AND resource_revision=$8`, learner, variant, bands["target_overall_band"], bands["minimum_listening_band"], bands["minimum_reading_band"], bands["minimum_writing_band"], bands["minimum_speaking_band"], expected)
+		rows, execErr := queries.UpdateTargetProfile(r.Context(), sqlcdb.UpdateTargetProfileParams{
+			LearnerID:            params.LearnerID,
+			TestVariant:          params.TestVariant,
+			TargetOverallBand:    params.TargetOverallBand,
+			MinimumListeningBand: params.MinimumListeningBand,
+			MinimumReadingBand:   params.MinimumReadingBand,
+			MinimumWritingBand:   params.MinimumWritingBand,
+			MinimumSpeakingBand:  params.MinimumSpeakingBand,
+			ResourceRevision:     expected,
+		})
 		if execErr != nil {
 			writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot update target profile")
 			return
 		}
-		if tag.RowsAffected() != 1 {
+		if rows != 1 {
 			writeError(w, r, 409, "STALE_RESOURCE_REVISION", "target profile revision conflict")
 			return
 		}
@@ -116,20 +136,16 @@ func (s *Server) putTargetProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) loadTarget(ctx context.Context, learner string) (map[string]any, error) {
-	var variant string
-	var overall, listening, reading, writing, speaking *float64
-	var revision int64
-	var updated time.Time
-	err := s.db.QueryRow(ctx, `SELECT test_variant,target_overall_band,minimum_listening_band,minimum_reading_band,minimum_writing_band,minimum_speaking_band,resource_revision,updated_at FROM target_profiles WHERE learner_id=$1`, learner).Scan(&variant, &overall, &listening, &reading, &writing, &speaking, &revision, &updated)
+	row, err := sqlcdb.New(s.db).GetTargetProfile(ctx, learner)
 	if err != nil {
 		return nil, err
 	}
-	out := map[string]any{"test_variant": variant, "resource_revision": revision, "updated_at": updated.UTC().Format(time.RFC3339Nano)}
-	addBand(out, "target_overall_band", overall)
-	addBand(out, "minimum_listening_band", listening)
-	addBand(out, "minimum_reading_band", reading)
-	addBand(out, "minimum_writing_band", writing)
-	addBand(out, "minimum_speaking_band", speaking)
+	out := map[string]any{"test_variant": row.TestVariant, "resource_revision": row.ResourceRevision, "updated_at": row.UpdatedAt.Time.UTC().Format(time.RFC3339Nano)}
+	addBand(out, "target_overall_band", row.TargetOverallBand)
+	addBand(out, "minimum_listening_band", row.MinimumListeningBand)
+	addBand(out, "minimum_reading_band", row.MinimumReadingBand)
+	addBand(out, "minimum_writing_band", row.MinimumWritingBand)
+	addBand(out, "minimum_speaking_band", row.MinimumSpeakingBand)
 	return out, nil
 }
 
