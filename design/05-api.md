@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, content supply/validation/operations API semantics, and contract-materialization rules
+OWNS: public/internal API resource model, route groups, operation semantics, request/response execution patterns, response/failure classes, async API behavior, idempotency/error conventions, content supply/validation/operations API semantics, and contract-materialization rules
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md
-DOES_NOT_OWN: learning truth, external IELTS task-family definitions, content semantic identity/quality policy, TargetProfile UX semantics, product coverage policy, evaluator/generator algorithms, runtime lifecycle truth, privileged operational capability meaning or authorization role matrix, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
+DOES_NOT_OWN: learning truth, external IELTS task-family definitions, content semantic identity/quality policy, TargetProfile UX semantics, product coverage policy, evaluator/generator algorithms, runtime lifecycle truth, privileged operational capability meaning or authorization role matrix, framework selection, persistence schema, provider choice, deployment technology, or exact wire schema after machine contracts exist
 
 # API
 
@@ -59,6 +59,244 @@ Machine schemas define transport shape, not IELTS learning/exam/content-quality 
 Machine contracts must preserve canonical applicability. A semantic dimension that is legitimately `NOT_APPLICABLE` must not become required merely because a uniform transport shape is convenient. Conversely, a materially required dimension must not become optional merely because transport permits omission.
 
 Exact representation of absence, explicit not-applicable state, conditional requirement, or validation constraints belongs to the future machine contract. Transport convenience may not fabricate or erase canonical meaning.
+
+# Request/response execution patterns
+
+These patterns translate the runtime execution invariants in `04-application-flows.md` into API operation behavior without pre-authoring exact OpenAPI fields.
+
+## Pattern 1 — synchronous read
+
+```text
+Client
+  ↓ request/correlation context
+authentication where required
+  ↓
+authorization/access filtering
+  ↓
+parse + structural validation
+  ↓
+authoritative resource query
+  ↓
+canonical/applicability projection
+  ↓
+response
+```
+
+Properties:
+
+- no hidden product mutation occurs as a side effect of a read;
+- the operation has a bounded deadline;
+- access policy must not accidentally leak protected resource existence;
+- cache/derived reads may optimize delivery only when freshness/access semantics remain correct; cache never becomes authority.
+
+## Pattern 2 — synchronous mutation
+
+```text
+Client
+  ↓
+authentication
+  ↓
+capability/access check
+  ↓
+structural validation
+  ↓
+semantic preconditions
+  ↓
+idempotency check where applicable
+  ↓
+optimistic/concurrency check where applicable
+  ↓
+authoritative transaction
+  ↓
+COMMIT
+  ↓
+response
+```
+
+A response claiming durable success is emitted only after the authoritative commit. Side effects that are explicitly asynchronous may remain pending without changing the meaning of the committed mutation.
+
+## Pattern 3 — asynchronously accepted operation
+
+```text
+POST / operation request
+  ↓
+validate + establish logical work identity
+  ↓
+persist work resource / pending state
+  ↓
+COMMIT
+  ↓
+accepted/pending response
+  ↓
+background/internal capability execution
+  ↓
+GET resource and/or SSE status
+```
+
+Expensive evaluator/generator/validator work should not keep an unbounded HTTP request open when durable asynchronous semantics are appropriate.
+
+## Pattern 4 — idempotent create/submission
+
+Conceptually:
+
+```text
+logical operation identity
++ compatible payload identity
++ current lifecycle state
+        ↓
+one authoritative logical outcome
+```
+
+A network retry must not duplicate an Attempt, EvidenceFact, one accepted logical ContentRevision, provider charge/work, or logically identical generation/validation/evaluation work. Retry of an operation known to be non-idempotent and not safely deduplicable is forbidden.
+
+## Pattern 5 — internal Go → Python capability call
+
+```text
+Core API
+  ↓ exact internal contract
+caller deadline + cancellation where safe
+  ↓
+Evaluator / generator / validator capability
+  ↓ bounded output + provenance/uncertainty
+Core-side structural/work-identity validation
+  ↓
+owning Assessment/content/product policy interpretation
+```
+
+Python cannot return authoritative certification, product support, learner-state transition, evidence-candidacy upgrade, or content activation merely because the internal request succeeded.
+
+## Pattern 6 — privileged operation
+
+```text
+public/admin operation
+  ↓
+authentication
+  ↓
+applicable operational capability
+  ↓
+current revision/state precondition
+  ↓
+legal mutation + privileged audit
+  ↓
+COMMIT
+  ↓
+response
+```
+
+The capability semantics are owned by `04-application-flows.md`; this API does not invent role hierarchy or bypass authority.
+
+## Pattern 7 — SSE update
+
+```text
+authoritative state/version change
+  ↓
+event/update hint
+  ↓
+client
+  ↓
+resource remains readable as current durable truth
+```
+
+SSE delivery may be duplicated, delayed, reordered, or disconnected without becoming product-state authority.
+
+## Pattern 8 — inbound webhook, conditional
+
+Inbound webhooks exist only when an actually selected external capability requires callbacks.
+
+When used:
+
+```text
+provider callback
+  ↓
+signature/authentication verification
+  ↓
+replay/idempotency protection
+  ↓
+structural validation
+  ↓
+authoritative event/work association
+  ↓
+transaction + COMMIT
+  ↓
+response
+```
+
+A webhook endpoint is not created merely because webhooks are a common integration pattern. Provider callbacks remain bounded by the provider-neutral capability/authority rules in `07-third-party-services.md`.
+
+# Execution trace levels
+
+A non-authoritative trace model lets implementation/debugging follow one operation without creating another domain ontology:
+
+```text
+L0  caller / product action
+L1  semantic API operation/resource
+L2  exact transport contract once materialized
+L3  Core API authoritative execution/transaction
+L4  internal capability/provider invocation where applicable
+L5  resulting canonical/product state propagation + learner/admin response
+```
+
+For a consequential operation, implementation must be able to reconstruct where material:
+
+- initiator and semantic operation;
+- stable resource/work/content/attempt/target identities crossing boundaries;
+- authentication/access/capability decision;
+- structural validation and semantic preconditions;
+- idempotency/concurrency decision;
+- authoritative transaction/commit point;
+- asynchronous work identity and dispatch state;
+- internal capability/provider invocation and response authority;
+- retry/fallback classification;
+- persisted result/failure state;
+- caller response class and later SSE/resource update.
+
+Trace/log data is operational evidence only; it never becomes learner/product semantic authority.
+
+# Response and failure classes
+
+These are semantic execution classes, not necessarily future public wire enums.
+
+## A. Transport success + domain success
+
+The transport completed and the requested domain operation/read succeeded under its contract.
+
+## B. Transport success + domain unresolved/negative
+
+The request executed correctly but the domain result is unresolved, pending, or legitimately negative, for example:
+
+- insufficient/conflicting/stale learner evidence;
+- unresolved TargetProfile condition;
+- a valid CoverageGap result;
+- learner-specific content unavailable because novelty/independence fails;
+- evaluation/work still pending.
+
+These states are not infrastructure errors merely because the desired product outcome is unavailable.
+
+## C. Operation-contract rejected
+
+The operation is not legally executable as requested, for example malformed/invalid input, unauthenticated/unauthorized access, missing capability, stale revision, invalid lifecycle transition, failed precondition, or incompatible semantic combination.
+
+## D. Infrastructure/transient failure
+
+The requested operation cannot currently establish its intended authoritative result because an infrastructure dependency is unavailable/ambiguous, for example database outage, internal evaluator/provider outage, or timeout whose remote result cannot yet be established safely.
+
+Infrastructure failure is never low learner performance, evidence of weakness, or automatic content-quality failure. When a timeout is ambiguous, the server/client must not assume the remote operation failed and retry unsafely.
+
+# Deadline, retry, fallback, and backpressure semantics
+
+Every material network/provider boundary ultimately declares:
+
+- caller deadline;
+- cancellation propagation where safe;
+- retry eligibility and classification: transient, permanent, or ambiguous;
+- idempotency/deduplication behavior;
+- exponential backoff/jitter where retry is appropriate;
+- safe fallback behavior;
+- backpressure/capacity behavior.
+
+Exact timeout/retry counts/budgets are implementation/operational policy until measured evidence justifies freezing them. A retry cannot lower content/evidence/evaluator quality or turn ambiguous work into a duplicate logical operation.
+
+Rate limiting may protect abuse, cost, provider quotas, and capacity. Exact limits are deployment/operations policy; rate limiting must not be used to fabricate learner failure or silently accept work that was not durably accepted.
 
 # Public resource groups
 
