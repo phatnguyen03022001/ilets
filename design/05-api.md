@@ -1,7 +1,7 @@
 STATUS: CANONICAL
 OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, content supply/validation/operations API semantics, and contract-materialization rules
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md
-DOES_NOT_OWN: learning truth, external task-family definitions, content semantic identity/quality policy, TargetProfile UX semantics, product coverage policy, evaluator/generator algorithms, runtime lifecycle truth, authorization role matrix, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
+DOES_NOT_OWN: learning truth, external IELTS task-family definitions, content semantic identity/quality policy, TargetProfile UX semantics, product coverage policy, evaluator/generator algorithms, runtime lifecycle truth, privileged operational capability meaning or authorization role matrix, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
 
 # API
 
@@ -54,6 +54,12 @@ Required checks once materialized:
 
 Machine schemas define transport shape, not IELTS learning/exam/content-quality truth.
 
+## Machine-contract applicability invariant
+
+Machine contracts must preserve canonical applicability. A semantic dimension that is legitimately `NOT_APPLICABLE` must not become required merely because a uniform transport shape is convenient. Conversely, a materially required dimension must not become optional merely because transport permits omission.
+
+Exact representation of absence, explicit not-applicable state, conditional requirement, or validation constraints belongs to the future machine contract. Transport convenience may not fabricate or erase canonical meaning.
+
 # Public resource groups
 
 The initial semantic API surface has 12 resource groups.
@@ -84,11 +90,18 @@ revision/version
 
 Band fields preserve the TargetProfile semantics owned by `00-learning-experience.md`: `7.0` means `>= 7.0`, not exact equality. The API must not expand an overall target into hidden equal per-skill minima. Any derived working/planning profile is separately identified as non-authoritative and cannot mutate real target constraints without an explicit target update.
 
-A target-relative TargetProfile has at least one actual Band constraint. If no Band constraint is known yet, APIs may support diagnostic/foundational flows against an unresolved target context but must not fabricate a readiness target.
+For **target-relative planning, readiness, or product-support evaluation**, a TargetProfile is sufficiently resolved only when it has both:
+
+1. a resolved standard `test_variant`: Academic or General Training; and
+2. at least one actual Band constraint: `target_overall_band` and/or one real per-skill minimum.
+
+If the standard variant is unresolved, the variant-specific target remains an unresolved target condition. If no actual Band constraint is known, the readiness target remains unresolved. APIs may still support genuinely variant-independent/shared/foundational/diagnostic work where valid, but neither missing condition may be silently completed with a default.
+
+Incomplete target input is not learner evidence insufficiency and is not automatically a product CoverageGap. `/v1/target-support` therefore cannot produce a complete target-relative support conclusion until the target-resolution minimum is met; it preserves/surfaces the unresolved target condition instead of fabricating `target_not_supported`, CoverageGap, or another product failure. Exact transport representation and HTTP behavior belong to the future machine contract.
 
 `selected_skill_retake` selects focused preparation only. Eligibility-sensitive responses keep missing original-test/timing/location/delivery/purpose conditions unresolved rather than treating the selected skill as proof of One Skill Retake eligibility.
 
-`target-support` transports the current product-support result for the exact target scope, including applicable delivery/purpose/eligibility conditions and blocking CoverageGap classes. Product-support semantics remain owned by `08-coverage-and-support.md`; referencing that downstream result here does not make API the policy owner or create a reverse semantic-definition dependency.
+`target-support` transports the current product-support result for the sufficiently resolved target scope, including applicable delivery/purpose/eligibility conditions and blocking CoverageGap classes. Product-support semantics remain owned by `08-coverage-and-support.md`; referencing that downstream result here does not make API the policy owner or create a reverse semantic-definition dependency.
 
 It is not learner readiness.
 
@@ -170,9 +183,9 @@ practice mode
 exact content revision
 canonical target refs
 external task/question-family refs where material
-Content Context ref
+Content Context ref where material
 Presentation Class refs where material
-variant
+variant where material
 delivery condition where readiness-relevant
 stimulus/source
 response conditions
@@ -275,7 +288,7 @@ A MockRun preserves:
 - exact content revisions used by the run;
 - resolved test variant;
 - external family configuration for the run;
-- Content Context distribution;
+- Content Context distribution where material;
 - material Presentation Class coverage where applicable;
 - delivery mode/interaction conditions when material;
 - full-test or selected-section scope;
@@ -323,7 +336,9 @@ GET    /v1/admin/content-reports
 PATCH  /v1/admin/content-reports/{content_report_id}
 ```
 
-Exact wire fields and any additional subresources belong to machine contracts. These route semantics establish the boundary:
+Exact wire fields and any additional subresources belong to machine contracts. Each privileged content operation requires the applicable privileged operational capability defined by `04-application-flows.md`; this file does not define roles or a role-to-capability matrix.
+
+These route semantics establish the boundary:
 
 - content-revision reads expose identity, lineage/origin, canonical bindings, current applicable validation evidence, release/assignment/operational eligibility, and reconstructable provenance as authorized;
 - `PATCH content-revisions` may change only authorized operational/release metadata owned downstream; it cannot mutate the immutable semantic payload of that revision;
@@ -332,7 +347,7 @@ Exact wire fields and any additional subresources belong to machine contracts. T
 - validation-run resources represent execution/status/results of applicable validation work and preserve validator/policy provenance; a generator's self-check is only one possible signal;
 - content reports preserve reporter/context/evidence sufficient for operational triage without mutating learner evidence or automatically proving the report correct;
 - quarantine/stop-assignment, revalidation, release activation, replacement, and retirement behavior follow `04-application-flows.md`; this API must not invent a second combined ContentStatus lifecycle;
-- authorization gates determine who may inspect or operate content. This file does not freeze a detailed role matrix before auth/use cases are finalized.
+- authorization implementation determines which authenticated identities receive the applicable operational capabilities without redefining those capability meanings.
 
 No API operation may provide a generic bypass that turns a known applicable hard validation failure into assignable learner content. Authorized operators repair the cause/change legitimate intended use, then revalidate under the applicable policy.
 
@@ -370,9 +385,9 @@ attempt identity
 exact content revision identity
 canonical target IDs
 external task/question-family refs where material
-Content Context ID
+Content Context ID where material
 Presentation Class refs where material
-variant
+variant where material
 actual delivery/input condition where material
 assessment/practice context
 response or secure response reference
@@ -381,7 +396,7 @@ rubric/evaluator configuration reference
 requested observation families
 ```
 
-The evaluator consumes these identities; it does not infer/relabel the exam family, activity purpose, or evidence candidacy from free-form prompt/response content when authoritative item/work metadata already exists.
+The evaluator consumes these identities; it does not infer/relabel the exam family, activity purpose, or evidence candidacy from free-form prompt/response content when authoritative item/work metadata already exists. Applicability is preserved: context-neutral content does not receive a fabricated Content Context/family/variant solely to make the request uniform, while any materially required identity remains present.
 
 ## Evaluation response semantics
 
@@ -520,8 +535,10 @@ Forbidden without an explicit architecture change:
 - API-owned thresholds or hidden per-skill target constraints without a canonical/product owner;
 - practice/UI action implicitly mutating TargetProfile/readiness;
 - CoverageGap represented as learner GapEvaluation;
+- unresolved TargetProfile input represented as learner evidence insufficiency or fabricated product non-support;
 - ranker returning an activity that failed hard eligibility;
 - omitted content revision/family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
+- fabricated family/context/presentation/variant identity where the upstream semantic is legitimately not applicable;
 - client/evaluator silently reclassifying immutable item family identity;
 - client/evaluator/server retroactively upgrading evidence candidacy after observing performance;
 - mutable PATCH of a historical ContentRevision semantic payload;
