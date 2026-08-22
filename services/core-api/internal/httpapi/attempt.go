@@ -11,6 +11,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
+	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 )
 
 func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
@@ -39,8 +41,12 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(r.Context())
-	var revision string
-	if err = tx.QueryRow(r.Context(), `SELECT content_revision_id FROM practice_activities WHERE practice_activity_id=$1 AND learner_id=$2`, activityID, learner).Scan(&revision); errors.Is(err, pgx.ErrNoRows) {
+	queries := sqlcdb.New(tx)
+	revision, err := queries.GetPracticeActivityRevision(r.Context(), sqlcdb.GetPracticeActivityRevisionParams{
+		PracticeActivityID: activityID,
+		LearnerID:          learner,
+	})
+	if errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, r, 404, "NOT_FOUND", "resource not found")
 		return
 	} else if err != nil {
@@ -66,8 +72,19 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := newID("attempt_")
-	if _, err = tx.Exec(r.Context(), `INSERT INTO attempts(attempt_id,learner_id,practice_activity_id,content_revision_id,status,resource_revision) VALUES($1,$2,$3,$4,'DRAFT',1)`, id, learner, activityID, revision); err == nil {
-		_, err = tx.Exec(r.Context(), `UPDATE idempotency_operations SET outcome_resource_id=$4 WHERE learner_id=$1 AND operation=$2 AND idempotency_key=$3`, learner, "create_attempt", key, id)
+	if err = queries.InsertAttempt(r.Context(), sqlcdb.InsertAttemptParams{
+		AttemptID:          id,
+		LearnerID:          learner,
+		PracticeActivityID: activityID,
+		ContentRevisionID:  revision,
+	}); err == nil {
+		outcome := id
+		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
+			LearnerID:         learner,
+			Operation:         "create_attempt",
+			IdempotencyKey:    key,
+			OutcomeResourceID: &outcome,
+		})
 	}
 	if err != nil {
 		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
@@ -134,10 +151,11 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(r.Context())
-	var status, revision string
-	var current int64
-	var semantic []byte
-	err = tx.QueryRow(r.Context(), `SELECT a.status,a.resource_revision,a.content_revision_id,cr.semantic_payload FROM attempts a JOIN content_revisions cr ON cr.revision_id=a.content_revision_id WHERE a.attempt_id=$1 AND a.learner_id=$2 FOR UPDATE OF a`, attemptID, learner).Scan(&status, &current, &revision, &semantic)
+	queries := sqlcdb.New(tx)
+	locked, err := queries.LockAttemptForSubmission(r.Context(), sqlcdb.LockAttemptForSubmissionParams{
+		AttemptID: attemptID,
+		LearnerID: learner,
+	})
 	if errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, r, 404, "NOT_FOUND", "resource not found")
 		return
@@ -164,16 +182,16 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, 200, attempt)
 		return
 	}
-	if status != "DRAFT" {
+	if locked.Status != "DRAFT" {
 		writeError(w, r, 409, "ILLEGAL_LIFECYCLE", "attempt already submitted")
 		return
 	}
-	if current != expected {
+	if locked.ResourceRevision != expected {
 		writeError(w, r, 409, "STALE_RESOURCE_REVISION", "attempt revision conflict")
 		return
 	}
 	var content map[string]any
-	if json.Unmarshal(semantic, &content) != nil || !validBootstrapContent(content) {
+	if json.Unmarshal(locked.SemanticPayload, &content) != nil || !validBootstrapContent(content) {
 		writeError(w, r, 409, "CONTENT_INVALID", "assigned revision cannot be scored safely")
 		return
 	}
@@ -184,16 +202,39 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 	}
 	answersJSON, _ := json.Marshal(answers)
 	now := time.Now().UTC()
-	tag, err := tx.Exec(r.Context(), `UPDATE attempts SET status='EVALUATED',resource_revision=resource_revision+1,submitted_answers=$3,raw_score=$4,max_score=$5,submitted_at=$6,evaluated_at=$6 WHERE attempt_id=$1 AND learner_id=$2 AND status='DRAFT' AND resource_revision=$7`, attemptID, learner, answersJSON, rawScore, maxScore, now, expected)
-	if err != nil || tag.RowsAffected() != 1 {
+	rawScore32, maxScore32 := int32(rawScore), int32(maxScore)
+	rows, err := queries.EvaluateAttempt(r.Context(), sqlcdb.EvaluateAttemptParams{
+		AttemptID:        attemptID,
+		LearnerID:        learner,
+		SubmittedAnswers: answersJSON,
+		RawScore:         &rawScore32,
+		MaxScore:         &maxScore32,
+		SubmittedAt:      pgtype.Timestamptz{Time: now, Valid: true},
+		ResourceRevision: expected,
+	})
+	if err != nil || rows != 1 {
 		writeError(w, r, 409, "STALE_RESOURCE_REVISION", "attempt changed concurrently")
 		return
 	}
 	observationID := newID("observation_")
 	result, _ := json.Marshal(map[string]any{"raw_score": rawScore, "max_score": maxScore, "feedback": feedback})
 	conditions, _ := json.Marshal(map[string]any{"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"}, "official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED", "primary_activity_purpose": "TRAINING", "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE"})
-	if _, err = tx.Exec(r.Context(), `INSERT INTO observations(observation_id,attempt_id,learner_id,content_revision_id,result_payload,conditions_payload,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)`, observationID, attemptID, learner, revision, result, conditions, now); err == nil {
-		_, err = tx.Exec(r.Context(), `UPDATE idempotency_operations SET outcome_resource_id=$4 WHERE learner_id=$1 AND operation=$2 AND idempotency_key=$3`, learner, "submit_attempt:"+attemptID, key, attemptID)
+	if err = queries.InsertObservation(r.Context(), sqlcdb.InsertObservationParams{
+		ObservationID:     observationID,
+		AttemptID:         attemptID,
+		LearnerID:         learner,
+		ContentRevisionID: locked.ContentRevisionID,
+		ResultPayload:     result,
+		ConditionsPayload: conditions,
+		CreatedAt:         pgtype.Timestamptz{Time: now, Valid: true},
+	}); err == nil {
+		outcome := attemptID
+		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
+			LearnerID:         learner,
+			Operation:         "submit_attempt:" + attemptID,
+			IdempotencyKey:    key,
+			OutcomeResourceID: &outcome,
+		})
 	}
 	if err != nil {
 		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot commit submission")
@@ -212,42 +253,44 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) loadAttempt(ctx context.Context, learner, id string) (map[string]any, error) {
-	var activity, revision, status string
-	var resourceRevision int64
-	var created time.Time
-	var evaluated *time.Time
-	var observationID *string
-	var result, conditions []byte
-	err := s.db.QueryRow(ctx, `SELECT a.practice_activity_id,a.content_revision_id,a.status,a.resource_revision,a.created_at,a.evaluated_at,o.observation_id,o.result_payload,o.conditions_payload FROM attempts a LEFT JOIN observations o ON o.attempt_id=a.attempt_id WHERE a.attempt_id=$1 AND a.learner_id=$2`, id, learner).Scan(&activity, &revision, &status, &resourceRevision, &created, &evaluated, &observationID, &result, &conditions)
+	row, err := sqlcdb.New(s.db).GetAttempt(ctx, sqlcdb.GetAttemptParams{AttemptID: id, LearnerID: learner})
 	if err != nil {
 		return nil, err
 	}
-	out := map[string]any{"attempt_id": id, "practice_activity_id": activity, "content_revision_id": revision, "status": status, "resource_revision": resourceRevision, "created_at": created.UTC().Format(time.RFC3339Nano)}
-	if status != "EVALUATED" || observationID == nil || evaluated == nil {
+	out := map[string]any{
+		"attempt_id":            id,
+		"practice_activity_id":  row.PracticeActivityID,
+		"content_revision_id":   row.ContentRevisionID,
+		"status":                row.Status,
+		"resource_revision":     row.ResourceRevision,
+		"created_at":            row.CreatedAt.Time.UTC().Format(time.RFC3339Nano),
+	}
+	if row.Status != "EVALUATED" || row.ObservationID == nil || !row.EvaluatedAt.Valid {
 		return out, nil
 	}
 	var resultPayload, conditionsPayload map[string]any
-	if err = json.Unmarshal(result, &resultPayload); err != nil {
+	if err = json.Unmarshal(row.ResultPayload, &resultPayload); err != nil {
 		return nil, err
 	}
-	if err = json.Unmarshal(conditions, &conditionsPayload); err != nil {
+	if err = json.Unmarshal(row.ConditionsPayload, &conditionsPayload); err != nil {
 		return nil, err
 	}
-	out["evaluated_at"] = evaluated.UTC().Format(time.RFC3339Nano)
+	evaluated := row.EvaluatedAt.Time.UTC()
+	out["evaluated_at"] = evaluated.Format(time.RFC3339Nano)
 	out["feedback"] = resultPayload["feedback"]
 	out["observation"] = map[string]any{
-		"observation_id":             *observationID,
-		"attempt_id":                 id,
-		"content_revision_id":        revision,
-		"content_context_id":         conditionsPayload["content_context_id"],
-		"skill_target_ids":           conditionsPayload["skill_target_ids"],
-		"official_family_ids":        conditionsPayload["official_family_ids"],
-		"scoring_method":             conditionsPayload["scoring_method"],
-		"raw_score":                  resultPayload["raw_score"],
-		"max_score":                  resultPayload["max_score"],
-		"primary_activity_purpose":   conditionsPayload["primary_activity_purpose"],
-		"evidence_candidacy":         conditionsPayload["evidence_candidacy"],
-		"created_at":                 evaluated.UTC().Format(time.RFC3339Nano),
+		"observation_id":           *row.ObservationID,
+		"attempt_id":               id,
+		"content_revision_id":      row.ContentRevisionID,
+		"content_context_id":       conditionsPayload["content_context_id"],
+		"skill_target_ids":         conditionsPayload["skill_target_ids"],
+		"official_family_ids":      conditionsPayload["official_family_ids"],
+		"scoring_method":           conditionsPayload["scoring_method"],
+		"raw_score":                resultPayload["raw_score"],
+		"max_score":                resultPayload["max_score"],
+		"primary_activity_purpose": conditionsPayload["primary_activity_purpose"],
+		"evidence_candidacy":       conditionsPayload["evidence_candidacy"],
+		"created_at":               evaluated.Format(time.RFC3339Nano),
 	}
 	return out, nil
 }
