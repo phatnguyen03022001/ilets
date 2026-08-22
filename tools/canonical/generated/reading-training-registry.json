@@ -1,0 +1,163 @@
+{
+  "artifact": "DERIVED_CANONICAL_REGISTRY",
+  "canonical_source_revision": "21ad03962d035b53985e4e4c2d7610389a025eb9",
+  "entries": [
+    {
+      "cells": [],
+      "id": "TRAINING",
+      "source": {
+        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "owner": "design/02-practice-catalog.md",
+        "parent_section": null,
+        "section": "## Primary activity purpose"
+      },
+      "type": "activity_purpose"
+    },
+    {
+      "cells": [
+        "Academic Reading passage/set context",
+        "Academic"
+      ],
+      "id": "CTX-READING-ACADEMIC",
+      "source": {
+        "git_blob": "d783af19aa6a13c62ce197b7b433eddfb1c27916",
+        "owner": "spec/10-CONTENT-MODEL.md",
+        "parent_section": null,
+        "section": "# Stable Content Context registry"
+      },
+      "type": "content_context"
+    },
+    {
+      "cells": [],
+      "id": "NOT_EVIDENCE_CANDIDATE",
+      "source": {
+        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "owner": "design/02-practice-catalog.md",
+        "parent_section": null,
+        "section": "## Evidence candidacy"
+      },
+      "type": "evidence_candidacy"
+    },
+    {
+      "cells": [
+        "T/F/NG + Y/N/NG Lab",
+        "classify support/contradiction/absence or writer stance",
+        "classification observation"
+      ],
+      "id": "R-F04",
+      "source": {
+        "git_blob": "b6edafd0beb45fc1927cfd4964b4d35fae47eca3",
+        "owner": "design/01-skill-features.md",
+        "parent_section": null,
+        "section": "# Reading \u2014 8"
+      },
+      "type": "feature"
+    },
+    {
+      "cells": [
+        "Identifying information \u2014 True / False / Not Given"
+      ],
+      "id": "IELTS-R-QF-02",
+      "source": {
+        "git_blob": "4cb566f961f1a1f1b56786b6f70a75e4ba61b14a",
+        "owner": "spec/02-IELTS-MODEL.md",
+        "parent_section": null,
+        "section": "## Reading family registry"
+      },
+      "type": "official_family"
+    },
+    {
+      "cells": [
+        "Identifying writer views/claims \u2014 Yes / No / Not Given"
+      ],
+      "id": "IELTS-R-QF-03",
+      "source": {
+        "git_blob": "4cb566f961f1a1f1b56786b6f70a75e4ba61b14a",
+        "owner": "spec/02-IELTS-MODEL.md",
+        "parent_section": null,
+        "section": "## Reading family registry"
+      },
+      "type": "official_family"
+    },
+    {
+      "cells": [
+        "T/F/NG + Y/N/NG",
+        "6\u201312 min",
+        "evidence/stance classification",
+        "`PT-13`, `PT-16`, Contrast"
+      ],
+      "id": "PM-R03",
+      "source": {
+        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "owner": "design/02-practice-catalog.md",
+        "parent_section": null,
+        "section": "# Reading \u2014 6"
+      },
+      "type": "practice_mode"
+    },
+    {
+      "cells": [
+        "Comprehension question set",
+        "Co / Co, Re",
+        "individual / listening, reading",
+        "`LM-02`, `LM-04`",
+        "receptive comprehension/question-type work"
+      ],
+      "id": "PT-13",
+      "source": {
+        "git_blob": "72b0a63a2b98cf950c0a0d65ae1714fec570c71c",
+        "owner": "spec/07-PRACTICE.md",
+        "parent_section": null,
+        "section": "# Canonical Practice Type registry"
+      },
+      "type": "practice_type"
+    },
+    {
+      "cells": [
+        "Distractor/error review",
+        "Re / Re, Co",
+        "individual / listening, reading",
+        "`LM-04`, `LM-10`",
+        "discriminate why an alternative failed"
+      ],
+      "id": "PT-16",
+      "source": {
+        "git_blob": "72b0a63a2b98cf950c0a0d65ae1714fec570c71c",
+        "owner": "spec/07-PRACTICE.md",
+        "parent_section": null,
+        "section": "# Canonical Practice Type registry"
+      },
+      "type": "practice_type"
+    },
+    {
+      "cells": [
+        "True / False / Not Given",
+        "Distinguish supported, contradicted, and absent factual information."
+      ],
+      "id": "R-QT-02",
+      "source": {
+        "git_blob": "366de7c4878e76a7675b260f27b4de6154862a99",
+        "owner": "spec/03-SKILLS.md",
+        "parent_section": "# Reading",
+        "section": "## Question-type strategies"
+      },
+      "type": "skill_leaf"
+    },
+    {
+      "cells": [
+        "Yes / No / Not Given",
+        "Distinguish agreement, disagreement, and absence for writer views/claims."
+      ],
+      "id": "R-QT-03",
+      "source": {
+        "git_blob": "366de7c4878e76a7675b260f27b4de6154862a99",
+        "owner": "spec/03-SKILLS.md",
+        "parent_section": "# Reading",
+        "section": "## Question-type strategies"
+      },
+      "type": "skill_leaf"
+    }
+  ],
+  "schema_version": 1,
+  "source_map_sha256": "b9707db9d2c6e51b5be1279a594b61ff9101ea9a59623c36fa9d0caa86c1e77c"
+}

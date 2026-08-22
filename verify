@@ -6,20 +6,23 @@ cd "$ROOT"
 
 VERIFY_COMPOSE_PROJECT="${ILETS_VERIFY_COMPOSE_PROJECT:-ilets-verify}"
 VERIFY_POSTGRES_PORT="${ILETS_VERIFY_POSTGRES_PORT:-55433}"
+export ILETS_E2E_CORE_PORT="${ILETS_E2E_CORE_PORT:-18080}"
+export ILETS_E2E_WEB_PORT="${ILETS_E2E_WEB_PORT:-13000}"
 export ILETS_POSTGRES_PORT="$VERIFY_POSTGRES_PORT"
 export DATABASE_URL="postgres://ilets:ilets@127.0.0.1:${VERIFY_POSTGRES_PORT}/ilets?sslmode=disable"
 COMPOSE=(docker compose --project-name "$VERIFY_COMPOSE_PROJECT" -f "$ROOT/compose.dev.yml")
+VERIFY_TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ilets-verify.XXXXXX")"
 
 cleanup() {
   "${COMPOSE[@]}" down --volumes --remove-orphans >/dev/null 2>&1 || true
+  rm -rf "$VERIFY_TMP_DIR"
 }
 trap cleanup EXIT
 
 python3 "$ROOT/tools/test_verify_lenbands_founder_closure.py"
 python3 "$ROOT/tools/verify-lenbands-founder-closure.py"
 python3 "$ROOT/tools/canonical/test_materialize.py"
-python3 "$ROOT/tools/canonical/materialize.py"
-python3 "$ROOT/tools/canonical/materialize.py"
+python3 "$ROOT/tools/canonical/materialize.py" --check
 
 cd "$ROOT/apps/web"
 corepack enable
@@ -39,7 +42,8 @@ if ! git diff --exit-code -- \
   apps/web/src/generated/public-v1.ts \
   services/core-api/internal/httpapi/generated/public_v1.gen.go \
   services/core-api/internal/db/sqlc/ \
-  tools/canonical/generated/; then
+  tools/canonical/generated/ \
+  tools/slice/generated/; then
   echo "generated artifacts drift from committed sources" >&2
   exit 1
 fi
@@ -54,7 +58,7 @@ if [[ -n "$unformatted_go" ]]; then
 fi
 go vet ./...
 go test ./...
-go build ./cmd/core-api
+go build -o "$VERIFY_TMP_DIR/core-api" ./cmd/core-api
 
 cd "$ROOT"
 # Verification owns a dedicated Compose project and always removes any stale

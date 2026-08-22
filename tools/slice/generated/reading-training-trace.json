@@ -1,0 +1,58 @@
+{
+  "artifact": "DERIVED_IMPLEMENTATION_TRACE",
+  "canonical_registry_sha256": "c042e1759bf85eb07d315de1e6967ff207c242db00ad2c6116912995b6893a42",
+  "canonical_source_revision": "21ad03962d035b53985e4e4c2d7610389a025eb9",
+  "schema_version": 1,
+  "slice": {
+    "content_context_id": "CTX-READING-ACADEMIC",
+    "content_revision_id": "reading-bootstrap-classification-001-r1",
+    "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
+    "feature_id": "R-F04",
+    "official_family_ids": [
+      "IELTS-R-QF-02",
+      "IELTS-R-QF-03"
+    ],
+    "persistence_resources": [
+      "learners",
+      "sessions",
+      "target_profiles",
+      "contents",
+      "content_revisions",
+      "validation_decisions",
+      "content_use_states",
+      "practice_activities",
+      "attempts",
+      "observations",
+      "idempotency_operations"
+    ],
+    "practice_mode_id": "PM-R03",
+    "practice_type_ids": [
+      "PT-13",
+      "PT-16"
+    ],
+    "primary_activity_purpose": "TRAINING",
+    "public_api_operation_ids": [
+      "bootstrapSession",
+      "getMe",
+      "getTargetProfile",
+      "putTargetProfile",
+      "listPracticeModes",
+      "createPracticeActivity",
+      "getPracticeActivity",
+      "createAttempt",
+      "getAttempt",
+      "submitAttempt"
+    ],
+    "runtime_owner": "services/core-api",
+    "skill_target_ids": [
+      "R-QT-02",
+      "R-QT-03"
+    ],
+    "slice_id": "reading-training-bootstrap-v1",
+    "verification_refs": [
+      "tools/canonical/test_materialize.py",
+      "services/core-api/internal/app/integration_test.go",
+      "apps/web/e2e/reading-training.spec.ts"
+    ]
+  }
+}
