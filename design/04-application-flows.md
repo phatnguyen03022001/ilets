@@ -110,7 +110,7 @@ COMMIT
   ↓
 acknowledge accepted/pending
   ↓
-decisively claim/fence one execution attempt where exclusive dispatch is required
+decisively confirm current dispatch eligibility + claim/fence one execution attempt where exclusive dispatch is required
   ↓
 bounded dispatch/execution
   ↓
@@ -129,6 +129,8 @@ Rules:
 
 - an HTTP request being sent or a provider invocation being attempted is not durable work acceptance;
 - reading `pending` is not an execution claim: where duplicate execution is not intentionally permitted, one dispatcher must decisively claim/lease/fence an execution attempt under authoritative state or an equivalent serialization invariant before dispatch, so concurrent dispatchers cannot both believe they exclusively own the same attempt;
+- before dispatch, the decisive claim also confirms every current authoritative condition that can prohibit this execution or data egress where material, including cancellation/deletion/tombstone state and content/rights/privacy eligibility; if work is already ineligible, Core reconciles it without dispatch. A preflight read of those conditions is not the decisive race boundary;
+- loss of a dispatcher after claim does not permanently consume the logical work. Recovery reconciles the claim and the known or ambiguous dispatch outcome; if remote execution may already have started, that uncertainty is treated like any other ambiguous remote outcome and redrive occurs only when idempotency/status/fencing makes it safe. A replacement/reclaim cannot let a stale prior completion satisfy current work;
 - retry preserves one logical work identity and cannot duplicate accepted learner work, EvidenceFacts, content revisions, or paid/provider work;
 - retry eligibility distinguishes transient, permanent, and ambiguous outcomes;
 - exponential backoff and jitter are used where repeated immediate retry would worsen a transient route; exact budgets/counts remain implementation policy;
@@ -386,6 +388,8 @@ learner-safe projection
 delivery / actual exposure
 ```
 
+Where a mutable authoritative hard condition can change concurrently and make the assignment illegal, its decisive current-state check is atomically/conditionally coupled to reservation/assignment or protected by an equivalent serialization invariant. A candidate/preflight recheck alone is insufficient: a concurrent quarantine, release revocation, target/support change, or learner-specific reservation/exposure change must either be reflected in the assignment decision or cause that assignment to fail/reselect. This does not require one global lock or transaction across unrelated state.
+
 A previously eligible plan item that is now ineligible is not executed merely because it remains in a saved plan; Core reselects another eligible action or exposes the truthful current blocker. Plan-time explanation remains historical provenance, not present eligibility. A full plan regeneration is unnecessary when a smaller current eligibility/reselection check is sufficient. No plan TTL is frozen.
 
 Assignment records the exact current eligibility/content revision actually used; plan provenance and assignment authority remain distinct.
@@ -493,7 +497,7 @@ authoritative transaction
   ↓ COMMIT
 ACK accepted/pending
   ↓
-decisive execution-attempt claim/fence
+current-eligible decisive execution-attempt claim/fence
   ↓
 bounded dispatch / one or more explicitly identified execution attempts as policy permits
   ↓
@@ -520,6 +524,7 @@ Rules:
 - pending/unavailable are valid non-score states;
 - timeout/provider failure never becomes a low learner score and does not by itself prove an execution did no work;
 - normal competing workers cannot silently double-dispatch the same exclusive execution attempt; any intentionally concurrent replacement/speculative execution is separately identified/fenced;
+- a claimant/worker failure cannot permanently strand accepted evaluation work; claim recovery follows the ambiguous-dispatch rule above and never assumes that missing local acknowledgement proves remote non-execution;
 - retries/replacements preserve the same logical evaluation work while retaining distinct execution-attempt identity/provenance whenever executions can overlap;
 - exactly one current legal completion may satisfy the logical evaluation outcome; duplicate delivery of that accepted completion is idempotent;
 - a late or stale completion from a superseded execution cannot overwrite the accepted result, reopen terminal work, or independently create Observation/EvidenceFact state;
@@ -697,7 +702,7 @@ Rules:
 6. generator output and validator signals cannot activate content by themselves; Core-API-owned deterministic product policy applies the owning semantic/coverage rules;
 7. higher-consequence use requires the stronger applicable validation/evidence conditions defined upstream; low-consequence training does not require unrelated high-consequence checks;
 8. every assigned activity resolves the exact immutable revision and current release/operational eligibility before learner exposure, regardless of whether an older DailyPlan referenced it;
-9. when eligibility depends on learner-specific unseen/exposure/independence/uniqueness or reservation state, the decisive eligibility decision and reservation/assignment are atomic or serialized enough that concurrent requests cannot both consume the same protected opportunity incorrectly;
+9. the decisive assignment enforces the mutable current hard gates described in Stage 7 under a transaction, conditional write, or equivalent serialization invariant where concurrency can invalidate them; learner-specific unseen/exposure/independence/uniqueness and reservation state are included when material so concurrent requests cannot both consume the same protected opportunity incorrectly;
 10. reservation/assignment for delivery is not actual learner exposure. A failed/disconnected delivery must not fabricate `seen`; actual ExposureContext follows `spec/10-CONTENT-MODEL.md`;
 11. a reservation may temporarily exclude concurrent assignment until it is reconciled/released; exact reservation timeout/recovery mechanism remains implementation policy.
 
@@ -729,6 +734,8 @@ investigate / revalidate / replace
                                     ↓
                          replacement/supply demand if coverage needs it
 ```
+
+Current release/use recomputation resolves the applicable validation policy and intended-use/consequence scope according to `spec/10-CONTENT-MODEL.md`; it does not implement a global “newest ValidationDecision wins” rule.
 
 Do not collapse validation state, release eligibility, operational safety, or incident consequence into one global ContentStatus/defect enum. A revision may be semantically validated yet not activated for a release, or may have been active and later be quarantined operationally pending investigation.
 
@@ -832,6 +839,7 @@ Rules:
 
 - one execution-attempt timeout is ambiguous and does not by itself prove the logical Evaluation failed or that the remote attempt did no work;
 - one exclusive execution attempt is claimed/fenced before normal dispatch; multiple workers observing pending work do not acquire the same execution merely by reading it;
+- loss of the worker/claim owner does not itself make the Evaluation terminal or prove dispatch did not occur; recovery follows current eligibility plus ambiguous-outcome/idempotency/fencing rules;
 - Core accepts a completion only when it matches this Evaluation/logical work, the current legal execution/fencing state, and current deletion/content eligibility relevant to reconciliation;
 - duplicate delivery of the already accepted completion is idempotent and cannot duplicate Observation/EvidenceFact creation;
 - a late/stale completion from a superseded execution is non-authoritative for learner state and may be retained only as operational diagnostic/provenance;
