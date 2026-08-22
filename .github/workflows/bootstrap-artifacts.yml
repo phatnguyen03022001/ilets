@@ -1,4 +1,4 @@
-name: bootstrap-artifacts-readonly
+name: bootstrap-artifacts
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ on:
       - .github/workflows/bootstrap-artifacts.yml
 
 permissions:
-  contents: read
+  contents: write
   statuses: write
 
 jobs:
@@ -42,17 +42,22 @@ jobs:
       - name: Resolve Go module graph locally
         working-directory: services/core-api
         run: go mod tidy
-      - uses: actions/upload-artifact@v4
-        with:
-          name: bootstrap-generated-readonly
-          if-no-files-found: error
-          path: |
-            apps/web/pnpm-lock.yaml
-            apps/web/src/generated/public-v1.ts
-            services/core-api/go.mod
-            services/core-api/go.sum
-            services/core-api/internal/httpapi/generated/public_v1.gen.go
+      - name: Commit generated bootstrap artifacts
+        run: |
+          git add \
+            apps/web/pnpm-lock.yaml \
+            apps/web/src/generated/public-v1.ts \
+            services/core-api/go.mod \
+            services/core-api/go.sum \
+            services/core-api/internal/httpapi/generated/public_v1.gen.go \
             services/core-api/internal/db/sqlc/
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "Materialize generated bootstrap artifacts"
+          git push origin HEAD:main
       - name: Publish generation status locator
         if: always()
         env:
@@ -70,4 +75,4 @@ jobs:
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
-            -d "{\"state\":\"${STATE}\",\"context\":\"bootstrap/generate\",\"description\":\"local generators executed on hosted runner\",\"target_url\":\"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+            -d "{\"state\":\"${STATE}\",\"context\":\"bootstrap/generate\",\"description\":\"generators completed and committed drift\",\"target_url\":\"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
