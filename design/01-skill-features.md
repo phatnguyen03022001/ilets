@@ -178,17 +178,18 @@ Where external delivery uses a different interaction channel, readiness configur
 
 A mixed variant is invalid for a normal full readiness claim.
 
-# Feature evidence-role rule
+# Feature activity-purpose/evidence boundary
 
-Every concrete feature activity declares a role such as:
+A feature may host training, diagnostic, or readiness-oriented activity configurations. **Primary product purpose and evidence candidacy are separate dimensions.**
 
-- training-only;
-- diagnostic;
-- evidence-eligible under conditions;
-- readiness-only;
-- potentially certification-contributing after normal Assessment admission.
+A diagnostic/readiness configuration is not automatically evidence-admissible, and a training-oriented configuration is not automatically evidence-ineligible. Concrete activity packaging declares whether Assessment may consider the resulting Observation; `08-ASSESSMENT.md` makes the actual claim-scoped admission decision after the attempt conditions are known.
 
-A feature cannot upgrade its own evidence role.
+A feature may never:
+
+- upgrade a non-candidate activity into evidence after seeing a favorable result;
+- treat diagnostic/readiness purpose as proof of eligibility;
+- pre-label an activity as certification-contributing;
+- certify a learner or lower normal Assessment requirements.
 
 # Traceability
 
