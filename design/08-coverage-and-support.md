@@ -217,7 +217,6 @@ Boundary documentation by itself is never executable coverage evidence. An imple
 - executable verification of the boundary and forbidden bypasses.
 
 These requirements reduce through the existing conditions rather than a new `boundary` condition.
-
 ## `machine_contracts`
 
 Where applicable this condition closes:
@@ -437,7 +436,6 @@ Implemented content generation/validation boundaries require contracts when they
 # Delivery closure
 
 When TargetProfile names a material delivery mode, exam-readiness coverage exposes that interaction honestly. Delivery preparation changes conditions, not Skill/Band truth.
-
 # Current design-state declaration — 2026-08-22
 
 This is a documentation/design declaration, not production support.
@@ -467,21 +465,24 @@ IELTS Life Skills = OUT_OF_SCOPE
 Top-level current truth:
 
 ```text
-Academic learning/design semantics         MODELLED
-General Training learning/design semantics MODELLED
-Official family identities                 MODELLED
-Material presentation identities           MODELLED where required
-Delivery-mode semantics                    MODELLED
-Content runtime/governance semantics        MODELLED
-Runtime engineering concern closure        MODELLED
-Boundary/evolution semantics               MODELLED
-Academic product execution                 NOT YET COVERED
-General Training product execution         NOT YET COVERED
-Runtime implementation                     NOT IMPLEMENTED
-Validated target-band outcome              NOT ESTABLISHED
+Academic learning/design semantics              MODELLED
+General Training learning/design semantics      MODELLED
+Official family identities                      MODELLED
+Material presentation identities                MODELLED where required
+Delivery-mode semantics                         MODELLED
+Content runtime/governance semantics             MODELLED
+Runtime engineering concern closure             MODELLED
+Boundary/evolution semantics                    MODELLED
+Academic product execution                      NOT YET COVERED
+General Training product execution              NOT YET COVERED
+Bounded Academic Reading TRAINING runtime        IMPLEMENTED (executable evidence only)
+Broader runtime/product execution                NOT YET COVERED
+Validated target-band outcome                   NOT ESTABLISHED
 ```
 
-`Runtime engineering concern closure MODELLED` and `Boundary/evolution semantics MODELLED` mean the required design semantics/dispositions are defined; they do not mean runtime/security/contracts/operations implementation or executable verification exists.
+The current bounded Academic Reading `TRAINING` + `NOT_EVIDENCE_CANDIDATE` bootstrap is executable implementation evidence only. It does not promote Academic Reading above `MODELLED`, establish full Academic/GT execution coverage, or establish product validation.
+
+`Runtime engineering concern closure MODELLED` and `Boundary/evolution semantics MODELLED` mean the required design semantics/dispositions are defined; they do not mean runtime/security/contracts/operations implementation or executable verification is complete across the product scope.
 
 No user-facing copy may claim full support until all scoped blocking conditions close and a TargetSupportDeclaration activates that exact scope.
 
@@ -622,7 +623,7 @@ A release declaration names at least:
 - reliability/recovery/data-lifecycle state;
 - accessibility/capture-quality gate;
 - cost/abuse/operations gate;
-- observability/audit gate including consequential version/config provenance and release-candidate operational objectives/incident ownership;
+- observability/audit gate including consequential version/config/provider provenance and release-candidate operational objectives/incident ownership;
 - known non-blocking validation backlog;
 - revocation conditions.
 
