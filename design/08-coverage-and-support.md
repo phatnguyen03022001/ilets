@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: product coverage semantics, TargetCoverageSpecification, CoverageGap taxonomy, support-promotion gates, construct-to-product coverage mapping, and current product-support declarations
+OWNS: product coverage semantics, TargetCoverageSpecification, CoverageGap taxonomy, support-promotion gates, construct-to-product coverage mapping, runtime-concern coverage integration, and current product-support declarations
 DEPENDS_ON: ../spec/00-PRODUCT.md, ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/06-CURRICULUM.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md, 04-application-flows.md, 05-api.md, 06-implementation-stack.md, 07-third-party-services.md
-DOES_NOT_OWN: external IELTS truth, learning targets, feature behavior, content semantic identity/quality rules, provider selection, learner GapEvaluation, or empirical validation results themselves
+DOES_NOT_OWN: external IELTS truth, learning targets, feature behavior, content semantic identity/quality rules, provider selection, concrete infrastructure technology selection, learner GapEvaluation, or empirical validation results themselves
 
 # Coverage and Product Support
 
@@ -9,7 +9,7 @@ DOES_NOT_OWN: external IELTS truth, learning targets, feature behavior, content 
 
 Define exactly when a scoped IELTS target is merely modelled, actually executable, release-supported, or empirically validated.
 
-Document volume, feature count, Skill coverage, or an aggregate percentage cannot hide a missing required condition.
+Document volume, feature count, Skill coverage, an aggregate percentage, or the presence of fashionable infrastructure cannot hide a missing required condition.
 
 # Product-support status machine
 
@@ -99,7 +99,7 @@ When a condition aggregates subconditions, reduce deterministically:
 6. if some pass and some remain missing/unverified without a stronger blocker, use `PARTIAL`;
 7. if criteria are defined but executable/material checking has not materially begun, use `DEFINED`.
 
-These statuses may move backward when external truth, content, contracts, provider state, calibration, rights, or runtime evidence changes. No status is permanent merely because it once passed.
+These statuses may move backward when external truth, content, contracts, provider state, calibration, rights, runtime reliability/security/operations evidence, or validation evidence changes.
 
 An out-of-scope construct uses **OUT_OF_SCOPE** as a scope disposition, not a condition or product-support state.
 
@@ -178,41 +178,115 @@ For each scoped target, evaluate every applicable condition independently.
 | `band_threshold` | target Band/task/variant threshold is defined |
 | `curriculum_route` | valid sequencing/variant route exists |
 | `practice_intervention` | required learning mechanisms/modes can be executed |
-| `feature_experience` | learner can perform the interaction and understand result/state |
-| `content_assets` | sufficient valid executable content supply covers required family/context/diversity; generators/templates count only where the release actually relies on them |
+| `feature_experience` | learner can perform the interaction and understand result/state; runtime/browser behavior required by that experience is usable |
+| `content_assets` | sufficient valid executable content supply covers required family/context/diversity; generators/templates count only where release actually relies on them |
 | `assessment_policy` | applicable Assessment Type and executable versioned EvidenceRequirement exist |
 | `evaluator_scoring` | deterministic scoring or calibrated productive evaluation exists |
 | `progression_transition` | valid evidence can drive explainable state/next action |
 | `variant_context` | Academic/GT task/section/context conditions are represented and sampled |
 | `delivery_mode_readiness` | requested delivery-specific interaction/preparation exists when material |
-| `machine_contracts` | exact interfaces exist for implemented cross-unit boundaries |
-| `rights_privacy_security` | applicable source/data/consent/security requirements pass |
-| `reliability_recovery` | lifecycle/idempotency/retry/failure/recovery pass, including content incident/revalidation recovery where applicable |
-| `accessibility_capture_quality` | access/capture failures cannot become false ability judgments |
-| `cost_abuse_operations` | release operates within declared cost/rate/abuse limits, including content supply/validation cost where applicable |
-| `observability_audit` | consequential decisions preserve version/provenance/reason reconstruction, including exact content revision/validation provenance where material |
+| `machine_contracts` | exact implemented cross-unit interfaces, shared canonical identity materialization where consumed, API compatibility/conformance, and drift verification pass |
+| `rights_privacy_security` | applicable source/data/consent/access/secrets/transport/storage/browser/provider/public-edge security requirements pass |
+| `reliability_recovery` | applicable lifecycle, commit/idempotency/concurrency, timeout/retry/backpressure, migration/deploy, backup/restore, failure/degraded/recovery, and content/evaluator recovery behavior passes |
+| `accessibility_capture_quality` | access/capture/browser/device failures cannot become false ability judgments and supported interaction remains usable |
+| `cost_abuse_operations` | release operates within declared rate/abuse/provider-quota/compute/storage/traffic/capacity/scaling/external-usage constraints |
+| `observability_audit` | applicable structured logs, metrics, correlation/tracing, privileged audit, consequential decision/version provenance, alerting/operational reconstruction are sufficient |
 | `validation` | empirical outcome evidence exists when promoting to `VALIDATED` |
 
-`NOT_APPLICABLE` requires an explicit reason for the scoped target. Absence of an artifact, unimplemented work, lack of data, or inconvenience is never an N/A reason.
+`NOT_APPLICABLE` requires an explicit reason for the scoped target. Absence of an artifact, unimplemented work, lack of data, inconvenience, or absence of a named enterprise technology is never an N/A reason.
 
-A content generator is not a new coverage condition. Generation capability is required only when the scoped product/release depends on generation to satisfy `content_assets` or another applicable operational requirement. A release with sufficient authored/imported/deterministic content can satisfy content coverage without AI/runtime generation.
+A content generator is not a new coverage condition. Generation capability is required only when scoped product/release depends on generation to satisfy `content_assets` or another applicable operational requirement. A release with sufficient authored/imported/deterministic content can satisfy content coverage without AI/runtime generation.
+
+# Runtime engineering closure
+
+The system-engineering disposition model in `06-implementation-stack.md` is consumed through the existing coverage conditions above; it does not create another TargetCoverageSpecification condition or product status.
+
+## `machine_contracts`
+
+Where applicable this condition closes:
+
+- exact public/internal cross-unit machine interface authority;
+- generated/validated consumer/provider conformance;
+- shared canonical registry/identity materialization actually consumed by runtime;
+- API/application compatibility/version provenance;
+- no handwritten equivalent DTO/canonical-ID truth across parallel runtimes.
+
+## `rights_privacy_security`
+
+Where applicable this condition closes deployed security obligations including:
+
+- authentication, authorization/capability and least privilege;
+- SQL injection, XSS, SSRF, CORS/CSP/CSRF protections appropriate to selected routes;
+- secrets/key/session/token handling and revocation/rotation appropriate to the actual credential design;
+- TLS/encryption in transit and applicable encryption-at-rest protection;
+- privileged/admin and service-to-service access boundaries;
+- provider/data-processor security and public-edge abuse/DDoS/WAF concern appropriate to deployment.
+
+OAuth, JWT, or a dedicated WAF product is not required unless that technology is actually selected/needed; the underlying security concern still must pass.
+
+## `reliability_recovery`
+
+Where applicable this condition closes:
+
+- durable commit-before-success-ACK and authoritative transaction behavior;
+- idempotency, race/concurrency/stale-write correctness;
+- deadlines/timeouts, retry classification/backoff, ambiguous network outcome handling, provider degradation, capacity/backpressure;
+- migration/schema/deployment compatibility and rollback/forward-recovery;
+- backup plus verified restore, PITR where applicable, disaster/recovery procedure;
+- health/failure/degraded-state behavior, content/evaluator/work recovery;
+- safe rollout/recovery independent of whether a named blue-green/canary/rolling strategy is used.
+
+Reliable async evaluation can satisfy this gate without Kafka when durable DB work/outbox/idempotent bounded dispatch meets the same invariant.
+
+## `cost_abuse_operations`
+
+Where applicable this condition closes:
+
+- rate limiting/abuse protection;
+- provider quotas and duplicate-cost prevention;
+- compute/storage/network/external-service usage and cost visibility;
+- traffic/capacity/backlog pressure;
+- scale strategy appropriate to measured demand.
+
+Horizontal autoscaling, load balancers, CDN, read replicas, sharding, or Kubernetes are not individually required. They become applicable only when their trigger is present.
+
+## `observability_audit`
+
+Where applicable this condition closes:
+
+- privacy-safe structured logging and correlation IDs;
+- operational metrics including error/latency/capacity/backlog/provider health where material;
+- trace correlation when needed for multi-unit diagnosis;
+- privileged mutation audit and consequential decision/version/provenance reconstruction;
+- actionable alerting plus supported-release incident ownership/escalation;
+- measurable SLIs/SLOs appropriate to the supported release, without architecture inventing arbitrary numeric objectives.
+
+Telemetry is derived evidence about operation. Logs/metrics/traces never replace authoritative product/learner/content/evidence state.
+
+## Technology-independence invariant
+
+Coverage evaluates **whether the concern is satisfied**, not whether a fashionable technology exists.
+
+Therefore none of the following is intrinsically required for `COVERED`/support: Kubernetes, Helm, Kafka/another broker, Redis, vector database, distributed transactions, Saga orchestration, service mesh/discovery infrastructure, multi-region, database sharding/read replicas, leader election, gRPC, WebSockets, JWT, Docker, Terraform, external observability, or a paid GitHub capability.
+
+If an applicable release cannot satisfy an invariant without one of those technologies, the demonstrated trigger may make that technology/path necessary downstream. Absence of the technology alone is not a CoverageGap.
 
 # Derived reachability invariant
 
 Coverage must be derivable from canonical identities and declared applicability rather than a manually maintained completeness matrix.
 
-For each in-scope canonical target/object, coverage tooling should be able to determine which downstream relationships are **applicable** and then verify the required reachable path. A representative learning-target path is:
+For each in-scope canonical target/object, coverage tooling should determine applicable downstream relationships and verify the required reachable path:
 
 ```text
 Skill / enabling Knowledge where applicable
 → Curriculum route
 → trainable intervention / Practice
-→ measurable Assessment path where the claim requires measurement
+→ measurable Assessment path where claim requires measurement
 → Progression consequence
-→ product/content/runtime conditions required by the scoped target
+→ product/content/runtime conditions required by scoped target
 ```
 
-The validator must distinguish:
+The validator distinguishes:
 
 ```text
 APPLICABLE + edge/path absent   = MISSING / blocking gap
@@ -223,12 +297,10 @@ applicability unresolved        = UNKNOWN, never silently satisfied
 Rules:
 
 1. absence of an edge or implementation artifact never defaults to `NOT_APPLICABLE`;
-2. `NOT_APPLICABLE` must be derivable from canonical semantics or carry an explicit reason owned by the relevant rule;
-3. not every object requires every edge: for example, enabling Knowledge may not require a direct Band-certifying Assessment when its role is only prerequisite/supporting, but its downstream purpose must remain reachable;
-4. a Skill Leaf that is applicable to an in-scope target cannot be considered complete if it is orphaned from required Curriculum/Practice/Assessment/Progression reachability;
-5. derived reports are verification artifacts, not new authority and must not become manually edited SSOTs.
-
-This invariant is intended for static/repository validation as machine-readable manifests/contracts materialize. The canonical rule lives here; tooling merely proves it.
+2. `NOT_APPLICABLE` is derivable from canonical semantics or carries an explicit owner-derived reason;
+3. not every object requires every edge, but its required downstream purpose remains reachable;
+4. an applicable Skill Leaf cannot be complete if orphaned from required Curriculum/Practice/Assessment/Progression reachability;
+5. derived reports are verification artifacts, never manually edited SSOTs.
 
 # Official-family closure
 
@@ -236,11 +308,11 @@ Skill coverage and official-family coverage are independent dimensions.
 
 Examples:
 
-- `R-QT-04` may help teach several matching families, but content for `IELTS-R-QF-04` Matching Information cannot satisfy `IELTS-R-QF-06` Matching Features or `IELTS-R-QF-07` Matching Sentence Endings;
-- one broad completion Skill cannot prove the existence of all required official completion-family content;
-- a product may have strong Reading capability teaching while still having a blocking missing official-family interaction/content path.
+- `R-QT-04` may help teach several matching families, but content for `IELTS-R-QF-04` cannot satisfy `IELTS-R-QF-06` or `IELTS-R-QF-07`;
+- one broad completion Skill cannot prove existence of all required official completion-family content;
+- strong Reading capability teaching can coexist with a blocking missing official-family interaction/content path.
 
-For a complete standard target, every applicable stable `IELTS-*-*` family in `02-IELTS-MODEL.md` must resolve through:
+For a complete standard target, every applicable stable `IELTS-*-*` family resolves through:
 
 ```text
 official family ID
@@ -253,21 +325,21 @@ official family ID
 
 # Material-subformat closure
 
-Some official families contain materially different presentations. Coverage consumes the stable Presentation Classes from `../spec/10-CONTENT-MODEL.md` where defined.
+Coverage consumes stable Presentation Classes from `../spec/10-CONTENT-MODEL.md` where defined.
 
 Minimum current checks include:
 
 - Listening `IELTS-L-QF-04`: form, note, table, flow-chart, summary completion;
 - Reading `IELTS-R-QF-09`: summary, note, table, flow-chart completion;
-- Academic Writing `IELTS-W-A-T1`: statistical graph/chart/table, diagram/process, and map/plan presentation classes.
+- Academic Writing `IELTS-W-A-T1`: statistical graph/chart/table, diagram/process, map/plan.
 
-A single content template cannot satisfy a multi-presentation condition merely by carrying the parent family ID.
+One template cannot satisfy a multi-presentation condition merely by carrying parent family ID.
 
 # Content closure
 
-Feature/UI existence is not content coverage. Content closure is evaluated through the existing coverage conditions rather than a new product-status taxonomy.
+Feature/UI existence is not content coverage. Content closure is evaluated through existing coverage conditions rather than a new product-status taxonomy.
 
-When executable content exists, coverage tooling consumes the content manifest/equivalent index defined by `../spec/10-CONTENT-MODEL.md` and verifies at minimum:
+When executable content exists, coverage tooling consumes the content manifest/equivalent index from `../spec/10-CONTENT-MODEL.md` and verifies at minimum:
 
 ```text
 exact content revision + lineage/provenance where material
@@ -286,7 +358,7 @@ independent readiness assets
 release/assignment/operational eligibility
 ```
 
-For every conditional identity dimension, tooling must preserve the distinction between:
+For every conditional identity dimension, tooling preserves:
 
 ```text
 applicable + present
@@ -294,50 +366,48 @@ explicitly NOT_APPLICABLE with owner-derived reason
 required but missing/unresolved
 ```
 
-A uniform implementation shape may not convert a legitimate not-applicable dimension into fabricated identity, and omission may not hide a materially required dimension.
+A uniform implementation shape cannot fabricate identity or hide required identity.
 
-Content closure has four concerns that must be satisfied through the applicable existing TargetCoverageSpecification conditions:
+Content closure has four concerns through applicable existing conditions:
 
-1. **Supply sufficiency** — enough executable eligible content exists for the target/family/context/presentation/difficulty/diversity demand. Supply may come from authored, imported, deterministic, pre-generated, or runtime-generated routes.
-2. **Semantic/quality validity** — every assigned revision passes the applicable content contract, universal hard requirements, and consequence-specific validation needed for its intended use. A global quality percentage cannot substitute for a failed required condition.
-3. **Assignment novelty/independence where applicable** — learner-specific exposure and similarity are evaluated before assignment when transfer/readiness/evidence inference requires novelty or independence. Corpus uniqueness alone does not satisfy this concern.
-4. **Operations/recovery viability** — exact revisions remain auditable; unsafe/problematic content can be stopped from new assignment, revalidated, replaced or retired without rewriting historical learner Attempts/evidence, and coverage-critical inventory can recover when a revision is removed.
+1. **Supply sufficiency** — enough executable eligible content exists for target/family/context/presentation/difficulty/diversity demand; authored/imported/deterministic/pre-generated/runtime-generated routes are eligible.
+2. **Semantic/quality validity** — every assigned revision passes applicable content contract/universal hard/consequence-specific checks; global quality percentage cannot substitute for a failed requirement.
+3. **Assignment novelty/independence where applicable** — learner-specific exposure/similarity is checked before transfer/readiness/evidence assignment when required.
+4. **Operations/recovery viability** — revisions are auditable; problematic content can stop new assignment, be revalidated/replaced/retired without rewriting historical learner Attempts/evidence, and coverage-critical inventory can recover.
 
-Generation is only an applicable sub-demand when the scoped release relies on it. If the release already has sufficient eligible content, absence of runtime AI generation is not a CoverageGap. Conversely, a claimed generator/template cannot satisfy `content_assets` until it demonstrably produces enough executable content that passes the applicable semantic/quality/operations gates.
+Generation is only an applicable sub-demand when scoped release relies on it. Absence of runtime AI generation is not a gap when sufficient eligible supply exists. A generator/template cannot satisfy `content_assets` until output demonstrates applicable quality/coverage/operations.
 
-Similarity is not a universal rejection criterion. A near-duplicate may be legitimate controlled practice while being ineligible for an unseen evidence claim. Coverage tooling therefore must preserve intended-use/assignment scope rather than reducing similarity to one global cutoff.
+Similarity is not universal rejection. A near-duplicate can be valid controlled practice and invalid unseen evidence.
 
-A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified supply, not a design table or a generator that has not demonstrated applicable output quality/coverage. Generated canonical registries/bindings are machine-consumption verification artifacts and do not independently satisfy `content_assets`.
+A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified supply, not design tables or unproven generators. Generated canonical registries/bindings do not independently satisfy `content_assets`.
 
 # Evidence closure
 
-Principles in `08-ASSESSMENT.md` are not by themselves production policy.
+Principles in `08-ASSESSMENT.md` alone are not production policy.
 
-Before product support, each high-consequence claim resolves to a versioned executable EvidenceRequirement. Hidden model heuristics, unversioned cutoffs, mechanical attempt-count rules, or a pre-attempt “certification contributing” label are blockers.
+Before product support, each high-consequence claim resolves to a versioned executable EvidenceRequirement. Hidden heuristics, unversioned cutoffs, mechanical attempt-count rules, or pre-attempt “certification contributing” labels are blockers.
 
-Official-family **product coverage** does not imply that learner certification must mechanically test every family in every portfolio. Learner claim sufficiency remains an Assessment decision. This distinction prevents product completeness rules from leaking into learner mastery policy.
+Official-family product coverage does not imply learner certification mechanically tests every family in every portfolio. Learner claim sufficiency remains Assessment-owned.
 
-Content used for evidence additionally must preserve the exact revision and exposure/independence conditions required by the applicable EvidenceRequirement. A later content correction or retirement does not silently rewrite historical evidence; any reinterpretation follows Assessment/Progression policy with provenance.
+Content used for evidence preserves exact revision and exposure/independence conditions required by applicable EvidenceRequirement. Later content correction/retirement does not rewrite historical evidence; reinterpretation follows Assessment/Progression policy with provenance.
 
 # Contract and machine-materialization closure
 
 A multi-runtime path cannot become `COVERED` while TypeScript, Go, and Python independently maintain handwritten interpretations of the same interface or equivalent manually copied canonical ID registries.
 
-Every implemented cross-unit boundary needs one machine contract authority, validation/generated consumers where appropriate, and conformance verification.
+Every implemented cross-unit boundary needs one machine contract authority, generated/validated consumers where appropriate, and conformance verification.
 
-For every implemented path that consumes shared canonical identities, the applicable derived machine-readable registry/binding materialization defined by `06-implementation-stack.md` must exist and its canonical-reference, ID-uniqueness, and drift verification must pass. Copying equivalent IDs/enums manually into multiple languages does not establish a correctly executable path.
+For every implemented path consuming shared canonical identities, applicable derived machine-readable registry/binding materialization defined by `06-implementation-stack.md` exists and canonical-reference/ID-uniqueness/drift verification passes.
 
-Generated registries/bindings remain derived repository/runtime verification artifacts. They are not canonical learning/product truth, are not evidence of content coverage, are not evidence of product validation, and do not independently satisfy `content_assets` or any support declaration.
+Generated registries/bindings remain derived repository/runtime verification artifacts. They are not canonical learning/product truth, content coverage evidence, product validation evidence, or independent satisfaction of `content_assets`/support declaration.
 
-These requirements close through the existing applicable machine/runtime/contract conditions; they do not create another TargetCoverageSpecification condition or product status.
+These requirements close through existing machine/runtime/contract conditions; they do not create another condition/status.
 
-This includes implemented content generation/validation boundaries when they exist; an unused optional generation capability does not require a hypothetical contract merely to satisfy architecture documentation.
+Implemented content generation/validation boundaries require contracts when they exist; unused optional generation does not require hypothetical contract.
 
 # Delivery closure
 
-When TargetProfile names a material delivery mode, exam-readiness coverage must expose that interaction honestly.
-
-Delivery-mode preparation changes interaction conditions, not Skill/Band truth.
+When TargetProfile names a material delivery mode, exam-readiness coverage exposes that interaction honestly. Delivery preparation changes conditions, not Skill/Band truth.
 
 # Current design-state declaration — 2026-08-22
 
@@ -374,11 +444,14 @@ Official family identities                 MODELLED
 Material presentation identities           MODELLED where required
 Delivery-mode semantics                    MODELLED
 Content runtime/governance semantics        MODELLED
+Runtime engineering concern closure         MODELLED
 Academic product execution                 NOT YET COVERED
 General Training product execution         NOT YET COVERED
 Runtime implementation                     NOT IMPLEMENTED
 Validated target-band outcome              NOT ESTABLISHED
 ```
+
+`Runtime engineering concern closure MODELLED` means the required concern semantics/dispositions are defined; it does not mean runtime/security/operations implementation or verification exists.
 
 No user-facing copy may claim full support until all scoped blocking conditions close and a TargetSupportDeclaration activates that exact scope.
 
@@ -413,7 +486,7 @@ This mapping proves design intent only. It does not satisfy runtime/content gate
 | `IELTS-R-QF-10` Diagram label completion | `R-F03`, focused Reading item |
 | `IELTS-R-QF-11` Short answer | `R-F03`, focused Reading item / `PM-R06` |
 
-Variant coverage additionally requires applicable Academic or GT Content Context distribution and the correct scoring/evidence policy.
+Variant coverage additionally requires applicable Academic or GT Content Context distribution and correct scoring/evidence policy.
 
 ## Writing
 
@@ -438,9 +511,9 @@ Variant coverage additionally requires applicable Academic or GT Content Context
 
 A product target is a constraint set, not one Band number.
 
-Target-relative support requires the resolved standard variant plus a covered path for every real required TargetProfile condition: overall/per-skill Band constraints, external purpose constraints, selected OSR eligibility conditions when a support claim includes them, and delivery mode where material.
+Target-relative support requires resolved standard variant plus covered path for every real required TargetProfile condition: overall/per-skill Band constraints, external purpose constraints, selected OSR eligibility conditions when claim includes them, and delivery mode where material.
 
-If only an overall Band constraint is known, the planner may use the explicitly non-authoritative planning-profile semantics from `00-learning-experience.md`; it must not invent real per-skill minima. Real per-skill minima are added only when they are genuine learner/external constraints.
+If only overall Band constraint is known, planner may use explicitly non-authoritative planning-profile semantics from `00-learning-experience.md`; it cannot invent real per-skill minima.
 
 # Route invariant
 
@@ -467,7 +540,7 @@ Ranking cannot erase prerequisites, family/context/delivery compatibility, conte
 
 # Promise boundary
 
-`SUPPORTED_FOR_PRODUCT` means the product has a complete release-qualified path for the declared scope. It does **not** guarantee an external IELTS result.
+`SUPPORTED_FOR_PRODUCT` means complete release-qualified path for declared scope. It does not guarantee external IELTS result.
 
 Allowed:
 
@@ -495,7 +568,7 @@ Every blocking CoverageGap maps to one demand class:
 - rights/privacy/security;
 - validation/research.
 
-Only actual content gaps create content-quantity demand. A generator is selected/implemented only when a demonstrated supply requirement cannot be satisfied by existing eligible content or another approved supply route under the applicable quality/operations constraints.
+Only actual content gaps create content-quantity demand. A generator is selected/implemented only when demonstrated supply requirement cannot be satisfied by existing eligible content/approved supply route under quality/operations constraints.
 
 # TargetSupportDeclaration minimum
 
@@ -505,13 +578,12 @@ A release declaration names at least:
 - supported Band/TargetProfile conditions;
 - supported delivery modes/purpose constraints where material;
 - product/release version;
-- official-family coverage manifest/result;
-- material-subformat coverage manifest/result;
+- official-family and material-subformat coverage results;
 - feature/practice coverage;
 - content-manifest version + exact active revision/inventory scope;
 - applicable content-validation policy/result references;
-- assignment novelty/independence gate state where material;
-- content incident/recovery/retirement operational gate state;
+- assignment novelty/independence gate where material;
+- content incident/recovery/retirement gate;
 - EvidenceRequirement/policy versions;
 - evaluator/calibration state;
 - machine-contract versions;
@@ -520,8 +592,8 @@ A release declaration names at least:
 - reliability/recovery state;
 - accessibility/capture-quality gate;
 - cost/abuse/operations gate;
-- observability/audit gate;
+- observability/audit gate including supported-release operational objectives/incident ownership;
 - known non-blocking validation backlog;
 - revocation conditions.
 
-Support is versioned and revocable when construct, delivery, provider, rights, reliability, cost, calibration, content coverage/quality/operations, or validation evidence materially changes.
+Support is versioned/revocable when construct, delivery, provider, rights/security, reliability/recovery, cost/capacity, calibration, content coverage/quality/operations, observability, or validation evidence materially changes.
