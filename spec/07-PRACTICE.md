@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: how capability is trained, learning phases, Learning Mechanism taxonomy, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, and feedback timing for learning
+OWNS: how capability is trained, learning phases, Learning Mechanism taxonomy, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, feedback timing, and feedback-focus/noise-control policy for learning
 DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 09-PROGRESSION.md
-DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, assessment sufficiency/certification, learner-state transitions, or concrete generated exercise instances
+DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, assessment sufficiency/certification, learner-state transitions, concrete generated exercise instances, or product/runtime feedback delivery workflow
 
 # 07 — Practice
 
@@ -69,6 +69,29 @@ AI tutor behavior is delivery/runtime capability, not a Learning Mechanism. AI m
 - Exam Readiness: preserve exam-like independence during the attempt; feedback primarily post-task.
 
 Feedback depth follows failure type. Do not correct every detectable issue when doing so would overload the learner or derail the current learning objective.
+
+# Feedback focus and noise control
+
+Feedback selection is target-led. Detecting an issue does not by itself make that issue eligible for immediate learner-facing correction.
+
+When several valid observations exist, feedback priority is:
+
+1. the primary current learning or assessment target;
+2. a Required prerequisite or other blocker materially preventing work on that target;
+3. an issue that materially invalidates task interpretation, performance, or the intended inference;
+4. other useful observations, which may be recorded or deferred rather than surfaced immediately.
+
+Rules:
+
+- feedback may preserve a useful observation without presenting it now;
+- a deferred observation must not be silently promoted into a learner weakness or remediation command merely because it was detected;
+- an integrated Writing/Speaking performance may justify multiple feedback targets when they are jointly material, while a focused micro-practice should remain correspondingly narrow;
+- feedback should prefer the smallest useful correction set that advances the current ActionIntent without hiding a material blocker;
+- feedback must not introduce unrelated teaching merely because the system can detect it;
+- feedback may explain, cue, contrast, or direct attention, but must not perform the learner's required cognitive/performance operation for them;
+- no universal maximum feedback-item count is canonical; breadth depends on target scope, failure type, learner burden, and intended consequence.
+
+`10-CONTENT-MODEL.md` represents the resulting feedback artifact and deferred observation references. Product/runtime delivery, batching, UI presentation, and notification behavior remain downstream design/implementation concerns.
 
 # Canonical Practice Type registry
 
