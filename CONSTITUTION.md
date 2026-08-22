@@ -376,6 +376,8 @@ ts/
 
 A unit is named for what it does, not what language implements it.
 
+Within a deployable, application code is organized primarily by product feature/capability ownership. Framework/transport shells and genuine cross-feature infrastructure remain at their owning boundaries; additional layers exist only for real dependency, invariant, or change boundaries. Pure horizontal layer-first organization and empty architecture layers are not repository defaults. Detailed source organization is owned by `design/06-implementation-stack.md`.
+
 Initial approved deployable topology is defined in `design/06-implementation-stack.md`:
 
 ```text
@@ -453,64 +455,19 @@ CoreStuff
 
 Abbreviations are allowed only when established project/domain vocabulary or universal technical initialisms.
 
-## 24. Language-specific naming and source layout
+## 24. Cross-language semantic naming
 
-### Go
-
-```text
-package directories   compact lowercase words; no hyphens/underscores
-source files           lower_snake_case.go
-test files             *_test.go
-exported identifiers   PascalCase
-unexported identifiers camelCase
-initialisms            ID, URL, HTTP, API, JSON where idiomatic
-```
-
-Runnable Go unit shape:
+Repository naming follows three invariants:
 
 ```text
-services/<unit>/
-├── go.mod
-├── cmd/<binary>/
-└── internal/
+SEMANTIC NAME IS SHARED.
+LANGUAGE SYNTAX IS IDIOMATIC.
+WIRE IDENTITY IS EXACT.
 ```
 
-Do not create `pkg/` automatically.
+Canonical/domain vocabulary remains stable across Go, Python, TypeScript, storage references, and UI code while each implementation language uses its idiomatic package/module/file/identifier casing. Exact serialized HTTP/JSON/event names remain owned by the machine contract.
 
-### Python
-
-```text
-package/module names  snake_case
-functions/variables   snake_case
-classes/types         PascalCase
-constants             UPPER_SNAKE_CASE
-test files            test_*.py
-```
-
-Application/service shape:
-
-```text
-services/<unit>/
-├── pyproject.toml
-├── src/<python_package>/
-└── tests/
-```
-
-Outer unit remains kebab-case; import package uses snake_case.
-
-### TypeScript
-
-```text
-module/file names     kebab-case.ts / kebab-case.tsx
-functions/variables   camelCase
-classes/types/interfaces/components PascalCase
-true constants        UPPER_SNAKE_CASE
-test files            *.test.ts / *.test.tsx
-```
-
-Do not mix `.spec.*` and `.test.*` without an explicit tooling reason.
-
-Framework-required structure may be used but must not create a competing domain taxonomy.
+Detailed language-specific source layout, naming, test placement, generated-code placement, and shared-code promotion rules are owned by `design/06-implementation-stack.md`.
 
 ## 25. Package and module ownership
 
