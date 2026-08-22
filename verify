@@ -11,6 +11,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
+python3 "$ROOT/tools/verify-lenbands-founder-closure.py"
 python3 "$ROOT/tools/canonical/test_materialize.py"
 python3 "$ROOT/tools/canonical/materialize.py"
 
