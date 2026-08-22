@@ -313,7 +313,7 @@ Remove candidates that violate any applicable hard condition:
 - delivery-mode compatibility for exam-readiness work when material;
 - product coverage/support constraint;
 - primary-purpose/evidence-candidacy compatibility for the requested action;
-- exact content-revision release/operational eligibility;
+- exact content-revision release/operational eligibility for the actual intended use under the currently applicable validation policy/use scope;
 - learner-specific exposure/novelty/independence eligibility where material;
 - rights/privacy/source eligibility;
 - accessibility/capture feasibility;
@@ -372,7 +372,7 @@ A ranker may reorder eligible candidates. It may never:
 
 A DailyPlan is a snapshot/recommendation produced from named state, not assignment authority. It records enough provenance to reconstruct why each activity was eligible and selected at plan time, including where material the TargetProfile/target-context revision, learner/Progression state reference/version, content/release state, product support/coverage version, content-revision references, and unresolved conditions used by planning.
 
-Before actual PracticeActivity/AssessmentActivity assignment or learner exposure, Core re-evaluates every **current** hard condition that can change. This includes where material current target context, learner/evidence state, product coverage/support scope, ContentRevision release and quarantine/operational state, rights/source eligibility, learner exposure/novelty/independence and reservation state, and delivery/capture feasibility.
+Before actual PracticeActivity/AssessmentActivity assignment or learner exposure, Core re-evaluates every **current** hard condition that can change. This includes where material current target context, learner/evidence state, product coverage/support scope, ContentRevision release/quarantine/operational state and validation eligibility for the actual intended use under the currently applicable policy/use scope, rights/source eligibility, learner exposure/novelty/independence and reservation state, and delivery/capture feasibility.
 
 The assignment boundary is therefore:
 
@@ -391,6 +391,8 @@ delivery / actual exposure
 Where a mutable authoritative hard condition can change concurrently and make the assignment illegal, its decisive current-state check is atomically/conditionally coupled to reservation/assignment or protected by an equivalent serialization invariant. A candidate/preflight recheck alone is insufficient: a concurrent quarantine, release revocation, target/support change, or learner-specific reservation/exposure change must either be reflected in the assignment decision or cause that assignment to fail/reselect. This does not require one global lock or transaction across unrelated state.
 
 A previously eligible plan item that is now ineligible is not executed merely because it remains in a saved plan; Core reselects another eligible action or exposes the truthful current blocker. Plan-time explanation remains historical provenance, not present eligibility. A full plan regeneration is unnecessary when a smaller current eligibility/reselection check is sufficient. No plan TTL is frozen.
+
+When validation materially gates assignment, assignment-time provenance remains sufficient to reconstruct the exact ContentRevision, intended-use/consequence scope, applicable validation-policy version, and the compatible ValidationDecision/current release state that justified eligibility. Exact storage shape is not fixed and these need not all be fields on Attempt. Plan-time provenance remains separate; neither an older DailyPlan nor an unrelated older/newer ValidationDecision overrides the currently applicable policy/use scope.
 
 Assignment records the exact current eligibility/content revision actually used; plan provenance and assignment authority remain distinct.
 
@@ -701,10 +703,11 @@ Rules:
 5. corpus similarity is not a universal rejection rule; similarity facts are interpreted against the intended learning/evidence purpose;
 6. generator output and validator signals cannot activate content by themselves; Core-API-owned deterministic product policy applies the owning semantic/coverage rules;
 7. higher-consequence use requires the stronger applicable validation/evidence conditions defined upstream; low-consequence training does not require unrelated high-consequence checks;
-8. every assigned activity resolves the exact immutable revision and current release/operational eligibility before learner exposure, regardless of whether an older DailyPlan referenced it;
+8. every assigned activity resolves the exact immutable revision and current release/validation/operational eligibility for the actual intended use under the currently applicable validation policy/use scope before learner exposure, regardless of whether an older DailyPlan or unrelated ValidationDecision referenced another state;
 9. the decisive assignment enforces the mutable current hard gates described in Stage 7 under a transaction, conditional write, or equivalent serialization invariant where concurrency can invalidate them; learner-specific unseen/exposure/independence/uniqueness and reservation state are included when material so concurrent requests cannot both consume the same protected opportunity incorrectly;
-10. reservation/assignment for delivery is not actual learner exposure. A failed/disconnected delivery must not fabricate `seen`; actual ExposureContext follows `spec/10-CONTENT-MODEL.md`;
-11. a reservation may temporarily exclude concurrent assignment until it is reconciled/released; exact reservation timeout/recovery mechanism remains implementation policy.
+10. when the intended use requires proven unseen or sufficiently independent conditions, `UNKNOWN`, missing, or ambiguous material exposure is not treated as unseen. Core selects another eligible opportunity or preserves a truthful unresolved/ineligible state for that consequence; training that does not require novelty may remain eligible;
+11. reservation/assignment for delivery is not actual learner exposure. A failed/disconnected delivery must not fabricate `seen`; actual ExposureContext follows `spec/10-CONTENT-MODEL.md`;
+12. a reservation may temporarily exclude concurrent assignment until it is reconciled/released; exact reservation timeout/recovery mechanism remains implementation policy.
 
 Content supply may be asynchronous. If the desired content is unavailable, the planner may use another genuinely eligible activity or expose an honest product/content gap; it must not silently relax semantic or evidence requirements merely to avoid generation latency/cost.
 
