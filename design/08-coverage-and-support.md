@@ -185,12 +185,12 @@ For each scoped target, evaluate every applicable condition independently.
 | `progression_transition` | valid evidence can drive explainable state/next action |
 | `variant_context` | Academic/GT task/section/context conditions are represented and sampled |
 | `delivery_mode_readiness` | requested delivery-specific interaction/preparation exists when material |
-| `machine_contracts` | exact implemented cross-unit interfaces, shared canonical identity materialization where consumed, API compatibility/conformance, and drift verification pass |
-| `rights_privacy_security` | applicable source/data/consent/access/secrets/transport/storage/browser/provider/public-edge security requirements pass |
-| `reliability_recovery` | applicable lifecycle, commit/idempotency/concurrency, durable async registration, timeout/retry/backpressure, migration/deploy, backup/restore, failure/degraded/recovery, and content/evaluator recovery behavior passes |
+| `machine_contracts` | exact implemented cross-unit interfaces, shared canonical identity materialization where consumed, directional compatibility for allowed deployed skew, applicability preservation, conformance, and drift verification pass |
+| `rights_privacy_security` | applicable source/data/consent/access/secrets/transport/storage/browser/SSE/internal-service/provider/public-edge security requirements pass |
+| `reliability_recovery` | applicable lifecycle, commit/idempotency/concurrency, durable async registration, timeout/retry/backpressure, version-skew/migration/deploy, data-lifecycle/restore, failure/degraded/recovery, and content/evaluator recovery behavior passes |
 | `accessibility_capture_quality` | access/capture/browser/device failures cannot become false ability judgments and supported interaction remains usable |
 | `cost_abuse_operations` | release operates within declared rate/abuse/provider-quota/compute/storage/traffic/capacity/scaling/external-usage constraints |
-| `observability_audit` | applicable structured logs, metrics, correlation/tracing, privileged audit, consequential decision/version provenance, alerting/operational reconstruction are sufficient |
+| `observability_audit` | applicable structured logs, metrics, correlation/tracing, privileged audit, consequential decision/build/contract/config/provider provenance, alerting/operational reconstruction are sufficient |
 | `validation` | empirical outcome evidence exists when promoting to `VALIDATED` |
 
 `NOT_APPLICABLE` requires an explicit reason for the scoped target. Absence of an artifact, unimplemented work, lack of data, inconvenience, or absence of a named enterprise technology is never an N/A reason.
@@ -204,14 +204,15 @@ The system-engineering disposition and material-boundary model in `06-implementa
 Boundary documentation by itself is never executable coverage evidence. An implemented material boundary can pass applicable coverage only when the selected implementation demonstrates the relevant combination of:
 
 - named semantic/state authority and legal caller/callee direction;
-- correct trust/access/auth boundary;
+- correct trust/access/auth boundary and protected-information isolation;
 - exact machine contract where the boundary crosses runtime units;
 - canonical applicability/stable-identity preservation;
 - authoritative transaction/commit and consistency behavior;
 - idempotency/concurrency/retry semantics where material;
 - failure/degradation/reconciliation behavior;
 - privacy/security/data-egress/ingress controls;
-- version/evolution compatibility;
+- directional version/evolution compatibility for deployed skew;
+- data-lifecycle and security-critical configuration correctness where applicable;
 - privacy-safe observability/audit;
 - executable verification of the boundary and forbidden bypasses.
 
@@ -224,25 +225,30 @@ Where applicable this condition closes:
 - exact public/internal cross-unit machine interface authority;
 - generated/validated consumer/provider conformance;
 - shared canonical registry/identity materialization actually consumed by runtime;
-- API/application compatibility/version provenance and deployed evolution compatibility;
+- canonical distinction among present, optional-absent, NOT_APPLICABLE, unresolved, and invalid-required states where material;
+- directional compatibility for every old/new client/server or consumer/provider combination that deployment permits to coexist;
+- safe unknown field/enum/status behavior proven for affected consumers rather than assumed from additive schema shape;
 - no handwritten equivalent DTO/canonical-ID truth across parallel runtimes;
 - preservation of applicability/stable IDs across generated bindings.
+
+Generated bindings do not remove runtime version skew. Breaking change cannot assume atomic simultaneous deployment unless the deployment contract explicitly guarantees it.
 
 ## `rights_privacy_security`
 
 Where applicable this condition closes deployed security/trust obligations including:
 
 - Browser/user untrusted-input boundaries;
-- authentication, authorization/capability and least privilege;
-- Next.js server/web-edge inability to bypass Go product authority;
+- authentication, authorization/capability and protected-resource non-disclosure;
+- SSE authentication/access scope and prevention of cross-learner/admin event leakage;
+- Next.js server/web-edge inability to bypass Go product/DB authority;
+- Python internal capability reachability and service authentication/authorization when its network trust boundary requires it;
 - SQL injection, XSS, SSRF, CORS/CSP/CSRF protections appropriate to selected routes;
 - secrets/key/session/token handling and revocation/rotation appropriate to actual credential design;
-- TLS/encryption in transit and applicable encryption-at-rest protection;
-- privileged/admin and service-to-service access boundaries;
-- object/media access/retention/privacy where applicable;
-- provider/data-processor egress/ingress security and public-edge abuse/DDoS/WAF concern appropriate to deployment.
+- applicable transport/storage protection and least privilege;
+- object/media access/privacy and external processor data handling/deletion obligations;
+- provider/data-processor egress/ingress security and public-edge abuse protection appropriate to deployment.
 
-OAuth, JWT, a hosted identity provider, or dedicated WAF product is not required unless that technology is actually selected/needed; the underlying concern still must pass.
+OAuth, JWT, a hosted identity provider, service mesh, or dedicated WAF product is not required unless selected/needed; the underlying concern still must pass.
 
 ## `reliability_recovery`
 
@@ -250,27 +256,21 @@ Where applicable this condition closes:
 
 - durable commit-before-success-ACK and authoritative transaction behavior;
 - required async work registered atomically/recoverably before acknowledgement depends on it;
-- idempotency, race/concurrency/stale-write correctness;
-- deadlines/timeouts, retry classification/backoff, ambiguous network/database/provider outcome reconciliation, provider degradation, capacity/backpressure;
-- consistency-class behavior and stale-derived-state detection where correctness depends on it;
-- migration/schema/deployment compatibility and rollback/forward-recovery;
-- backup plus verified restore, PITR where applicable, disaster/recovery procedure;
+- idempotency scope/conflict handling, race/concurrency/stale-write correctness;
+- deadlines/timeouts, retry classification/backoff, ambiguous network/database/provider reconciliation, provider degradation, capacity/backpressure;
+- SSE duplicate/reorder/loss/reconnect recovery through durable resource state;
+- derived cache/index/projection staleness behavior;
+- application/schema and public/internal contract compatibility during permitted rollout skew;
+- backup plus verified restore and reconciliation with current deletion/tombstone state so deleted data cannot silently return to active use;
 - health/failure/degraded-state behavior, content/evaluator/work/object-reference recovery;
-- safe rollout/recovery independent of whether a named blue-green/canary/rolling strategy is used;
-- co-location without ownership/contract bypass.
+- co-location without ownership/contract/DB bypass;
+- security-critical configuration failing closed rather than silently changing semantics.
 
-Reliable async evaluation can satisfy this gate without Kafka when durable DB work/outbox/recoverable/idempotent bounded dispatch meets the same invariant.
+Reliable async evaluation can satisfy this gate without Kafka when durable DB work/recoverable/idempotent bounded dispatch meets the invariant.
 
 ## `cost_abuse_operations`
 
-Where applicable this condition closes:
-
-- rate limiting/abuse protection;
-- bounded upload/request/media/provider input;
-- provider quotas and duplicate-cost prevention;
-- compute/storage/network/external-service usage and cost visibility;
-- traffic/capacity/backlog pressure;
-- scale strategy appropriate to measured demand.
+Where applicable this condition closes rate limiting/abuse protection, bounded inputs, provider quotas/duplicate-cost prevention, compute/storage/network/external usage visibility, traffic/capacity/backlog pressure, and scale strategy appropriate to measured demand.
 
 Horizontal autoscaling, load balancers, CDN, read replicas, sharding, or Kubernetes are not individually required. They become applicable only when their trigger is present.
 
@@ -278,23 +278,23 @@ Horizontal autoscaling, load balancers, CDN, read replicas, sharding, or Kuberne
 
 Where applicable this condition closes:
 
-- privacy-safe structured logging and correlation IDs;
+- privacy-safe structured logging and correlation;
 - operational metrics including error/latency/capacity/backlog/provider health where material;
-- trace correlation when needed for multi-unit diagnosis;
-- distinction among operational logs, security events, product analytics, learner-visible history, and privileged audit;
-- privileged mutation audit and consequential decision/version/provenance reconstruction;
+- trace correlation when needed;
+- distinction among operational logs, security events, analytics, learner-visible history, and privileged audit;
+- privileged mutation and consequential decision/build/contract/config/provider provenance sufficient for reconstruction;
 - actionable alerting plus intended-release incident ownership/escalation;
-- initial measurable operational objectives/SLIs/SLOs appropriate to the intended release candidate before promotion to `COVERED`/`SUPPORTED_FOR_PRODUCT`, without architecture inventing arbitrary numeric objectives.
+- measurable operational objectives appropriate to the intended release candidate without architecture inventing arbitrary numeric objectives.
 
-Production evidence may later recalibrate those objectives. Telemetry is derived evidence about operation; logs/metrics/traces never replace authoritative product/learner/content/evidence state.
+Telemetry is derived execution evidence; logs/metrics/traces never replace authoritative product/learner/content/evidence state.
 
 ## `feature_experience` and `accessibility_capture_quality`
 
-These continue to close learner-visible correctness at Browser/Web/device/capture boundaries where applicable, including truthful pending/error states, safe recovery from client/SSE/capture failure, and prevention of device/browser/upload failure becoming false learner-performance evidence.
+These close learner-visible correctness at Browser/Web/device/capture boundaries where applicable, including truthful accepted/pending/stale/unavailable/unsupported states, recovery from client/SSE/capture failure, and prevention of device/browser/upload/infrastructure failure becoming false learner-performance evidence.
 
 ## Technology-independence invariant
 
-Coverage evaluates **whether the concern is satisfied**, not whether a fashionable technology exists.
+Coverage evaluates whether the concern is satisfied, not whether a fashionable technology exists.
 
 Therefore none of the following is intrinsically required for `COVERED`/support: Kubernetes, Helm, Kafka/another broker, Redis, vector database, distributed transactions, Saga orchestration, service mesh/discovery infrastructure, multi-region, database sharding/read replicas, leader election, gRPC, WebSockets, JWT, OAuth, Docker, Terraform, external observability, or a paid GitHub capability.
 
@@ -424,15 +424,15 @@ Content used for evidence preserves exact revision and exposure/independence con
 
 A multi-runtime path cannot become `COVERED` while TypeScript, Go, and Python independently maintain handwritten interpretations of the same interface or equivalent manually copied canonical ID registries.
 
-Every implemented cross-unit boundary needs one machine contract authority, generated/validated consumers where appropriate, conformance verification, and compatibility/evolution handling appropriate to deployed consumers.
+Every implemented cross-unit boundary needs one machine contract authority, generated/validated consumers where appropriate, conformance verification, canonical applicability preservation, and directional compatibility for every old/new consumer-provider combination the selected deployment permits to coexist.
+
+Generated bindings do not prove tolerance of unknown fields/enums/statuses and do not remove runtime version skew. Breaking changes cannot assume simultaneous deployment unless that deployment guarantee is explicit and verified.
 
 For every implemented path consuming shared canonical identities, applicable derived machine-readable registry/binding materialization defined by `06-implementation-stack.md` exists and canonical-reference/ID-uniqueness/drift verification passes.
 
-Generated registries/bindings remain derived repository/runtime verification artifacts. They are not canonical learning/product truth, content coverage evidence, product validation evidence, or independent satisfaction of `content_assets`/support declaration.
+Generated registries/bindings remain derived verification artifacts. They are not canonical learning/product truth, content coverage evidence, product validation evidence, or independent satisfaction of `content_assets`/support declaration.
 
-These requirements close through existing machine/runtime/contract conditions; they do not create another condition/status.
-
-Implemented content generation/validation boundaries require contracts when they exist; unused optional generation does not require hypothetical contract.
+Implemented content generation/validation boundaries require contracts when they exist; unused optional generation does not require hypothetical contracts. SSE uses the public HTTP contract rather than requiring a separate event contract.
 
 # Delivery closure
 
@@ -616,13 +616,13 @@ A release declaration names at least:
 - content incident/recovery/retirement gate;
 - EvidenceRequirement/policy versions;
 - evaluator/calibration state;
-- machine-contract versions/compatibility state;
+- machine-contract versions/directional compatibility state for the selected rollout;
 - rights/privacy/security state;
 - third-party activation state;
-- reliability/recovery state;
+- reliability/recovery/data-lifecycle state;
 - accessibility/capture-quality gate;
 - cost/abuse/operations gate;
-- observability/audit gate including release-candidate operational objectives/incident ownership;
+- observability/audit gate including consequential version/config provenance and release-candidate operational objectives/incident ownership;
 - known non-blocking validation backlog;
 - revocation conditions.
 
