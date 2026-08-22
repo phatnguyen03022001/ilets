@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: initial deployable-unit allocation, primary-language/framework assignment, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, and repository/native verification contract
+OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
-DOES_NOT_OWN: learning/product truth, parser/materializer implementation, registry serialization or codegen-library choice, CI platform configuration, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, or package-manager lock state
+DOES_NOT_OWN: learning/product truth, parser/materializer implementation, canonical-registry serialization details, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, package-manager lock state, or CI platform configuration
 
 # Implementation Stack
 
@@ -9,7 +9,7 @@ DOES_NOT_OWN: learning/product truth, parser/materializer implementation, regist
 
 Assign approved languages/framework families and implementation-engineering invariants to explicit runtime responsibilities so implementation does not re-decide first-order architecture, duplicate domain logic across stacks, collapse trust boundaries for convenience, or cargo-cult infrastructure.
 
-Architecture freezes responsibility, bootstrap tool families, material boundary/consistency/evolution semantics, and production concern semantics. Patch versions, provider products, deployment vendors, and empirical operational thresholds remain implementation/deployment decisions.
+Architecture freezes responsibility, stable framework/library families where ambiguity would otherwise create duplicate infrastructure, material boundary/consistency/evolution semantics, and production concern semantics. Patch versions, provider products, deployment vendors, and empirical operational thresholds remain implementation/deployment decisions.
 
 # Initial deployable topology
 
@@ -338,15 +338,28 @@ Before applicable `COVERED`/`SUPPORTED_FOR_PRODUCT` promotion, the release candi
 
 ## Conditional / initial non-selection
 
-Reverse proxies/gateways/load balancers, CDN, autoscaling, read replicas/sharding, distributed locks/transactions/Sagas, brokers/PubSub/DLQ, WebSockets, gRPC, circuit breakers beyond bounded retry/degradation, multi-region, chaos engineering, dedicated WAF/DDoS products, Docker, Terraform/IaC, Kubernetes/Helm/service discovery, serverless-specific handling, OAuth/JWT-specific mechanics, and external feature-flag services remain trigger-based.
+Reverse proxies/gateways/load balancers, CDN, autoscaling, read replicas/sharding, distributed locks/transactions/Sagas, brokers/PubSub/DLQ, WebSockets, gRPC, circuit breakers beyond bounded retry/degradation, multi-region, chaos engineering, dedicated WAF/DDoS products, Terraform/IaC, Kubernetes/Helm/service discovery, serverless-specific handling, OAuth/JWT-specific mechanics, and external feature-flag services remain trigger-based.
+
+Local PostgreSQL launched through Compose is current development/integration-test implementation packaging. It is not production topology authority and does not select containerized production deployment.
 
 Kubernetes, Helm, Kafka-class broker infrastructure, distributed transactions/Sagas, multi-region, DB sharding/read replicas, leader election, gRPC, and WebSockets are not selected initially.
 
 # Reuse-first implementation invariant
 
-Prefer an existing canonical/runtime/content capability, then deterministic/local first-party execution, then an already eligible external capability, and only then new infrastructure/provider when a demonstrated gap remains.
+Prefer, in order:
+
+1. the standard library;
+2. a framework-native facility;
+3. a dependency already selected in this repository;
+4. a mature focused open-source library;
+5. thin project-specific glue;
+6. custom generic infrastructure only as a last resort.
+
+For a new general-purpose dependency or custom generic subsystem, implementation must establish that the concern exists, the selected stack does not already own it, the proposal is maintained and compatible, its license is acceptable, it does not require unapproved paid SaaS, it does not create a second semantic or machine truth, and its dependency cost is justified by the custom complexity it removes.
 
 Optimization cannot move semantic authority into caches, generated files, prompts, provider output, logs, metrics, migrations, configuration, or DB schema. Cost pressure cannot lower evidence/content/evaluator quality for the same intended consequence.
+
+Domain-specific implementation should remain custom where it encodes product semantics. This includes `TargetProfile`, `ContentRevision`, `ValidationDecision`, Attempt lifecycle, Observation, Assessment, `EvidenceRequirement`, Progression, Planner behavior, content eligibility, and IELTS scoring/inference. The anti-wheel rules below apply to commodity engineering infrastructure, not product semantics.
 
 # Version and dependency policy
 
@@ -355,31 +368,54 @@ Architecture freezes compatibility families/responsibilities, not patch numbers.
 At bootstrap:
 
 - use a currently supported Node.js LTS line and compatible TypeScript/React/Next.js App Router;
-- use a currently supported Go release with `net/http` and `chi/v5`;
-- use a currently supported Python 3 release with compatible FastAPI/Pydantic;
-- pin exact dependency/runtime versions in manifests/lockfiles;
+- use a currently supported Go release with the approved Go family below;
+- when the evaluator runtime is materialized, use a currently supported Python 3 release with the approved Python family below;
+- pin exact dependency/runtime versions in manifests/lockfiles/tool scripts;
 - maintain verified security/maintenance updates;
-- avoid overlapping tools for the same concern without a concrete reason.
+- reuse the selected owner for a concern instead of adding an overlapping library or silently changing tooling family.
 
-Dependency updates cannot silently change machine-contract or canonical semantics.
+Dependency updates cannot silently change machine-contract or canonical semantics. A real new concern may justify a new dependency when the existing selected stack is insufficient and the reuse-first checks above pass.
 
 # TypeScript — Web
 
 Unit: `apps/web/`.
 
-Bootstrap family:
+Approved family ownership:
 
 ```text
-TypeScript
-React
-Next.js App Router
-ESLint
-Prettier
-Vitest
-React Testing Library
-Playwright
-browser fetch / generated contract client
+runtime/framework        TypeScript + React + Next.js App Router
+package/lock management pnpm
+public HTTP contract     exact OpenAPI contract
+HTTP type generation     openapi-typescript
+HTTP contract client     openapi-fetch
+server state             TanStack Query
+forms                    React Hook Form
+i18n                     next-intl
+styling                  Tailwind CSS
+UI primitives            shadcn/ui source-distribution model; Radix primitives only as actually consumed
+icons                    lucide-react
+format/lint              Prettier + ESLint
+component/unit tests     Vitest + React Testing Library + user-event + jest-dom
+browser E2E              Playwright
+automated accessibility  axe Playwright integration
 ```
+
+Exact versions remain owned by `package.json` and `pnpm-lock.yaml`.
+
+State ownership is narrow:
+
+```text
+server state                         → TanStack Query
+form state                           → React Hook Form
+shareable navigation / filter state → URL / Next.js router where appropriate
+small transient presentation state  → React state
+```
+
+A new global state library requires a demonstrated state-ownership problem that these mechanisms cannot represent cleanly. Do not create a generic project state framework.
+
+Implementation must not independently recreate query/cache lifecycle, mutation invalidation, form state, translation plumbing, accessible primitive behavior, or HTTP DTO truth when the selected stack already owns those concerns. Do not add generic framework wrappers such as `QueryManager`, `FormEngine`, `TranslationEngine`, `UIComponentFactory`, or `HTTPClientFramework` merely to make selected libraries swappable. Thin domain/presentation adapters remain allowed.
+
+MSW is trigger-based rather than always-installed: add it only when isolated component/integration HTTP mocking becomes useful. Redux, Zustand, Axios, a generic custom cache, a generic custom form framework, and a custom i18n framework are not selected while the ownership model above is sufficient.
 
 Owns learner/admin rendering, interactive workspaces, browser capture, embedded-player interaction, transient timers/drafts/optimistic presentation, SSE client behavior, presentation transformations, accessibility/responsiveness, and presentation-side Next.js server rendering/web-edge mechanics.
 
@@ -389,19 +425,23 @@ Does not own learning/evidence/progression policy, deterministic IELTS scoring, 
 
 Unit: `services/core-api/`.
 
-Bootstrap family:
+Approved family ownership:
 
 ```text
-Go
-net/http
-chi/v5
-PostgreSQL-compatible persistence
-pgx/v5 or equivalent direct PostgreSQL-capable driver
-SQL-first persistence
-standard structured logging where sufficient
+runtime                  Go
+HTTP                     net/http + chi/v5
+PostgreSQL access        pgx/v5
+typed SQL generation     sqlc
+migrations               tern
+public OpenAPI server    oapi-codegen
+logging                  log/slog
+security / IDs           Go standard-library crypto primitives where sufficient
+tests                    testing + httptest + real PostgreSQL integration tests
 ```
 
-A general-purpose ORM is not selected by default.
+Exact versions remain implementation/tooling-owned by `go.mod`, `go.sum`, and repository tool scripts.
+
+SQL remains explicit project SQL. `sqlc` owns typed query generation/mapping and `pgx` owns PostgreSQL execution. Do not maintain a parallel handwritten `QueryRow`/`Scan` mapping implementation when the same query is already represented in `sqlc`. Do not introduce a generic `RepositoryBase`, generic query framework, ORM, migration engine, logging-wrapper framework, or config framework without demonstrated need. Business/domain SQL and transaction semantics remain project code.
 
 Owns learner/admin `/v1`, authoritative product DB access, durable learner/target/content/work/session/Attempt state, transaction/idempotency/concurrency boundaries, deterministic scoring/exact validation, Assessment/Progression/Planner execution over materialized canonical rules, content orchestration, async work orchestration, media-source product state, and product SSE delivery.
 
@@ -425,29 +465,33 @@ Owns learner/admin `/v1`, authoritative product DB access, durable learner/targe
 - application/schema compatibility supports the selected rollout window rather than assuming lock-step deployment;
 - migration/deploy recovery preserves committed accepted learner work.
 
-No migration package is selected by this documentation pass.
+Architecture does not require a migration product as semantic truth. The current bootstrap implementation uses `tern` as the selected SQL-first PostgreSQL migration tool. Exact version remains implementation/tooling-owned.
 
 # Python — Evaluator/media analysis
 
 Unit: `services/evaluator/`.
 
-Bootstrap family:
+The Python evaluator runtime is approved architecture but is not yet materialized in the repository. Do not create it merely to satisfy this profile; when implementation starts, use this family unless an implementation-time compatibility/security finding requires an explicit change.
+
+Approved future family ownership:
 
 ```text
-Python 3
-FastAPI
-Pydantic-compatible typed contract models
-uv
-Ruff
-Pyright
-pytest
+runtime/package          Python + uv
+lockfile                 uv.lock once materialized
+HTTP API                 FastAPI + Uvicorn
+models/config            Pydantic v2 + pydantic-settings
+outbound HTTP            httpx
+quality                  Ruff + Pyright
+tests                    pytest + pytest-asyncio
+machine-contract models  generated/validated Pydantic models from the exact internal contract
+intended model generator datamodel-code-generator, subject to implementation-time compatibility/security verification
 ```
+
+`respx` is conditional on real external HTTP adapter tests. `tenacity` is conditional on a real external retry policy. SQLAlchemy, Alembic, Celery, Redis, LangChain, and LlamaIndex are not selected by this profile.
 
 Owns bounded Writing/Speaking observations, eligible speech/transcription/acoustic extraction, bounded text/media analysis, bounded generated feedback/content candidates, optional model-assisted validation signals, and evaluator/model/generator/validator provenance/uncertainty.
 
-Does not own public API, authoritative DB access, learner/progression/content operational state, content activation/assignment, certification, evidence sufficiency, Band advancement, or DailyPlan selection.
-
-Celery, a separate broker framework, and a second web framework are not selected initially.
+Does not own public API, authoritative DB access, learner/progression/content operational state, content activation/assignment, certification, evidence sufficiency, Band advancement, or DailyPlan selection. Python must not access the authoritative product PostgreSQL store.
 
 # Public/internal network baseline
 
@@ -501,7 +545,7 @@ Invariants:
 9. materialization may start only with registries consumed by the bounded implementation slice;
 10. historical references remain reconstructable across later canonical evolution.
 
-Exact parser, source-map representation, serialization, and codegen choices remain implementation decisions.
+Exact parser, source-map representation, serialization, and codegen choices remain implementation decisions except where an approved runtime family above names a generator family for a cross-language contract.
 
 # Distinct state/version identities
 
@@ -592,7 +636,7 @@ Before applicable support promotion:
 - deployment keeps environment config and secrets separated;
 - rollout/recovery preserves the compatibility windows above.
 
-Docker, Terraform/IaC, load balancing, autoscaling, multi-region, and Kubernetes remain conditional on actual deployment need.
+Production container packaging, Terraform/IaC, load balancing, autoscaling, multi-region, and Kubernetes remain conditional on actual deployment need. Local Compose use for repository verification does not select those production technologies.
 
 # Feature flags
 
@@ -619,9 +663,10 @@ Prettier format check
 ESLint
 TypeScript typecheck
 Vitest
-React Testing Library where material
+React Testing Library / user-event / jest-dom where material
 Next.js production build
 Playwright critical E2E
+axe Playwright automated accessibility checks where applicable
 security-sensitive browser/input/hidden-content projection + reveal-policy tests where material
 stale-plan/current-eligibility user-flow tests where material
 public-contract conformance/compatibility once materialized
@@ -633,9 +678,10 @@ public-contract conformance/compatibility once materialized
 gofmt
 go vet ./...
 go test ./...
+testing + httptest
 race tests where material
 build core-api
-DB/migration/query integration once persistence exists
+real PostgreSQL DB/migration/query integration once persistence exists
 atomic idempotency + optimistic-concurrency race tests where material
 stale-plan/current-eligibility assignment + concurrent quarantine/revocation race tests where material
 exclusive execution-attempt claim / duplicate-dispatch + claimant-crash/ambiguous-dispatch recovery tests where material
@@ -650,10 +696,12 @@ duplicate downstream semantic replay tests where material
 
 ## Python
 
+Once the evaluator exists:
+
 ```text
 Ruff format/lint
 Pyright
-pytest
+pytest + pytest-asyncio
 internal-contract conformance/compatibility once materialized
 bounded input/output/provider tests where material
 ```
@@ -677,25 +725,33 @@ Boundary verification also exercises auth/access ordering, forbidden bypasses, i
 
 # Root verification
 
-One root verification contract eventually spans:
+Repository-native local verification is the correctness procedure. The current root command is:
 
 ```text
-verify
+./verify
+```
+
+The root contract spans the checks whose artifacts/runtimes currently exist and grows when a corresponding runtime or boundary is materialized:
+
+```text
+./verify
   ├── repository/canonical + dependency/reference integrity
   ├── materialized registries + owner/source drift
   ├── materialized contracts + directional compatibility
   ├── web
   ├── core-api
-  ├── evaluator
+  ├── evaluator, once materialized
   ├── persistence/migrations
   └── cross-unit/boundary integration
 ```
 
-Checks enter when the corresponding artifact/runtime exists. CI must invoke the same correctness contract rather than define a separate hidden PASS. A cross-stack change is not PASS because only one affected ecosystem is green.
+CI may invoke the same repository-native command. CI must not define a second correctness procedure, auto-invent or auto-commit generated semantic changes, be required to materialize missing generated truth, silently mutate source or `main` as part of verification, or become the only place correctness can be executed. Generated artifacts must be reproducible locally and committed coherently with the source change that generates them. A cross-stack change is not PASS because only one affected ecosystem is green.
+
+Repository automation should use read-only repository permissions for verification unless an independently justified write operation is explicitly approved. Without explicit USER approval, automation must not introduce or require GitHub capabilities that may incur usage-based charges or metered storage/compute beyond the explicitly approved free/local path. This includes GitHub larger runners, Codespaces, paid/private Actions usage, artifact storage that can create metered billing exposure, paid GitHub security/add-on products, paid hosted build/deployment features, or another usage-billed GitHub capability. Standard free public-repository workflow execution may remain optional automation when it invokes the same local verification procedure and does not create a paid dependency. Do not encode an assumption that any GitHub feature is permanently free; paid/metered capability requires explicit USER authorization.
 
 # Framework/infrastructure change rule
 
-A replacement requires architecture review when it materially changes deployable boundaries, API/transport ownership, rendering/runtime model, persistence ownership/consistency, cross-language contracts, provider/trust boundary, or operational complexity. Patch/minor maintenance inside the same responsibility boundary is implementation work.
+A replacement requires architecture review when it materially changes deployable boundaries, API/transport ownership, rendering/runtime model, persistence ownership/consistency, cross-language contracts, provider/trust boundary, operational complexity, or an approved concern→library/tool family. Patch/minor maintenance inside the same responsibility boundary is implementation work.
 
 # Initial non-goals
 
