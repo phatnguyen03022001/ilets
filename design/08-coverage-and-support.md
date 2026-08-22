@@ -27,7 +27,9 @@ VALIDATED
 
 ## `MODELLED`
 
-The relevant construct and product semantics are represented with enough precision to reason about the path and identify remaining gaps.
+The relevant construct and product semantics are represented with enough precision to expand the scoped target into its applicable coverage dimensions, identify unresolved applicability where it genuinely remains unknown, and name blocking gaps without inventing implementation truth.
+
+`MODELLED` does not mean executable. Conditions may still be `UNKNOWN`, `DEFINED`, `PARTIAL`, `BLOCKED`, or `CALIBRATION_REQUIRED`.
 
 ## `COVERED`
 
@@ -45,19 +47,25 @@ external requirement / official family
 → machine/runtime/provider path
 ```
 
+For promotion to `COVERED`, every applicable TargetCoverageSpecification condition **except `validation`** must be `SATISFIED`. An explicitly justified `NOT_APPLICABLE` condition is excluded from that target's required set. `UNKNOWN`, `DEFINED`, `PARTIAL`, `BLOCKED`, or `CALIBRATION_REQUIRED` on any applicable non-validation condition prevents `COVERED`.
+
+`validation` is intentionally excluded because empirical product-outcome validation is the later `VALIDATED` gate. Evaluator/score calibration required for safe product execution belongs to `evaluator_scoring` and therefore can block `COVERED`.
+
 ## `SUPPORTED_FOR_PRODUCT`
 
-A versioned TargetSupportDeclaration activates the target for a named product/release boundary and confirms every applicable release-critical gate.
+A versioned TargetSupportDeclaration activates an already-`COVERED` target for a named product/release boundary and confirms the exact supported scope/version plus all applicable release-critical gates.
+
+`SUPPORTED_FOR_PRODUCT` is not a shortcut around `COVERED`: declaration prose cannot convert an unsatisfied condition into support. `validation` may still remain unsatisfied because product support and empirically validated outcome are distinct states.
 
 ## `VALIDATED`
 
-Scoped empirical evidence supports the declared product outcome under named learner/product/content/evaluator/intervention versions and conditions.
+A target is `VALIDATED` only when it is currently `SUPPORTED_FOR_PRODUCT` **and** its scoped `validation` condition is `SATISFIED` by empirical evidence under named learner/product/content/evaluator/intervention versions and conditions.
 
 Architecture coherence is never `VALIDATED` evidence.
 
 # Condition status is separate
 
-A **coverage condition** uses:
+A **coverage condition** uses exactly:
 
 ```text
 UNKNOWN
@@ -69,9 +77,31 @@ NOT_APPLICABLE
 CALIBRATION_REQUIRED
 ```
 
-Condition statuses never appear as target/product statuses.
+Condition statuses never appear as target/product statuses. They are not percentages and are not an ordinal score that may be averaged.
 
-An out-of-scope construct uses **OUT_OF_SCOPE** as a scope disposition, not a product-support state.
+Exact semantics:
+
+- `UNKNOWN` — applicability or current condition state cannot yet be established from the owning semantics/evidence. Unknown never passes a gate.
+- `DEFINED` — applicability and success criteria are known, but sufficient executable/material evidence has not yet been instantiated or checked.
+- `PARTIAL` — some required subconditions/artifacts have passed, while at least one applicable remainder is missing/unverified; no stronger known blocker status below applies.
+- `SATISFIED` — every applicable subcondition for the scoped condition passes under the referenced current versions/evidence.
+- `BLOCKED` — a known applicable hard failure or missing prerequisite prevents the condition from passing now; satisfying unrelated subparts cannot hide it.
+- `NOT_APPLICABLE` — the owning semantics establish that the condition does not apply to this exact scoped target, with an explicit reason.
+- `CALIBRATION_REQUIRED` — the relevant mechanism/evaluator/path materially exists, but calibration required for the intended consequence is not yet sufficient; this is a specialized blocking state, not a weaker form of `SATISFIED`.
+
+When a condition aggregates subconditions, reduce deterministically:
+
+1. use `NOT_APPLICABLE` only when the whole condition is explicitly non-applicable;
+2. if applicability/state is unresolved, use `UNKNOWN` unless a more specific known blocker already determines failure;
+3. a known hard blocker reduces to `BLOCKED`;
+4. if the remaining material blocker is required calibration, use `CALIBRATION_REQUIRED`;
+5. if all applicable subconditions pass, use `SATISFIED`;
+6. if some pass and some remain missing/unverified without a stronger blocker, use `PARTIAL`;
+7. if criteria are defined but executable/material checking has not materially begun, use `DEFINED`.
+
+These statuses may move backward when external truth, content, contracts, provider state, calibration, rights, or runtime evidence changes. No status is permanent merely because it once passed.
+
+An out-of-scope construct uses **OUT_OF_SCOPE** as a scope disposition, not a condition or product-support state.
 
 # CoverageGap
 
@@ -129,7 +159,7 @@ UKVI Academic/GT reuses the corresponding language construct while adding extern
 
 ## One Skill Retake
 
-One Skill Retake reuses an existing skill. It requires no fifth Skill ontology. Product support is scoped to focused preparation plus applicable eligibility/delivery conditions.
+One Skill Retake reuses an existing skill. It requires no fifth Skill ontology. Product support is scoped to focused preparation plus applicable eligibility/delivery conditions. Selecting an OSR focus is not evidence that the learner satisfies those external eligibility conditions.
 
 ## IELTS Life Skills
 
@@ -163,7 +193,7 @@ For each scoped target, evaluate every applicable condition independently.
 | `observability_audit` | consequential decisions preserve version/provenance/reason reconstruction |
 | `validation` | empirical outcome evidence exists when promoting to `VALIDATED` |
 
-`NOT_APPLICABLE` requires an explicit reason for the scoped target.
+`NOT_APPLICABLE` requires an explicit reason for the scoped target. Absence of an artifact, unimplemented work, lack of data, or inconvenience is never an N/A reason.
 
 # Derived reachability invariant
 
@@ -185,7 +215,7 @@ The validator must distinguish:
 ```text
 APPLICABLE + edge/path absent   = MISSING / blocking gap
 explicitly NOT_APPLICABLE       = allowed only with owner-derived reason
-applicability unresolved         = UNKNOWN, never silently satisfied
+applicability unresolved        = UNKNOWN, never silently satisfied
 ```
 
 Rules:
@@ -243,7 +273,7 @@ stable official family refs
 stable Content Context refs
 material Presentation Class refs
 variant/task/section context
-practice/assessment role
+practice/assessment purpose + evidence-candidacy compatibility
 interaction support
 answer/rubric/evaluator route
 transfer/novelty classes
@@ -258,7 +288,7 @@ A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified
 
 Principles in `08-ASSESSMENT.md` are not by themselves production policy.
 
-Before product support, each high-consequence claim resolves to a versioned executable EvidenceRequirement. Hidden model heuristics, unversioned cutoffs, or mechanical attempt-count rules are blockers.
+Before product support, each high-consequence claim resolves to a versioned executable EvidenceRequirement. Hidden model heuristics, unversioned cutoffs, mechanical attempt-count rules, or a pre-attempt “certification contributing” label are blockers.
 
 Official-family **product coverage** does not imply that learner certification must mechanically test every family in every portfolio. Learner claim sufficiency remains an Assessment decision. This distinction prevents product completeness rules from leaking into learner mastery policy.
 
@@ -372,9 +402,9 @@ Variant coverage additionally requires applicable Academic or GT Content Context
 
 A product target is a constraint set, not one Band number.
 
-Support requires a covered path for every required TargetProfile condition, including variant, real per-skill minima, external purpose constraints, and delivery mode where material.
+Target-relative support requires the resolved standard variant plus a covered path for every real required TargetProfile condition: overall/per-skill Band constraints, external purpose constraints, selected OSR eligibility conditions when a support claim includes them, and delivery mode where material.
 
-If only an overall target exists, the planner either obtains real minima or uses an explicitly labelled planning profile that preserves multiple valid score combinations.
+If only an overall Band constraint is known, the planner may use the explicitly non-authoritative planning-profile semantics from `00-learning-experience.md`; it must not invent real per-skill minima. Real per-skill minima are added only when they are genuine learner/external constraints.
 
 # Route invariant
 
