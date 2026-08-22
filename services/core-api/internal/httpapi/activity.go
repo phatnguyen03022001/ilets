@@ -170,20 +170,20 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 		items = append(items, map[string]any{"item_id": item["item_id"], "official_family_id": item["official_family_id"], "statement": item["statement"], "choices": item["choices"]})
 	}
 	return map[string]any{
-		"practice_activity_id":      id,
-		"feature_id":                "R-F04",
-		"practice_mode_id":          "PM-R03",
-		"practice_type_ids":         []string{"PT-13", "PT-16"},
-		"skill_target_ids":          []string{"R-QT-02", "R-QT-03"},
-		"official_family_ids":       []string{"IELTS-R-QF-02", "IELTS-R-QF-03"},
-		"content_context_id":        "CTX-READING-ACADEMIC",
-		"content_revision_id":       revision,
-		"primary_activity_purpose":  "TRAINING",
-		"evidence_candidacy":        "NOT_EVIDENCE_CANDIDATE",
-		"test_variant":              "ACADEMIC",
-		"stimulus":                  content["stimulus"],
-		"items":                     items,
-		"assigned_at":               assigned.UTC().Format(time.RFC3339Nano),
+		"practice_activity_id":     id,
+		"feature_id":               "R-F04",
+		"practice_mode_id":         "PM-R03",
+		"practice_type_ids":        []string{"PT-13", "PT-16"},
+		"skill_target_ids":         []string{"R-QT-02", "R-QT-03"},
+		"official_family_ids":      []string{"IELTS-R-QF-02", "IELTS-R-QF-03"},
+		"content_context_id":       "CTX-READING-ACADEMIC",
+		"content_revision_id":      revision,
+		"primary_activity_purpose": "TRAINING",
+		"evidence_candidacy":       "NOT_EVIDENCE_CANDIDATE",
+		"test_variant":             "ACADEMIC",
+		"stimulus":                 content["stimulus"],
+		"items":                    items,
+		"assigned_at":              assigned.UTC().Format(time.RFC3339Nano),
 	}
 }
 
