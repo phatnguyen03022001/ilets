@@ -45,9 +45,11 @@ if ! git diff --exit-code -- \
 fi
 
 cd "$ROOT/services/core-api"
-if [[ -n "$(gofmt -l .)" ]]; then
+unformatted_go="$(gofmt -l .)"
+if [[ -n "$unformatted_go" ]]; then
   echo "Go sources need gofmt:" >&2
-  gofmt -l . >&2
+  printf '%s\n' "$unformatted_go" >&2
+  gofmt -d $unformatted_go >&2
   exit 1
 fi
 go vet ./...
