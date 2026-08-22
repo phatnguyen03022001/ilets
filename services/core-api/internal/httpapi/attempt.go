@@ -258,12 +258,12 @@ func (s *Server) loadAttempt(ctx context.Context, learner, id string) (map[strin
 		return nil, err
 	}
 	out := map[string]any{
-		"attempt_id":            id,
-		"practice_activity_id":  row.PracticeActivityID,
-		"content_revision_id":   row.ContentRevisionID,
-		"status":                row.Status,
-		"resource_revision":     row.ResourceRevision,
-		"created_at":            row.CreatedAt.Time.UTC().Format(time.RFC3339Nano),
+		"attempt_id":           id,
+		"practice_activity_id": row.PracticeActivityID,
+		"content_revision_id":  row.ContentRevisionID,
+		"status":               row.Status,
+		"resource_revision":    row.ResourceRevision,
+		"created_at":           row.CreatedAt.Time.UTC().Format(time.RFC3339Nano),
 	}
 	if row.Status != "EVALUATED" || row.ObservationID == nil || !row.EvaluatedAt.Valid {
 		return out, nil
