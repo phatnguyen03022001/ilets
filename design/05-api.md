@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, and contract-materialization rules
-DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 04-application-flows.md
+DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md, 08-coverage-and-support.md
 DOES_NOT_OWN: learning truth, external task-family definitions, TargetProfile UX semantics, product coverage policy, evaluator algorithms, runtime lifecycle truth, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
 
 # API
@@ -20,7 +20,8 @@ Define semantic API boundaries before implementation. The product exposes one le
 7. browser never calls Python evaluator directly;
 8. variant, official family, Content Context, material Presentation Class, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
 9. API resources expose lifecycle states owned by `04-application-flows.md` rather than redefining transition rules here;
-10. once materialized, machine-readable contracts own exact wire shape.
+10. once materialized, machine-readable contracts own exact wire shape;
+11. API fields translate canonical/product semantics; they never invent thresholds, state meaning, applicability, or evidence authority that lacks an upstream owner.
 
 # Implementation-start contract gate
 
@@ -73,14 +74,20 @@ GET    /v1/target-support
 test_variant
 delivery_mode
 purpose_or_receiving_rule
-target_overall_band
-per-skill minimums
+target_overall_band          lower-bound constraint
+per-skill minimums           lower-bound constraints
 test_date
-selected_skill_retake
+selected_skill_retake        preparation focus, not eligibility proof
 revision/version
 ```
 
-`target-support` reports product support for the exact target scope, including delivery/purpose conditions where applicable, plus blocking CoverageGap classes.
+Band fields preserve the TargetProfile semantics owned by `00-learning-experience.md`: `7.0` means `>= 7.0`, not exact equality. The API must not expand an overall target into hidden equal per-skill minima. Any derived working/planning profile is separately identified as non-authoritative and cannot mutate real target constraints without an explicit target update.
+
+A target-relative TargetProfile has at least one actual Band constraint. If no Band constraint is known yet, APIs may support diagnostic/foundational flows against an unresolved target context but must not fabricate a readiness target.
+
+`selected_skill_retake` selects focused preparation only. Eligibility-sensitive responses keep missing original-test/timing/location/delivery/purpose conditions unresolved rather than treating the selected skill as proof of One Skill Retake eligibility.
+
+`target-support` reports product support for the exact target scope, including delivery/purpose/eligibility conditions where applicable, plus blocking CoverageGap classes.
 
 It is not learner readiness.
 
@@ -106,6 +113,8 @@ Result semantics include:
   - `pending_evaluation`;
 - resulting evidence states/next evidence need where available.
 
+Diagnostic is an activity purpose, not an evidence-admission shortcut. A diagnostic result may expose admitted evidence only when the activity was an evidence candidate and normal Assessment policy admitted the resulting Observation.
+
 A `completed` diagnostic does not mean every condition is known or certified.
 
 ## 3. Daily plan
@@ -127,7 +136,8 @@ Response semantics include:
 - canonical targets;
 - official family/Content Context refs where material;
 - delivery refs where material;
-- evidence-role labels;
+- primary activity purpose;
+- evidence candidacy;
 - unresolved target conditions;
 - CoverageGap indicator where applicable.
 
@@ -164,8 +174,15 @@ delivery condition where readiness-relevant
 stimulus/source
 response conditions
 scaffolding/exposure state
-evidence-role label
+primary_activity_purpose    TRAINING | DIAGNOSTIC | READINESS
+evidence_candidacy          NOT_EVIDENCE_CANDIDATE | ASSESSMENT_MAY_ADMIT
 ```
+
+Primary purpose and evidence candidacy are orthogonal. `ASSESSMENT_MAY_ADMIT` is pre-attempt candidacy only; actual EvidenceFact admission remains an Assessment result after real assistance/exposure/evaluator/provenance conditions are known.
+
+Evidence candidacy is part of the immutable activity/item configuration for an attempt. The client, evaluator, ranker, or Core API may not retroactively switch `NOT_EVIDENCE_CANDIDATE` to `ASSESSMENT_MAY_ADMIT` because the observed result is favorable.
+
+There is no API field whose semantic meaning is “certification-contributing before Assessment”. Certification contribution is derived downstream from admitted EvidenceFacts and the applicable EvidenceRequirement.
 
 Official family identity must not be reconstructed from a broad Skill Leaf when the leaf serves several external families.
 
@@ -189,7 +206,7 @@ Writing drafts may mutate before submission under revision control. Submission i
 - delivery mode/input mode where material;
 - timestamps/response provenance required by Assessment.
 
-Family/context/presentation semantics come from the immutable referenced item/work configuration rather than client-supplied reclassification at submission time.
+Family/context/presentation/purpose/candidacy semantics come from the immutable referenced item/work configuration rather than client-supplied reclassification at submission time.
 
 Accepted submission corresponds to durable authoritative state before success acknowledgement.
 
@@ -216,7 +233,9 @@ GET /v1/progress
 GET /v1/gaps
 ```
 
-`progress` exposes target conditions, per-skill current support/certification history, evidence freshness, and unresolved requirements.
+`progress` exposes target conditions, per-skill current support/current certification state, certification history, evidence freshness, and unresolved requirements.
+
+Current certification and certification history are distinct. A historical certification can remain visible while current status is `in_progress` because the corresponding present claim is stale, conflicting, insufficient, below requirement, or otherwise non-`SUPPORTED`. Only `09-PROGRESSION.md` determines whether a loss of current support constitutes regression.
 
 `gaps` exposes learner GapEvaluation + explainable ActionIntent.
 
@@ -247,6 +266,8 @@ GET    /v1/mock-runs/{mock_run_id}
 
 A MockRun preserves:
 
+- primary activity purpose `READINESS` for a normal mock;
+- evidence candidacy for the configured run/sections;
 - resolved test variant;
 - external family configuration for the run;
 - Content Context distribution;
@@ -256,9 +277,11 @@ A MockRun preserves:
 - actual completion/abandonment state;
 - section observations/readiness outputs at their valid scope.
 
+Readiness purpose does not imply evidence admission. A mock Observation can contribute to a claim only when the configured run/section is an evidence candidate and normal Assessment policy admits the actual Observation.
+
 Full mocks cannot mix Academic and GT Reading/Task 1 accidentally or silently omit a required Speaking part from a claimed whole-Speaking mock.
 
-One Skill Retake preparation scopes to one existing skill; it does not create another Skill type.
+One Skill Retake preparation scopes to one existing skill; it does not create another Skill type or assert administrative eligibility.
 
 ## 11. Media
 
@@ -313,7 +336,7 @@ rubric/evaluator configuration reference
 requested observation families
 ```
 
-The evaluator consumes these identities; it does not infer/relabel the exam family from free-form prompt text when authoritative item metadata already exists.
+The evaluator consumes these identities; it does not infer/relabel the exam family, activity purpose, or evidence candidacy from free-form prompt/response content when authoritative item/work metadata already exists.
 
 ## Evaluation response semantics
 
@@ -330,7 +353,7 @@ model/evaluator provenance
 diagnostics
 ```
 
-Python never returns authoritative learner certification, product support, Band advancement, or final DailyPlan state.
+Python never returns authoritative learner certification, product support, Band advancement, evidence candidacy upgrades, or final DailyPlan state.
 
 ## Media-analysis semantics
 
@@ -420,9 +443,11 @@ Forbidden without an explicit architecture change:
 - independently handwritten mirror DTOs across runtimes;
 - fake score zero on evaluator failure;
 - API shape becoming a second learner-state definition;
+- API-owned thresholds or hidden per-skill target constraints without a canonical/product owner;
 - practice/UI action implicitly mutating TargetProfile/readiness;
 - CoverageGap represented as learner GapEvaluation;
 - ranker returning an activity that failed hard eligibility;
 - omitted official family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
 - client/evaluator silently reclassifying immutable item family identity;
+- client/evaluator/server retroactively upgrading evidence candidacy after observing performance;
 - `completed diagnostic` represented as `complete learner baseline`.
