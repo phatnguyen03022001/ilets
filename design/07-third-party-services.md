@@ -7,9 +7,9 @@ DOES_NOT_OWN: provider legal terms themselves, learning/mastery semantics, publi
 
 ## Purpose
 
-Make external dependencies explicit so provider convenience cannot become product truth, data authority, or an irreversible architecture boundary.
+Make external dependencies explicit so provider convenience cannot become product truth, data authority, unnecessary spend, or an irreversible architecture boundary.
 
-Canonical shape:
+Canonical shape when an external service is used:
 
 ```text
 product capability
@@ -23,11 +23,13 @@ external service
 
 The capability is named for what the product needs, not after the vendor currently considered or selected.
 
+A product capability being required does **not** imply that an external provider is required. First-party/local execution remains eligible whenever it satisfies the same semantic, quality, security, reliability, and operational contract.
+
 # Provider lifecycle
 
 Every external capability/provider relationship is in exactly one of:
 
-- `DEFERRED` — known possible external capability/provider route, but not required by the current implementation/release scope; no provider-selection work should occur until concrete demand exists;
+- `DEFERRED` — known possible external capability/provider route, but not required by the current implementation/release scope; no provider-selection work should occur until concrete external-route demand exists;
 - `TBD` — an external provider route is required for the current implementation/release direction but no provider is selected;
 - `CANDIDATE` — under evaluation, no activation authority;
 - `SELECTED_FOR_IMPLEMENTATION` — approved implementation choice behind the declared boundary;
@@ -38,9 +40,11 @@ Every external capability/provider relationship is in exactly one of:
 
 The lifecycle applies to the **external-provider relationship**, not to whether the underlying product capability exists. A first-party/local implementation may exist while an external provider route remains `DEFERRED`.
 
-The inventory `Status` column uses only the lifecycle tokens above. Technology choices, first-party availability, demand conditions, and implementation notes belong in the boundary/invariant column; prose in `Status` is invalid.
+The inventory `External-provider status` column uses only the lifecycle tokens above. Technology choices, first-party availability, demand conditions, and implementation notes belong in the boundary/invariant column; prose in the status column is invalid.
 
-`DEFERRED` is not a missing-provider error. Promoting a capability from `DEFERRED` requires an actual product/runtime/coverage need; the existence of a row in this inventory is not itself demand.
+`DEFERRED` is not a missing-provider error. Promoting a route from `DEFERRED` to `TBD` requires an actual reason that an external route is needed for the scoped implementation/release; the existence of a capability or inventory row is not itself that reason.
+
+Before `DEFERRED → TBD`, the implementation decision should be able to state why the existing first-party/local/selected route cannot or should not satisfy the applicable contract, considering quality, security, reliability, operational burden, and total cost.
 
 Historical candidates in `research/` or `archive/` have **no provider status** until explicitly adopted here.
 
@@ -91,7 +95,7 @@ Rules:
 
 # Mandatory portability boundaries
 
-The first implementation treats these as mandatory strategic boundaries:
+The first implementation treats these as mandatory strategic boundaries regardless of whether the first concrete route is local, self-hosted, or external:
 
 1. **Database**;
 2. **AI/model evaluation**;
@@ -99,24 +103,24 @@ The first implementation treats these as mandatory strategic boundaries:
 
 Object storage, email, analytics, observability, payments, hosting, and other external capabilities should also remain replaceable where practical, but the three above require explicit exit design from the beginning.
 
-Portability does **not** require a generic multi-provider framework at bootstrap. For one selected provider, the minimum sufficient shape is a narrow capability interface/port, one adapter, provider-independent internal identity/state, and a credible export/exit path. Dynamic routing, provider registries, weighted failover, or multiple simultaneously active adapters require a demonstrated need.
+Portability does **not** require a generic multi-provider framework at bootstrap. For one concrete route, the minimum sufficient shape is a narrow capability interface/port where a real substitution boundary exists, provider-independent internal identity/state, and a credible export/exit path. Dynamic routing, provider registries, weighted failover, or multiple simultaneously active adapters require a demonstrated need.
 
 # Initial capability inventory
 
-| Capability | Runtime owner | Status | Required boundary/invariant |
+| Capability | Runtime owner | External-provider status | Required boundary/invariant |
 |---|---|---|---|
-| Identity / credential custody | Core API integration | `TBD` | stable internal learner identity; provider ID never becomes learning identity |
-| PostgreSQL-compatible structured persistence | Core API | `TBD` | PostgreSQL semantics are selected; provider remains unselected; migrations, PITR, logical export/restore, provider exit |
+| Identity / credential custody | Core API integration | `DEFERRED` | identity capability is required, but external custody is not preselected; stable internal learner identity; provider ID never becomes learning identity; any route must meet security/revocation/export requirements |
+| PostgreSQL-compatible structured persistence | Core API | `DEFERRED` | PostgreSQL semantics are selected; local/self-managed/managed deployment remains an implementation choice; migrations, PITR, logical export/restore, provider exit where external |
 | Object storage | Core API | `DEFERRED` | external object storage is needed only when retained/large cross-unit artifacts require it; private references, retention/access policy, large artifacts outside normal JSON state |
-| AI / LLM productive evaluation | Evaluator | `TBD` | adapter boundary; output is Observation candidate, never certification |
-| Speech-to-text / acoustic analysis | Evaluator | `TBD` | quality/provenance/uncertainty preserved; a separate provider is not required when the selected evaluator route already satisfies the capability |
+| AI / LLM productive evaluation | Evaluator | `DEFERRED` | evaluator capability is required where productive automation is used, but an external model provider is not pre-required; adapter/portability boundary; output is Observation candidate, never certification |
+| Speech-to-text / acoustic analysis | Evaluator | `DEFERRED` | capability may be local, part of the selected evaluator route, or external; quality/provenance/uncertainty preserved |
 | Text-to-speech / generated audio | content/media tooling | `DEFERRED` | quality/provenance fit for intended learning role; owned/licensed audio may satisfy demand without TTS |
-| YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | eligible embed/Data API path selected; activation still requires applicable live policy/product gates; no assumed arbitrary extraction |
+| YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | eligible embed/Data API capability path selected; activation still requires applicable live policy/product gates; no assumed arbitrary extraction |
 | Transactional email | Core API | `DEFERRED` | external email is selected only when a concrete account/product notification flow requires it; transport only; provider templates own no product truth |
 | Product analytics | Web/Core API | `DEFERRED` | first-party minimal structured events may exist without an external analytics provider; no raw learner-content shadow database |
 | Error monitoring | all runtime units | `DEFERRED` | native/first-party logging may be used initially; any external route redacts secrets/sensitive learner payloads by default |
 | Payments / billing | Core API | `DEFERRED` | external billing remains deferred until monetization scope requires it; entitlement boundary cannot alter learning/evidence truth |
-| Hosting | deployable owners | `TBD` | an external hosting route is required for deployment but provider is unselected; hosting must not redefine deployable/service ownership; co-location is allowed by `06-implementation-stack.md` |
+| Hosting | deployable owners | `DEFERRED` | deployment topology/provider is not preselected here; co-location/self-hosted/external routes remain eligible when they satisfy security/reliability/operations requirements |
 | CDN | Web/asset delivery | `DEFERRED` | external CDN remains deferred until traffic/latency/asset requirements justify it; delivery optimization only; never content authority |
 | Feature flags | Core API/Web | `DEFERRED` | first-party bounded flags/kill switches may exist without an external provider; external flag service requires demonstrated need and never becomes a hidden policy engine |
 
@@ -124,7 +128,7 @@ Research may contain named vendor candidates. Canonical design must not repeat t
 
 # Identity requirements
 
-Regardless of provider:
+Regardless of implementation/provider route:
 
 - credential custody stays outside learning-domain records;
 - learning state references stable internal `learner_id`;
@@ -138,7 +142,7 @@ Exact token/session durations are implementation/security policy, not canonical 
 
 # Learner data + AI processor rules
 
-Default processor posture:
+When an external AI/data processor is used, default processor posture is:
 
 ```text
 training/reuse of learner content by processor = prohibited unless explicitly approved
@@ -201,15 +205,15 @@ Fallback is valid only when a pre-approved route meets the same applicable quali
 
 # Database/recovery baseline
 
-Initial structured durable product state uses PostgreSQL semantics behind a provider boundary.
+Initial structured durable product state uses PostgreSQL semantics behind a replaceable implementation boundary.
 
 Before production support, the selected implementation must demonstrate:
 
-- point-in-time recovery;
+- point-in-time recovery where the deployment model supports/requires it;
 - independent logical export/backup;
 - restore verification;
 - safe migration discipline;
-- provider-exit test;
+- exit/recovery test appropriate to the chosen deployment/provider route;
 - preservation of accepted learner work at the application commit boundary.
 
 Cache, broker, analytics store, search index, or vector store cannot become authority for learner/product state.
@@ -236,7 +240,7 @@ Keep separate concerns for:
 - service/operational telemetry;
 - privileged/admin audit history;
 - security events;
-- provider/evaluator latency/cost;
+- provider/evaluator latency/cost when external routes exist;
 - learner-visible accepted-work state.
 
 Retention may differ by class. Sensitive payloads/secrets are redacted by default.
@@ -249,7 +253,7 @@ Quota pressure may reduce optional work or delay noninteractive work. It cannot 
 
 # Provider failure product behavior
 
-A provider failure maps to an explicit state such as:
+An external-provider failure maps to an explicit state such as:
 
 - retrying;
 - delayed;
@@ -266,7 +270,7 @@ It never becomes:
 
 # Activation gate
 
-A capability/provider may become `ACTIVE` only when the current product-support declaration confirms all applicable items:
+An external capability/provider may become `ACTIVE` only when the current product-support declaration confirms all applicable items:
 
 - terms/licensing/rights compatibility;
 - privacy/data-processing conditions;
@@ -283,6 +287,6 @@ A capability/provider may become `ACTIVE` only when the current product-support 
 
 # Replacement invariant
 
-Replacing a provider must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, practice-mode IDs, or learner identity.
+Replacing an implementation/provider route must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, practice-mode IDs, or learner identity.
 
-If a provider replacement changes canonical learning/product semantics, the provider boundary was incorrectly designed.
+If provider replacement changes canonical learning/product semantics, the provider boundary was incorrectly designed.
