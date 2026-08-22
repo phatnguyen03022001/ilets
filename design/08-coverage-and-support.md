@@ -272,10 +272,10 @@ When executable content exists, coverage tooling consumes the content manifest/e
 ```text
 exact content revision + lineage/provenance where material
 canonical target refs
-stable official family refs
-stable Content Context refs
-material Presentation Class refs
-variant/task/section context
+stable official family refs + applicability where material
+Content Context refs + applicability / where material
+Presentation Class refs + applicability where material
+variant/task/section context where material
 practice/assessment purpose + evidence-candidacy compatibility
 interaction support
 answer/rubric/evaluator route
@@ -285,6 +285,16 @@ rights/provenance
 independent readiness assets
 release/assignment/operational eligibility
 ```
+
+For every conditional identity dimension, tooling must preserve the distinction between:
+
+```text
+applicable + present
+explicitly NOT_APPLICABLE with owner-derived reason
+required but missing/unresolved
+```
+
+A uniform implementation shape may not convert a legitimate not-applicable dimension into fabricated identity, and omission may not hide a materially required dimension.
 
 Content closure has four concerns that must be satisfied through the applicable existing TargetCoverageSpecification conditions:
 
@@ -297,7 +307,7 @@ Generation is only an applicable sub-demand when the scoped release relies on it
 
 Similarity is not a universal rejection criterion. A near-duplicate may be legitimate controlled practice while being ineligible for an unseen evidence claim. Coverage tooling therefore must preserve intended-use/assignment scope rather than reducing similarity to one global cutoff.
 
-A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified supply, not a design table or a generator that has not demonstrated applicable output quality/coverage.
+A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified supply, not a design table or a generator that has not demonstrated applicable output quality/coverage. Generated canonical registries/bindings are machine-consumption verification artifacts and do not independently satisfy `content_assets`.
 
 # Evidence closure
 
@@ -309,11 +319,17 @@ Official-family **product coverage** does not imply that learner certification m
 
 Content used for evidence additionally must preserve the exact revision and exposure/independence conditions required by the applicable EvidenceRequirement. A later content correction or retirement does not silently rewrite historical evidence; any reinterpretation follows Assessment/Progression policy with provenance.
 
-# Contract closure
+# Contract and machine-materialization closure
 
-A multi-runtime path cannot become `COVERED` while TypeScript, Go, and Python independently maintain handwritten interpretations of the same interface.
+A multi-runtime path cannot become `COVERED` while TypeScript, Go, and Python independently maintain handwritten interpretations of the same interface or equivalent manually copied canonical ID registries.
 
 Every implemented cross-unit boundary needs one machine contract authority, validation/generated consumers where appropriate, and conformance verification.
+
+For every implemented path that consumes shared canonical identities, the applicable derived machine-readable registry/binding materialization defined by `06-implementation-stack.md` must exist and its canonical-reference, ID-uniqueness, and drift verification must pass. Copying equivalent IDs/enums manually into multiple languages does not establish a correctly executable path.
+
+Generated registries/bindings remain derived repository/runtime verification artifacts. They are not canonical learning/product truth, are not evidence of content coverage, are not evidence of product validation, and do not independently satisfy `content_assets` or any support declaration.
+
+These requirements close through the existing applicable machine/runtime/contract conditions; they do not create another TargetCoverageSpecification condition or product status.
 
 This includes implemented content generation/validation boundaries when they exist; an unused optional generation capability does not require a hypothetical contract merely to satisfy architecture documentation.
 
