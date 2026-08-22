@@ -1,27 +1,28 @@
 STATUS: CANONICAL
-OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, and contract-materialization rules
+OWNS: public/internal API resource model, route groups, operation semantics, async API behavior, idempotency/error conventions, content supply/validation/operations API semantics, and contract-materialization rules
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 02-practice-catalog.md, 04-application-flows.md
-DOES_NOT_OWN: learning truth, external task-family definitions, TargetProfile UX semantics, product coverage policy, evaluator algorithms, runtime lifecycle truth, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
+DOES_NOT_OWN: learning truth, external task-family definitions, content semantic identity/quality policy, TargetProfile UX semantics, product coverage policy, evaluator/generator algorithms, runtime lifecycle truth, authorization role matrix, framework selection, persistence schema, provider choice, or exact wire schema after machine contracts exist
 
 # API
 
 ## Purpose
 
-Define semantic API boundaries before implementation. The product exposes one learner-facing public API through Go Core API and one bounded internal evaluation API to Python.
+Define semantic API boundaries before implementation. The product exposes one learner/admin-facing public API through Go Core API and bounded internal evaluator/generation/validation capabilities to Python where applicable.
 
 # Principles
 
 1. public version prefix `/v1`;
 2. resource-oriented design over one-endpoint-per-button RPC;
-3. stable canonical/external IDs cross boundaries unchanged;
+3. stable canonical/external IDs and exact content revision identity cross boundaries unchanged;
 4. creation/submission operations are idempotent where retry could duplicate history/cost;
 5. long work returns durable pending resources rather than unbounded requests;
 6. evidence states and CoverageGap are domain results, not generic failures;
-7. browser never calls Python evaluator directly;
-8. variant, official family, Content Context, material Presentation Class, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
-9. API resources expose lifecycle states owned by `04-application-flows.md` rather than redefining transition rules here;
+7. browser never calls Python evaluator/generator/validator directly;
+8. variant, official family, Content Context, material Presentation Class, content revision, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
+9. API resources expose lifecycle/operational states owned by `04-application-flows.md` rather than redefining transition rules here;
 10. once materialized, machine-readable contracts own exact wire shape;
-11. API fields translate canonical/product semantics; they never invent thresholds, state meaning, applicability, or evidence authority that lacks an upstream owner.
+11. API fields translate canonical/product semantics; they never invent thresholds, state meaning, applicability, validation authority, or evidence authority that lacks an upstream owner;
+12. content operations may change release/assignment/operational state but may not mutate the semantic payload of a historical ContentRevision in place.
 
 # Implementation-start contract gate
 
@@ -39,23 +40,23 @@ validation / generated bindings where useful
 consumer/provider implementation
 ```
 
-Public and internal evaluator APIs may use separate contract files, but each boundary has exactly one exact machine authority.
+Public and internal evaluator/content-capability APIs may use separate contract files, but each boundary has exactly one exact machine authority.
 
 Required checks once materialized:
 
 - schema validation;
 - generated-artifact drift checks where generation is used;
-- stable canonical/external ID compatibility;
+- stable canonical/external ID and content-revision compatibility;
 - public/internal boundary separation;
 - consumer/provider conformance;
 - deployed `/v1` compatibility policy;
 - contract version/provenance in integration verification.
 
-Machine schemas define transport shape, not IELTS learning/exam truth.
+Machine schemas define transport shape, not IELTS learning/exam/content-quality truth.
 
 # Public resource groups
 
-The initial semantic API surface has 11 resource groups.
+The initial semantic API surface has 12 resource groups.
 
 ## 1. Identity, learner, target
 
@@ -135,6 +136,7 @@ Response semantics include:
 - estimated duration;
 - canonical targets;
 - official family/Content Context refs where material;
+- exact content revision references for resolved activities;
 - delivery refs where material;
 - primary activity purpose;
 - evidence candidacy;
@@ -165,6 +167,7 @@ A PracticeActivity resolves:
 
 ```text
 practice mode
+exact content revision
 canonical target refs
 external task/question-family refs where material
 Content Context ref
@@ -186,7 +189,7 @@ There is no API field whose semantic meaning is “certification-contributing be
 
 Official family identity must not be reconstructed from a broad Skill Leaf when the leaf serves several external families.
 
-Direct browsing may create an eligible activity but cannot satisfy unrelated target conditions.
+Direct browsing may create an eligible activity but cannot satisfy unrelated target conditions. Activity creation fails closed or selects another eligible revision if learner-specific exposure/novelty/operational state makes the requested content ineligible.
 
 ## 6. Attempts
 
@@ -201,14 +204,15 @@ The resource exposes the legal state from `04-application-flows.md`; this file d
 
 Writing drafts may mutate before submission under revision control. Submission is explicit, idempotent, and records actual:
 
+- exact assigned content revision;
 - assistance/scaffolding;
 - exposure/retry context;
 - delivery mode/input mode where material;
 - timestamps/response provenance required by Assessment.
 
-Family/context/presentation/purpose/candidacy semantics come from the immutable referenced item/work configuration rather than client-supplied reclassification at submission time.
+Family/context/presentation/purpose/candidacy semantics come from the immutable referenced content revision/work configuration rather than client-supplied reclassification at submission time.
 
-Accepted submission corresponds to durable authoritative state before success acknowledgement.
+Accepted submission corresponds to durable authoritative state before success acknowledgement. Later content retirement/revalidation does not rewrite the Attempt's revision reference.
 
 ## 7. Evaluations
 
@@ -268,6 +272,7 @@ A MockRun preserves:
 
 - primary activity purpose `READINESS` for a normal mock;
 - evidence candidacy for the configured run/sections;
+- exact content revisions used by the run;
 - resolved test variant;
 - external family configuration for the run;
 - Content Context distribution;
@@ -294,7 +299,42 @@ GET    /v1/media-lessons/{media_lesson_id}
 
 MediaSource creation resolves provider identity/metadata, playability, rights, and transcript state. It does not imply copying/downloading media.
 
-MediaLesson creation requires an eligible source plus valid canonical target and Practice Mode mapping.
+MediaLesson creation requires an eligible source plus valid canonical target and Practice Mode mapping. Generated/derived lesson content enters normal content revision/validation semantics before learner assignment.
+
+## 12. Content supply and operations
+
+This group exposes product/runtime content work without making the API, AI, or an operator the content-quality authority.
+
+Representative semantic resources/operations:
+
+```text
+GET    /v1/admin/content-revisions
+GET    /v1/admin/content-revisions/{content_revision_id}
+PATCH  /v1/admin/content-revisions/{content_revision_id}
+
+POST   /v1/admin/content-generation-requests
+GET    /v1/admin/content-generation-requests/{generation_request_id}
+
+POST   /v1/admin/content-validation-runs
+GET    /v1/admin/content-validation-runs/{validation_run_id}
+
+POST   /v1/content-reports
+GET    /v1/admin/content-reports
+PATCH  /v1/admin/content-reports/{content_report_id}
+```
+
+Exact wire fields and any additional subresources belong to machine contracts. These route semantics establish the boundary:
+
+- content-revision reads expose identity, lineage/origin, canonical bindings, current applicable validation evidence, release/assignment/operational eligibility, and reconstructable provenance as authorized;
+- `PATCH content-revisions` may change only authorized operational/release metadata owned downstream; it cannot mutate the immutable semantic payload of that revision;
+- a material content correction creates a new ContentRevision through the applicable content-supply path rather than patching historical semantics;
+- GenerationRequest represents a concrete supply demand, constraints, provenance/work identity, and resulting candidate refs; it is not evidence that generation is mandatory or that generated output is valid/active;
+- validation-run resources represent execution/status/results of applicable validation work and preserve validator/policy provenance; a generator's self-check is only one possible signal;
+- content reports preserve reporter/context/evidence sufficient for operational triage without mutating learner evidence or automatically proving the report correct;
+- quarantine/stop-assignment, revalidation, release activation, replacement, and retirement behavior follow `04-application-flows.md`; this API must not invent a second combined ContentStatus lifecycle;
+- authorization gates determine who may inspect or operate content. This file does not freeze a detailed role matrix before auth/use cases are finalized.
+
+No API operation may provide a generic bypass that turns a known applicable hard validation failure into assignable learner content. Authorized operators repair the cause/change legitimate intended use, then revalidate under the applicable policy.
 
 # Server event stream
 
@@ -302,19 +342,23 @@ MediaLesson creation requires an eligible source plus valid canonical target and
 GET /v1/event-stream
 ```
 
-SSE may deliver status/update notifications for evaluation, media analysis, diagnostics, mocks, and derived plan/progress refresh.
+SSE may deliver status/update notifications for evaluation, media analysis, diagnostics, mocks, content generation/validation operations, and derived plan/progress refresh.
 
 Persistent truth remains queryable through normal resources; SSE is not state authority and reconnect is safe.
 
-# Internal evaluator API
+# Internal evaluator/content capability API
 
 Normal caller: Go Core API only.
 
 ```text
 POST /internal/v1/evaluations
 POST /internal/v1/media-analyses
+POST /internal/v1/content-generations       when this capability is implemented/needed
+POST /internal/v1/content-validations       when this capability is implemented/needed
 GET  /internal/v1/health
 ```
+
+Generation/validation endpoints are optional capability boundaries. Their existence in semantic API design does not make AI generation or external model use a product coverage requirement.
 
 ## Evaluation request semantics
 
@@ -323,6 +367,7 @@ References include:
 ```text
 evaluation/work identity
 attempt identity
+exact content revision identity
 canonical target IDs
 external task/question-family refs where material
 Content Context ID
@@ -345,7 +390,7 @@ Python returns bounded measurement output:
 ```text
 evaluation identity
 status
-Observation candidates preserving target/family/context provenance
+Observation candidates preserving content/target/family/context provenance
 criterion measurements
 transcript/acoustic/text-analysis refs where appropriate
 uncertainty/quality flags
@@ -353,11 +398,38 @@ model/evaluator provenance
 diagnostics
 ```
 
-Python never returns authoritative learner certification, product support, Band advancement, evidence candidacy upgrades, or final DailyPlan state.
+Python never returns authoritative learner certification, product support, Band advancement, evidence candidacy upgrades, content activation, or final DailyPlan state.
+
+## Content generation semantics
+
+Input is a bounded ContentDemand/GenerationRequest already constrained by Core API/product policy, such as:
+
+```text
+work identity
+intended use/consequence
+canonical target refs
+official family/context/presentation refs where applicable
+variant/delivery scope where material
+difficulty/scaffold/diversity requirements
+prohibited/reuse/source constraints
+authorized source/context refs
+```
+
+Output is candidate semantic content plus origin/model/tool provenance and diagnostics. It is not an active ContentRevision until Core API persists the candidate/revision and applicable validation/release policy passes.
+
+The generator may not invent unresolved canonical target meaning, relax required conditions, or classify its own output as product-supported.
+
+## Content validation semantics
+
+Input identifies the exact ContentRevision, intended use/consequence scope, validation policy/version, and authorized supporting material.
+
+Output may contain validation findings/signals, similarity measurements, answer/rubric checks, language/construct checks, uncertainty, and validator provenance. It does not decide Assessment evidence admission, learner mastery, product coverage, or content release activation beyond the authority explicitly granted to the owning deterministic validation policy.
+
+A generated candidate being checked by the same model/process that generated it does not create independent confidence merely because the process returns `pass`.
 
 ## Media-analysis semantics
 
-Input contains permitted transcript/text/media metadata or another authorized reference. Output may propose segments, difficulty metadata, vocabulary, canonical targets, and generated prompts. Core API validates eligibility before saving product state.
+Input contains permitted transcript/text/media metadata or another authorized reference. Output may propose segments, difficulty metadata, vocabulary, canonical targets, and generated prompts. Core API validates eligibility and normal content revision/validation requirements before saving assignable product state.
 
 # Idempotency
 
@@ -367,15 +439,17 @@ Require an idempotency key/equivalent stable client operation for operations whe
 - learning-session creation when duplicate creation matters;
 - attempt submission;
 - mock-run creation;
-- media-source/media-lesson creation with provider/evaluator cost.
+- media-source/media-lesson creation with provider/evaluator cost;
+- content generation requests where retry could duplicate generated inventory/provider cost;
+- content validation runs where retry could duplicate paid validation work.
 
-Retry cannot create duplicate attempts, EvidenceFacts, or paid evaluator work.
+Retry cannot create duplicate attempts, EvidenceFacts, paid evaluator/generator work, or semantically duplicated revision records for one logical accepted operation.
 
 # Optimistic concurrency
 
-Mutable draft-like resources and TargetProfile use revision/version semantics where concurrent/stale updates are possible.
+Mutable draft-like resources, TargetProfile, and mutable operational/admin metadata use revision/version semantics where concurrent/stale updates are possible.
 
-A stale mutation is rejected rather than silently overwriting newer learner state.
+A stale mutation is rejected rather than silently overwriting newer state. ContentRevision semantic payload itself is immutable once established under `spec/10` semantics; optimistic concurrency is not permission to overwrite it.
 
 # Error envelope
 
@@ -408,7 +482,7 @@ product_coverage_blocked
 rate_limited
 ```
 
-Evidence/coverage states are often successful domain results rather than HTTP errors.
+Evidence/coverage/content eligibility states are often successful domain results rather than HTTP errors. Content validation/report/similarity reason details should remain reconstructable without freezing an oversized public error-code catalog before contracts require it.
 
 # HTTP conventions
 
@@ -425,29 +499,33 @@ Target semantics:
 - `409` lifecycle/concurrency/idempotency conflict;
 - `422` structurally valid input violating operation contract;
 - `429` rate limit;
-- `5xx` infrastructure failure, never a learner score.
+- `5xx` infrastructure failure, never a learner score or fake content-quality judgment.
 
 Exact mapping belongs to the machine contract.
 
 # Pagination
 
-Unbounded history/library collections use cursor pagination. Small stable canonical catalogs may be returned in full.
+Unbounded history/library/content/report collections use cursor pagination. Small stable canonical catalogs may be returned in full.
 
 # API anti-patterns
 
 Forbidden without an explicit architecture change:
 
-- browser calling evaluator directly;
+- browser calling evaluator/generator/validator directly;
 - endpoint per UI button;
 - provider/model names in public domain routes;
 - independently handwritten mirror DTOs across runtimes;
 - fake score zero on evaluator failure;
-- API shape becoming a second learner-state definition;
+- API shape becoming a second learner-state or content-quality definition;
 - API-owned thresholds or hidden per-skill target constraints without a canonical/product owner;
 - practice/UI action implicitly mutating TargetProfile/readiness;
 - CoverageGap represented as learner GapEvaluation;
 - ranker returning an activity that failed hard eligibility;
-- omitted official family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
+- omitted content revision/family/context/presentation/delivery identity when that omission changes coverage, scoring, evidence, or target meaning;
 - client/evaluator silently reclassifying immutable item family identity;
 - client/evaluator/server retroactively upgrading evidence candidacy after observing performance;
+- mutable PATCH of a historical ContentRevision semantic payload;
+- generator/validator output directly activating learner content;
+- generic admin validation bypass for a known hard failure;
+- one combined API ContentStatus that hides validation vs release vs operational-safety dimensions;
 - `completed diagnostic` represented as `complete learner baseline`.
