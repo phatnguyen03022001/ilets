@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
+	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 )
 
 func (s *Server) listPracticeModes(w http.ResponseWriter, r *http.Request) {
@@ -89,21 +90,30 @@ func (s *Server) createPracticeActivity(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var revision string
-	var semantic []byte
-	err = tx.QueryRow(r.Context(), `SELECT cr.revision_id,cr.semantic_payload FROM content_revisions cr JOIN content_use_states us ON us.content_revision_id=cr.revision_id JOIN validation_decisions vd ON vd.validation_decision_id=us.current_validation_decision_id WHERE cr.revision_id=$1 AND us.assignment_eligible=true AND us.operational_state='ACTIVE' AND vd.result='PASS' AND vd.validation_policy_version='bootstrap-reading-training-v1' FOR SHARE`, bootstrapRevision).Scan(&revision, &semantic)
+	queries := sqlcdb.New(tx)
+	assignable, err := queries.GetAssignableContentRevision(r.Context(), bootstrapRevision)
 	if err != nil {
 		writeError(w, r, 422, "CONTENT_UNAVAILABLE", "validated bootstrap content is not assignable")
 		return
 	}
 	var content map[string]any
-	if json.Unmarshal(semantic, &content) != nil || !validBootstrapContent(content) {
+	if json.Unmarshal(assignable.SemanticPayload, &content) != nil || !validBootstrapContent(content) {
 		writeError(w, r, 422, "CONTENT_INVALID", "bootstrap content failed assignment invariants")
 		return
 	}
 	id := newID("activity_")
-	if _, err = tx.Exec(r.Context(), `INSERT INTO practice_activities(practice_activity_id,learner_id,content_revision_id,feature_id,practice_mode_id,primary_activity_purpose,evidence_candidacy,test_variant) VALUES($1,$2,$3,'R-F04','PM-R03','TRAINING','NOT_EVIDENCE_CANDIDATE','ACADEMIC')`, id, learner, revision); err == nil {
-		_, err = tx.Exec(r.Context(), `UPDATE idempotency_operations SET outcome_resource_id=$4 WHERE learner_id=$1 AND operation=$2 AND idempotency_key=$3`, learner, "create_practice_activity", key, id)
+	if err = queries.InsertPracticeActivity(r.Context(), sqlcdb.InsertPracticeActivityParams{
+		PracticeActivityID: id,
+		LearnerID:          learner,
+		ContentRevisionID:  assignable.RevisionID,
+	}); err == nil {
+		outcome := id
+		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
+			LearnerID:         learner,
+			Operation:         "create_practice_activity",
+			IdempotencyKey:    key,
+			OutcomeResourceID: &outcome,
+		})
 	}
 	if err != nil {
 		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot assign activity")
@@ -139,18 +149,18 @@ func (s *Server) getPracticeActivity(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) loadActivity(ctx context.Context, learner, id string) (map[string]any, error) {
-	var revision string
-	var assigned time.Time
-	var semantic []byte
-	err := s.db.QueryRow(ctx, `SELECT pa.content_revision_id,pa.assigned_at,cr.semantic_payload FROM practice_activities pa JOIN content_revisions cr ON cr.revision_id=pa.content_revision_id WHERE pa.practice_activity_id=$1 AND pa.learner_id=$2`, id, learner).Scan(&revision, &assigned, &semantic)
+	row, err := sqlcdb.New(s.db).GetPracticeActivity(ctx, sqlcdb.GetPracticeActivityParams{
+		PracticeActivityID: id,
+		LearnerID:          learner,
+	})
 	if err != nil {
 		return nil, err
 	}
 	var content map[string]any
-	if err = json.Unmarshal(semantic, &content); err != nil {
+	if err = json.Unmarshal(row.SemanticPayload, &content); err != nil {
 		return nil, err
 	}
-	return safeActivity(id, revision, assigned, content), nil
+	return safeActivity(id, row.ContentRevisionID, row.AssignedAt.Time, content), nil
 }
 
 func safeActivity(id, revision string, assigned time.Time, content map[string]any) map[string]any {
@@ -160,20 +170,20 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 		items = append(items, map[string]any{"item_id": item["item_id"], "official_family_id": item["official_family_id"], "statement": item["statement"], "choices": item["choices"]})
 	}
 	return map[string]any{
-		"practice_activity_id": id,
-		"feature_id": "R-F04",
-		"practice_mode_id": "PM-R03",
-		"practice_type_ids": []string{"PT-13", "PT-16"},
-		"skill_target_ids": []string{"R-QT-02", "R-QT-03"},
-		"official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"},
-		"content_context_id": "CTX-READING-ACADEMIC",
-		"content_revision_id": revision,
-		"primary_activity_purpose": "TRAINING",
-		"evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
-		"test_variant": "ACADEMIC",
-		"stimulus": content["stimulus"],
-		"items": items,
-		"assigned_at": assigned.UTC().Format(time.RFC3339Nano),
+		"practice_activity_id":      id,
+		"feature_id":                "R-F04",
+		"practice_mode_id":          "PM-R03",
+		"practice_type_ids":         []string{"PT-13", "PT-16"},
+		"skill_target_ids":          []string{"R-QT-02", "R-QT-03"},
+		"official_family_ids":       []string{"IELTS-R-QF-02", "IELTS-R-QF-03"},
+		"content_context_id":        "CTX-READING-ACADEMIC",
+		"content_revision_id":       revision,
+		"primary_activity_purpose":  "TRAINING",
+		"evidence_candidacy":        "NOT_EVIDENCE_CANDIDATE",
+		"test_variant":              "ACADEMIC",
+		"stimulus":                  content["stimulus"],
+		"items":                     items,
+		"assigned_at":               assigned.UTC().Format(time.RFC3339Nano),
 	}
 }
 
