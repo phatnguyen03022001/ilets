@@ -1,13 +1,13 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
-DOES_NOT_OWN: API field schemas, learning/mastery truth, product coverage declaration, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
+DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
 
 # Application Flows
 
 ## Purpose
 
-Define how major product interactions traverse runtime boundaries without assigning learning authority to transport, UI, evaluator, ranker, or third-party infrastructure.
+Define how major product interactions traverse runtime boundaries without assigning learning authority to transport, UI, evaluator, ranker, content generator, or third-party infrastructure.
 
 # Logical runtime units
 
@@ -38,7 +38,7 @@ Assessment / Progression / Planner
 Web
 ```
 
-The evaluator does not certify Band, mutate learner progression, declare product coverage, or choose the final next action.
+The evaluator does not certify Band, mutate learner progression, declare product coverage, activate content, or choose the final next action.
 
 # Planner decision contract
 
@@ -53,7 +53,7 @@ Planning is a staged decision. Later stages may not redefine truth established b
         ↓
 4. hard eligibility filtering
         ↓
-5. candidate generation
+5. activity candidate generation
         ↓
 6. ranking among eligible candidates
         ↓
@@ -100,6 +100,8 @@ Remove candidates that violate any applicable hard condition:
 - delivery-mode compatibility for exam-readiness work when material;
 - product coverage/support constraint;
 - primary-purpose/evidence-candidacy compatibility for the requested action;
+- exact content-revision release/operational eligibility;
+- learner-specific exposure/novelty/independence eligibility where material;
 - rights/privacy/source eligibility;
 - accessibility/capture feasibility;
 - immutable lifecycle condition;
@@ -112,13 +114,16 @@ Examples:
 - typing-only mock behavior is not sufficient delivery-mode practice when the learner explicitly targets eligible Writing on Paper;
 - IELTS Online Academic exam-readiness is not eligible for a GT target or a target purpose that requires a test-centre route;
 - a failed microphone capture cannot become eligible Speaking evidence by ranking it highly;
-- an activity configured `NOT_EVIDENCE_CANDIDATE` cannot be selected to satisfy a `COLLECT_EVIDENCE` action merely because its expected score is favorable.
+- an activity configured `NOT_EVIDENCE_CANDIDATE` cannot be selected to satisfy a `COLLECT_EVIDENCE` action merely because its expected score is favorable;
+- content that is globally valid may still be ineligible for a learner's unseen/readiness claim after materially contaminating prior exposure.
 
-## Stage 5 — candidate generation
+## Stage 5 — activity candidate generation
 
-Generate valid learning or assessment candidates for the current ActionIntent. Multiple modes may satisfy the same intent; candidate generation may vary delivery but not the target standard.
+Generate valid learning or assessment **activity candidates** for the current ActionIntent. This is planner candidate construction, not necessarily content generation.
 
-When target resolution is incomplete, candidate generation is restricted to work that does not require inventing the unresolved condition.
+Multiple modes may satisfy the same intent; candidate generation may vary delivery but not the target standard. Activity construction must resolve to an eligible exact ContentRevision before assignment. Existing eligible content is preferred; content supply generation/import is a separate downstream flow and is invoked only when actual supply demand remains.
+
+When target resolution is incomplete, activity candidate generation is restricted to work that does not require inventing the unresolved condition.
 
 ## Stage 6 — ranking
 
@@ -146,12 +151,13 @@ A ranker may reorder eligible candidates. It may never:
 - lower a target threshold;
 - convert preference into ability evidence;
 - ignore a material variant/delivery constraint;
+- override content validation/release/operational ineligibility;
 - upgrade evidence candidacy/admission;
 - certify a learner.
 
 ## Stage 7 — plan/explanation
 
-A plan records enough state/target references and reason information to reconstruct why every activity was eligible and selected, including which target conditions remained unresolved when the plan was produced.
+A plan records enough state/target/content-revision references and reason information to reconstruct why every activity was eligible and selected, including which target conditions remained unresolved when the plan was produced.
 
 Tie-breaking should be deterministic/stable enough that unchanged learner state does not create arbitrary plan churn.
 
@@ -193,7 +199,7 @@ GapEvaluation / ActionIntent where evidence permits
   ↓
 hard eligibility
   ↓
-valid candidate generation
+valid activity candidate generation
   ↓
 ranking
   ↓
@@ -225,7 +231,7 @@ Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do 
 
 ```text
 1. Web starts PracticeActivity
-2. Core API returns item + target + variant/context + conditions
+2. Core API returns exact item revision + target + variant/context + conditions
    + primary_activity_purpose + evidence_candidacy
 3. learner performs task
 4. Web submits Attempt with actual scaffold/exposure/delivery metadata
@@ -239,7 +245,7 @@ Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do 
 
 Primary purpose (`TRAINING`, `DIAGNOSTIC`, `ASSESSMENT`, or `READINESS`) does not determine evidence admission. `ASSESSMENT` means focused measurement is the activity purpose; it does not mean the resulting Observation is already admitted. Assessment may reject a candidate Observation after seeing actual assistance/exposure/evaluator/provenance conditions; a favorable result cannot retroactively upgrade a non-candidate activity.
 
-Submission/retry is idempotent where network repetition could duplicate history or cost.
+Submission/retry is idempotent where network repetition could duplicate history or cost. Once an Attempt begins, later content activation/retirement cannot rewrite the revision referenced by that Attempt.
 
 # Flow D — Writing/Speaking asynchronous evaluation
 
@@ -279,7 +285,7 @@ Rules:
 ```text
 Attempt
   ↓
-answer-key + instruction/word-limit validation
+answer-key + instruction/word-limit validation against exact content revision
   ↓
 raw result
   ↓
@@ -301,16 +307,18 @@ GapEvaluation
   ↓
 ActionIntent
   ↓
+feedback-focus policy (`spec/07`)
+  ↓
 ErrorPattern / RemediationPattern when relevant
   ↓
 Learning Mechanism
   ↓
 Practice Mode
   ↓
-fresh Practice Item
+fresh eligible Practice Item revision
 ```
 
-Direct `wrong answer → fixed exercise id` mapping is not a canonical remediation policy.
+Direct `wrong answer → fixed exercise id` mapping is not a canonical remediation policy. Detectable secondary issues may be recorded/deferred rather than surfaced when they are outside the current feedback focus.
 
 # Flow G — review
 
@@ -322,7 +330,7 @@ queue kind
   ├─ error remediation
   └─ re-evidence
   ↓
-eligible activity
+eligible activity + exact content revision
   ↓
 Attempt
   ↓
@@ -340,11 +348,12 @@ One Review screen may present these together; backend meaning remains distinct.
 4. authorized text may be sent to Evaluator
 5. Evaluator proposes segments/targets/difficulty/prompts
 6. Core API validates rights + canonical target + practice mapping
-7. learner previews/saves MediaLesson
-8. later attempts use the normal Practice/Attempt path
+7. resulting content is admitted only through the applicable content validation/revision path
+8. learner previews/saves MediaLesson when eligible
+9. later attempts use the normal Practice/Attempt path
 ```
 
-Evaluator access never implies authorization to download/copy arbitrary media.
+Evaluator access never implies authorization to download/copy arbitrary media. Generated media-derived prompts do not bypass content quality or revision semantics.
 
 # Flow I — mock/readiness
 
@@ -392,9 +401,94 @@ It must never state that the learner is guaranteed an external result.
 
 When product capability is missing for a resolved requested scope, route generation stops at the CoverageGap rather than manufacturing an invalid activity.
 
+# Flow K — content supply and learner assignment
+
+Content supply is reuse-first and mechanism-neutral.
+
+```text
+canonical learning/product need
+        ↓
+ContentDemand
+        ↓
+query eligible accepted pool
+        ↓
+sufficient content for required target/context/difficulty/diversity?
+    ├─ yes → reuse eligible revision
+    └─ no  → obtain candidate through an applicable supply route
+              ├─ authored/imported
+              ├─ deterministic/local generation
+              └─ bounded external/AI generation when eligible
+                    ↓
+              ContentRevision
+                    ↓
+              applicable validation
+                    ↓
+              pool admission / release eligibility
+        ↓
+learner-specific exposure/novelty/independence gate
+        ↓
+exact revision assignment
+        ↓
+Attempt references that revision
+```
+
+Rules:
+
+1. generation is optional; a release may be fully supplied by authored/imported/deterministic assets when they satisfy coverage and operational requirements;
+2. generation/import is requested only when actual content demand remains after eligible pool reuse, or may be pre-generated/batched from demonstrated future demand so learner requests do not unnecessarily wait on generation;
+3. reuse optimization must never override target/family/context/presentation/difficulty/diversity/rights/evidence requirements;
+4. content validation and assignment are separate: a globally valid revision can still be ineligible for a specific learner/use because of exposure, independence, or novelty requirements;
+5. corpus similarity is not a universal rejection rule; similarity facts are interpreted against the intended learning/evidence purpose;
+6. generator output and validator signals cannot activate content by themselves; Core-API-owned deterministic product policy applies the owning semantic/coverage rules;
+7. higher-consequence use requires the stronger applicable validation/evidence conditions defined upstream; low-consequence training does not require unrelated high-consequence checks;
+8. every assigned activity resolves the exact immutable revision before learner exposure.
+
+Content supply may be asynchronous. If the desired content is unavailable, the planner may use another genuinely eligible activity or expose an honest product/content gap; it must not silently relax semantic or evidence requirements merely to avoid generation latency/cost.
+
+# Flow L — content report, quarantine, revalidation, and retirement
+
+Content operational safety is independent from immutable revision identity and from whether a revision previously passed validation.
+
+Representative flow:
+
+```text
+Attempt / learner report / operational signal / validator-policy regression
+        ↓
+triage material risk
+        ↓
+stop new assignment when warranted
+        ↓
+preserve historical revision + Attempt/evidence references
+        ↓
+investigate / revalidate
+        ├─ same semantic revision verified → restore eligible assignment when release permits
+        ├─ material content fix required → create new ContentRevision → validate → activate when eligible
+        └─ no safe/valid route → retire from new assignment
+                                    ↓
+                         replacement/supply demand if coverage needs it
+```
+
+Do not collapse validation state, release eligibility, and operational safety into one global ContentStatus enum. A revision may be semantically validated yet not activated for a release, or may have been active and later be quarantined operationally pending investigation.
+
+Operational actors may inspect provenance/validation, quarantine or stop new assignment, request regeneration/replacement, retire content, and resolve reports according to authorization. They are operators, not learning/Assessment authorities.
+
+No ordinary admin action may bypass a known applicable hard failure such as:
+
+- invalid canonical reference or incompatible IELTS family/context/presentation binding;
+- known incorrect answer key/rubric/model where required;
+- prohibited answer leakage for the intended use;
+- rights/privacy/security failure;
+- evidence-critical exposure/independence failure for a use that requires independent evidence.
+
+The cause must be repaired or the intended use changed legitimately, then the content/revision must pass the applicable policy again. A generic `override_validation` capability that converts a known hard failure into active learner content is forbidden.
+
+Historical learner facts are never repaired by mutating an old revision. If a later discovery changes how historical evidence should be interpreted, preserve the original Attempt/Observation and apply the owning Assessment/Progression policy with explicit provenance.
+
 # Legal lifecycle state machines
 
 Exact wire fields belong to machine contracts. Legal semantic transitions are owned here so services cannot invent incompatible lifecycle rules.
+
+The state machines below apply to learner/runtime work resources. Content validation, release eligibility, and operational safety intentionally remain separate dimensions governed by Flows K–L rather than one combined lifecycle enum.
 
 ## LearningSession
 
@@ -417,7 +511,8 @@ submitted ─────────────────────→ inv
 
 Rules:
 
-- draft content may mutate only before submission under concurrency/revision rules;
+- draft response content may mutate only before submission under concurrency/revision rules;
+- the referenced assigned content revision does not mutate for that Attempt identity;
 - submission is idempotent;
 - submitted work is immutable for that Attempt identity;
 - redraft/correction creates a new version/related attempt rather than rewriting submitted history;
@@ -483,7 +578,8 @@ The transition reason preserves meaning. Staleness/conflict/insufficient evidenc
 - retry of an idempotent operation reuses the same logical result/identity where applicable;
 - one service does not advance another owner’s lifecycle by direct database mutation;
 - consequential terminal transitions record reconstructable reason/provenance;
-- runtime completion state never substitutes for learning state.
+- runtime completion state never substitutes for learning state;
+- content operational state changes never rewrite historical content revision identity.
 
 # Result delivery
 
@@ -516,6 +612,8 @@ target_not_supported
 product_coverage_blocked
 ```
 
+Content generation/validation/assignment failures should likewise remain domain/operational states rather than fake learner failure; exact public/internal error codes belong to `05-api.md` and machine contracts when materialized.
+
 Infrastructure failure is never represented as score zero or generic learner failure. An unresolved target field should use target-resolution semantics rather than pretending the product rejected a fully specified target.
 
 # Runtime ownership invariant
@@ -523,6 +621,7 @@ Infrastructure failure is never represented as score zero or generic learner fai
 ```text
 TypeScript
   browser interaction/rendering/capture
+  authorized admin/operations presentation
 
 Go
   public API + durable product state
@@ -530,9 +629,11 @@ Go
   Assessment policy execution
   Progression execution
   Planner orchestration
+  content demand/reuse/assignment + operational eligibility orchestration
 
 Python
   bounded AI/audio/text evaluation and media analysis
+  bounded content-generation/validation capability only when invoked through declared internal contracts
 ```
 
-Cross-language data crosses explicit contracts. The same semantic rule is not independently maintained in multiple runtimes.
+Cross-language data crosses explicit contracts. The same semantic rule is not independently maintained in multiple runtimes. Python or another generator/validator may produce candidates/signals; Core API remains responsible for applying product policy and preserving authoritative content/assignment state.
