@@ -195,6 +195,12 @@ Learning claims should distinguish:
 
 Assumptions and inferences must not be presented as official IELTS truth.
 
+Source authority is **claim-domain specific**. The appropriate authority for an IELTS test-format claim, a learning-science claim, an external platform/legal claim, and a framework/runtime claim may be different. A source is useful only when it actually supports the scoped claim.
+
+Material external claims require provenance sufficient to resolve the source and inspect the support for the claim. An LLM output, summary, or LLM-produced citation is not evidence by itself; a citation is only a pointer until the referenced source is resolved, inspected, and shown to support the claim.
+
+Conflicting or insufficient support remains unresolved until the owning domain has a justified resolution. Do not select the more convenient source, convert uncertainty into canonical truth, or silently promote an unresolved claim into an implementation requirement.
+
 External IELTS reality belongs in `spec/02-IELTS-MODEL.md`; pedagogical interpretation belongs in the appropriate learning owner.
 
 External platform/legal policies such as YouTube remain external authority. `design/` records the product interpretation and re-check requirement; it does not pretend to replace those policies.
@@ -275,6 +281,10 @@ The system optimizes for learning correctness rather than document volume or imp
 - do not let product UX lower the evidence standard;
 - do not describe a product CoverageGap as a learner weakness;
 - do not describe a modelled path as product-supported before support gates pass.
+
+AI and automation may execute, propose, generate, translate, or measure only within the authority of the owning canonical rules. Producing an output does not give a model, prompt, tool, generated artifact, or provider authority over learning truth, product-support truth, or learner state.
+
+When an owning policy requires evidence, calibration, or explicit resolution, AI/automation must preserve the unresolved state rather than inventing a threshold, silently resolving a conflict, or promoting a candidate output into authority.
 
 ## 18. Conflict repair
 
@@ -547,6 +557,7 @@ A healthy repository lets a new session answer quickly:
 - Which third-party provider boundary is involved, if any?
 - Is this target MODELLED, COVERED, SUPPORTED_FOR_PRODUCT, or VALIDATED?
 - Is the semantic duplicated elsewhere?
+- Can material external claims be traced to inspectable provenance?
 - Can root verification prove the affected path?
 
-If the answer requires guessing from folders, reading hidden agent instructions, reconciling three language-specific copies of one rule, or trusting an undeclared provider/coverage assumption, the architecture has regressed.
+If the answer requires guessing from folders, reading hidden agent instructions, trusting AI/tool output as authority, reconciling three language-specific copies of one rule, or trusting an undeclared provider/coverage assumption, the architecture has regressed.
