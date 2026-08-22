@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, content identity/revision and lineage semantics, reference contracts between concrete content and canonical objects/external task families, validation-decision and similarity-fact representation, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
+OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, content identity/revision and lineage semantics, reference contracts between concrete content and canonical objects/external task families, ValidationDecision and similarity-fact representation/history, minimum content-validation semantic obligations, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
 DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, content generation/runtime lifecycle or admin workflow, exact wire/storage schema, product activity-purpose/evidence-candidacy policy, or product coverage status
 
@@ -99,11 +99,13 @@ ValidationDecision
 Rules:
 
 1. the same revision may have multiple ValidationDecisions as policy, validators, evidence, rights state, or intended consequence changes;
-2. a validator's self-reported confidence or a generator's claim that its own output is valid is only an input signal, never validation authority by itself;
-3. validation reasons must remain reconstructable, but this specification does not freeze a large machine reason-code catalog before contracts require stable interoperability;
-4. validation burden is consequence-aware: higher-consequence use may require stronger applicable checks than low-consequence training;
-5. consequence-aware validation never permits an applicable universal hard failure to be ignored merely because the intended use is low consequence;
-6. exact validator count, voting scheme, model/provider, similarity threshold, audit sample count, and operational retry policy are implementation/calibration concerns unless later evidence requires a canonical rule.
+2. once established as an auditable decision record, a ValidationDecision's material result/reason/policy/provenance meaning is historical and is not rewritten in place to represent a later validation run;
+3. revalidation of unchanged semantic content creates another ValidationDecision or equivalent historical decision linked to the same ContentRevision; a later decision may supersede current release/use interpretation without rewriting the earlier decision;
+4. correction/annotation of non-semantic decision metadata is allowed only when audit reconstruction preserves what was originally decided and why;
+5. a validator's self-reported confidence or a generator's claim that its own output is valid is only an input signal, never validation authority by itself;
+6. validation reasons must remain reconstructable, but this specification does not freeze a large machine reason-code catalog before contracts require stable interoperability;
+7. validation burden is consequence-aware: higher-consequence use may require stronger applicable checks than low-consequence training, while every applicable universal hard failure remains blocking;
+8. exact validator count, voting scheme, model/provider, similarity threshold, confidence threshold, audit sample count, and operational retry policy are implementation/calibration concerns unless later evidence requires a canonical rule.
 
 The runtime orchestration of validation, activation, quarantine, revalidation, and retirement is owned by `design/04-application-flows.md`.
 
@@ -640,28 +642,32 @@ Concrete difficulty may vary by linguistic complexity, information load, abstrac
 
 Difficulty metadata does not define a Band.
 
-# Content quality requirements
+# Content validation semantics
 
-Content origin does not change its semantic/quality obligations. Any content exposed to a learner must satisfy every applicable content contract for its intended use.
+Validation policy is origin-neutral and intended-use-aware. Any ContentRevision exposed to a learner must satisfy every applicable universal semantic hard gate for that use.
 
-Universal applicable hard requirements include:
+Universal gates include at least:
 
 - canonical references resolve and are semantically compatible;
-- external task-family, Content Context, Presentation Class, variant, and delivery references are correct whenever material;
-- basic structural/response-contract validity holds;
-- a known answer key/rubric/model is correct where applicable;
-- prohibited answer leakage is absent for the intended activity conditions;
-- applicable rights/privacy/security constraints pass;
+- basic structure and response contract are valid enough to execute and interpret the task;
+- external task-family, Content Context, Presentation Class, variant, and delivery references are compatible whenever material;
+- applicable rights/privacy/security eligibility passes;
+- answer/scoring/rubric correctness holds where an answer, scoring rule, or rubric exists;
+- productive/open-ended prompt, task construct, response contract, and rubric/scoring route are mutually compatible where material;
+- prohibited answer/model/rubric leakage is absent for the intended use;
+- provenance/integrity is sufficient for the intended consequence;
 - the content introduces no contradictory teaching or scoring rule.
 
-Additional consequence-specific requirements increase with intended use. They may include stronger checks for:
+For Writing/Speaking or another open productive task, answer correctness does not imply one objective correct response. The applicable gate validates the prompt/task construct, response contract, rubric/scoring compatibility, prohibited model-answer leakage, and evaluator/provenance requirements needed by the intended use.
 
-- construct/claim compatibility;
-- scoring/evaluator compatibility;
-- independence and learner exposure;
-- novelty/transfer distance;
-- difficulty and condition validity;
-- provenance/calibration adequate to the intended evidence consequence.
+Consequence-specific burden increases only where the intended use makes it material:
+
+- **lower-consequence training** — universal gates plus semantic quality sufficient for the selected learning mechanism;
+- **transfer/novelty-sensitive use** — the above plus applicable context, novelty, exposure, and transfer validity;
+- **evidence-candidate use** — the above plus construct/scoring/evaluator validity, material condition observability, and applicable independence/contamination constraints;
+- **readiness/Band/high-consequence evidence** — the strongest applicable calibration, provenance, independence, scoring, and claim-sufficiency conditions owned by `08-ASSESSMENT.md` and the applicable EvidenceRequirement.
+
+Validation does not admit an EvidenceFact or establish claim support. Assessment owns evidence admission/sufficiency. Similarity facts do not decide learner/use eligibility by themselves; assignment and Assessment consume them according to the intended consequence.
 
 Other quality requirements remain:
 
@@ -671,7 +677,7 @@ Other quality requirements remain:
 - non-universal remediation/error claims declare scope;
 - content can be replaced without changing canonical learning truth or rewriting historical learner events.
 
-There is no canonical global content-quality percentage. A cheap/training-only path cannot waive an applicable hard correctness requirement, while low-consequence content need not incur high-consequence validation work that is genuinely inapplicable.
+There is no canonical global content-quality percentage. No applicable hard gate may be waived because content is cheap, generated, or low-consequence, while low-consequence content need not incur high-consequence validation work that is genuinely inapplicable. This specification does not define validator count/voting, similarity/confidence thresholds, or audit sample counts.
 
 # Generated-content boundary
 
