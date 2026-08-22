@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
-DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
+DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, or learner-facing UX defaults
 
 # Application Flows
 
@@ -470,7 +470,7 @@ investigate / revalidate
 
 Do not collapse validation state, release eligibility, and operational safety into one global ContentStatus enum. A revision may be semantically validated yet not activated for a release, or may have been active and later be quarantined operationally pending investigation.
 
-Operational actors may inspect provenance/validation, quarantine or stop new assignment, request regeneration/replacement, retire content, and resolve reports according to authorization. They are operators, not learning/Assessment authorities.
+Operational actors exercise only applicable privileged capabilities defined below. They are operators, not learning or Assessment authorities.
 
 No authorized operator/admin action, regardless of role level, may bypass a known applicable hard failure such as:
 
@@ -483,6 +483,30 @@ No authorized operator/admin action, regardless of role level, may bypass a know
 The cause must be repaired or the intended use changed legitimately, then the content/revision must pass the applicable policy again. A generic `override_validation` capability that converts a known hard failure into active learner content is forbidden.
 
 Historical learner facts are never repaired by mutating an old revision. If a later discovery changes how historical evidence should be interpreted, preserve the original Attempt/Observation and apply the owning Assessment/Progression policy with explicit provenance.
+
+# Privileged content-operation capabilities
+
+Privileged content operations are capability-scoped rather than defined by a canonical role taxonomy. The product semantics distinguish at least these operational capabilities:
+
+- inspect content, provenance, validation evidence, and operational state;
+- stop new assignment / quarantine content when warranted;
+- activate or release content that already satisfies every applicable semantic, validation, release, and operational condition;
+- retire content from new assignment;
+- request content supply, regeneration, or replacement;
+- request revalidation;
+- resolve content reports with reconstructable operational reason/provenance.
+
+Invariants:
+
+1. an operational capability grant is not learning authority;
+2. an operational capability grant is not Assessment/evidence authority;
+3. an operational capability grant is not permission to mutate historical ContentRevision semantic payload;
+4. an operational capability grant is not validation-bypass authority;
+5. no capability may convert a known applicable hard failure into assignable content;
+6. activation/release capability may act only on content that already satisfies the applicable semantic, validation, release, and operational policy;
+7. authorization implementation may later map authenticated identities/roles to these capabilities without redefining their meanings.
+
+Concrete role names, role hierarchy, identity-provider integration, and the role-to-capability matrix remain implementation/authorization concerns. API operations consume these capability meanings through `05-api.md` without creating a second authorization taxonomy.
 
 # Legal lifecycle state machines
 
