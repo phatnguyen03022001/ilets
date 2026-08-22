@@ -25,6 +25,13 @@ python3 "$ROOT/tools/verify-lenbands-founder-closure.py"
 python3 "$ROOT/tools/canonical/test_materialize.py"
 python3 "$ROOT/tools/canonical/materialize.py" --check
 
+required_node="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["engines"]["node"])' "$ROOT/apps/web/package.json")"
+actual_node="$(node --version 2>/dev/null || true)"
+if [[ "$actual_node" != "v${required_node}" ]]; then
+  echo "Node version mismatch: required v${required_node}, got ${actual_node:-missing}" >&2
+  exit 1
+fi
+
 cd "$ROOT/apps/web"
 corepack enable
 pnpm install --frozen-lockfile
@@ -96,3 +103,15 @@ ILETS_INTEGRATION=1 go test ./...
 cd "$ROOT/apps/web"
 pnpm exec playwright install chromium
 pnpm e2e
+
+# next dev uses development type paths in next-env.d.ts. Rebuild once after
+# E2E so the committed production-build declaration remains deterministic.
+pnpm build
+
+cd "$ROOT"
+dirty="$(git status --porcelain --untracked-files=normal)"
+if [[ -n "$dirty" ]]; then
+  echo "verification left working tree dirty:" >&2
+  printf '%s\n' "$dirty" >&2
+  exit 1
+fi
