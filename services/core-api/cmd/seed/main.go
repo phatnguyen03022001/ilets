@@ -98,10 +98,11 @@ func main() {
 	}
 
 	var existingHash, existingContentID string
-	err = tx.QueryRow(ctx, `SELECT content_hash,content_id FROM content_revisions WHERE revision_id=$1`, fixture.RevisionID).Scan(&existingHash, &existingContentID)
+	var provenanceMatches bool
+	err = tx.QueryRow(ctx, `SELECT content_hash,content_id,origin_provenance = $2::jsonb FROM content_revisions WHERE revision_id=$1`, fixture.RevisionID, string(provenance)).Scan(&existingHash, &existingContentID, &provenanceMatches)
 	switch err {
 	case nil:
-		if existingHash != hash || existingContentID != fixture.ContentID {
+		if existingHash != hash || existingContentID != fixture.ContentID || !provenanceMatches {
 			log.Fatalf("immutable bootstrap revision %s conflicts with fixture", fixture.RevisionID)
 		}
 	case pgx.ErrNoRows:
@@ -113,10 +114,11 @@ func main() {
 	}
 
 	var decisionRevision, decisionPolicy, decisionUse, decisionResult string
-	err = tx.QueryRow(ctx, `SELECT content_revision_id,validation_policy_version,intended_use,result FROM validation_decisions WHERE validation_decision_id=$1`, fixture.Validation.DecisionID).Scan(&decisionRevision, &decisionPolicy, &decisionUse, &decisionResult)
+	var findingsMatch bool
+	err = tx.QueryRow(ctx, `SELECT content_revision_id,validation_policy_version,intended_use,result,findings = $2::jsonb FROM validation_decisions WHERE validation_decision_id=$1`, fixture.Validation.DecisionID, string(findings)).Scan(&decisionRevision, &decisionPolicy, &decisionUse, &decisionResult, &findingsMatch)
 	switch err {
 	case nil:
-		if decisionRevision != fixture.RevisionID || decisionPolicy != fixture.Validation.PolicyVersion || decisionUse != fixture.Validation.IntendedUse || decisionResult != fixture.Validation.Result {
+		if decisionRevision != fixture.RevisionID || decisionPolicy != fixture.Validation.PolicyVersion || decisionUse != fixture.Validation.IntendedUse || decisionResult != fixture.Validation.Result || !findingsMatch {
 			log.Fatalf("bootstrap validation decision %s conflicts with fixture", fixture.Validation.DecisionID)
 		}
 	case pgx.ErrNoRows:
@@ -159,7 +161,6 @@ func requiredRefs(payload map[string]any) []string {
 			for _, value := range values {
 				if id, ok := value.(string); ok {
 					out = append(out, id)
-				}
 			}
 		}
 	}

@@ -4,10 +4,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
-export DATABASE_URL="${DATABASE_URL:-postgres://ilets:ilets@127.0.0.1:55432/ilets?sslmode=disable}"
+VERIFY_COMPOSE_PROJECT="${ILETS_VERIFY_COMPOSE_PROJECT:-ilets-verify}"
+VERIFY_POSTGRES_PORT="${ILETS_VERIFY_POSTGRES_PORT:-55433}"
+export ILETS_POSTGRES_PORT="$VERIFY_POSTGRES_PORT"
+export DATABASE_URL="postgres://ilets:ilets@127.0.0.1:${VERIFY_POSTGRES_PORT}/ilets?sslmode=disable"
+COMPOSE=(docker compose --project-name "$VERIFY_COMPOSE_PROJECT" -f "$ROOT/compose.dev.yml")
 
 cleanup() {
-  docker compose -f "$ROOT/compose.dev.yml" down --volumes >/dev/null 2>&1 || true
+  "${COMPOSE[@]}" down --volumes --remove-orphans >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
@@ -48,11 +52,34 @@ go test ./...
 go build ./cmd/core-api
 
 cd "$ROOT"
-docker compose -f compose.dev.yml up -d --wait postgres
+# Verification owns a dedicated Compose project and always removes any stale
+# resources before startup so migrations cannot accidentally reuse prior state.
+cleanup
+"${COMPOSE[@]}" up -d --wait postgres
 ./tools/db/migrate.sh
 
 cd "$ROOT/services/core-api"
 go run ./cmd/seed
+go run ./cmd/seed
+
+# Reseeding must preserve a later governance decision rather than silently
+# reactivating quarantined content.
+cd "$ROOT"
+"${COMPOSE[@]}" exec -T postgres psql -v ON_ERROR_STOP=1 -U ilets -d ilets -c \
+  "UPDATE content_use_states SET operational_state='QUARANTINED', assignment_eligible=false, updated_at=now() WHERE content_revision_id='reading-bootstrap-classification-001-r1'" >/dev/null
+cd "$ROOT/services/core-api"
+go run ./cmd/seed
+cd "$ROOT"
+seed_state="$("${COMPOSE[@]}" exec -T postgres psql -At -U ilets -d ilets -c \
+  "SELECT operational_state || '|' || assignment_eligible::text FROM content_use_states WHERE content_revision_id='reading-bootstrap-classification-001-r1'")"
+if [[ "$seed_state" != "QUARANTINED|false" ]]; then
+  echo "seed rerun changed quarantined governance state: $seed_state" >&2
+  exit 1
+fi
+"${COMPOSE[@]}" exec -T postgres psql -v ON_ERROR_STOP=1 -U ilets -d ilets -c \
+  "UPDATE content_use_states SET operational_state='ACTIVE', assignment_eligible=true, updated_at=now() WHERE content_revision_id='reading-bootstrap-classification-001-r1'" >/dev/null
+
+cd "$ROOT/services/core-api"
 ILETS_INTEGRATION=1 go test ./...
 
 cd "$ROOT/apps/web"
