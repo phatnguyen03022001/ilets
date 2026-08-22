@@ -98,8 +98,10 @@ Rules:
 The first implementation treats these as mandatory strategic boundaries regardless of whether the first concrete route is local, self-hosted, or external:
 
 1. **Database**;
-2. **AI/model evaluation**;
+2. **AI/model capability used for consequential evaluation, and for bounded generation/validation when those routes are implemented**;
 3. **Identity**.
+
+This does not make runtime content generation mandatory. It means that when AI/model capability is used for evaluation, generation, or validation, provider-specific semantics must not become canonical product/content truth.
 
 Object storage, email, analytics, observability, payments, hosting, and other external capabilities should also remain replaceable where practical, but the three above require explicit exit design from the beginning.
 
@@ -113,6 +115,7 @@ Portability does **not** require a generic multi-provider framework at bootstrap
 | PostgreSQL-compatible structured persistence | Core API | `DEFERRED` | PostgreSQL semantics are selected; local/self-managed/managed deployment remains an implementation choice; migrations, PITR, logical export/restore, provider exit where external |
 | Object storage | Core API | `DEFERRED` | external object storage is needed only when retained/large cross-unit artifacts require it; private references, retention/access policy, large artifacts outside normal JSON state |
 | AI / LLM productive evaluation | Evaluator | `DEFERRED` | evaluator capability is required where productive automation is used, but an external model provider is not pre-required; adapter/portability boundary; output is Observation candidate, never certification |
+| AI / LLM bounded content generation / model-assisted validation | Evaluator | `DEFERRED` | optional supply/validation route only when concrete product demand requires it; candidate content/validation signals are non-authoritative; exact revision/provenance/policy identity preserved; external model use never activates content directly |
 | Speech-to-text / acoustic analysis | Evaluator | `DEFERRED` | capability may be local, part of the selected evaluator route, or external; quality/provenance/uncertainty preserved |
 | Text-to-speech / generated audio | content/media tooling | `DEFERRED` | quality/provenance fit for intended learning role; owned/licensed audio may satisfy demand without TTS |
 | YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | eligible embed/Data API capability path selected; activation still requires applicable live policy/product gates; no assumed arbitrary extraction |
@@ -148,7 +151,7 @@ When an external AI/data processor is used, default processor posture is:
 training/reuse of learner content by processor = prohibited unless explicitly approved
 minimum necessary context                     = required
 raw learner content in analytics               = prohibited
-provider/model provenance                      = required for evaluator observations
+provider/model provenance                      = required for evaluator observations and generated/validated content signals where material
 ```
 
 AI route selection follows:
@@ -201,7 +204,7 @@ Third-party retry must be:
 - tied to one logical work identity;
 - cost-aware after semantic correctness.
 
-Fallback is valid only when a pre-approved route meets the same applicable quality/privacy/security floor. Otherwise the product stays delayed/unavailable or requests re-evidence.
+Fallback is valid only when a pre-approved route meets the same applicable quality/privacy/security floor. Otherwise the product stays delayed/unavailable or requests re-evidence/replacement where appropriate.
 
 # Database/recovery baseline
 
@@ -220,7 +223,7 @@ Cache, broker, analytics store, search index, or vector store cannot become auth
 
 # Queue/broker rule
 
-Asynchronous evaluation does not itself justify a broker.
+Asynchronous evaluation, content generation, or model-assisted validation does not itself justify a broker.
 
 Initial semantic direction:
 
@@ -240,16 +243,16 @@ Keep separate concerns for:
 - service/operational telemetry;
 - privileged/admin audit history;
 - security events;
-- provider/evaluator latency/cost when external routes exist;
+- provider/evaluator/generator/validator latency/cost when external routes exist;
 - learner-visible accepted-work state.
 
 Retention may differ by class. Sensitive payloads/secrets are redacted by default.
 
 # Payments + entitlements
 
-Tiers may differ in volume, optional depth, frequency, or expensive-capability access. They may not change canonical learning truth or silently lower evidence quality for the same claim.
+Tiers may differ in volume, optional depth, frequency, or expensive-capability access. They may not change canonical learning truth or silently lower evidence/content quality for the same intended consequence.
 
-Quota pressure may reduce optional work or delay noninteractive work. It cannot create a lower-quality scoring route unless that route independently passes the same eligibility floor.
+Quota pressure may reduce optional work or delay noninteractive work. It cannot create a lower-quality scoring/content-validation route unless that route independently passes the same applicable eligibility floor.
 
 # Provider failure product behavior
 
@@ -266,6 +269,7 @@ It never becomes:
 - fake learner failure;
 - fake mastery;
 - silent content loss;
+- silent content activation;
 - silent quality downgrade.
 
 # Activation gate
@@ -283,10 +287,10 @@ An external capability/provider may become `ACTIVE` only when the current produc
 - backup/restore implications;
 - fallback/degraded behavior;
 - exit/portability path;
-- evaluator quality/calibration where applicable.
+- evaluator/content-generation/validation quality or calibration where applicable.
 
 # Replacement invariant
 
-Replacing an implementation/provider route must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, practice-mode IDs, or learner identity.
+Replacing an implementation/provider route must not require redefining Skill, Knowledge, Band, Assessment, Progression, feature IDs, practice-mode IDs, content semantic identity/revision rules, or learner identity.
 
-If provider replacement changes canonical learning/product semantics, the provider boundary was incorrectly designed.
+If provider replacement changes canonical learning/product/content semantics, the provider boundary was incorrectly designed.
