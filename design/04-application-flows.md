@@ -410,7 +410,7 @@ canonical learning/product need
         ↓
 ContentDemand
         ↓
-query eligible accepted pool
+query eligible content pool
         ↓
 sufficient content for required target/context/difficulty/diversity?
     ├─ yes → reuse eligible revision
@@ -472,7 +472,7 @@ Do not collapse validation state, release eligibility, and operational safety in
 
 Operational actors may inspect provenance/validation, quarantine or stop new assignment, request regeneration/replacement, retire content, and resolve reports according to authorization. They are operators, not learning/Assessment authorities.
 
-No ordinary admin action may bypass a known applicable hard failure such as:
+No authorized operator/admin action, regardless of role level, may bypass a known applicable hard failure such as:
 
 - invalid canonical reference or incompatible IELTS family/context/presentation binding;
 - known incorrect answer key/rubric/model where required;
