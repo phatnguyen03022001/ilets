@@ -174,11 +174,11 @@ delivery condition where readiness-relevant
 stimulus/source
 response conditions
 scaffolding/exposure state
-primary_activity_purpose    TRAINING | DIAGNOSTIC | READINESS
+primary_activity_purpose    TRAINING | DIAGNOSTIC | ASSESSMENT | READINESS
 evidence_candidacy          NOT_EVIDENCE_CANDIDATE | ASSESSMENT_MAY_ADMIT
 ```
 
-Primary purpose and evidence candidacy are orthogonal. `ASSESSMENT_MAY_ADMIT` is pre-attempt candidacy only; actual EvidenceFact admission remains an Assessment result after real assistance/exposure/evaluator/provenance conditions are known.
+Primary purpose and evidence candidacy are orthogonal. `ASSESSMENT` means focused measurement/re-measurement is the product purpose; it still does not admit evidence by itself. `ASSESSMENT_MAY_ADMIT` is pre-attempt candidacy only; actual EvidenceFact admission remains an Assessment result after real assistance/exposure/evaluator/provenance conditions are known.
 
 Evidence candidacy is part of the immutable activity/item configuration for an attempt. The client, evaluator, ranker, or Core API may not retroactively switch `NOT_EVIDENCE_CANDIDATE` to `ASSESSMENT_MAY_ADMIT` because the observed result is favorable.
 
