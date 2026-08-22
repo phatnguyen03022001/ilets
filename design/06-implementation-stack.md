@@ -140,7 +140,7 @@ accepted result
 required downstream semantic continuation materialized or recoverable
 ```
 
-Required continuation is durably registered with or recoverably derivable from committed state before acknowledgement depends on it. Observing pending work is not dispatch ownership: where duplicate execution is not deliberately allowed, one execution attempt is decisively claimed/fenced under authoritative state or an equivalent serialization invariant before dispatch. Timeout does not prove remote non-execution. Retry/reconciliation reuses logical work/idempotency identity and preserves distinct execution-attempt/fencing state where overlapping executions are possible.
+Required continuation is durably registered with or recoverably derivable from committed state before acknowledgement depends on it. Observing pending work is not dispatch ownership: where duplicate execution is not deliberately allowed, one execution attempt is decisively claimed/fenced under authoritative state or an equivalent serialization invariant before dispatch. The decisive claim also enforces current execution/data-egress eligibility where cancellation, deletion/tombstone, quarantine, rights, or privacy state can prohibit dispatch. Claim ownership itself is recoverable: worker loss cannot permanently strand logical work, and an uncertain post-claim dispatch is reconciled as an ambiguous remote outcome rather than blindly redriven. Timeout does not prove remote non-execution. Retry/reconciliation reuses logical work/idempotency identity and preserves distinct execution-attempt/fencing state where overlapping executions are possible.
 
 An accepted capability completion that requires Observation/Assessment/Progression or another semantic continuation cannot be marked as a permanently self-contained success unless the required downstream state is already committed or is deterministically/recoverably derivable from durable accepted-result state. Replay/reconstruction is idempotent.
 
@@ -325,7 +325,7 @@ Review classes are:
 When applicable:
 
 - bounded deadlines/input/concurrency/backpressure and safe retry/idempotency;
-- transaction ownership, commit-before-success, durable async recoverability, exclusive execution-attempt claiming where required, accepted-result/downstream-continuation recovery, stale-write/ambiguous-outcome handling;
+- transaction ownership, commit-before-success, durable async recoverability, decisive assignment eligibility under concurrency, exclusive/recoverable execution-attempt claiming where required, accepted-result/downstream-continuation recovery, stale-write/ambiguous-outcome handling;
 - parameterized SQL, bounded DB connections, migrations/schema compatibility when schema exists;
 - auth/access boundaries, least privilege, secrets, production transport protection, browser/session controls, safe external-boundary enforcement;
 - structured logs/correlation, health, running build/contract identity, dependency locking/reproducibility;
@@ -413,9 +413,9 @@ Owns learner/admin `/v1`, authoritative product DB access, durable learner/targe
 - transaction boundaries align to product invariants and required durable work/audit markers;
 - decisive idempotency admission/replay association is atomic with the authoritative mutation/outcome it protects, or enforced by an equivalent serialization invariant; preflight lookup alone is insufficient;
 - decisive optimistic-concurrency comparison is atomic with the guarded mutation; application-memory read/compare followed by an unrelated write is insufficient;
-- assignment from a plan/reference rechecks current mutable hard eligibility before assignment and preserves assignment-time content/eligibility provenance separately from plan-time provenance;
+- decisive assignment revalidates every mutable authoritative hard gate that can concurrently invalidate that assignment and couples the check to reservation/assignment through a transaction, conditional write, or equivalent serialization invariant; a stale-plan/current-state preflight alone is insufficient;
 - learner-specific reservation/assignment state used to protect novelty/independence is serialized with its decisive eligibility/assignment decision as required by `04-application-flows.md`;
-- where duplicate execution is not intentionally allowed, one execution attempt is authoritatively claimed/fenced before dispatch; reading pending state is not sufficient ownership;
+- where duplicate execution is not intentionally allowed, one execution attempt is authoritatively claimed/fenced before dispatch; the claim enforces current dispatch/data-egress eligibility where material and remains recoverable after claimant loss rather than permanently consuming logical work;
 - async completion acceptance is guarded by authoritative logical-work/current execution/deletion/content-eligibility fencing so duplicate, superseded, or now-ineligible result delivery cannot create a second or resurrected learner outcome;
 - accepted capability results that require downstream semantics commit the needed semantic artifacts atomically or persist enough authoritative/recoverable continuation state for deterministic idempotent reconstruction; upstream completion cannot permanently strand missing Observation/EvidenceFact/Progression state;
 - provider/network calls are outside DB atomicity;
@@ -544,14 +544,14 @@ Implement `04-application-flows.md` without assuming broker infrastructure:
 ```text
 authoritative DB logical-work state
 + durable work/recoverable registration where needed
-+ decisive execution-attempt claim/fence
++ decisive current-eligible execution-attempt claim/fence
 + bounded dispatch
 + fenced result reconciliation against current eligibility/deletion state
 + durable accepted-result/downstream continuation recovery
 + SSE/resource status
 ```
 
-Race-sensitive operations use transaction/conditional-write/equivalent serialization controls rather than timing or preflight assumptions. Multiple workers observing pending state cannot silently double-own one exclusive execution attempt. Intentional replacement/speculative executions use distinct identities/fences. Async retries preserve execution identity/fencing where overlap is possible, novelty-sensitive reservations are reconciled separately from actual ExposureContext, and stale DailyPlan references are rechecked against current eligibility before assignment. Cross-process correctness does not rely on in-memory mutexes alone. Memory use is bounded for requests, media, queues, caches, and external outputs.
+Race-sensitive operations use transaction/conditional-write/equivalent serialization controls rather than timing or preflight assumptions. Assignment-time mutable hard gates are protected with the decisive assignment rather than checked in an unrelated earlier read. Multiple workers observing pending state cannot silently double-own one exclusive execution attempt; claimant loss is recoverable, and a possibly dispatched remote execution remains ambiguous until reconciled safely rather than being blindly redriven. Intentional replacement/speculative executions use distinct identities/fences. Async retries preserve execution identity/fencing where overlap is possible, novelty-sensitive reservations are reconciled separately from actual ExposureContext, and stale DailyPlan references are rechecked against current eligibility before assignment. Cross-process correctness does not rely on in-memory mutexes alone. Memory use is bounded for requests, media, queues, caches, and external outputs.
 
 # Security engineering baseline
 
@@ -583,7 +583,7 @@ Before applicable support promotion:
 - backup/restore is verified for authoritative/retained consequential data;
 - migration/deploy failure has rollback or forward-recovery procedure;
 - network/provider ambiguity stays pending/unresolved until safely reconciled;
-- execution claiming prevents accidental duplicate dispatch when exclusive execution is required;
+- execution claiming prevents accidental duplicate dispatch when exclusive execution is required and claimant failure remains recoverable without unsafe blind redrive;
 - accepted-result recovery prevents crashes from permanently stranding required downstream semantic state;
 - capacity/backpressure prevents unbounded queues/concurrency;
 - measurable latency/throughput/backlog/cost objectives exist for the intended release without architecture inventing numeric thresholds;
@@ -637,13 +637,14 @@ race tests where material
 build core-api
 DB/migration/query integration once persistence exists
 atomic idempotency + optimistic-concurrency race tests where material
-stale-plan → current quarantine/eligibility assignment tests where material
-exclusive execution-attempt claim / duplicate-dispatch race tests where material
+stale-plan/current-eligibility assignment + concurrent quarantine/revocation race tests where material
+exclusive execution-attempt claim / duplicate-dispatch + claimant-crash/ambiguous-dispatch recovery tests where material
+pre-dispatch deletion/quarantine/rights eligibility prevents prohibited execution/egress where material
 async duplicate/late/superseded/deletion-fenced completion reconciliation tests where material
 crash after accepted completion → idempotent downstream continuation recovery tests where material
 novelty reservation/assignment race + exposure reconciliation tests where material
 content quarantine before/after submission + affected evidence consequence tests where material
-ValidationDecision revalidation-history and content-validation burden tests where material
+ValidationDecision scope/policy selection, revalidation-history, and content-validation burden tests where material
 duplicate downstream semantic replay tests where material
 ```
 
@@ -672,7 +673,7 @@ learner/public hidden-content projection/reveal conformance
 cross-unit integration
 ```
 
-Boundary verification also exercises auth/access ordering, forbidden bypasses, internal evaluator reachability/auth according to actual principals/reachability, durable async registration/claiming/recovery/fencing, stale-plan assignment recheck, content-incident in-flight consequences, ValidationDecision history plus universal/consequence-specific content validation, DB ownership, SSE access/isolation/non-completion semantics, deletion/tombstone reconciliation against restore and late callbacks, security-critical config failure, fixture data/rights constraints, and privacy-safe observability.
+Boundary verification also exercises auth/access ordering, forbidden bypasses, internal evaluator reachability/auth according to actual principals/reachability, durable async registration/current-eligible claiming/claim-loss recovery/fencing, decisive assignment under concurrent eligibility change, content-incident in-flight consequences, ValidationDecision history/scope plus universal/consequence-specific content validation, DB ownership, SSE access/isolation/non-completion semantics, deletion/tombstone reconciliation before dispatch and against restore/late callbacks, security-critical config failure, fixture data/rights constraints, and privacy-safe observability.
 
 # Root verification
 
