@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: initial deployable-unit allocation, primary-language/framework assignment, runtime responsibility split, cross-language contract strategy, and native verification baseline
+OWNS: initial deployable-unit allocation, primary-language/framework assignment, runtime responsibility split, cross-language contract strategy, canonical-registry materialization strategy, and repository/native verification contract
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
-DOES_NOT_OWN: learning/product truth, exact dependency patch versions, cloud/provider choice, database schema, deployment topology, evaluator model vendor, or package-manager lock state
+DOES_NOT_OWN: learning/product truth, parser/materializer implementation, registry serialization or codegen-library choice, CI platform configuration, exact dependency patch versions, cloud/provider choice, database schema, deployment topology, evaluator model vendor, or package-manager lock state
 
 # Implementation Stack
 
@@ -247,6 +247,39 @@ Create event contracts only when an actual asynchronous cross-unit boundary exis
 
 Canonical Skill, Knowledge, Practice, Assessment, feature, practice-mode, learner-state identifiers, and exact content revision references cross boundaries unchanged unless a deliberate presentation translation is explicitly defined.
 
+# Canonical registry materialization
+
+Shared canonical identities consumed by implementation are materialized through a derived pipeline rather than copied independently into each runtime:
+
+```text
+canonical Markdown owners
+        ↓
+repository materializer / validator
+        ↓
+derived machine-readable registry
+        ↓
+generated or validated Go / TypeScript / Python consumers
+```
+
+Invariants:
+
+1. the canonical Markdown owner remains semantic authority;
+2. a machine-readable registry is derived implementation material, not another SSOT;
+3. generated language bindings, constants, and models are derived artifacts;
+4. equivalent canonical enum/ID registries must not be maintained manually and independently in Go, TypeScript, and Python;
+5. duplicate canonical IDs fail repository verification;
+6. broken canonical references fail repository verification;
+7. generated-registry or generated-binding drift fails repository verification where those artifacts are materialized;
+8. derived artifacts preserve sufficient source/provenance identity to trace values back to the canonical owner and source revision;
+9. stable canonical IDs remain unchanged across language and machine boundaries;
+10. materialization may be incremental: an initial vertical slice need materialize only the canonical registries it actually consumes;
+11. Markdown parsing, generated registries, and generated code never acquire learning/product semantic authority merely because runtimes consume them;
+12. a parser/materializer/tooling defect must fail verification or leave the affected materialization unresolved; tooling may not silently reinterpret or rewrite canonical meaning.
+
+This architecture does not freeze the materializer language, parser implementation, serialization format, generated-registry file format, generator/codegen library, or a requirement to materialize the complete ontology on day one.
+
+Materialization of canonical registries and materialization of cross-unit machine contracts are related but distinct: registries derive stable canonical identities, while `contracts/` owns exact interface shape for genuine machine boundaries.
+
 # Async-work baseline
 
 Do not pre-authorize Kafka, Redis Streams, a workflow engine, or another broker merely because evaluation, generation, or validation can be asynchronous.
@@ -328,18 +361,29 @@ backward-compatibility checks where deployed contracts require them
 
 # Root verification
 
-The repository must expose one canonical root verification entrypoint once implementation exists:
+The repository uses one root verification contract for local and automated verification. Checks may be absent while the corresponding unit/materialized artifact does not yet exist; once a unit, registry, contract, or cross-unit boundary is materialized, its applicable checks enter this same root contract.
+
+Conceptually:
 
 ```text
 verify
-  ├── web
-  ├── core-api
-  ├── evaluator
-  ├── contracts
-  └── cross-unit integration
+  ├── repository/canonical
+  │     ├── canonical metadata
+  │     ├── semantic dependency/reference integrity
+  │     ├── canonical ID uniqueness
+  │     └── generated registry/binding drift where materialized
+  ├── contracts where materialized
+  ├── web where materialized
+  ├── core-api where materialized
+  ├── evaluator where materialized
+  └── cross-unit integration where materialized
 ```
 
-A cross-stack change is not PASS because only one ecosystem is green.
+Repository/canonical verification proves structural/reference consistency and derived-artifact agreement; it does not turn tooling or generated files into canonical semantic owners.
+
+CI invokes this same root verification contract. CI may provide an execution environment, triggers, or reporting, but it must not become a separate hidden definition of repository correctness. Local verification and CI must agree on what constitutes PASS for the same repository state.
+
+A cross-stack change is not PASS because only one affected ecosystem is green.
 
 # Framework-change rule
 
