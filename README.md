@@ -76,9 +76,28 @@ Use these owners by responsibility:
 - media/YouTube product semantics → `design/03-media-youtube.md`;
 - planner/system flows and runtime lifecycle → `design/04-application-flows.md`;
 - API resource/operation semantics → `design/05-api.md`;
-- deployables, languages, frameworks, verification → `design/06-implementation-stack.md`;
+- deployables, languages, frameworks, canonical materialization, verification → `design/06-implementation-stack.md`;
 - external provider boundaries → `design/07-third-party-services.md`;
 - current coverage/support declarations and gates → `design/08-coverage-and-support.md`.
+
+## Implementation navigation
+
+Before implementing a bounded slice:
+
+1. read `CONSTITUTION.md` and `OBJECTIVE.md`;
+2. read the relevant `spec/` semantic owners;
+3. read the relevant `design/` product/runtime owners;
+4. read `design/05-api.md` before materializing a shared HTTP boundary;
+5. read `design/06-implementation-stack.md` for runtime ownership, canonical-registry materialization, and repository verification rules;
+6. read `design/08-coverage-and-support.md` before making an implementation-readiness, coverage, or product-support claim.
+
+Navigation warnings:
+
+- `MODELLED` does not mean implementation-ready or `COVERED`;
+- do not independently hand-author equivalent DTO/schema truth across parallel runtimes before the exact machine contract exists;
+- generated registries/bindings are derived artifacts, not canonical authority.
+
+The detailed rules remain owned by the referenced canonical documents; this section only points to them.
 
 ## Supporting and historical material
 
