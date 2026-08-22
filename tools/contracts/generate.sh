@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# This local command is the only generation procedure; CI may invoke it but does not own generated truth.
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT/services/core-api"
 go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.8.0 \
