@@ -31,6 +31,34 @@ tools/
 
 Do not create another deployable merely because a product feature has a distinct name.
 
+# Reuse-first implementation invariant
+
+Before adding a package, service, external call, generated artifact class, or infrastructure subsystem, implementation must first determine whether the requirement can be satisfied by an existing canonical semantic, runtime owner, contract, content asset, standard-library/framework capability, or already-approved provider route.
+
+Preferred execution order when the resulting semantics/quality are equivalent:
+
+```text
+existing canonical/runtime/content capability
+        ↓
+deterministic or local first-party execution
+        ↓
+existing eligible external-provider capability
+        ↓
+new external provider or infrastructure only for a demonstrated gap
+```
+
+Rules:
+
+1. deterministic scoring/validation remains deterministic; do not call AI to replace an available exact rule;
+2. browser/native/framework capabilities should be reused for presentation/capture/local interaction before introducing a duplicate backend capability when ownership remains correct;
+3. derived work may be cached/reused by stable input + policy/model/version identity when doing so preserves correctness, privacy, freshness, and auditability;
+4. retries/repeated requests reuse logical work identity and prior valid results where applicable instead of duplicating provider work/cost;
+5. expensive noninteractive work may be delayed, batched, or omitted when optional; cost pressure must not silently lower evidence/quality standards;
+6. do not pre-generate infrastructure, content quantity, or AI output merely because a taxonomy exists; concrete demand comes from actual product/content coverage requirements;
+7. optimization must not move semantic authority into caches, generated files, model prompts, or provider output.
+
+This is an implementation-economy rule, not permission to bypass required content diversity, calibration, reliability, or support gates.
+
 # Version policy
 
 Architecture freezes compatibility families and responsibilities, not volatile patch numbers.
