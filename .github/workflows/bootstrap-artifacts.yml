@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 jobs:
   generate:
@@ -44,3 +45,21 @@ jobs:
             services/core-api/go.mod
             services/core-api/go.sum
             services/core-api/internal/httpapi/generated/public_v1.gen.go
+      - name: Publish generation status locator
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATE: ${{ job.status }}
+        run: |
+          case "$STATE" in
+            success) STATE=success ;;
+            cancelled) STATE=error ;;
+            *) STATE=failure ;;
+          esac
+          curl --fail-with-body -sS \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
+            -d "{\"state\":\"${STATE}\",\"context\":\"bootstrap/generate\",\"description\":\"local generator executed on hosted runner\",\"target_url\":\"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
