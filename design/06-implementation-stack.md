@@ -31,6 +31,8 @@ tools/
 
 Do not create another deployable merely because a product feature has a distinct name.
 
+These are ownership/process boundaries, not a requirement for three separately billed infrastructure stacks. Initial deployment may co-locate runnable units on the same host/platform when isolation, scaling, security, failure, and runtime constraints remain satisfied. Split infrastructure only when a demonstrated requirement justifies the added operational cost.
+
 # Reuse-first implementation invariant
 
 Before adding a package, service, external call, generated artifact class, or infrastructure subsystem, implementation must first determine whether the requirement can be satisfied by an existing canonical semantic, runtime owner, contract, content asset, standard-library/framework capability, or already-approved provider route.
