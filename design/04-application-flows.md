@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, runtime execution/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
 DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
@@ -7,7 +7,7 @@ DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identi
 
 ## Purpose
 
-Define how major product interactions traverse runtime boundaries without assigning learning authority to transport, UI, evaluator, ranker, content generator, or third-party infrastructure.
+Define how major product interactions traverse runtime boundaries without assigning learning authority to transport, UI, evaluator, ranker, content generator, deployment topology, or third-party infrastructure.
 
 # Logical runtime units
 
@@ -40,46 +40,72 @@ Web
 
 The evaluator does not certify Band, mutate learner progression, declare product coverage, activate content, or choose the final next action.
 
+Logical ownership survives deployment co-location. Running Web, Core API, and Evaluator on one machine/platform does not authorize browser→Python bypass, Python mutation of Core-owned durable state, hidden shared-memory product state, or omission of the declared machine boundary between independently owned runtime units.
+
 # Runtime execution patterns
 
 These patterns define legal end-to-end execution behavior. Exact HTTP fields/status mappings belong to `05-api.md` and future machine contracts; exact persistence technology belongs to implementation stack/deployment decisions.
 
+For protected operations, safe bounded transport framing and credential extraction necessarily begin before identity is known. Protected-resource-sensitive processing then follows the access boundary. A public anonymous operation may omit authentication/authorization steps where its contract permits it.
+
 ## A. Authoritative durable mutation
 
 ```text
-caller / product action
+bounded transport framing / credential extraction
         ↓
-structural + semantic validation / preconditions
+authentication where required
         ↓
-authentication + authorization/capability where applicable
+authorization / capability / access filtering where required
+        ↓
+structural contract validation
+        ↓
+resource-sensitive semantic preconditions
         ↓
 idempotency + concurrency protection where applicable
         ↓
 authoritative transaction
+  ├─ product/state mutation
+  └─ required durable pending-work/outbox/recoverable marker where applicable
         ↓
 COMMIT
         ↓
-register/dispatch downstream side effects or work
+post-commit dispatch / downstream invocation where applicable
         ↓
-acknowledge success
+response / success acknowledgement
 ```
 
-A learner/product success acknowledgement must not precede the authoritative durable commit it claims succeeded. A later side effect may remain pending after the commit when the semantic operation is explicitly asynchronous, but accepted authoritative work must not disappear because a downstream provider is unavailable.
+Do not perform protected-resource-sensitive semantic processing before the applicable access boundary when doing so could leak protected existence or data.
+
+A learner/product success acknowledgement must not precede the authoritative durable commit it claims succeeded. When downstream asynchronous work is **required** to continue or reconcile the committed semantic operation, one durable discoverable work identity/marker must be established atomically with the authoritative state, or the required work must be deterministically and recoverably derivable from that committed state, before the acknowledgement can depend on it.
+
+Dispatch itself does not execute inside the database transaction. A crash after commit but before dispatch must leave enough durable state for later recovery/dispatch. Optional non-semantic notifications may be best-effort when losing them does not lose required product work or semantic reconciliation.
 
 ## B. Asynchronous accepted work
 
+Learner/admin-initiated asynchronous work composes the same access and validation boundary as other protected mutations before acceptance:
+
 ```text
-request
+bounded transport framing / credential extraction
   ↓
-validate + establish one logical work identity
+authentication where required
   ↓
-persist authoritative pending/work state
+authorization / capability / access filtering where required
+  ↓
+structural validation
+  ↓
+semantic preconditions
+  ↓
+establish one logical work identity
+  ↓
+authoritative transaction
+  ├─ persist accepted product mutation/work state
+  └─ persist durable pending-work/outbox/recoverable marker
   ↓
 COMMIT
   ↓
 acknowledge accepted/pending
   ↓
-bounded asynchronous execution
+bounded asynchronous dispatch/execution
   ↓
 bounded eligible retry/backoff
   ↓
@@ -88,8 +114,11 @@ persist result / unavailable / unresolved failure state
 SSE update hint and/or resource refresh
 ```
 
+Provider webhooks use their own provider-authentication/replay semantics rather than learner/admin authentication, but still require validation and authoritative association before mutation.
+
 Rules:
 
+- an HTTP request being sent or a provider invocation being attempted is not durable work acceptance;
 - retry preserves one logical work identity and cannot duplicate accepted learner work, EvidenceFacts, content revisions, or paid/provider work;
 - retry eligibility distinguishes transient, permanent, and ambiguous outcomes;
 - exponential backoff and jitter are used where repeated immediate retry would worsen a transient route; exact budgets/counts remain implementation policy;
@@ -115,29 +144,31 @@ Core API validates contract + work identity
 Assessment / content / product policy interprets the result
 ```
 
-HTTP/network success from Python establishes only that a bounded capability response arrived. It does not make evaluator/generator/validator output authoritative learner evidence, certification, content activation, or product support.
+HTTP/network success from Python establishes only that a bounded capability response arrived. It does not make evaluator/generator/validator output authoritative learner evidence, certification, content activation, or product support. Evaluator execution must not mutate Core-API-owned product persistence directly.
 
 Every network/provider boundary declares a caller deadline, retry eligibility/classification, idempotency behavior, safe fallback, and capacity/backpressure behavior when material. A separate circuit-breaker product is not required at bootstrap; circuit-breaker behavior may be introduced for repeatedly failing external routes when measured need justifies it.
 
 ## D. Privileged operational mutation
 
 ```text
+bounded transport framing / credential extraction
+        ↓
 authenticated identity
         ↓
-applicable privileged capability
+applicable privileged capability / access boundary
         ↓
-current state + preconditions
+structural contract validation
         ↓
-legal operational mutation
+current state + semantic preconditions
         ↓
-durable privileged audit
+legal operational mutation + required durable audit/work marker
         ↓
 COMMIT
         ↓
-response
+response / post-commit dispatch
 ```
 
-Capability remains distinct from learning authority, Assessment/evidence authority, validation-bypass authority, and historical ContentRevision mutation authority.
+Capability remains distinct from identity, role label, learning authority, Assessment/evidence authority, validation-bypass authority, and historical ContentRevision mutation authority. Consequential privileged operations require durable reconstructable audit; admin UI never bypasses Core API to mutate storage/provider state directly.
 
 ## E. Event/status propagation
 
@@ -160,6 +191,7 @@ Scheduled, cron-like, batch, maintenance, or background work is allowed when a r
 When used:
 
 - duplicate-sensitive execution has one logical work identity;
+- required work is durably registered/recoverably discoverable before another committed operation relies on it;
 - execution is bounded and observable;
 - retries are safe/idempotent or are not performed;
 - current/last outcome remains inspectable where operationally material;
@@ -185,6 +217,20 @@ When asynchronous/provider demand exceeds safe execution capacity:
 - wall-clock timestamps may support audit/recency but do not by themselves establish global causal ordering, idempotency identity, or concurrency correctness;
 - event/derived/provider state may lag authoritative Core-API state and must expose pending/stale/unavailable semantics honestly;
 - distributed locks, leader election, Saga orchestration, or other distributed coordination are introduced only when an actual invariant spans multiple independent authorities and simpler single-owner transaction/work semantics cannot satisfy it.
+
+# Failure-domain containment
+
+Expected containment does not promise infrastructure that has not been selected:
+
+- browser/client failure does not erase work already committed by Core API;
+- SSE failure is recoverable through authoritative resource reads;
+- Python/Evaluator failure leaves Go authoritative and productive evaluation pending/unavailable/invalid-at-capability-scope as appropriate, never converted to learner weakness;
+- external-provider failure produces bounded degradation or unresolved work state and cannot authorize a lower-quality fallback;
+- database failure before commit produces no durable-success acknowledgement;
+- ambiguous database/network outcome is reconciled with authoritative idempotency/work identity before retry can create another logical operation;
+- cache failure falls back to authoritative state where operationally feasible and never changes truth;
+- telemetry failure cannot rewrite business truth; only an explicitly required security/audit invariant may make absence of required durable audit block a consequential operation;
+- co-located process failure does not permit another unit to seize or mutate that unit's semantic authority through undocumented in-memory coupling.
 
 # Planner decision contract
 
@@ -398,11 +444,15 @@ Submission/retry is idempotent where network repetition could duplicate history 
 ```text
 Web submits work
   ↓
-Core API persists authoritative Attempt/work state
+Core API applies auth/access + structural validation + semantic preconditions
+  ↓
+authoritative transaction
+  ├─ persist Attempt/submission state
+  └─ persist evaluation work identity + pending/recoverable dispatch marker
   ↓ COMMIT
 ACK accepted/pending
   ↓
-Evaluator executes bounded work
+bounded dispatch / Evaluator execution
   ↓
 criterion observations + provenance + uncertainty
   ↓
@@ -419,7 +469,7 @@ Web receives status/result via SSE or resource refresh
 
 Rules:
 
-- accepted learner work is durable before learner-visible acceptance;
+- accepted learner work and required evaluation continuation are durably discoverable before learner-visible acceptance;
 - pending/unavailable are valid non-score states;
 - timeout/provider failure never becomes a low learner score;
 - retries preserve one logical work/evaluation identity and provenance;
@@ -489,9 +539,9 @@ One Review screen may present these together; backend meaning remains distinct.
 
 ```text
 1. learner supplies source URL/reference
-2. Core API resolves provider metadata and source eligibility
+2. Core API treats it as untrusted reference and resolves provider metadata/source eligibility through the allowed media boundary
 3. rights/transcript state is established
-4. authorized text may be sent to Evaluator
+4. authorized/minimum necessary text may be sent to Evaluator
 5. Evaluator proposes segments/targets/difficulty/prompts
 6. Core API validates rights + canonical target + practice mapping
 7. resulting content is admitted only through the applicable content validation/revision path
@@ -499,7 +549,7 @@ One Review screen may present these together; backend meaning remains distinct.
 9. later attempts use the normal Practice/Attempt path
 ```
 
-Evaluator access never implies authorization to download/copy arbitrary media. Generated media-derived prompts do not bypass content quality or revision semantics.
+Evaluator access never implies authorization to download/copy arbitrary media. Learner/provider URLs do not imply arbitrary network access or scraping. Generated media-derived prompts do not bypass content quality or revision semantics.
 
 # Flow I — mock/readiness
 
@@ -758,7 +808,9 @@ Immediate deterministic work may return synchronously.
 Long work uses the semantic pattern:
 
 ```text
-submit → accepted/pending
+submit → durable accepted/pending state
+             ↓
+       async dispatch/work
              ↓
        SSE status/result
 ```
@@ -767,7 +819,7 @@ Polling/resource refresh remains fallback. Persistent truth remains queryable in
 
 # Failure semantics
 
-Keep these distinct where applicable:
+Keep domain/operational outcomes distinct where applicable, including:
 
 ```text
 invalid_attempt
@@ -782,7 +834,9 @@ target_not_supported
 product_coverage_blocked
 ```
 
-Content generation/validation/assignment failures should likewise remain domain/operational states rather than fake learner failure; exact public/internal error codes belong to `05-api.md` and machine contracts when materialized.
+These labels do not imply one transport-error category. Pending, evidence states, target/product support outcomes, and content assignment outcomes can be valid domain results; transport/operation failure classification belongs to `05-api.md` and future machine contracts.
+
+Content generation/validation/assignment failures should likewise remain domain/operational states rather than fake learner failure.
 
 Infrastructure failure is never represented as score zero or generic learner failure. An unresolved target field should use target-resolution semantics rather than pretending the product rejected a fully specified target.
 
