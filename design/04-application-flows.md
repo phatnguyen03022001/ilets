@@ -214,7 +214,7 @@ Swap/Skip/Shorten/Change-skill actions operate within eligible choices. They do 
 9. Web presents outcome without fabricating a micro Band change
 ```
 
-Primary purpose (`TRAINING`, `DIAGNOSTIC`, or `READINESS`) does not determine evidence admission. Assessment may reject a candidate Observation after seeing actual assistance/exposure/evaluator/provenance conditions; a favorable result cannot retroactively upgrade a non-candidate activity.
+Primary purpose (`TRAINING`, `DIAGNOSTIC`, `ASSESSMENT`, or `READINESS`) does not determine evidence admission. `ASSESSMENT` means focused measurement is the activity purpose; it does not mean the resulting Observation is already admitted. Assessment may reject a candidate Observation after seeing actual assistance/exposure/evaluator/provenance conditions; a favorable result cannot retroactively upgrade a non-candidate activity.
 
 Submission/retry is idempotent where network repetition could duplicate history or cost.
 
