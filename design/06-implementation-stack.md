@@ -111,6 +111,7 @@ Next.js App Router
 - deterministic IELTS scoring policy;
 - evidence sufficiency;
 - canonical gap/action rules;
+- content validation/activation authority;
 - productive evaluator algorithms;
 - handwritten DTO truth independent of machine contracts.
 
@@ -118,7 +119,7 @@ Next.js App Router
 
 Transient interaction may live client-side. Durable learner/product truth remains server/resource state.
 
-A global client store must not become a second Learner/Target/Progression authority.
+A global client store must not become a second Learner/Target/Progression/content authority.
 
 # Go — Core API + deterministic orchestration
 
@@ -138,13 +139,18 @@ chi/v5
 
 ## Owns
 
-- learner-facing `/v1` API;
+- learner/admin-facing `/v1` API;
 - auth/authorization integration boundary;
 - durable LearnerProfile/TargetProfile product state;
+- durable content identity/revision metadata and release/assignment/operational state;
 - DailyPlan/LearningSession orchestration;
 - PracticeActivity creation;
 - Attempt intake/lifecycle;
 - deterministic Listening/Reading scoring;
+- deterministic content/reference/answer/structural validation where exact rules apply;
+- applicable content-validation policy aggregation over deterministic and bounded validator signals;
+- content demand, eligible-pool reuse, learner assignment, quarantine/retirement/revalidation orchestration;
+- content generation/validation work orchestration and retry state when those capabilities are implemented;
 - Assessment policy execution over canonical/materialized rules;
 - Progression execution;
 - Planner eligibility/ranking orchestration;
@@ -156,6 +162,7 @@ chi/v5
 
 ## Does not own
 
+- learning/content semantic truth defined by canonical owners;
 - AI rubric judgment;
 - speech/audio feature extraction;
 - LLM analysis/generation internals;
@@ -187,16 +194,18 @@ uv or equivalent project/environment tooling chosen consistently
 - validated pronunciation/fluency/acoustic feature extraction;
 - bounded text analysis supporting Feedback/ErrorPattern candidates;
 - bounded AI-generated feedback/content candidates;
+- bounded content-validation analysis/signals where deterministic checks are insufficient and the capability is explicitly invoked;
 - authorized transcript/media analysis;
-- evaluator/model provenance and uncertainty output.
+- evaluator/model/generator/validator provenance and uncertainty output.
 
 ## Does not own
 
+- content release activation, assignment eligibility, or authoritative revision mutation;
 - certification;
 - Band advancement;
 - final evidence sufficiency;
 - DailyPlan selection;
-- public user API;
+- public user/admin API;
 - auth/session state;
 - arbitrary external-media extraction.
 
@@ -206,11 +215,11 @@ uv or equivalent project/environment tooling chosen consistently
 Browser
   ↓
 Go Core API
-  ↓ internal contract
+  ↓ internal contract where needed
 Python Evaluator
 ```
 
-Python is a bounded internal capability, not a second learner-facing backend.
+Python is a bounded internal capability, not a second learner-facing backend or content authority.
 
 # Contract strategy
 
@@ -224,7 +233,7 @@ Typical structure:
 contracts/http/openapi.yaml
 ```
 
-Public and internal evaluator surfaces may be split if useful, but each boundary has one exact machine authority.
+Public and internal evaluator/content-capability surfaces may be split if useful, but each boundary has one exact machine authority.
 
 Generated clients/server bindings/validators are derived artifacts.
 
@@ -236,18 +245,18 @@ Create event contracts only when an actual asynchronous cross-unit boundary exis
 
 ## Stable identities
 
-Canonical Skill, Knowledge, Practice, Assessment, feature, practice-mode, and learner-state identifiers cross boundaries unchanged unless a deliberate presentation translation is explicitly defined.
+Canonical Skill, Knowledge, Practice, Assessment, feature, practice-mode, learner-state identifiers, and exact content revision references cross boundaries unchanged unless a deliberate presentation translation is explicitly defined.
 
 # Async-work baseline
 
-Do not pre-authorize Kafka, Redis Streams, a workflow engine, or another broker merely because evaluation is asynchronous.
+Do not pre-authorize Kafka, Redis Streams, a workflow engine, or another broker merely because evaluation, generation, or validation can be asynchronous.
 
 Initial semantic baseline:
 
-1. Core API persists authoritative Attempt/evaluation-work lifecycle;
-2. evaluation work is idempotent by stable identity;
-3. Core API invokes Evaluator through the internal contract;
-4. retry preserves work/Attempt identity and cannot double-count evidence/cost;
+1. Core API persists authoritative Attempt/content-work/evaluation-work lifecycle and operational state it owns;
+2. expensive/provider-backed work is idempotent by stable logical identity;
+3. Core API invokes Evaluator/content capability through the internal contract only when needed;
+4. retry preserves logical work/Attempt/content-revision identity and cannot double-count evidence or duplicate accepted provider cost/work;
 5. dedicated dispatch infrastructure is introduced only after measured reliability/throughput need.
 
 # Persistence boundary
@@ -257,8 +266,9 @@ Final database provider/schema is not owned here.
 Implementation invariants:
 
 - one durable product fact has one runtime owner;
-- Evaluator does not mutate Core-API-owned learner/progression storage directly;
-- large audio/media uses explicit object references rather than opaque large JSON state;
+- Evaluator does not mutate Core-API-owned learner/progression/content operational storage directly;
+- historical Attempts pin the exact content revision they used;
+- large audio/media/content artifacts use explicit object references rather than opaque large JSON state where appropriate;
 - storage schema is derived implementation, not domain authority.
 
 # Native verification baseline
@@ -312,7 +322,7 @@ At minimum once contracts exist:
 schema validation
 generated-artifact drift check
 consumer/provider conformance
-public API → evaluator integration tests
+public API → evaluator/content-capability integration tests where implemented
 backward-compatibility checks where deployed contracts require them
 ```
 
@@ -353,5 +363,5 @@ Do not introduce at bootstrap without demonstrated need:
 - vector database as default memory/content store;
 - GraphQL alongside REST without a concrete consumer need;
 - separate BFF duplicating Core API semantics;
-- Python and Go implementations of the same progression/scoring rule;
-- frontend-owned Band/mastery calculations.
+- Python and Go implementations of the same progression/scoring/content-validation rule;
+- frontend-owned Band/mastery/content eligibility calculations.

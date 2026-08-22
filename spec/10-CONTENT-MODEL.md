@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, reference contracts between concrete content and canonical objects/external task families, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
+OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, content identity/revision and lineage semantics, reference contracts between concrete content and canonical objects/external task families, validation-decision and similarity-fact representation, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
-DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, product activity-purpose/evidence-candidacy policy, or product coverage status
+DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, content generation/runtime lifecycle or admin workflow, exact wire/storage schema, product activity-purpose/evidence-candidacy policy, or product coverage status
 
 # 10 — Content Model
 
@@ -22,6 +22,9 @@ Canonical definitions
   Content Presentation Class
 
 Concrete/runtime instances
+  Content / Content Revision
+  Validation Decision
+  Similarity Assessment
   Learning Unit
   Stimulus
   ScaffoldingProfile
@@ -43,6 +46,99 @@ Every concrete object references the canonical targets/context/policies that jus
 When variant, official task/question family, task/section context, material presentation, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading`, `completion`, or `writing-task-1` are insufficient for coverage claims.
 
 Conditional identity dimensions are **applicability-aware**. A field that is semantically inapplicable may be omitted/represented as not applicable by the eventual machine contract; a material field may not be omitted merely for convenience. Implementation must not fabricate a Band, Content Context, official family, Presentation Class, delivery mode, or Curriculum Node solely to satisfy a schema.
+
+# Content identity, revision, and lineage
+
+Content has a stable logical identity and immutable semantic revisions.
+
+Conceptually:
+
+```text
+Content
+  content_id
+
+ContentRevision
+  revision_id
+  content_id
+  immutable_semantic_payload
+  derived_from_revision_id when applicable
+  origin_provenance
+  content_hash or equivalent integrity identity
+```
+
+Rules:
+
+1. `content_id` identifies a logical content lineage; `revision_id` identifies the exact semantic revision used at runtime.
+2. Once a revision has been exposed to a learner or referenced by an Attempt/Observation/EvidenceFact path, its material semantic payload is immutable.
+3. A material change to stimulus, prompt/instruction, answer key, rubric/model answer, canonical target binding, official family/context/presentation identity, response contract, or another field that changes task meaning/scoring/inference creates a new revision rather than mutating history.
+4. Non-semantic operational metadata may change without creating a semantic revision only when it cannot alter what the learner saw, what was asked, how the response is interpreted, or what claim the item can support.
+5. Historical Attempt and evidence paths must resolve the exact revision the learner actually received, even after later revisions are activated or the original revision is retired from new assignment.
+6. `derived_from_revision_id` expresses lineage when a revision is intentionally derived from another; lineage does not itself establish independence, novelty, or quality.
+7. A revision may be revalidated under a later validator/policy version without creating another ContentRevision when the semantic payload did not change.
+
+Origin may be authored, imported, deterministic/generated, AI-generated, or another eligible mechanism. Origin does not change the semantic or quality obligations applicable to the intended use.
+
+# Validation decision semantics
+
+Validation is evidence/decision about a ContentRevision under a named validation policy, not part of the immutable revision identity.
+
+Conceptually:
+
+```text
+ValidationDecision
+  content_revision_ref
+  validation_policy_version
+  validator/provenance refs where material
+  intended_use_or_consequence_scope
+  result
+  reconstructable reasons/findings
+  evaluated_at
+```
+
+Rules:
+
+1. the same revision may have multiple ValidationDecisions as policy, validators, evidence, rights state, or intended consequence changes;
+2. a validator's self-reported confidence or a generator's claim that its own output is valid is only an input signal, never validation authority by itself;
+3. validation reasons must remain reconstructable, but this specification does not freeze a large machine reason-code catalog before contracts require stable interoperability;
+4. validation burden is consequence-aware: higher-consequence use may require stronger applicable checks than low-consequence training;
+5. consequence-aware validation never permits an applicable universal hard failure to be ignored merely because the intended use is low consequence;
+6. exact validator count, voting scheme, model/provider, similarity threshold, audit sample count, and operational retry policy are implementation/calibration concerns unless later evidence requires a canonical rule.
+
+The runtime orchestration of validation, activation, quarantine, revalidation, and retirement is owned by `design/04-application-flows.md`.
+
+# Similarity facts and comparison scope
+
+Similarity measurement records facts. It does not own the universal decision that similar content is allowed, rejected, or valid evidence.
+
+A SimilarityAssessment is scoped to the object relationship being compared. Supported conceptual comparison scopes include at least:
+
+```text
+Stimulus       ↔ Stimulus
+Prompt         ↔ Prompt
+PracticeItem   ↔ PracticeItem
+AssessmentItem ↔ AssessmentItem
+```
+
+Relevant fact dimensions may include:
+
+```text
+exact identity
+normalized-text identity
+shared stimulus/source
+semantic prompt similarity
+response/reasoning-pattern similarity
+source-content similarity
+structural/template similarity
+```
+
+Rules:
+
+1. exact duplication, near duplication, shared stimulus, and semantic similarity are distinct facts;
+2. one Stimulus may intentionally support multiple legitimate PracticeItems or AssessmentItems; shared source alone is not a duplicate error;
+3. similarity thresholds, embeddings/algorithms, and numerical cutoffs are versioned implementation/calibration policy, not canonical constants here;
+4. corpus-level similarity asks whether materially redundant content should coexist in an available pool; learner-specific exposure/novelty asks whether an otherwise valid revision is eligible for this learner/use now;
+5. the same similarity facts may be acceptable for controlled practice or scaffold fading while narrowing or blocking an inference requiring unseen/independent performance;
+6. use/evidence policy consumes similarity plus ExposureContext and decides the consequence. `08-ASSESSMENT.md` owns claim-scoped evidence independence; downstream product assignment owns learner-specific eligibility.
 
 # Stable Content Context registry
 
@@ -203,10 +299,10 @@ Records material prior exposure and transfer/novelty context.
 Conceptual fields:
 
 ```text
-item_seen_before
-stimulus_seen_before
+item_revision_seen_before
+stimulus_revision_seen_before
 prior_feedback_exposure
-similarity_or_novelty_dimensions
+similarity_or_novelty_facts
 prior_attempt_refs
 context_variation
 content_context_variation
@@ -214,7 +310,7 @@ external_family_variation where material
 presentation_variation where material
 ```
 
-Exact-item novelty is not equivalent to meaningful transfer.
+Exact-item novelty is not equivalent to meaningful transfer. A globally unique item may still be unsuitable for a learner who recently saw materially equivalent content or a model answer; conversely, intentionally similar content may remain useful for controlled learning when the intended inference does not require novelty.
 
 # `PracticeItem`
 
@@ -261,8 +357,8 @@ Invariants:
 11. delivery scope is recorded when interaction/readiness inference depends on it;
 12. Curriculum Node binding is explicit when material but is not fabricated for reusable/direct-browse items whose identity is target/type-based;
 13. difficulty/scaffold may vary without changing the target;
-14. authored and generated items obey the same contract;
-15. item instances remain replaceable.
+14. authored, imported, deterministically generated, and AI-generated items obey the same applicable content contract;
+15. item instances remain replaceable while historical revision identity remains resolvable.
 
 # `AssessmentItem`
 
@@ -359,7 +455,7 @@ It may recommend mechanisms/types but cannot redefine prerequisites, Band thresh
 
 # `FeedbackArtifact`
 
-Runtime guidance derived from Attempt/Observation.
+Runtime guidance derived from Attempt/Observation under the feedback-focus policy in `07-PRACTICE.md`.
 
 Conceptual fields:
 
@@ -371,6 +467,10 @@ content_context_ref when material
 external_task_family_refs when material
 presentation_class_refs when material
 observed_performance
+primary_feedback_target_refs
+blocking_issue_refs
+deferred_observation_refs
+focus_reason/provenance
 gap_or_error
 matched_error_pattern_refs
 feedback_message
@@ -381,17 +481,17 @@ remediation_pattern_refs
 uncertainty when material
 ```
 
-Feedback distinguishes observation from inferred cause and must not perform the learner’s required cognitive operation for them.
+Feedback distinguishes observation from inferred cause and must not perform the learner’s required cognitive operation for them. Recording an observation does not require surfacing it immediately.
 
 # `Attempt`
 
-Learner-instance event against a Practice/Assessment Item.
+Learner-instance event against an exact Practice/Assessment content revision.
 
 Conceptual fields:
 
 ```text
 learner_ref
-item_ref
+item_revision_ref
 response
 started_at
 completed_at
@@ -402,7 +502,7 @@ exposure_context
 evaluation_refs
 ```
 
-An Attempt records what happened; it is not automatically evidence.
+An Attempt records what happened; it is not automatically evidence. `item_revision_ref` must remain sufficient to reconstruct the exact task semantics presented to the learner.
 
 # `Observation`
 
@@ -431,7 +531,7 @@ uncertainty
 observed_at
 ```
 
-Observations preserve history. New scoring/policy may change later interpretation without rewriting the original measurement.
+Observations preserve history. New scoring/policy may change later interpretation without rewriting the original measurement or the content revision referenced by its Attempt.
 
 # `EvidenceFact`
 
@@ -463,6 +563,7 @@ When executable content exists, maintain a machine-checkable content manifest/eq
 Each entry must support answers to:
 
 ```text
+content/revision identity + lineage where material
 canonical target refs
 official task/question-family refs + applicability
 Content Context ref + applicability
@@ -473,7 +574,8 @@ Practice/Assessment Type support
 implemented response interaction
 answer-key/rubric/evaluator route
 difficulty/transfer classes
-rights/provenance state
+origin/provenance + rights state
+applicable validation decision/policy refs
 independent readiness asset state
 product/release activation
 ```
@@ -510,13 +612,15 @@ canonical Skill/Knowledge targets
 + Curriculum Node when specifically bound
 + external family/context/presentation when material
       ↓
-Learning Unit / concrete content binding
+ContentRevision / concrete content binding
+  ├─ Learning Unit
   ├─ Stimuli
   ├─ Practice Items
+  ├─ Assessment Items
   ├─ Error/Remediation Patterns
-  └─ Assessment Items
+  └─ validation + similarity facts
           ↓
-        Attempt
+        Attempt references exact revision
           ↓
       Observation
           ↓
@@ -535,29 +639,47 @@ Difficulty metadata does not define a Band.
 
 # Content quality requirements
 
-A concrete object is acceptable only when:
+Content origin does not change its semantic/quality obligations. Any content exposed to a learner must satisfy every applicable content contract for its intended use.
 
-- canonical refs resolve;
-- external task-family refs resolve when the item represents an official family;
-- Content Context/variant refs are compatible when context is material;
+Universal applicable hard requirements include:
+
+- canonical references resolve and are semantically compatible;
+- external task-family, Content Context, Presentation Class, variant, and delivery references are correct whenever material;
+- basic structural/response-contract validity holds;
+- a known answer key/rubric/model is correct where applicable;
+- prohibited answer leakage is absent for the intended activity conditions;
+- applicable rights/privacy/security constraints pass;
+- the content introduces no contradictory teaching or scoring rule.
+
+Additional consequence-specific requirements increase with intended use. They may include stronger checks for:
+
+- construct/claim compatibility;
+- scoring/evaluator compatibility;
+- independence and learner exposure;
+- novelty/transfer distance;
+- difficulty and condition validity;
+- provenance/calibration adequate to the intended evidence consequence.
+
+Other quality requirements remain:
+
 - context-neutral omission is explicit/valid rather than accidental missing metadata;
-- Presentation Class is correct when material;
-- delivery scope is compatible when material;
-- it introduces no contradictory teaching/scoring rule;
-- answer key/rubric/model is valid where applicable;
-- assessment context does not leak answers;
-- provenance/rights are known where needed;
 - difficulty/scaffolding fit intended use;
-- reuse/exposure does not invalidate inference;
+- reuse/exposure does not invalidate the intended inference;
 - non-universal remediation/error claims declare scope;
-- it can be replaced without changing canonical learning truth.
+- content can be replaced without changing canonical learning truth or rewriting historical learner events.
+
+There is no canonical global content-quality percentage. A cheap/training-only path cannot waive an applicable hard correctness requirement, while low-consequence content need not incur high-consequence validation work that is genuinely inapplicable.
 
 # Generated-content boundary
 
-AI generation is an instance-generation mechanism, not authority. Generated items/explanations/feedback/error hypotheses/remediation must pass the same target, official-family, context, presentation, delivery, rights, quality, and evidence contracts as authored content.
+Generation is an instance-supply mechanism, not authority. Generated items/explanations/feedback/error hypotheses/remediation have no weaker or stronger semantic standing merely because they were generated.
+
+AI self-check is only validator input. A generator asserting that its own output is correct does not independently establish correctness.
+
+Whether generation is required for a product/release, and the reuse-before-generation runtime flow, are downstream product/coverage concerns rather than content-model truth.
 
 # No persistence/wire contract
 
 Names/fields here define conceptual semantics. They do not force one-to-one SQL tables/classes/JSON payloads.
 
-Machine boundaries materialize exact shapes under repository contract governance while preserving stable canonical IDs and the applicability distinctions defined here.
+Machine boundaries materialize exact shapes under repository contract governance while preserving stable canonical IDs, immutable revision references, and the applicability distinctions defined here.
