@@ -180,14 +180,14 @@ A mixed variant is invalid for a normal full readiness claim.
 
 # Feature activity-purpose/evidence boundary
 
-A feature may host training, diagnostic, or readiness-oriented activity configurations. **Primary product purpose and evidence candidacy are separate dimensions.**
+A feature may host `TRAINING`, `DIAGNOSTIC`, focused `ASSESSMENT`, or `READINESS` activity configurations. **Primary product purpose and evidence candidacy are separate dimensions**, with exact purpose/candidacy semantics owned by `02-practice-catalog.md`.
 
-A diagnostic/readiness configuration is not automatically evidence-admissible, and a training-oriented configuration is not automatically evidence-ineligible. Concrete activity packaging declares whether Assessment may consider the resulting Observation; `08-ASSESSMENT.md` makes the actual claim-scoped admission decision after the attempt conditions are known.
+A diagnostic/assessment/readiness configuration is not automatically evidence-admissible, and a training-oriented configuration is not automatically evidence-ineligible. Concrete activity packaging declares whether Assessment may consider the resulting Observation; `08-ASSESSMENT.md` makes the actual claim-scoped admission decision after the attempt conditions are known.
 
 A feature may never:
 
 - upgrade a non-candidate activity into evidence after seeing a favorable result;
-- treat diagnostic/readiness purpose as proof of eligibility;
+- treat diagnostic/assessment/readiness purpose as proof of eligibility;
 - pre-label an activity as certification-contributing;
 - certify a learner or lower normal Assessment requirements.
 
