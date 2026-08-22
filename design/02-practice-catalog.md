@@ -99,7 +99,7 @@ Delivery packaging changes interaction conditions, not Writing criteria or Band 
 | `PM-X01` | Vocabulary / Grammar Review | 5–10 min | spaced retrieval for suitable Knowledge Objects | `PT-17`, `PT-18`, `PT-19` |
 | `PM-X02` | Error Remediation | 5–15 min | classified error → fresh corrective action | `PT-04` + RemediationPattern |
 | `PM-X03` | Adaptive Mixed Set | 10–20 min | interleave eligible targets from current learner state | `PT-20`, `PT-21` |
-| `PM-X04` | Full IELTS Mock | about 150 min for Listening+Reading+Writing; Speaking follows the applicable separate/scheduled test configuration | variant/delivery-aware whole-test readiness | `PT-23`, readiness-only by default |
+| `PM-X04` | Full IELTS Mock | about 150 min for Listening+Reading+Writing; Speaking follows the applicable separate/scheduled test configuration | variant/delivery-aware whole-test readiness | `PT-23`; primary purpose `READINESS`; evidence candidacy is configured separately |
 
 The complete external IELTS timing is owned by `../spec/02-IELTS-MODEL.md`. Catalog duration is a planning envelope, not external-exam authority.
 
@@ -109,18 +109,42 @@ The complete external IELTS timing is owned by `../spec/02-IELTS-MODEL.md`. Cata
 
 Media does not create another practice taxonomy. Eligible media instantiates suitable existing modes under `03-media-youtube.md`.
 
-# Evidence-role labels
+# Activity purpose vs evidence candidacy
 
-Each concrete activity exposes one product role:
+A concrete activity has two orthogonal product dimensions.
+
+## Primary activity purpose
+
+Exactly one primary purpose describes **why the activity is being scheduled/presented**:
 
 ```text
-TRAINING_ONLY
-EVIDENCE_ELIGIBLE
+TRAINING
 DIAGNOSTIC
-READINESS_ONLY
+READINESS
 ```
 
-`EVIDENCE_ELIGIBLE` means Assessment may admit the resulting Observation under its normal policy; it does not imply automatic evidence/mastery contribution.
+This is a product/UX purpose, not an Assessment judgment.
+
+## Evidence candidacy
+
+Separately, the configured activity declares whether its resulting Observation is allowed to be considered by Assessment:
+
+```text
+NOT_EVIDENCE_CANDIDATE
+ASSESSMENT_MAY_ADMIT
+```
+
+`ASSESSMENT_MAY_ADMIT` is only a pre-attempt candidacy designation. After the learner performs the activity, `08-ASSESSMENT.md` still decides claim-scoped eligibility from actual task fit, assistance/scaffolding, exposure/retry history, evaluator quality, provenance, and other material conditions.
+
+Therefore:
+
+- `TRAINING + NOT_EVIDENCE_CANDIDATE` is normal for guided acquisition/recovery work;
+- `TRAINING + ASSESSMENT_MAY_ADMIT` is valid for independent practice deliberately configured to produce potentially admissible evidence;
+- `DIAGNOSTIC + ASSESSMENT_MAY_ADMIT` is valid when a diagnostic sample also satisfies normal Assessment eligibility;
+- `READINESS + ASSESSMENT_MAY_ADMIT` is valid for an eligible timed task/mock sample;
+- `DIAGNOSTIC` or `READINESS` never implies evidence admission by itself.
+
+There is no pre-attempt `CERTIFICATION_CONTRIBUTING` role. Certification contribution exists only after Assessment admits evidence and evaluates the applicable EvidenceRequirement.
 
 # Selection boundary
 
