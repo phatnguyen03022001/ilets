@@ -1,6 +1,6 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "21ad03962d035b53985e4e4c2d7610389a025eb9",
+  "canonical_source_revision": "canonical-source-revision/v1:f354e2b454c825f2361128c3b426c005bc4f63bf0b9e84fb7d28a618ba5f4db3",
   "entries": [
     {
       "cells": [],

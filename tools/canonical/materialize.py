@@ -34,7 +34,9 @@ def section_text(text: str, heading: str, parent: str | None = None) -> str:
     return "\n".join(lines[start:end])+"\n"
 def strip_cell(value: str) -> str:
     value=value.strip()
-    if value.startswith("`") and value.endswith("`") and len(value)>=2: value=value[1:-1]
+    single_code_span=re.fullmatch(r"`([^`]*)`",value)
+    if single_code_span:
+        value=single_code_span.group(1)
     return value.strip()
 def parse_table(section: str) -> dict[str,dict[str,Any]]:
     rows={}
@@ -60,6 +62,25 @@ def parse_code_enum(section: str) -> dict[str,dict[str,Any]]:
             values[value]={"id":value,"cells":[]}
     return values
 def source_blob(path: Path) -> str: return git("hash-object",str(path.relative_to(ROOT)))
+REVISION_SCHEMA = "canonical-source-revision/v1"
+def canonical_source_revision_from_inputs(source_map_bytes: bytes, owner_blobs: list[tuple[str,str]]) -> str:
+    owners=[
+        {"path":path,"git_blob":blob}
+        for path,blob in sorted(set(owner_blobs))
+    ]
+    payload={
+        "schema":REVISION_SCHEMA,
+        "source_map_sha256":hashlib.sha256(source_map_bytes).hexdigest(),
+        "owners":owners,
+    }
+    encoded=json.dumps(payload,sort_keys=True,separators=(",",":")).encode()
+    return f"{REVISION_SCHEMA}:{hashlib.sha256(encoded).hexdigest()}"
+def canonical_source_revision(owner_paths: list[str]) -> str:
+    owner_blobs=[
+        (owner,source_blob(ROOT/owner))
+        for owner in sorted(set(owner_paths))
+    ]
+    return canonical_source_revision_from_inputs(SOURCE_MAP_PATH.read_bytes(),owner_blobs)
 def validate_source_map(config: dict[str,Any]) -> None:
     allow=tuple(config["allowlisted_roots"]); forbidden=config["forbidden_authority_sources"]; seen=set()
     for registry in config["registries"]:
@@ -72,7 +93,8 @@ def validate_source_map(config: dict[str,Any]) -> None:
             seen.add(pair)
 def materialize() -> tuple[dict[str,Any],dict[str,Any]]:
     config=json.loads(SOURCE_MAP_PATH.read_text()); validate_source_map(config)
-    owner_paths=sorted({e["owner"] for e in config["registries"]}); revision=git("rev-list","-1","HEAD","--",*owner_paths)
+    owner_paths=sorted({e["owner"] for e in config["registries"]})
+    revision=canonical_source_revision(owner_paths)
     entries=[]; global_ids={}
     for registry in config["registries"]:
         owner_path=ROOT/registry["owner"]
