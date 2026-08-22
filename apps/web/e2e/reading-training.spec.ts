@@ -1,6 +1,7 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("anonymous learner completes deterministic Reading training without pre-submit answer leakage", async ({ page }) => {
+test("Reading training remains non-evidence and does not leak answer keys", async ({ page }) => {
   let activityPayload = "";
   page.on("response", async (response) => {
     if (response.url().includes("/v1/practice-activities") && response.request().method() === "POST" && response.ok()) {
@@ -22,10 +23,16 @@ test("anonymous learner completes deterministic Reading training without pre-sub
   const count = await items.count();
   expect(count).toBe(6);
   for (let i = 0; i < count; i++) {
-    await items.nth(i).locator("input[type=radio]").first().check();
+    await items.nth(i).getByRole("radio").first().click();
   }
   await page.getByRole("button", { name: "Submit answers" }).click();
   await expect(page.getByTestId("result")).toBeVisible();
   await expect(page.getByText("Training observation only — NOT_EVIDENCE_CANDIDATE.")).toBeVisible();
-  await expect(page.getByText("Correct answer:").first()).toBeVisible();
+  await expect(page.getByText(/Correct answer:/).first()).toBeVisible();
+
+  const accessibility = await new AxeBuilder({ page }).analyze();
+  const severe = accessibility.violations.filter(
+    (violation) => violation.impact === "critical" || violation.impact === "serious",
+  );
+  expect(severe).toEqual([]);
 });

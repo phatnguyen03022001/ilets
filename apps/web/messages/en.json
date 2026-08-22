@@ -1,0 +1,38 @@
+{
+  "Reading": {
+    "title": "Reading classification training",
+    "syntheticNotice": "Synthetic training only. This activity does not create Band readiness or certification evidence.",
+    "targetProfile": "Target profile",
+    "variant": "Variant",
+    "academic": "Academic",
+    "minimumReadingBand": "Minimum Reading Band",
+    "saveTarget": "Save target",
+    "targetSaved": "Academic target saved at revision {revision}.",
+    "practiceHeading": "T/F/NG + Y/N/NG",
+    "practiceDescription": "Deterministic Reading classification practice backed by PM-R03.",
+    "startActivity": "Start activity",
+    "submitAnswers": "Submit answers",
+    "result": "Result",
+    "score": "{raw} / {max} correct",
+    "trainingOnly": "Training observation only — NOT_EVIDENCE_CANDIDATE.",
+    "correct": "Correct",
+    "review": "Review",
+    "correctAnswer": "Correct answer: {answer}",
+    "loading": "Preparing learner session…",
+    "errors": {
+      "session": "Could not establish learner session.",
+      "targetRead": "Could not read target profile.",
+      "targetSave": "Could not save target profile.",
+      "activity": "Could not start activity.",
+      "attempt": "Attempt creation failed.",
+      "submission": "Could not submit answers."
+    },
+    "choices": {
+      "TRUE": "True",
+      "FALSE": "False",
+      "NOT_GIVEN": "Not given",
+      "YES": "Yes",
+      "NO": "No"
+    }
+  }
+}

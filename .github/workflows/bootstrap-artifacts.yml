@@ -9,7 +9,11 @@ on:
       - apps/web/package.json
       - apps/web/pnpm-workspace.yaml
       - services/core-api/go.mod
+      - services/core-api/sqlc.yaml
+      - services/core-api/migrations/**
+      - services/core-api/internal/db/queries/**
       - tools/contracts/generate.sh
+      - tools/db/generate.sh
       - .github/workflows/bootstrap-artifacts.yml
 
 permissions:
@@ -33,6 +37,8 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       - name: Generate contract bindings using repository-local command
         run: ./tools/contracts/generate.sh
+      - name: Generate typed SQL access using repository-local command
+        run: ./tools/db/generate.sh
       - name: Resolve Go module graph locally
         working-directory: services/core-api
         run: go mod tidy
@@ -46,6 +52,7 @@ jobs:
             services/core-api/go.mod
             services/core-api/go.sum
             services/core-api/internal/httpapi/generated/public_v1.gen.go
+            services/core-api/internal/db/sqlc/
       - name: Publish generation status locator
         if: always()
         env:
@@ -63,4 +70,4 @@ jobs:
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
-            -d "{\"state\":\"${STATE}\",\"context\":\"bootstrap/generate\",\"description\":\"local generator executed on hosted runner\",\"target_url\":\"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+            -d "{\"state\":\"${STATE}\",\"context\":\"bootstrap/generate\",\"description\":\"local generators executed on hosted runner\",\"target_url\":\"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
