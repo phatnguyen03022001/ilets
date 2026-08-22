@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: initial deployable-unit allocation, primary-language/framework assignment, bootstrap toolchain profile, runtime responsibility split, system-engineering concern disposition, cross-language contract strategy, canonical-registry materialization strategy, persistence/consistency engineering baseline, security/observability/performance/deployment engineering invariants, and repository/native verification contract
+OWNS: initial deployable-unit allocation, primary-language/framework assignment, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, security/observability/performance/deployment engineering invariants, and repository/native verification contract
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
 DOES_NOT_OWN: learning/product truth, parser/materializer implementation, registry serialization or codegen-library choice, CI platform configuration, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, or package-manager lock state
 
@@ -7,9 +7,9 @@ DOES_NOT_OWN: learning/product truth, parser/materializer implementation, regist
 
 ## Purpose
 
-Assign approved languages/framework families and implementation-engineering invariants to explicit runtime responsibilities so implementation does not re-decide first-order architecture, duplicate domain logic across stacks, or cargo-cult infrastructure from generic system-design checklists.
+Assign approved languages/framework families and implementation-engineering invariants to explicit runtime responsibilities so implementation does not re-decide first-order architecture, duplicate domain logic across stacks, collapse trust boundaries for convenience, or cargo-cult infrastructure from generic system-design checklists.
 
-Patch/minor dependency selection is implementation maintenance. This architecture freezes responsibility, coherent bootstrap tool families, and production concern semantics; it does not freeze volatile patch numbers, provider products, or empirical operational thresholds.
+Patch/minor dependency selection is implementation maintenance. This architecture freezes responsibility, coherent bootstrap tool families, material boundary/consistency/evolution semantics, and production concern semantics; it does not freeze volatile patch numbers, provider products, deployment vendors, or empirical operational thresholds.
 
 # Initial deployable topology
 
@@ -31,7 +31,261 @@ tools/
 
 Do not create another deployable merely because a product feature, operational concern, or external capability has a distinct name.
 
-These are ownership/process boundaries, not a requirement for three separately billed infrastructure stacks. Initial deployment may co-locate runnable units when isolation, security, failure, performance, and operational requirements remain satisfied. Split infrastructure only when a demonstrated requirement justifies the added cost/complexity.
+These are semantic/runtime ownership boundaries, not a requirement for three separately billed infrastructure stacks. Initial deployment may co-locate runnable units when isolation, security, failure, performance, and operational requirements remain satisfied. Splitting or co-locating deployment changes topology/operations, not canonical semantic ownership.
+
+## Co-location invariant
+
+Co-location never collapses logical ownership:
+
+- Browser still reaches product behavior through Go Core API;
+- Next.js server execution remains Web/presentation authority;
+- Python does not mutate Core-owned authoritative persistence;
+- cross-runtime contract semantics remain explicit;
+- service/runtime secrets and privileges remain least-privilege;
+- one process/unit does not silently share in-memory domain state with another unit as a substitute for the declared boundary;
+- restart/failure behavior remains attributable to the affected logical unit.
+
+A deployment optimization is not an architecture-authority shortcut.
+
+# Boundary model
+
+A **material implementation boundary** is any trust/state/contract boundary where an implementation shortcut could change authority, correctness, security, recoverability, compatibility, or coverage. It is not a required runtime enum.
+
+For each material boundary implementation must be able to answer, where applicable:
+
+```text
+semantic/state owner
+caller / initiator
+callee / receiver
+trust classification
+allowed data/identities
+forbidden bypass
+contract authority
+validation/access boundary
+transaction/commit boundary
+consistency class
+failure/degradation behavior
+retry/idempotency rule
+cache/freshness rule
+privacy/security rule
+observability/audit requirement
+version/evolution rule
+verification requirement
+coverage conditions that consume correctness
+```
+
+A boundary description may delegate detailed rules to its existing owner; it does not create a new semantic authority.
+
+## Material boundary classes
+
+### Semantic authority → implementation
+
+```text
+canonical spec/design
+        ↓
+materialized registry / machine contract
+        ↓
+derived bindings / implementation
+```
+
+Direction is one-way for authority. Generated code, OpenAPI-generated types, database schema, UI types, prompts, provider responses, caches, metrics, fixtures, migrations, and storage tables remain derived implementation artifacts. They cannot redefine canonical meaning.
+
+### Browser/user → Web
+
+Browser/user input is untrusted. Web validates/bounds presentation input and forwards authoritative mutations through Go. The browser may not declare evidence eligibility, content classification, immutable canonical reclassification, learner mastery, or product support. Credential handling, XSS, CSRF/CORS/CSP, upload/media bounds, URL handling, and abuse controls follow the applicable security/session design.
+
+Client state is transient/presentation state unless persisted through the Go API.
+
+### Next.js server execution → Go
+
+Next.js App Router server-side execution remains part of `apps/web`, including Server Components, Route Handlers, Server Actions, and server-side fetch/cache.
+
+It may:
+
+- render/compose presentation server-side;
+- perform presentation-safe calls to the exact Go public API;
+- perform explicitly approved web/session-edge mechanics;
+- cache eligible presentation/API-derived state under correct access/freshness/version rules.
+
+It may not:
+
+- become a second product/domain API;
+- query or mutate the authoritative product database directly;
+- own durable learner/product/content/evidence state;
+- duplicate Go Assessment/Progression/Planner/content policy;
+- call Python as an alternate product backend;
+- create independent DTO/interface truth;
+- bypass Go access/capability policy;
+- turn Server Actions/Route Handlers into hidden domain-command authority.
+
+A Next.js Route Handler, if used, is a web-edge/presentation adapter only.
+
+### Web → Go public API
+
+Go owns learner/admin-facing product behavior and durable product state. Once materialized, one exact public HTTP contract governs stable IDs/applicability, auth/session transport, domain-result/failure semantics, idempotency, optimistic concurrency, correlation, and compatibility. Production sensitive transport uses TLS. Web-side caches remain derived; browser/server Web never bypasses Go to Python.
+
+### Go → Python Evaluator
+
+Go owns authoritative work identity/state and orchestration. Python owns bounded evaluation/media/content-analysis capability. The boundary carries stable work/evaluation/content/canonical IDs, bounded authorized learner/content data, requested capability/context, deadlines/cancellation, and provenance requirements through one exact internal contract.
+
+Python returns bounded results/signals plus provenance/model/evaluator version and uncertainty/quality state where material. It does not return certification, progression, product support, content activation, or evidence admission as authority, and it does not mutate Core-owned persistence directly. Retry/dedup preserves one logical work identity. Capability failure maps to pending/unavailable/invalid-at-capability-scope as owned upstream, never learner weakness.
+
+### Go → PostgreSQL-compatible store
+
+Initially only Core API owns authoritative product-database writes. Database access uses parameterized SQL, explicit transaction ownership, bounded pooling, migration/schema compatibility, and concurrency control appropriate to the invariant. Network/provider calls are never treated as part of one atomic SQL transaction.
+
+Database schema is derived storage implementation, not semantic authority. Evaluator has no direct mutation path. If another runtime later needs authoritative database access, that is an architecture change unless explicitly justified as read-only without violating ownership/trust rules.
+
+### Authoritative state → async work
+
+The following are distinct states:
+
+```text
+authoritative product mutation
+required durable pending-work/outbox/recoverable marker
+dispatch attempt
+remote/provider execution
+result reconciliation
+```
+
+`HTTP request sent` is not `work durably accepted`. A required continuation is atomically registered with or recoverably derivable from committed authority before an acknowledgement depends on it. Provider timeout does not prove no remote action occurred. Reconciliation uses durable work/idempotency identity.
+
+### Cache boundary
+
+Cache is derived. Correctness-sensitive cached output is valid relative to:
+
+```text
+source identity
++ relevant source version
++ policy/model/contract version where material
++ access scope
++ freshness/invalidation condition
+```
+
+Acceptable staleness is use-specific: presentation hints may tolerate bounded staleness while any result whose freshness changes correctness must expose/check source version/freshness before use. Cache never becomes authority for learner state, evidence, content semantics/activation, product support, progression, or privileged capability. Redis is not implied.
+
+### Object/media storage boundary
+
+When large artifacts are stored separately, Core-owned authoritative product state stores the reference/metadata needed to govern the artifact; object/media storage stores bytes/artifacts behind that authority.
+
+The selected implementation defines as applicable:
+
+- authorization/access scope;
+- integrity identity/hash where useful;
+- private-by-default access rather than a public-bucket assumption;
+- retention/deletion and restore behavior;
+- signed/temporary access when needed;
+- rights/source/provenance state;
+- orphan cleanup/reconciliation after partial failures;
+- backup/recovery appropriate to retained consequential artifacts.
+
+No external object-storage provider is selected here.
+
+### External URL/media ingress
+
+Learner/provider URLs are untrusted references. Any resolver/fetcher constrains allowed schemes/destinations, redirects, private/internal network reachability, request size/time, source/provider identity, rights/product eligibility, and provenance. A URL does not authorize arbitrary scraping/download or arbitrary network access.
+
+### External provider egress
+
+Before learner/source data leaves controlled runtime for AI/STT/TTS/another processor, the route must be selected/eligible under `07-third-party-services.md`. Send minimum necessary data for the declared purpose; preserve rights/privacy, provider/model provenance, retention/reuse restrictions, secret isolation, retry/cost dedup, and approved fallback semantics. Provider output is untrusted/bounded signal until owning policy validates/interprets it.
+
+### Provider webhook ingress
+
+Conditional only when a selected provider requires callbacks. The boundary requires callback authentication/signature verification, replay/idempotency protection, structural validation, authoritative work association, safe freshness checks, transaction/audit, and bounded response. Callback timestamps are not causal authority. Webhooks cannot directly advance learner state outside normal policy.
+
+### Admin/privileged actor → Core
+
+Authenticated identity, role membership if used, operational capability, learning authority, Assessment authority, and validation authority are distinct concepts. Admin/operations mutations go through Core, require legal capability/preconditions and durable audit where consequential, and cannot bypass hard validation/evidence/content rules or mutate historical semantic revisions.
+
+### Observability boundary
+
+Operational logs, security events, privileged audit, product analytics, traces/metrics, and learner-visible history are distinct data classes with potentially different retention/access rules.
+
+Operational telemetry is derived evidence about execution, not business state. It carries enough privacy-safe request/work/version/provenance identity to reconstruct behavior where needed while redacting secrets and minimizing PII/raw learner content. Raw Writing/Speaking content, raw audio, auth tokens, provider secrets, and sensitive full bodies are not logged by default.
+
+Telemetry delivery failure normally does not roll back or redefine an otherwise valid product transaction; an explicitly required durable security/privileged audit record may be part of the transaction/precondition for that consequential operation.
+
+### Time/clock boundary
+
+Cross-language durable temporal semantics use timezone-aware absolute instants once serialized by machine contract. Learner/display timezone remains a profile/presentation concern.
+
+Rules:
+
+- wall clock alone does not establish causal ordering;
+- timestamp is not idempotency identity;
+- deterministic ordering uses revision/sequence/transaction semantics where required;
+- recency/expiry calculations name their governing policy/clock source where material;
+- external/provider callback timestamps are untrusted observations until validated/reconciled;
+- exact timestamp wire serialization belongs to machine contracts, but Go/Python/TypeScript may not invent incompatible time semantics.
+
+### File/request-size boundary
+
+Any upload/audio/text/media ingress is bounded. The implementation defines as applicable content type, size, duration, streaming-vs-buffering, timeout, structural/media validation, authorization, retention, and unsafe-file/malware handling when arbitrary file formats are actually accepted. Architecture does not freeze MB/minute constants.
+
+### Internal package/module boundaries
+
+Do not impose ceremony-heavy layer counts. Preserve minimum dependency direction:
+
+```text
+Go:
+HTTP/transport adapter
+  → application/orchestration
+  → owned deterministic policy/domain execution
+  → persistence/provider ports/adapters
+
+Python:
+internal HTTP adapter
+  → bounded capability service
+  → model/audio/text implementation
+  → provider adapters
+
+Web:
+route/layout/components
+  → presentation/application interaction
+  → generated/validated Go API client
+```
+
+Transport does not contain canonical policy. Persistence/provider adapters do not call upward to redefine policy. Provider SDK objects do not leak as domain/interface truth. UI components do not own server transitions. Exact folder taxonomy remains implementation-local within Constitution constraints.
+
+# Consistency classification
+
+These are reasoning classes, not runtime enums.
+
+## A. AUTHORITATIVE_TRANSACTIONAL
+
+Core-owned durable product facts committed under an authoritative transaction/invariant, for example Attempt acceptance, TargetProfile update, content operational mutation, or required durable work registration coupled to such a mutation.
+
+A success response claiming that mutation has read-after-write semantics against the committed authoritative state it reports.
+
+## B. AUTHORITATIVE_ASYNC_STATE
+
+Durable Core-owned work state progresses asynchronously, for example Evaluation, generation, validation, media analysis, or another durable pending/running/result lifecycle. Dispatch/provider execution may lag the authoritative work state; one logical work identity remains authoritative.
+
+## C. DERIVED_EVENTUALLY_CONSISTENT
+
+Derived outputs may lag authority and preserve source/version/freshness identity, for example caches, cached plan projections, analytics, search/indexes, and telemetry. Stale derived data cannot overwrite newer authoritative truth and must be detectable where correctness depends on freshness.
+
+## D. EXTERNAL_OBSERVED_STATE
+
+Provider/external facts require provenance/reconciliation, for example provider callback state or external media availability. External observation does not become product truth without owning policy/association.
+
+Eventual consistency is never permission to weaken evidence/content/product semantics. SSE may lag/reorder/duplicate while authoritative resource state remains queryable.
+
+# Failure-domain model
+
+Expected containment:
+
+- Browser/Web failure does not erase committed Core work;
+- SSE failure degrades notification only; resource reads recover current state;
+- Python failure leaves Go authoritative and productive work pending/unavailable rather than inventing a result;
+- external provider failure yields bounded degradation/unresolved state; it does not authorize lower-quality fallback;
+- database failure before commit yields no durable-success acknowledgement;
+- ambiguous database/network outcome is reconciled through idempotency/work identity before duplicate mutation;
+- cache failure falls back to authority where operationally feasible;
+- telemetry failure does not rewrite business truth;
+- co-located unit/process failure cannot silently transfer semantic authority to another unit.
+
+This model does not promise multi-region, failover, or high-availability infrastructure that is not selected.
 
 # System-engineering concern disposition
 
@@ -48,8 +302,8 @@ A concern may be mandatory while a particular external product remains optional.
 
 When the relevant capability exists, implementation resolves at least:
 
-- bounded request/network deadlines, cancellation where safe, retry classification, idempotency/deduplication, bounded retry/backoff where eligible, and backpressure;
-- race/concurrency protection, transaction ownership, commit-before-success-ACK, stale-write protection, and safe handling of ambiguous network outcomes;
+- bounded request/network deadlines, cancellation where safe, retry classification, idempotency/deduplication, bounded retry/backoff where eligible, backpressure, and bounded request/file/media input;
+- race/concurrency protection, transaction ownership, commit-before-success-ACK, durable registration/recoverability of required async work, stale-write protection, and safe handling of ambiguous outcomes;
 - versioned database migrations/schema compatibility once persistence schema exists, parameterized SQL, bounded connection management, and rollback/forward-recovery discipline;
 - authentication/authorization boundary, least-privilege runtime access, secrets handling, production TLS, browser XSS/CORS/CSP/CSRF policy as applicable, and SSRF-safe external URL/media access;
 - structured logging, request/work correlation, health semantics, running software/contract version identity, dependency pinning/lockfiles, reproducible build/verification;
@@ -57,13 +311,15 @@ When the relevant capability exists, implementation resolves at least:
 
 ## Production-gate concern groups
 
-Before the corresponding scoped product path is production-supported, the selected runtime/deployment must resolve and verify as applicable:
+Before promotion to `COVERED`/`SUPPORTED_FOR_PRODUCT` for an intended release scope, the selected release candidate must resolve and verify as applicable:
 
 - backup plus restore testing, disaster-recovery/recovery procedure, migration/deploy recovery, release rollback/forward-recovery, and failure/degraded-state testing;
 - monitoring, metrics, actionable alerting, operational auditability, production incident ownership/escalation, and material-incident follow-up;
 - latency/throughput/capacity/tail-latency measurement, async backlog/DB pressure visibility, and external usage/cost measurement;
 - security verification for deployed browser/API/storage/provider boundaries;
-- measurable SLIs and release-appropriate SLOs/error-budget semantics without inventing unsupported numerical objectives.
+- initial measurable SLIs/SLOs/operational objectives appropriate to the intended release candidate, without inventing unsupported numerical objectives.
+
+Production evidence may recalibrate those objectives later; the gate is that applicable objectives are defined, measurable, and verifiable before support promotion.
 
 ## Conditional / initial non-selection
 
@@ -110,11 +366,11 @@ Rules:
 
 1. deterministic scoring/validation remains deterministic; do not call AI to replace an available exact rule;
 2. browser/native/framework capabilities should be reused before duplicate backend capability when ownership remains correct;
-3. derived work may be cached/reused by stable input + relevant policy/model/version identity when correctness/privacy/freshness/auditability hold;
+3. derived work may be cached/reused only when stable input + relevant source/policy/model/contract/access/freshness identity makes reuse correct;
 4. retries reuse logical work identity instead of duplicating provider work/cost;
 5. expensive noninteractive work may be delayed, batched, or omitted when optional; cost pressure cannot lower evidence/quality standards;
 6. do not pre-generate infrastructure/content/AI output merely because a taxonomy exists;
-7. optimization cannot move semantic authority into caches, generated files, prompts, provider output, logs, or metrics.
+7. optimization cannot move semantic authority into caches, generated files, prompts, provider output, logs, metrics, migrations, or database schemas.
 
 # Version and dependency policy
 
@@ -164,7 +420,8 @@ Equivalent replacements require a concrete maintenance/compatibility reason; do 
 - timers/local draft interaction/optimistic presentation;
 - SSE client/reconnect behavior;
 - presentation-only transformations;
-- accessibility/responsive UI.
+- accessibility/responsive UI;
+- presentation-side Next.js server rendering and web-edge mechanics within the boundary above.
 
 ## Does not own
 
@@ -173,13 +430,14 @@ Equivalent replacements require a concrete maintenance/compatibility reason; do 
 - canonical gap/action or content eligibility;
 - productive evaluator algorithms;
 - durable learner/product truth;
+- authoritative product database access;
 - handwritten DTO truth independent of machine contracts.
 
 ## Client-state and transport baseline
 
 Transient UI interaction may live locally. Durable learner/product state remains authoritative behind the Go API. No Redux/Zustand/global client store is selected by default; a client state/query library is conditional on demonstrated interaction complexity and may not become product truth.
 
-The browser uses the exact public contract through browser `fetch` or a generated/validated client once contracts exist. Browser never calls Python directly.
+The browser and Next.js server-side presentation code use the exact public contract through `fetch` or a generated/validated client once contracts exist. Browser never calls Python directly.
 
 ## Web security baseline
 
@@ -188,7 +446,8 @@ The browser uses the exact public contract through browser `fetch` or a generate
 - deployed web surface has deliberate Content Security Policy compatible with required scripts/media/embed sources;
 - CORS is explicit for the actual deployment origins and is not wildcard-by-convenience for credentialed/sensitive APIs;
 - CSRF protection is resolved from the selected credential/session transport before auth is production-supported;
-- secrets never enter browser bundles or client-readable configuration.
+- secrets never enter browser bundles or client-readable configuration;
+- user/file/media input remains bounded/untrusted until validated by the applicable Web/Core boundary.
 
 # Go — Core API + deterministic orchestration
 
@@ -234,8 +493,10 @@ A general-purpose ORM is not selected by default. Persistence boundaries are nam
 ## Persistence/query baseline
 
 - one authoritative PostgreSQL-compatible product store is the initial structured durable-state model; final provider/schema remains implementation detail;
+- only Core API owns authoritative product-store writes initially;
 - SQL uses parameterized queries; raw user values are never concatenated into SQL;
-- transactions align with authoritative product invariants; network/provider calls are not treated as part of one atomic DB transaction;
+- transactions align with authoritative product invariants and include required durable work/audit markers where atomicity with the product mutation is required;
+- network/provider calls are not treated as part of one atomic DB transaction;
 - optimistic concurrency is used where current resource semantics require stale-write protection; pessimistic row locking is conditional on a proven invariant requiring serialization;
 - no distributed lock, distributed transaction, Saga, read replica, sharding, or leader election is selected initially;
 - connection pooling/management is bounded and observable; DB saturation cannot create unbounded application concurrency;
@@ -250,6 +511,7 @@ Once database schema exists:
 - application/schema compatibility during rollout is intentional rather than assuming lock-step replacement;
 - migration failure cannot silently corrupt or lose accepted learner work;
 - rollback or forward-recovery strategy is defined for schema/application changes before production use;
+- historical stable IDs/references and accepted learner work remain reconstructable across storage migration;
 - storage schema/version is derived implementation, not canonical domain authority.
 
 No migration package is canonically selected in this documentation pass.
@@ -290,6 +552,7 @@ A demonstrably better supported equivalent may replace a bootstrap tool without 
 
 - learner-facing public API;
 - durable learner/progression/content operational state;
+- direct Core-database mutation;
 - content activation/assignment eligibility;
 - certification, Band advancement, evidence sufficiency, or DailyPlan selection;
 - provider-specific semantics as product truth.
@@ -299,7 +562,7 @@ Celery, a separate broker framework, and a second web framework are not selected
 # One public product API and network baseline
 
 ```text
-Browser
+Browser / Next.js presentation
   ↓ HTTP/TLS in production
 Go Core API
   ↓ internal HTTP contract where needed
@@ -328,7 +591,7 @@ Each boundary has one exact machine authority. Generated clients/server bindings
 
 ## Events
 
-Do not create hypothetical event schemas. Create event contracts only when an actual asynchronous cross-unit event boundary exists and HTTP/work-resource semantics are insufficient.
+Do not create hypothetical event schemas. Create event contracts only when an actual asynchronous cross-unit event boundary exists and HTTP/work-resource semantics are insufficient. Producer/consumer compatibility is explicit if such a boundary is introduced.
 
 ## Cross-language engineering baseline
 
@@ -336,7 +599,7 @@ Shared implementation semantics are defined once through canonical owners/contra
 
 - stable canonical IDs and exact content revision identity;
 - request/work/correlation identity;
-- timestamp/time-zone representation and the rule that timestamps are not causal/idempotency identity;
+- timestamp/time-zone representation and non-causal clock rule;
 - error/response semantics;
 - contract/version/provenance identity;
 - null/not-applicable semantics;
@@ -345,7 +608,18 @@ Shared implementation semantics are defined once through canonical owners/contra
 
 Exact wire representation belongs to contracts once materialized.
 
-# Canonical registry materialization
+## Contract evolution
+
+`05-api.md` owns public/internal API compatibility semantics. Implementation consequences here are:
+
+- one machine boundary has one exact contract authority;
+- deployed consumer/provider compatibility is verified during compatible and breaking rollout;
+- generated bindings are regenerated/validated from that authority, never manually forked;
+- public `/v1` breaking changes require explicit version/rollout/migration strategy;
+- internal contracts may roll faster but cannot assume lock-step deployment without compatibility evidence;
+- historical learner/content/evidence meaning is not reinterpreted because a new transport version exists.
+
+# Canonical registry materialization and evolution
 
 Shared canonical identities consumed by implementation are materialized through a derived pipeline:
 
@@ -366,11 +640,36 @@ Invariants:
 3. equivalent canonical enum/ID registries are not manually maintained independently in Go, TypeScript, and Python;
 4. duplicate canonical IDs, broken canonical references, and materialized generated-registry/binding drift fail repository verification;
 5. derived artifacts preserve sufficient source/provenance identity to trace values to canonical owner/source revision;
-6. stable canonical IDs remain unchanged across language/machine boundaries;
-7. materialization may be incremental to registries actually consumed by the current implementation slice;
-8. a parser/materializer/tool defect fails verification or leaves output unresolved; tooling cannot silently reinterpret canonical meaning.
+6. canonical IDs pass across language/machine boundaries unchanged; tooling cannot silently rename them;
+7. an existing canonical ID is never recycled by tooling for an unrelated meaning;
+8. materialization may be incremental to registries actually consumed by the current implementation slice;
+9. a parser/materializer/tool defect fails verification or leaves output unresolved; tooling cannot silently reinterpret canonical meaning;
+10. when a canonical owner later supersedes/deprecates an object, historical runtime references remain reconstructable according to that owner's decision rather than being rewritten by generated code.
 
-Materializer language/parser/serialization/file/codegen format remain implementation choices.
+Alias/deprecation machinery is not invented until a real canonical evolution requires it. Materializer language/parser/serialization/file/codegen format remain implementation choices.
+
+# Evolution planes remain distinct
+
+Do not collapse version/change identities:
+
+```text
+canonical semantic evolution
+≠ API/machine-contract evolution
+≠ database/storage schema migration
+≠ ContentRevision evolution
+≠ validation-policy / ValidationDecision evolution
+≠ provider/model version evolution
+```
+
+Examples:
+
+- a DB migration may change tables without changing canonical semantics;
+- a material content semantic change creates a new ContentRevision under `spec/10`, not an in-place row rewrite;
+- revalidation under a new validator policy may create new validation evidence/decision for the same immutable ContentRevision;
+- a new API contract version changes transport compatibility, not historical Attempt/ContentRevision meaning;
+- provider/model replacement cannot redefine canonical semantics.
+
+Storage/contract migrations preserve historical stable references and accepted learner work.
 
 # Async work, scheduling, and process correctness baseline
 
@@ -380,7 +679,7 @@ Initial direction:
 
 ```text
 authoritative DB work state
-+ durable work/outbox semantics where needed
++ durable work/outbox/recoverable semantics where needed
 + idempotent bounded dispatch
 + SSE/resource status
 ```
@@ -390,24 +689,14 @@ Message queues, Pub/Sub, DLQs, event-driven architecture, and external workflow 
 Process correctness requirements include:
 
 - race-sensitive mutations use transaction/concurrency controls rather than timing assumptions;
-- lock ordering/critical sections must avoid deadlock; a deadlock/serialization retry cannot duplicate logical work;
-- shared-memory/thread safety follows the selected runtime/library model; cross-process correctness never relies on in-memory mutexes alone;
+- lock ordering/critical sections avoid deadlock; deadlock/serialization retry cannot duplicate logical work;
+- shared-memory/thread safety follows selected runtime/library model; cross-process correctness never relies on in-memory mutexes alone;
 - memory usage is bounded for request bodies, media, queues, caches, and provider outputs; long-lived growth/leaks are observable/testable;
 - garbage collection/runtime memory behavior is implementation performance concern, not semantic correctness authority.
 
 # Cache model
 
-Caching is an optimization, never authority.
-
-A correctness-sensitive cached value is valid only relative to:
-
-```text
-source identity
-+ relevant source/policy/model/contract version
-+ freshness/invalidation rule
-```
-
-Source/policy/version changes that affect correctness invalidate the derived cache. Cache cannot become authority for learner state, content semantic truth, product support, evidence, or progression.
+Caching is an optimization, never authority. Boundary details are defined above; source/policy/version/access/freshness changes that affect correctness invalidate or make cached output detectably stale.
 
 CDN/edge caching is conditional and limited to eligible public/static/derived assets whose privacy, rights, freshness, and invalidation remain correct. Redis is not required merely because caching exists.
 
@@ -427,8 +716,10 @@ Security concern ownership remains implementation/product-runtime, not learning 
 - IAM: least privilege with runtime/service/admin privileges separated;
 - TLS/encryption in transit: required for production sensitive cross-network boundaries;
 - encryption at rest: applicable learner/secrets/artifact protection must be satisfied by selected storage/deployment;
-- OAuth is conditional on identity route selection; JWT rotation is conditional on JWT selection, while the broader credential/session/key revocation/rotation requirement applies to whatever credential mechanism is selected;
-- WAF/dedicated DDoS product is conditional, but public-edge abuse/resilience must be addressed by the selected hosting/deployment path.
+- OAuth is conditional on identity route selection; JWT rotation is conditional on JWT selection, while broader credential/session/key revocation/rotation applies to the selected mechanism;
+- WAF/dedicated DDoS product is conditional, but public-edge abuse/resilience must be addressed by selected hosting/deployment.
+
+Before public contract security schemes are frozen, the credential/session transport decision required by `05-api.md` must be made explicitly enough to resolve cookie/header/storage behavior, CSRF/CORS-with-credentials, revocation/logout, guest→account transition, admin/service separation, and key/token handling.
 
 No security telemetry/cache/provider may become authoritative learner evidence or product state.
 
@@ -436,7 +727,7 @@ No security telemetry/cache/provider may become authoritative learner evidence o
 
 ## Health semantics
 
-Each runnable unit exposes enough health semantics for the selected deployment to distinguish process availability from readiness to serve its required dependencies. Concrete liveness/readiness probe mechanisms are deployment-conditional; a health endpoint cannot claim downstream semantic correctness it has not verified.
+Each runnable unit exposes enough health semantics for selected deployment to distinguish process availability from readiness to serve required dependencies. Concrete liveness/readiness probes are deployment-conditional; a health endpoint cannot claim downstream semantic correctness it has not verified.
 
 ## Structured operational telemetry
 
@@ -463,7 +754,7 @@ Distributed tracing is conditional on multi-unit/debugging need. Trace correlati
 
 ## SLI/SLO/error-budget semantics
 
-A supported production release defines measurable SLIs/SLOs appropriate to its actual consequence and usage, with error-budget/reliability trade-off reasoning where useful. Exact numeric objectives are not frozen before operational evidence exists.
+Before promotion to `COVERED`/`SUPPORTED_FOR_PRODUCT` for an intended release scope, initial measurable operational objectives/SLIs/SLOs appropriate to that release candidate are defined and verifiable where applicable. Exact numbers are not frozen by architecture; production evidence may recalibrate them later under versioned operational policy.
 
 ## Incidents
 
@@ -478,13 +769,13 @@ detect
 → record material cause + follow-up
 ```
 
-Production ownership/escalation must be explicit for the supported release without inventing an enterprise on-call rota. Material incidents affecting learner data/work, evidence/content integrity, security, or sustained availability receive a post-incident record/postmortem. Operational history is not canonical learning truth.
+Production ownership/escalation is explicit for the intended supported release without inventing an enterprise on-call rota. Material incidents affecting learner data/work, evidence/content integrity, security, or sustained availability receive a post-incident record/postmortem. Operational history is not canonical learning truth.
 
 # Reliability, backup, and disaster-recovery baseline
 
-- backup existence alone is insufficient; restore is verified before the applicable production gate passes;
-- PITR is required only where the chosen deployment/support model makes it applicable;
-- recovery objectives/numerical RPO/RTO are defined from actual support needs, not guessed in architecture;
+- backup existence alone is insufficient; restore is verified before applicable production gate passes;
+- PITR is required only where chosen deployment/support model makes it applicable;
+- recovery objectives/numerical RPO/RTO derive from actual support needs, not guesses;
 - migration/deploy failure preserves committed accepted learner work and has rollback/forward-recovery procedure;
 - failover, multi-region, chaos engineering, or redundant database topology are conditional on demonstrated availability/recovery consequence;
 - network partition/provider ambiguity exposes unresolved/pending state rather than false success/failure.
@@ -514,11 +805,11 @@ Any selected deployment route must support:
 - health semantics;
 - migration-safe deployment;
 - rollback or forward-recovery;
-- observability of the running version.
+- observability of running version.
 
 CI/CD automation eventually invokes the same root `verify` correctness contract. No paid GitHub capability is required by this architecture.
 
-Docker may be used for reproducible packaging when helpful; it is not mandatory independent of deployment need. Kubernetes is `NOT_SELECTED_INITIAL`; Helm is not applicable unless Kubernetes is selected. Terraform/IaC is conditional on concrete infrastructure requiring reproducible managed state. Blue-green, canary, and rolling deployment are conditional strategies; the invariant is safe rollout plus recovery/rollback, not a mandatory named strategy. Service-discovery infrastructure is not selected for the known bounded topology unless deployment makes dynamic discovery necessary.
+Docker may be used for reproducible packaging when helpful; it is not mandatory independent of deployment need. Kubernetes is `NOT_SELECTED_INITIAL`; Helm is not applicable unless Kubernetes is selected. Terraform/IaC is conditional on concrete infrastructure requiring reproducible managed state. Blue-green, canary, and rolling deployment are conditional strategies; invariant is safe rollout plus recovery/rollback. Service-discovery infrastructure is not selected for known bounded topology unless deployment makes dynamic discovery necessary.
 
 Build caching is allowed as optimization but cannot hide stale generated artifacts or skip correctness checks.
 
@@ -532,6 +823,37 @@ First-party bounded flags/kill switches may be used for safe rollout/degradation
 - has an owner, safe default, and lifecycle/expiry when materially persistent.
 
 External feature-flag providers remain optional/conditional.
+
+# Architecture finding repair discipline
+
+Architecture review findings are supporting review metadata, not a third canonical Gap taxonomy. Learner `GapEvaluation` and product `CoverageGap` remain the only canonical gap concepts in their domains.
+
+Use this repair process:
+
+```text
+DISCOVER
+→ LOCATE OWNER
+→ CLASSIFY
+→ ASSESS IMPACT
+→ REPAIR OWNER
+→ PROPAGATE
+→ VERIFY
+→ RECORD ENDURING RATIONALE IF MATERIAL
+→ CLOSE
+```
+
+Temporary review labels such as `CANONICAL_CONFLICT`, `OWNERSHIP_AMBIGUITY`, `BOUNDARY_AMBIGUITY`, `CONTRACT_NOT_MATERIALIZED`, `IMPLEMENTATION_NOT_MATERIALIZED`, `EXTERNAL_FACT_UNRESOLVED`, `CALIBRATION_PENDING`, `COVERAGE_GAP`, and `IMPLEMENTATION_DECISION_PENDING` are allowed only as review metadata, never runtime/domain enums.
+
+Rules:
+
+- repair a canonical defect in its owner rather than a reconciliation file;
+- replace duplicate downstream wording with references where possible;
+- documentation cannot close an unimplemented contract/runtime/provider/calibration gap;
+- external uncertainty remains unresolved rather than guessed;
+- propagate only to actual downstream consumers;
+- verify stale phrases, dependency cycles, duplicate owners, fake defaults, version/contract drift, and product-status truth;
+- add `spec/DECISIONS.md` rationale only for enduring decisions, not typo/wording history;
+- a finding closes only when owner/downstream are coherent, verification passes, and remaining uncertainty is explicit.
 
 # Native verification baseline
 
@@ -549,7 +871,8 @@ Vitest unit tests
 React Testing Library component behavior where material
 Next.js production build
 Playwright critical browser E2E
-security-sensitive rendering/URL handling tests where material
+security-sensitive rendering/URL/upload handling tests where material
+public-contract compatibility/conformance tests once materialized
 ```
 
 ## Go
@@ -563,8 +886,9 @@ go test ./...
 race tests where material
 build core-api
 DB integration tests once persistence exists
-migration tests once schema exists
+migration/compatibility tests once schema exists
 query/index behavior tests where performance-sensitive
+idempotency/concurrency/async recovery tests where material
 ```
 
 ## Python
@@ -577,6 +901,7 @@ Ruff lint
 Pyright strict/static type check
 pytest
 internal-contract/conformance tests once materialized
+bounded provider/input/output tests where material
 ```
 
 ## Contracts/registries
@@ -588,13 +913,16 @@ schema validation
 generated-artifact drift check
 canonical ID/reference validation
 consumer/provider conformance
+public/internal compatibility checks
 public API → evaluator/content-capability integration tests where implemented
 backward-compatibility checks where deployed contracts require them
 ```
 
+Boundary verification additionally exercises applicable auth/access ordering, forbidden bypasses, durable async registration/recovery, failure/degradation behavior, and privacy-safe observability.
+
 # Root verification
 
-The repository uses one root verification contract for local and automated verification. Checks may be absent while the corresponding unit/materialized artifact does not exist; once a unit, registry, contract, persistence boundary, or cross-unit path appears, its applicable checks enter this same root contract.
+The repository uses one root verification contract for local and automated verification. Checks may be absent while corresponding unit/materialized artifact does not exist; once a unit, registry, contract, persistence boundary, or cross-unit path appears, applicable checks enter this same root contract.
 
 ```text
 verify
@@ -608,7 +936,7 @@ verify
   ├── core-api where materialized
   ├── evaluator where materialized
   ├── persistence/migrations where materialized
-  └── cross-unit integration where materialized
+  └── cross-unit/boundary integration where materialized
 ```
 
 CI invokes this same root contract. CI may add execution environment/triggers/reporting but cannot create a separate hidden definition of correctness. Local verification and CI agree on PASS for the same repository state.
@@ -617,7 +945,7 @@ A cross-stack change is not PASS because only one affected ecosystem is green.
 
 # Framework/infrastructure change rule
 
-A framework/infrastructure replacement requires a design review/change when it materially changes deployable boundaries, API/transport ownership, rendering/runtime model, persistence ownership/consistency, cross-language contracts, provider boundary, or operational complexity.
+A framework/infrastructure replacement requires design review/change when it materially changes deployable boundaries, API/transport ownership, rendering/runtime model, persistence ownership/consistency, cross-language contracts, provider boundary, trust boundary, or operational complexity.
 
 Patch/minor maintenance inside the same responsibility boundary is implementation work.
 
@@ -636,4 +964,4 @@ need events       → event-source everything
 need architecture → microservice-per-feature
 ```
 
-Also do not add GraphQL beside REST, separate BFF, duplicate Go/Python domain rules, or frontend-owned Band/mastery/content eligibility without an explicit architecture change and demonstrated need.
+Also do not add GraphQL beside REST, separate BFF/Next.js product backend, duplicate Go/Python domain rules, direct Python DB mutation, or frontend-owned Band/mastery/content eligibility without an explicit architecture change and demonstrated need.
