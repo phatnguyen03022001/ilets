@@ -21,7 +21,7 @@ Define semantic API boundaries before implementation. The product exposes one le
 8. variant, official family, Content Context, material Presentation Class, content revision, and delivery are explicit wherever they change content, scoring, inference, coverage, or readiness behavior;
 9. API resources expose lifecycle/operational states owned by `04-application-flows.md` rather than redefining transition rules here;
 10. once materialized, machine-readable contracts own exact wire shape;
-11. API fields translate canonical/product semantics; they never invent thresholds, state meaning, applicability, validation authority, or evidence authority that lacks an upstream owner;
+11. API fields translate canonical/product semantics; they never invent thresholds, state meaning, applicability, validation authority, evidence authority, or learner reveal policy that lacks an upstream owner;
 12. content operations may change non-semantic operational/release state but may not mutate an established ContentRevision semantic payload.
 
 # Implementation-start contract gate
@@ -189,7 +189,7 @@ bounded background/internal execution
 GET resource and/or SSE update
 ```
 
-Sending an HTTP request to Python/provider is not itself durable acceptance.
+Sending an HTTP request to Python/provider is not itself durable acceptance or semantic completion.
 
 ## Pattern 4 — idempotent create/submission
 
@@ -226,7 +226,7 @@ Evaluator / generator / validator capability
   ↓ bounded output + provenance/uncertainty
 Core-side contract + logical-work/execution association validation
   ↓
-Core-side current-state/fencing reconciliation
+Core-side current-state/fencing/deletion-eligibility reconciliation
   ↓
 owning Assessment/content/product policy interpretation
 ```
@@ -275,13 +275,15 @@ Where the stream carries protected state, it authenticates/authorizes the connec
 
 SSE events may be duplicated, delayed, reordered, or lost. Reconnect/resume cursors and event IDs are transport state, not product authority. Event/resource revision correlation may help clients discard stale hints, but a durable resource GET restores current truth. The exact event envelope belongs to one machine authority when materialized.
 
+SSE delivery is not proof that an operation or its required downstream semantic continuation is complete; the resource state defined by `04-application-flows.md` remains authoritative.
+
 Because this SSE stream is delivered over the public HTTP API, its route/envelope belongs to the public HTTP contract. Do not create `contracts/events` merely for SSE. A separate event contract is justified only by a genuinely separate cross-unit asynchronous event boundary.
 
 ## Pattern 8 — inbound webhook, conditional
 
 Inbound webhooks exist only when an actually selected external capability requires callbacks. Detailed provider authentication/replay/egress/ingress semantics are owned by `07-third-party-services.md`.
 
-At the API boundary, a callback must be authenticated according to its provider contract, bounded/validated, associated with authoritative work, idempotent/replay-safe, and committed through normal Core policy before it can affect product state. Callback timestamps/provider success are not product authority.
+At the API boundary, a callback must be authenticated according to its provider contract, bounded/validated, associated with authoritative work, idempotent/replay-safe, reconciled against current deletion/content/work eligibility, and committed through normal Core policy before it can affect product state. Callback timestamps/provider success are not product authority.
 
 # Execution trace levels
 
@@ -296,7 +298,7 @@ L4  internal capability/provider invocation where applicable
 L5  resulting product state propagation + learner/admin response
 ```
 
-For a consequential operation, implementation can reconstruct where material: initiator/operation; stable resource/work/content/attempt/target identities; auth/access decision; validation/preconditions; idempotency/concurrency decision; commit point; durable async registration/dispatch state; internal/provider invocation; retry/fallback class; persisted result/failure; caller response and later SSE/resource update.
+For a consequential operation, implementation can reconstruct where material: initiator/operation; stable resource/work/content/attempt/target identities; auth/access decision; validation/preconditions; idempotency/concurrency decision; commit point; durable async registration; execution claim/dispatch state; internal/provider invocation; retry/fallback class; completion reconciliation; persisted result/recoverable continuation; caller response and later SSE/resource update.
 
 Trace/log data is operational evidence only; it never becomes learner/product semantic authority.
 
@@ -341,7 +343,7 @@ Exact timeout/retry counts/budgets are implementation/operational policy until m
 
 An authoritative internal ContentRevision is not automatically a learner-facing DTO. Public learner/activity responses use an actor/use-specific projection of the same exact revision identity.
 
-Before the applicable product/content policy permits reveal, learner/browser payloads exclude material whose disclosure would reveal an answer, invalidate the intended inference, or expose privileged execution state, including as applicable:
+Before the applicable semantic policy permits reveal, learner/browser payloads exclude material whose disclosure would reveal an answer, invalidate the intended inference, or expose privileged execution state, including as applicable:
 
 - answer keys/reference answers;
 - hidden scoring references or rubrics not intended for learner display;
@@ -351,7 +353,11 @@ Before the applicable product/content policy permits reveal, learner/browser pay
 - privileged validation/provenance details;
 - other hidden assessment material.
 
-Admin/evaluator projections remain capability/contract scoped. Projection does not create another ContentRevision or duplicate content truth; the exact DTO/reveal timing belongs to the future public/internal machine contracts and owning product/content policy.
+Machine contracts encode the projection/reveal decision; they do **not** own semantic reveal policy. Reveal semantics are derived from the applicable upstream owners: `../spec/07-PRACTICE.md` for feedback timing/learning mechanism, `../spec/08-ASSESSMENT.md` for independence/evidence consequence, `../spec/10-CONTENT-MODEL.md` for represented answer/model/rubric material, and `04-application-flows.md` for current lifecycle/use context.
+
+Thus a protected readiness performance cannot reveal answer/model material during the attempt; retrieval practice cannot reveal required feedback/model before the authentic retrieval attempt when Practice policy requires that ordering; and post-task review may reveal permitted model/rubric material only when the owning learning/evidence/product semantics allow it. OpenAPI later encodes these learner-safe projections but cannot invent reveal timing because a field is nullable or present in an internal schema.
+
+Admin/evaluator projections remain capability/contract scoped. Projection does not create another ContentRevision or duplicate content truth; exact DTO fields belong to future public/internal machine contracts.
 
 # Public resource groups
 
@@ -387,7 +393,9 @@ A diagnostic exposes its lifecycle, sampling TargetProfile/reference, sample ide
 GET /v1/daily-plan
 ```
 
-Response semantics preserve plan/TargetProfile/learner-state references, eligible activity cards, reason codes, canonical/content/variant/delivery identities where material, primary purpose, evidence candidacy, unresolved target conditions, and CoverageGap indication. Hard eligibility and ranking remain distinct as owned by `04-application-flows.md`.
+Response semantics preserve plan-time TargetProfile/target-context and learner/Progression references, content/release and product-support/coverage provenance where consequential, eligible activity cards, reason codes, canonical/content/variant/delivery identities, primary purpose/evidence candidacy, unresolved target conditions, and CoverageGap indication where material. Hard eligibility and ranking remain distinct as owned by `04-application-flows.md`.
+
+A DailyPlan response is a snapshot, not an assignment grant. When a client later starts an activity from a plan reference, Core re-evaluates current hard eligibility and performs any required decisive reservation/assignment before returning the learner-safe activity projection; a stale plan item cannot force assignment.
 
 ## 4. Learning sessions
 
@@ -407,7 +415,7 @@ POST   /v1/practice-activities
 GET    /v1/practice-activities/{practice_activity_id}
 ```
 
-A PracticeActivity resolves an exact content revision and learner-safe projection plus canonical target, applicable official family/context/presentation/variant/delivery identities, stimulus/response conditions, scaffolding/exposure state, `primary_activity_purpose`, and `evidence_candidacy`.
+PracticeActivity creation resolves current hard eligibility at assignment time rather than trusting historical plan eligibility. The resulting activity preserves the exact assigned content revision and assignment-time provenance needed by `04-application-flows.md`, then exposes the learner-safe projection plus canonical target, applicable official family/context/presentation/variant/delivery identities, stimulus/response conditions, scaffolding/exposure state, `primary_activity_purpose`, and `evidence_candidacy`.
 
 Purpose and evidence candidacy are orthogonal. The client/evaluator/server cannot retroactively upgrade candidacy after observing a favorable result. Actual EvidenceFact admission remains Assessment authority.
 
@@ -428,7 +436,7 @@ Draft mutation uses concurrency control. Submission is explicit/idempotent and p
 GET /v1/evaluations/{evaluation_id}
 ```
 
-Public output may expose status, learner-meaningful observations/feedback, uncertainty/quality state where useful, and retry/unavailable state. It does not expose chain-of-thought, secrets, hidden evaluator instructions, or irrelevant provider internals. Evaluation/execution retry and terminal-state semantics are owned by `04-application-flows.md`.
+Public output may expose status, learner-meaningful observations/feedback, uncertainty/quality state where useful, and retry/unavailable state. It does not expose chain-of-thought, secrets, hidden evaluator instructions, or irrelevant provider internals. Evaluation/execution retry, terminal-state, completion, and downstream-recovery semantics are owned by `04-application-flows.md`; `completed` on this resource cannot be implemented as an unrecoverable dead end with required Observation/Assessment/Progression work missing.
 
 ## 8. Progress and gaps
 
@@ -483,9 +491,9 @@ GET    /v1/admin/content-reports
 PATCH  /v1/admin/content-reports/{content_report_id}
 ```
 
-Exact fields/subresources and operational state-transition surfaces belong to machine contracts. The representative surface intentionally does not define a generic `PATCH` on an established ContentRevision: semantic payload is immutable under `spec/10-CONTENT-MODEL.md`, while validation decisions, release eligibility, operational safety/quarantine, reports, revalidation, and retirement remain separate dimensions owned by `04-application-flows.md`.
+Exact fields/subresources and operational state-transition surfaces belong to machine contracts. The representative surface intentionally does not define a generic `PATCH` on an established ContentRevision: semantic payload is immutable under `spec/10-CONTENT-MODEL.md`, while ValidationDecision history and minimum validation semantics are owned there and release eligibility, operational safety/quarantine, reports, revalidation, and retirement remain runtime dimensions owned by `04-application-flows.md`.
 
-Privileged capability meaning, content lifecycle, quarantine/revalidation/release/retirement, and the prohibition on validation bypass are owned by `04-application-flows.md`. API operations cannot turn generator/validator/operator output directly into active learner content.
+Privileged capability meaning, content lifecycle, quarantine/revalidation/release/retirement, and the prohibition on validation bypass are owned by `04-application-flows.md`. API operations cannot turn generator/validator/operator output directly into active learner content or overwrite a historical ValidationDecision to represent revalidation.
 
 # Server event stream
 
@@ -513,7 +521,7 @@ Generation/validation endpoints are optional capability boundaries. This route g
 
 Requests preserve logical work/Evaluation identity, Attempt/content revision identities, canonical target IDs, material family/context/presentation/variant/delivery scope, actual response/assistance/exposure conditions, evaluator configuration reference, and requested observation families. When execution attempts may overlap, the internal contract also preserves execution-attempt/fencing association sufficient for Core to determine whether a completion is current, duplicate, stale, or superseded without guessing. Applicability is preserved rather than filled with fabricated values.
 
-Responses contain bounded status/Observation candidates, criterion measurements, permitted derived analysis references, uncertainty/quality flags, evaluator/model provenance, and diagnostics. They never carry authoritative learner certification, product support, Band advancement, evidence candidacy/admission, content activation, or final plan state. Core reconciles response acceptance according to the lifecycle/fencing semantics in `04-application-flows.md` before creating downstream learner evidence.
+Responses contain bounded status/Observation candidates, criterion measurements, permitted derived analysis references, uncertainty/quality flags, evaluator/model provenance, and diagnostics. They never carry authoritative learner certification, product support, Band advancement, evidence candidacy/admission, content activation, or final plan state. Core reconciles response acceptance according to current lifecycle/work/deletion/content-eligibility fencing in `04-application-flows.md` and `06-implementation-stack.md` before downstream learner semantics may be created.
 
 ## Content generation/validation/media semantics
 
@@ -607,15 +615,19 @@ Forbidden without an explicit architecture change:
 - API-owned thresholds or hidden per-skill target constraints;
 - CoverageGap represented as learner GapEvaluation or infrastructure error;
 - unresolved TargetProfile input represented as learner evidence insufficiency or fabricated product non-support;
+- treating plan-time eligibility as assignment authority after current hard conditions changed;
 - ranker returning an activity that failed hard eligibility;
 - omitting a material content revision/family/context/presentation/delivery identity;
 - fabricating a family/context/presentation/variant value for a legitimately non-applicable dimension;
 - client/evaluator reclassifying immutable item family or evidence candidacy;
 - mutating an established ContentRevision semantic payload through generic PATCH or another operational mutation;
 - serializing an unrestricted internal ContentRevision representation to a learner/browser surface;
+- using OpenAPI field presence/nullability to invent pedagogical/evidential answer or rubric reveal timing;
 - generator/validator output directly activating learner content;
+- overwriting an earlier ValidationDecision to represent a later policy run;
 - generic admin validation bypass for a known hard failure;
 - one combined ContentStatus hiding validation/release/operational dimensions;
 - `completed diagnostic` represented as `complete learner baseline`;
 - retrying ambiguous/non-deduplicated mutation merely because a client timed out;
-- treating additive schema or generated-code success as proof of deployed compatibility.
+- treating additive schema or generated-code success as proof of deployed compatibility;
+- treating SSE delivery or internal HTTP success as semantic completion.
