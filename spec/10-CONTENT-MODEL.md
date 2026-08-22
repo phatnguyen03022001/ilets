@@ -1,7 +1,7 @@
 STATUS: CANONICAL
 OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, reference contracts between concrete content and canonical objects/external task families, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
-DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, or product coverage status
+DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, exact wire/storage schema, product activity-purpose/evidence-candidacy policy, or product coverage status
 
 # 10 — Content Model
 
@@ -42,9 +42,11 @@ Every concrete object references the canonical targets/context/policies that jus
 
 When variant, official task/question family, task/section context, material presentation, or delivery condition changes task meaning or inference, that scope remains explicit. Generic labels such as `reading`, `completion`, or `writing-task-1` are insufficient for coverage claims.
 
+Conditional identity dimensions are **applicability-aware**. A field that is semantically inapplicable may be omitted/represented as not applicable by the eventual machine contract; a material field may not be omitted merely for convenience. Implementation must not fabricate a Band, Content Context, official family, Presentation Class, delivery mode, or Curriculum Node solely to satisfy a schema.
+
 # Stable Content Context registry
 
-Content Context identifies **where an IELTS construct is instantiated**, not a new learning skill.
+Content Context identifies **where an IELTS construct is instantiated**, not a new learning skill and not a universal label for every content object.
 
 | ID | Meaning | Variant |
 |---|---|---|
@@ -63,17 +65,22 @@ Rules:
 1. these IDs remain stable across content/manifests/runtime contracts;
 2. exact JSON representation is a machine-contract concern, but IDs survive unchanged;
 3. new context IDs require a materially distinct external/content inference context, not a topic, difficulty, Band, delivery mode, or screen;
-4. delivery mode is orthogonal and does not multiply Content Context IDs.
+4. delivery mode is orthogonal and does not multiply Content Context IDs;
+5. a context-neutral Knowledge/foundation item may legitimately have no Content Context when IELTS task/section context does not affect its meaning or inference;
+6. do not create `CTX-GENERIC`, `CTX-KNOWLEDGE`, or another filler context merely to satisfy storage/API shape;
+7. once official-family/variant/task/section context changes validity, coverage, scoring, or inference, the appropriate Content Context becomes required.
 
 # Official family reference
 
 Official task/question-family identity is owned by `02-IELTS-MODEL.md` through stable `IELTS-*-*` IDs.
 
-Concrete content records those IDs separately from Skill targets because:
+Concrete content records those IDs separately from Skill targets when material because:
 
 - one Skill Leaf may serve multiple official families;
 - one official family may require multiple capabilities;
 - grouping several families under one Skill Leaf must not allow missing content for one family to disappear from coverage.
+
+A context-neutral Knowledge/foundation item does not invent an official family merely because the product later packages it inside IELTS preparation.
 
 # Stable Content Presentation Class registry
 
@@ -115,7 +122,7 @@ Rules:
 
 # Delivery scope
 
-Where exam-readiness behavior depends materially on external delivery, concrete items/runs may declare a delivery scope/reference resolved from `02-IELTS-MODEL.md` / TargetProfile.
+Where exam-readiness behavior depends materially on external delivery, concrete items/runs may declare a delivery scope/reference resolved from `02-IELTS-MODEL.md` and downstream target context.
 
 Delivery scope changes interaction/conditions. It does not create a second Content Context, external family, or Presentation Class.
 
@@ -131,7 +138,7 @@ curriculum_node_id
 objective_refs
 prerequisite_refs
 test_variant_scope
-content_context_refs
+content_context_refs where material
 external_task_family_refs where material
 required_presentation_class_refs where material
 delivery_mode_scope optional
@@ -155,7 +162,7 @@ Conceptual fields:
 id
 kind
 test_variant_scope
-content_context_id
+content_context_id where material
 external_task_family_refs where material
 presentation_class_refs where material
 source_or_provenance
@@ -218,15 +225,15 @@ Conceptual fields:
 ```text
 id
 practice_type_id
-learning_mechanism_refs
+learning_mechanism_refs where applicable
 test_variant_scope
-content_context_id
+content_context_id where material
 external_task_family_refs where material
 presentation_class_refs where material
 delivery_mode_scope optional
 target_skill_leaf_ids
 target_knowledge_ids
-curriculum_node_id
+curriculum_node_id where the item is specifically node-bound
 stimulus_refs
 prompt_or_instruction
 response_contract
@@ -236,7 +243,7 @@ exposure_context
 error_pattern_refs
 remediation_pattern_ref
 feedback_contract
-answer_or_model_reference
+answer_or_model_reference where applicable
 ```
 
 Invariants:
@@ -244,16 +251,18 @@ Invariants:
 1. `practice_type_id` resolves to `07-PRACTICE.md`;
 2. Learning Mechanism refs resolve where declared;
 3. Skill/Knowledge refs resolve canonically;
-4. official family refs resolve to `02-IELTS-MODEL.md`;
-5. Content Context is compatible with variant-specific targets/family;
-6. required Presentation Class is represented where the family has material subformats;
-7. `W-TA-*` visual targets cannot instantiate GT Task 1;
-8. `W-GT1-*` cannot instantiate Academic Task 1;
-9. family identity cannot be inferred only from a broad Skill Leaf when several official families share that leaf;
-10. delivery scope is recorded when interaction/readiness inference depends on it;
-11. difficulty/scaffold may vary without changing the target;
-12. authored and generated items obey the same contract;
-13. item instances remain replaceable.
+4. official family refs resolve to `02-IELTS-MODEL.md` when the item instantiates an official family;
+5. Content Context is present and compatible whenever variant/task/section context changes validity, coverage, or inference;
+6. context-neutral Knowledge/foundation items may omit Content Context rather than inventing one;
+7. required Presentation Class is represented where the family has material subformats;
+8. `W-TA-*` visual targets cannot instantiate GT Task 1;
+9. `W-GT1-*` cannot instantiate Academic Task 1;
+10. family identity cannot be inferred only from a broad Skill Leaf when several official families share that leaf;
+11. delivery scope is recorded when interaction/readiness inference depends on it;
+12. Curriculum Node binding is explicit when material but is not fabricated for reusable/direct-browse items whose identity is target/type-based;
+13. difficulty/scaffold may vary without changing the target;
+14. authored and generated items obey the same contract;
+15. item instances remain replaceable.
 
 # `AssessmentItem`
 
@@ -266,13 +275,13 @@ id
 assessment_type_id
 claim_scope
 test_variant_scope
-content_context_id
+content_context_id where material
 external_task_family_refs where material
 presentation_class_refs where material
 delivery_mode_scope optional
 target_skill_leaf_ids
 target_knowledge_ids
-target_band
+target_band when the claim is Band-scoped
 stimulus_refs
 prompt_or_task
 response_contract
@@ -287,8 +296,10 @@ independence_group
 Invariants:
 
 - samples the claimed capability;
-- references Band semantics rather than redefining them;
-- official family/context/variant matches the claim;
+- `target_band` is required only for a Band-scoped claim; Knowledge probes, leaf-level diagnostics, and other non-Band claims must not invent a Band merely to satisfy schema shape;
+- references Band semantics rather than redefining them when Band-scoped;
+- official family/context/variant matches the claim when material;
+- context-neutral Knowledge/foundation assessment may omit Content Context;
 - material Presentation Class is preserved where relevant;
 - Reading Band inference uses applicable variant scoring policy;
 - timing, assistance, partial/full-task state, delivery/input mode, capture quality, and other material conditions remain visible;
@@ -406,7 +417,7 @@ assessment_type_ref
 claim_candidate_refs
 target_refs
 test_variant_scope
-content_context_id
+content_context_id where material
 external_task_family_refs when material
 presentation_class_refs when material
 actual_delivery_mode where material
@@ -453,9 +464,9 @@ Each entry must support answers to:
 
 ```text
 canonical target refs
-stable official task/question-family refs
-stable Content Context ID
-material Presentation Class refs
+official task/question-family refs + applicability
+Content Context ref + applicability
+material Presentation Class refs + applicability
 test variant
 supported delivery scope where material
 Practice/Assessment Type support
@@ -467,13 +478,24 @@ independent readiness asset state
 product/release activation
 ```
 
+For conditional identity dimensions, the manifest must let coverage tooling distinguish at least:
+
+```text
+applicable + present
+explicitly not applicable
+required but missing/unresolved
+```
+
+Exact encoding belongs to machine contracts/implementation. Absence alone must not be interpreted as `NOT_APPLICABLE`.
+
 Coverage tooling must query **official-family and required Presentation-Class coverage independently of Skill coverage**.
 
 Examples:
 
 - Matching Information cannot satisfy Matching Features merely because both share a broader Reading capability;
 - one form-completion template cannot prove all required `IELTS-L-QF-04` presentation coverage;
-- only graph/chart Academic Task-1 assets cannot prove visual-task coverage when required process/map presentation classes are absent.
+- only graph/chart Academic Task-1 assets cannot prove visual-task coverage when required process/map presentation classes are absent;
+- a context-neutral grammar item does not need a fake Content Context and cannot be counted toward variant/family coverage that does require one.
 
 The manifest is implementation truth about available content, not new learning authority.
 
@@ -484,10 +506,12 @@ A UI feature existing is not proof of content coverage.
 # Composition
 
 ```text
-external task family + content context + Curriculum Node
+canonical Skill/Knowledge targets
++ Curriculum Node when specifically bound
++ external family/context/presentation when material
       ↓
-Learning Unit
-  ├─ Stimuli / presentation classes
+Learning Unit / concrete content binding
+  ├─ Stimuli
   ├─ Practice Items
   ├─ Error/Remediation Patterns
   └─ Assessment Items
@@ -515,7 +539,8 @@ A concrete object is acceptable only when:
 
 - canonical refs resolve;
 - external task-family refs resolve when the item represents an official family;
-- Content Context/variant refs are compatible;
+- Content Context/variant refs are compatible when context is material;
+- context-neutral omission is explicit/valid rather than accidental missing metadata;
 - Presentation Class is correct when material;
 - delivery scope is compatible when material;
 - it introduces no contradictory teaching/scoring rule;
@@ -535,4 +560,4 @@ AI generation is an instance-generation mechanism, not authority. Generated item
 
 Names/fields here define conceptual semantics. They do not force one-to-one SQL tables/classes/JSON payloads.
 
-Machine boundaries materialize exact shapes under repository contract governance while preserving stable canonical IDs.
+Machine boundaries materialize exact shapes under repository contract governance while preserving stable canonical IDs and the applicability distinctions defined here.
