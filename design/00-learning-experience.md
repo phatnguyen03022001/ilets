@@ -47,28 +47,56 @@ Conceptual fields:
 test_variant                 Academic | General Training
 delivery_mode                optional; external mode relevant to booked/intended test
 purpose_or_receiving_rule    optional external constraint reference
-target_overall_band          optional
-minimum_listening_band       optional
-minimum_reading_band         optional
-minimum_writing_band         optional
-minimum_speaking_band        optional
+target_overall_band          optional minimum overall-band constraint
+minimum_listening_band       optional minimum section-band constraint
+minimum_reading_band         optional minimum section-band constraint
+minimum_writing_band         optional minimum section-band constraint
+minimum_speaking_band        optional minimum section-band constraint
 test_date                    optional
-selected_skill_retake        optional
+selected_skill_retake        optional preparation focus on one existing skill
 ```
 
-Rules:
+## Band-constraint semantics
+
+Band constraints are **lower bounds**, not exact-equality goals:
+
+```text
+target_overall_band = 7.0       means required/desired overall result >= 7.0
+minimum_writing_band = 6.5      means Writing result >= 6.5
+```
+
+A persisted TargetProfile used for target-relative planning/readiness contains at least one Band constraint: `target_overall_band` and/or one real per-skill minimum. If the learner does not yet know any target Band constraint, the product keeps the target unresolved rather than inventing one; diagnostic/foundational work may still be offered without claiming target readiness.
+
+An overall target alone does **not** imply four equal per-skill minima. Multiple section-Band combinations can satisfy the same official overall Band after the applicable rounding rule.
+
+If planning requires working per-skill targets while only an overall target is known, the product may propose a separately labelled **planning profile**. A planning profile:
+
+- is a product planning choice, not an external requirement;
+- does not mutate TargetProfile per-skill minima unless the learner explicitly adopts them;
+- must preserve that multiple valid four-skill combinations may satisfy the overall target;
+- cannot be used as evidence that a receiving organisation requires those per-skill values.
+
+An overall-target readiness statement may be derived only from current supported section-Band claims plus the applicable official overall-score rule and any real per-skill minima. Self-estimates, planner working targets, or unsupported point predictions cannot be substituted for section evidence.
+
+## General rules
 
 1. overall target, per-skill minima, or both may be supplied;
 2. real receiving-organisation/visa/employer minima are represented explicitly rather than inferred;
 3. an overall target alone does not uniquely determine four skill targets;
 4. the product must not fabricate hidden per-skill requirements;
-5. a balanced planning profile may be proposed only as a labelled product planning choice;
+5. a balanced planning profile may be proposed only under the separate planning-profile semantics above;
 6. the target remains stable until the learner explicitly changes it;
 7. current readiness is evaluated against TargetProfile conditions, not an internal mastery average;
 8. delivery mode is included only when it changes exam-preparation interaction or an external acceptance/eligibility condition;
 9. delivery mode never changes the canonical Band standard.
 
-Current external variant/delivery facts are owned by `../spec/02-IELTS-MODEL.md`. Current product support for a TargetProfile is owned by `08-coverage-and-support.md`.
+## One Skill Retake focus
+
+`selected_skill_retake` selects preparation focus on one existing IELTS skill. It does **not** by itself assert that the learner is eligible for One Skill Retake.
+
+When the product makes an eligibility-sensitive support/readiness statement, applicable original-test, timing-window, participating-location, delivery-mode, purpose/acceptance, and other current external conditions must be resolved from explicit known data/current external truth. Missing eligibility information remains unresolved; it is never inferred from the selected skill alone.
+
+Current external variant/delivery/One-Skill-Retake facts are owned by `../spec/02-IELTS-MODEL.md`. Current product support for a TargetProfile is owned by `08-coverage-and-support.md`.
 
 # First-run experience
 
@@ -81,7 +109,7 @@ Capture only information that changes planning or target interpretation:
 - receiving/purpose requirement when relevant;
 - intended/booked delivery mode when known and material;
 - test date if fixed;
-- selected One Skill Retake focus if applicable;
+- selected One Skill Retake focus if applicable, without implying eligibility;
 - self-estimate, clearly non-authoritative;
 - available study time;
 - accessibility requirements;
@@ -215,10 +243,10 @@ Before an activity, show enough information for informed action:
 - target skill/capability in plain language;
 - why now;
 - expected duration;
-- activity purpose: learn, practice, review, assess, or mock;
+- primary activity purpose in learner language;
 - relevant target variant/context;
 - scaffold/independence state where material;
-- whether the attempt may be evidence-eligible.
+- whether the configured activity is an evidence candidate under normal Assessment admission.
 
 After an activity, show:
 
@@ -293,10 +321,12 @@ Suitable labels include:
 - **Needs more evidence**;
 - **Developing**;
 - **Ready to reassess**;
-- **Currently supported at Band N**;
-- **Evidence stale**;
+- **Current evidence supports Band N**;
+- **Evidence stale — refresh needed**;
 - **Evidence conflicting**;
 - **Product path not yet supported**.
+
+Historical certification may remain visible separately even when current evidence is stale/conflicting and current certification is no longer active.
 
 Numeric confidence appears only when it is meaningful and calibrated.
 
