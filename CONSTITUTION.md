@@ -532,6 +532,8 @@ Do not introduce a broker, queue technology, vector database, workflow engine, m
 
 The initial design may describe durable async behavior; implementation should use the smallest mechanism that satisfies the actual reliability/throughput contract.
 
+No implementation, repository automation, or deployment may introduce a mandatory paid external dependency, usage-billed repository capability, metered hosted execution/storage capability, or paid provider without explicit authorization from the repository's USER authority. Free/open-source local alternatives remain preferred when semantically sufficient; optional paid services may be evaluated but not silently activated, and normal dependency, license, security, privacy, quality, and provider rules still apply.
+
 A new infrastructure subsystem should answer:
 
 - what measured/contractual requirement requires it;
