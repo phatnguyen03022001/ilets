@@ -1,0 +1,39 @@
+{
+  "content_id": "reading-bootstrap-classification-001",
+  "revision_id": "reading-bootstrap-classification-001-r1",
+  "provenance": {
+    "origin": "owned_synthetic_bootstrap",
+    "copyright": "original repository bootstrap fixture",
+    "official_ielts_material": false
+  },
+  "validation": {
+    "decision_id": "vd_bootstrap_reading_training_v1",
+    "policy_version": "bootstrap-reading-training-v1",
+    "intended_use": "TRAINING_LOW_CONSEQUENCE",
+    "result": "PASS",
+    "findings": ["canonical_refs_valid", "structure_executable", "academic_context_compatible", "owned_rights", "answer_key_complete", "learner_projection_hides_answers", "deterministic_scoring_consistent"]
+  },
+  "semantic_payload": {
+    "feature_id": "R-F04",
+    "practice_mode_id": "PM-R03",
+    "practice_type_ids": ["PT-13", "PT-16"],
+    "skill_target_ids": ["R-QT-02", "R-QT-03"],
+    "official_family_ids": ["IELTS-R-QF-02", "IELTS-R-QF-03"],
+    "content_context_id": "CTX-READING-ACADEMIC",
+    "primary_activity_purpose": "TRAINING",
+    "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
+    "test_variant": "ACADEMIC",
+    "stimulus": {
+      "title": "Rooftop garden pilot",
+      "text": "Northbridge Community Library began a rooftop-garden pilot in April. Staff installed six lightweight planting boxes on a previously unused roof terrace. The project grows herbs and salad leaves for free weekend workshops; it does not supply the library cafe. Rainwater collected from the roof is stored in two small tanks, while mains water is used only during long dry periods. The library has not decided whether to add fruit trees next year. In a short project report, the coordinator argues that small public buildings can test food-growing ideas without major construction. She also says the garden should be treated as an education project rather than a way to reduce the library's operating budget. The report does not compare rooftop gardens with ground-level community gardens."
+    },
+    "items": [
+      {"item_id":"item_tfng_001","official_family_id":"IELTS-R-QF-02","statement":"The rooftop area had not been used before the pilot.","choices":["TRUE","FALSE","NOT_GIVEN"],"correct_choice":"TRUE","explanation":"The passage says the boxes were installed on a previously unused roof terrace."},
+      {"item_id":"item_tfng_002","official_family_id":"IELTS-R-QF-02","statement":"Produce from the garden is served in the library cafe.","choices":["TRUE","FALSE","NOT_GIVEN"],"correct_choice":"FALSE","explanation":"The passage explicitly says the garden does not supply the cafe."},
+      {"item_id":"item_tfng_003","official_family_id":"IELTS-R-QF-02","statement":"The library will plant fruit trees next year.","choices":["TRUE","FALSE","NOT_GIVEN"],"correct_choice":"NOT_GIVEN","explanation":"The library has not decided whether to add fruit trees."},
+      {"item_id":"item_ynng_001","official_family_id":"IELTS-R-QF-03","statement":"The coordinator believes small public buildings can experiment with food growing without major construction.","choices":["YES","NO","NOT_GIVEN"],"correct_choice":"YES","explanation":"This matches the coordinator's stated view in the project report."},
+      {"item_id":"item_ynng_002","official_family_id":"IELTS-R-QF-03","statement":"The coordinator thinks the main value of the garden is reducing operating costs.","choices":["YES","NO","NOT_GIVEN"],"correct_choice":"NO","explanation":"She says it should be treated as an education project rather than a budget-reduction measure."},
+      {"item_id":"item_ynng_003","official_family_id":"IELTS-R-QF-03","statement":"The coordinator considers rooftop gardens more useful than ground-level community gardens.","choices":["YES","NO","NOT_GIVEN"],"correct_choice":"NOT_GIVEN","explanation":"The report does not compare the two kinds of garden."}
+    ]
+  }
+}
