@@ -69,12 +69,13 @@ ContentRevision
 Rules:
 
 1. `content_id` identifies a logical content lineage; `revision_id` identifies the exact semantic revision used at runtime.
-2. Once a revision has been exposed to a learner or referenced by an Attempt/Observation/EvidenceFact path, its material semantic payload is immutable.
-3. A material change to stimulus, prompt/instruction, answer key, rubric/model answer, canonical target binding, official family/context/presentation identity, response contract, or another field that changes task meaning/scoring/inference creates a new revision rather than mutating history.
-4. Non-semantic operational metadata may change without creating a semantic revision only when it cannot alter what the learner saw, what was asked, how the response is interpreted, or what claim the item can support.
-5. Historical Attempt and evidence paths must resolve the exact revision the learner actually received, even after later revisions are activated or the original revision is retired from new assignment.
-6. `derived_from_revision_id` expresses lineage when a revision is intentionally derived from another; lineage does not itself establish independence, novelty, or quality.
-7. A revision may be revalidated under a later validator/policy version without creating another ContentRevision when the semantic payload did not change.
+2. A content candidate/generation draft is not an established ContentRevision. Once a ContentRevision identity is established/persisted as a semantic revision, its material semantic payload is immutable whether or not it has been assigned or exposed to a learner.
+3. A material change to stimulus, prompt/instruction, answer key, rubric/model answer, canonical target binding, official family/context/presentation identity, response contract, or another field that changes task meaning/scoring/inference creates another ContentRevision rather than mutating the established revision.
+4. Learner exposure or an Attempt/Observation/EvidenceFact reference makes historical preservation especially consequential; it is not the point at which immutability begins.
+5. Non-semantic operational metadata may change without creating a semantic revision only when it cannot alter what the learner saw, what was asked, how the response is interpreted, or what claim the item can support.
+6. Historical Attempt and evidence paths must resolve the exact revision the learner actually received, even after later revisions are activated or the original revision is retired from new assignment.
+7. `derived_from_revision_id` expresses lineage when a revision is intentionally derived from another; lineage does not itself establish independence, novelty, or quality.
+8. A revision may be revalidated under a later validator/policy version without creating another ContentRevision when the semantic payload did not change.
 
 Origin may be authored, imported, deterministic/generated, AI-generated, or another eligible mechanism. Origin does not change the semantic or quality obligations applicable to the intended use.
 
@@ -311,6 +312,8 @@ presentation_variation where material
 ```
 
 Exact-item novelty is not equivalent to meaningful transfer. A globally unique item may still be unsuitable for a learner who recently saw materially equivalent content or a model answer; conversely, intentionally similar content may remain useful for controlled learning when the intended inference does not require novelty.
+
+Reservation or assignment for delivery is not by itself proof that the learner actually saw the material. ExposureContext records actual material exposure when established; ambiguous delivery remains unresolved rather than being fabricated as seen or unseen.
 
 # `PracticeItem`
 
