@@ -116,8 +116,10 @@ The evaluator is an **internal capability**, not public API surface:
 - Browser and admin UI cannot call it directly;
 - public-internet reachability is not assumed;
 - deployment restricts reachability according to the selected topology;
-- if the call crosses an untrusted/shared network, caller/service authentication and authorization are required;
-- trusted private/co-located transport may use a smaller mechanism only when the actual trust boundary makes that safe;
+- trust is determined by actual reachability, authorized principals, process/container isolation, deployment controls, and attack surface rather than network labels;
+- `localhost`, a private IP, same VPC, same host, same cluster, or an `internal` hostname alone does not prove a trusted caller boundary;
+- if an unauthorized principal/process/workload can reach the evaluator, caller/service authentication and authorization are required;
+- a smaller mechanism is acceptable only when the selected isolation/reachability boundary actually makes it safe;
 - this design does not freeze mTLS, JWT, or service mesh.
 
 Python returns bounded result/signals plus provenance/model/evaluator identity and uncertainty/quality where material. Responses remain non-authoritative until Core validates/interprets them through owning policy. Python cannot directly read/write the product DB.
@@ -134,7 +136,7 @@ remote/capability execution
 result reconciliation
 ```
 
-Required continuation is durably registered with or recoverably derivable from committed state before acknowledgement depends on it. Timeout does not prove remote non-execution. Retry/reconciliation reuses logical work/idempotency identity.
+Required continuation is durably registered with or recoverably derivable from committed state before acknowledgement depends on it. Timeout does not prove remote non-execution. Retry/reconciliation reuses logical work/idempotency identity and preserves execution-attempt/fencing state where overlapping executions are possible.
 
 ## Cache boundary
 
@@ -401,8 +403,11 @@ Owns learner/admin `/v1`, authoritative product DB access, durable learner/targe
 - Core API is the only application runtime that reads/writes it;
 - SQL is parameterized;
 - transaction boundaries align to product invariants and required durable work/audit markers;
+- decisive idempotency admission/replay association is atomic with the authoritative mutation/outcome it protects, or enforced by an equivalent serialization invariant; preflight lookup alone is insufficient;
+- decisive optimistic-concurrency comparison is atomic with the guarded mutation; application-memory read/compare followed by an unrelated write is insufficient;
+- learner-specific reservation/assignment state used to protect novelty/independence is serialized with its decisive eligibility/assignment decision as required by `04-application-flows.md`;
+- async completion acceptance is guarded by authoritative logical-work/current execution-fencing state so duplicate or superseded result delivery cannot create a second learner outcome;
 - provider/network calls are outside DB atomicity;
-- optimistic concurrency is used where stale-write protection is required;
 - connection management is bounded/observable;
 - indexes/query optimization follow real measured access paths;
 - migrations are explicit/ordered/versioned once schema exists;
@@ -462,7 +467,7 @@ Exact contract files/version numbers are materialized later.
 # Canonical registry materialization
 
 ```text
-canonical Markdown owners
+explicit canonical Markdown owner/source structure
         ↓
 repository materializer / validator
         ↓
@@ -473,15 +478,18 @@ generated or validated Go / TypeScript / Python consumers
 
 Invariants:
 
-1. Markdown owner remains semantic authority;
-2. derived registry/bindings are not another SSOT;
-3. equivalent ID/enum registries are not manually recreated per language;
-4. duplicate IDs, broken refs, parser/materializer failure, and generated drift fail verification or remain unresolved;
-5. canonical IDs cross boundaries unchanged and are never recycled for unrelated meaning;
-6. materialization may start only with registries consumed by the bounded implementation slice;
-7. historical references remain reconstructable across later canonical evolution.
+1. each materialized registry knows its expected canonical owner and owner-specific canonical structure/source region; the Markdown owner remains semantic authority;
+2. materialization extracts declared canonical objects, not arbitrary ID-looking tokens discovered by repository-wide grep/regex;
+3. supporting prose/references, examples, `spec/DECISIONS.md`, research, archive, and other non-owner material do not become registry entries merely because they contain a matching-looking identifier;
+4. duplicate, ambiguous, structurally unparseable, or unexpectedly sourced canonical definitions fail verification or remain unresolved rather than being guessed;
+5. derived registry entries preserve source-owner identity and enough source fingerprint/repository revision provenance for drift/reconstruction;
+6. a derived tooling source map/config may identify expected owner/source regions but is tooling configuration, not another semantic SSOT and cannot invent objects absent from the owner;
+7. equivalent ID/enum registries are not manually recreated per language;
+8. canonical IDs cross boundaries unchanged and are never recycled for unrelated meaning;
+9. materialization may start only with registries consumed by the bounded implementation slice;
+10. historical references remain reconstructable across later canonical evolution.
 
-Representation/parser/codegen choices remain implementation decisions.
+Exact parser, source-map representation, serialization, and codegen choices remain implementation decisions.
 
 # Distinct state/version identities
 
@@ -525,10 +533,11 @@ Implement `04-application-flows.md` without assuming broker infrastructure:
 authoritative DB work state
 + durable work/recoverable registration where needed
 + idempotent bounded dispatch
++ fenced result reconciliation
 + SSE/resource status
 ```
 
-Race-sensitive operations use transaction/concurrency controls rather than timing assumptions. Cross-process correctness does not rely on in-memory mutexes alone. Memory use is bounded for requests, media, queues, caches, and external outputs.
+Race-sensitive operations use transaction/conditional-write/equivalent serialization controls rather than timing or preflight assumptions. Async retries preserve execution identity/fencing where overlap is possible, and novelty-sensitive reservations are reconciled separately from actual ExposureContext. Cross-process correctness does not rely on in-memory mutexes alone. Memory use is bounded for requests, media, queues, caches, and external outputs.
 
 # Security engineering baseline
 
@@ -549,7 +558,7 @@ Before public auth contract materialization, make the credential/session transpo
 
 Each runnable unit exposes deployment-appropriate process/readiness health without claiming downstream semantic correctness it did not check.
 
-Privacy-safe telemetry may include request/work correlation, runtime/unit, operation, duration, result/failure class, non-sensitive error code, and consequential software/contract/config/provider provenance. Metrics cover relevant latency, failures, DB pressure, backlog, retries, provider use/cost, and capacity.
+Privacy-safe telemetry may include request/work/execution correlation, runtime/unit, operation, duration, result/failure/reconciliation class, non-sensitive error code, and consequential software/contract/config/provider provenance. Stale/superseded async completions are observable where needed to reconstruct why they were rejected. Metrics cover relevant latency, failures, DB pressure, backlog, retries, provider use/cost, and capacity.
 
 Before product support, incident handling can detect, contain/degrade safely, preserve accepted work, recover, verify, and record material cause/follow-up. Operational history is not canonical learning truth.
 
@@ -577,6 +586,12 @@ Bounded flags/kill switches may control authorized availability/degradation. A f
 
 Implementation/boundary findings follow the authority, conflict-repair, and change rules in `../CONSTITUTION.md`. Temporary audit labels are supporting review metadata only; they are never canonical Gap types, runtime enums, or another governance workflow.
 
+# Verification fixture/data boundary
+
+Tests and fixtures use synthetic, owned/licensed, or appropriately de-identified material suitable for the repository/test purpose. Verification artifacts are derived test inputs, never canonical or content authority.
+
+Normal test fixtures must not contain production learner credentials, real auth/provider secrets, unnecessary production learner responses/audio, a copied production database dump, live provider credentials, or unauthorized copyrighted IELTS/media material. If official/external sample material is used, its provenance/rights must permit the intended repository/test use.
+
 # Native verification baseline
 
 Each deployable owns native checks while repository correctness remains one root contract.
@@ -591,7 +606,7 @@ Vitest
 React Testing Library where material
 Next.js production build
 Playwright critical E2E
-security-sensitive browser/input tests where material
+security-sensitive browser/input/hidden-content projection tests where material
 public-contract conformance/compatibility once materialized
 ```
 
@@ -604,7 +619,9 @@ go test ./...
 race tests where material
 build core-api
 DB/migration/query integration once persistence exists
-idempotency/concurrency/async recovery tests where material
+atomic idempotency + optimistic-concurrency race tests where material
+async duplicate/late/superseded completion reconciliation tests where material
+novelty reservation/assignment race + exposure reconciliation tests where material
 ```
 
 ## Python
@@ -624,14 +641,15 @@ Once materialized:
 ```text
 schema validation
 generated-artifact drift
-canonical ID/reference validation
+canonical owner/source extraction + ID/reference validation
 consumer/provider conformance
 public/internal directional compatibility for allowed version skew
 null/applicability/unknown-enum behavior where material
+learner/public hidden-content projection conformance
 cross-unit integration
 ```
 
-Boundary verification also exercises auth/access ordering, forbidden bypasses, internal evaluator reachability/auth according to topology, durable async recovery, DB ownership, SSE access isolation, data-lifecycle reconciliation, security-critical config failure, and privacy-safe observability.
+Boundary verification also exercises auth/access ordering, forbidden bypasses, internal evaluator reachability/auth according to actual principals/reachability, durable async recovery/fencing, DB ownership, SSE access isolation, data-lifecycle reconciliation, security-critical config failure, fixture data/rights constraints, and privacy-safe observability.
 
 # Root verification
 
@@ -640,7 +658,7 @@ One root verification contract eventually spans:
 ```text
 verify
   ├── repository/canonical + dependency/reference integrity
-  ├── materialized registries + drift
+  ├── materialized registries + owner/source drift
   ├── materialized contracts + directional compatibility
   ├── web
   ├── core-api
