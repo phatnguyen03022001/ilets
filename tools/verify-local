@@ -41,7 +41,9 @@ if [[ ! -S "$DOCKER_SOCKET" ]]; then
   exit 1
 fi
 
-IMAGE_TAG="ilets-verify-runner:node-${NODE_VERSION}-go-${GO_VERSION}-python-${PYTHON_VERSION}-pnpm-${PNPM_VERSION}-playwright-${PLAYWRIGHT_VERSION}-docker-${DOCKER_CLI_VERSION}"
+IMAGE_TAG="ielts"
+RUNNER_NAME="ielts-runner"
+VERIFY_COMPOSE_PROJECT="${ILETS_VERIFY_COMPOSE_PROJECT:-ielts}"
 
 docker build \
   --build-arg "NODE_VERSION=$NODE_VERSION" \
@@ -54,12 +56,13 @@ docker build \
   "$ROOT/tools/local-verify"
 
 exec docker run --rm --init \
+  --name "$RUNNER_NAME" \
   --network host \
   --shm-size 1g \
   --mount "type=bind,src=$ROOT,dst=/workspace" \
   --mount "type=bind,src=$DOCKER_SOCKET,dst=/var/run/docker.sock" \
   --env DOCKER_HOST=unix:///var/run/docker.sock \
-  --env ILETS_VERIFY_COMPOSE_PROJECT \
+  --env "ILETS_VERIFY_COMPOSE_PROJECT=$VERIFY_COMPOSE_PROJECT" \
   --env ILETS_VERIFY_POSTGRES_PORT \
   --env ILETS_E2E_CORE_PORT \
   --env ILETS_E2E_WEB_PORT \

@@ -13,6 +13,18 @@ Pinned runner toolchain (base images are also pinned by immutable multi-platform
 - Docker CLI `29.7.2` with its Compose plugin
 - Playwright version from `apps/web/package.json`, with Chromium and Linux browser dependencies installed in the image
 
+## Docker resource names
+
+The wrapper keeps local verification resources under one `ielts` namespace for easier OrbStack management:
+
+- runner image: `ielts`
+- runner container: `ielts-runner`
+- verifier Compose project: `ielts` by default, so Compose-managed resources use the `ielts-*` prefix
+
+The runner container is deliberately not attached to the Compose project. Repository-native `./verify` owns that Compose lifecycle and calls `docker compose down --remove-orphans`; keeping the runner outside the project prevents the verifier from deleting its own parent container.
+
+`ILETS_VERIFY_COMPOSE_PROJECT` remains supported when an explicit project override is needed. Other existing verifier environment variable names are unchanged.
+
 ## Run from a disposable checkout
 
 ```bash
@@ -24,7 +36,7 @@ cd /
 rm -rf "$checkout"
 ```
 
-The first run builds the local runner image. Subsequent runs may reuse Docker build layers, but each verification still executes the checkout's own `./verify` and its disposable Compose database lifecycle.
+The first run builds the local `ielts` runner image. Subsequent runs may reuse Docker build layers, but each verification still executes the checkout's own `./verify` and its disposable Compose database lifecycle.
 
 ## OrbStack prerequisites
 
