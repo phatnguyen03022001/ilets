@@ -42,6 +42,8 @@ rm -rf "$checkout"
 
 The first run builds the local `ielts:latest` image. Subsequent runs may reuse Docker build layers. Before each verification, `tools/verify-local` removes an earlier stopped `ielts` runner and recreates it with the checkout that invoked the wrapper, then attaches to the runner until `./verify` exits. The wrapper returns the runner's exit code.
 
+The runner sets `CI=true` because it is intentionally non-interactive. This lets pnpm purge and recreate an incompatible bind-mounted `apps/web/node_modules` directory without requiring a TTY confirmation on repeated verification runs.
+
 A stopped runner created from a disposable checkout is retained for OrbStack visibility and inspection only. If that checkout has since been deleted, do not manually restart the stopped container from OrbStack because its bind mount points at the old checkout path. Invoke `./tools/verify-local` from a valid checkout instead; the wrapper recreates the runner with the current path.
 
 If an `ielts` runner is already running, the wrapper refuses to replace it so concurrent verification runs cannot silently stop each other.
