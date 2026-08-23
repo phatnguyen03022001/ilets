@@ -62,6 +62,7 @@ exec docker run --rm --init \
   --mount "type=bind,src=$ROOT,dst=/workspace" \
   --mount "type=bind,src=$DOCKER_SOCKET,dst=/var/run/docker.sock" \
   --env DOCKER_HOST=unix:///var/run/docker.sock \
+  --env pnpm_config_store_dir=/tmp/ielts-pnpm-store \
   --env "ILETS_VERIFY_COMPOSE_PROJECT=$VERIFY_COMPOSE_PROJECT" \
   --env ILETS_VERIFY_POSTGRES_PORT \
   --env ILETS_E2E_CORE_PORT \
