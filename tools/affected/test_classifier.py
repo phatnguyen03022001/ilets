@@ -84,6 +84,12 @@ class ClassificationTests(unittest.TestCase):
             "web+go",
         )
 
+    def test_go_integration_test_change_forces_full(self) -> None:
+        self.assertEqual(
+            self.classify("services/core-api/internal/httpapi/idempotency_integration_test.go").mode,
+            "full",
+        )
+
     def test_db_change_forces_full(self) -> None:
         self.assertEqual(self.classify("services/core-api/migrations/0002_more.sql").mode, "full")
 
@@ -134,6 +140,7 @@ class EntrypointIntegrationTests(unittest.TestCase):
     def run_check(self, *args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
         merged_env = os.environ.copy()
         merged_env.pop("AFFECTED_BASE", None)
+        merged_env.pop("PYTHONDONTWRITEBYTECODE", None)
         if env:
             merged_env.update(env)
         return subprocess.run(
@@ -166,6 +173,12 @@ class EntrypointIntegrationTests(unittest.TestCase):
         self.assertIn("CHECK_PASS mode=no-changes", result.stdout)
         self.assertFalse((self.repo / ".full-called").exists())
 
+    def test_direct_invocation_does_not_create_bytecode(self) -> None:
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repo, text=True).strip()
+        result = self.run_check("--base", head)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertFalse((self.repo / "tools" / "affected" / "__pycache__").exists())
+
     def test_environment_baseline_supports_docs_only(self) -> None:
         self.commit("README.md", "changed\n")
         result = self.run_check(env={"AFFECTED_BASE": self.base})
@@ -181,12 +194,73 @@ class EntrypointIntegrationTests(unittest.TestCase):
         self.assertIn("CHECK_PASS mode=full-fallback", result.stdout)
         self.assertTrue((self.repo / ".full-called").exists())
 
+    def test_submodule_change_falls_back_full(self) -> None:
+        source = self.repo.parent / f"{self.repo.name}-submodule-source"
+        source.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=source, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=source, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=source, check=True)
+        (source / "data.txt").write_text("submodule\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=source, check=True)
+        subprocess.run(["git", "commit", "-qm", "submodule base"], cwd=source, check=True)
+        subprocess.run(
+            ["git", "-c", "protocol.file.allow=always", "submodule", "add", "-q", str(source), "vendor/module"],
+            cwd=self.repo,
+            check=True,
+        )
+        subprocess.run(["git", "commit", "-am", "add submodule", "-q"], cwd=self.repo, check=True)
+        result = self.run_check("--base", self.base)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("CHECK_PASS mode=full-fallback", result.stdout)
+        self.assertTrue((self.repo / ".full-called").exists())
+
     def test_unknown_path_falls_back_full(self) -> None:
         self.commit("evidence/new-note.md", "unknown\n")
         result = self.run_check("--base", self.base)
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("CHECK_PASS mode=full-fallback", result.stdout)
         self.assertTrue((self.repo / ".full-called").exists())
+
+
+class ShallowHistoryIntegrationTests(unittest.TestCase):
+    def test_unresolvable_shallow_baseline_falls_back_full(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_name:
+            temp = Path(temp_name)
+            source = temp / "source"
+            source.mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=source, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=source, check=True)
+            subprocess.run(["git", "config", "user.name", "Test"], cwd=source, check=True)
+            (source / "tools" / "affected").mkdir(parents=True)
+            shutil.copy2(TOOLS / "check-affected", source / "tools" / "check-affected")
+            shutil.copy2(TOOLS / "affected" / "classifier.py", source / "tools" / "affected" / "classifier.py")
+            verify = source / "verify"
+            verify.write_text("#!/usr/bin/env bash\necho full >> .full-called\nexit 0\n", encoding="utf-8")
+            verify.chmod(verify.stat().st_mode | stat.S_IXUSR)
+            (source / "README.md").write_text("base\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "base"], cwd=source, check=True)
+            baseline = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
+            (source / "README.md").write_text("head\n", encoding="utf-8")
+            subprocess.run(["git", "add", "README.md"], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "head"], cwd=source, check=True)
+
+            clone = temp / "clone"
+            subprocess.run(["git", "clone", "-q", "--depth", "1", f"file://{source}", str(clone)], check=True)
+            env = os.environ.copy()
+            env.pop("PYTHONDONTWRITEBYTECODE", None)
+            result = subprocess.run(
+                [str(clone / "tools" / "check-affected"), "--base", baseline],
+                cwd=clone,
+                env=env,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout)
+            self.assertIn("CHECK_PASS mode=full-fallback", result.stdout)
+            self.assertTrue((clone / ".full-called").exists())
 
 
 if __name__ == "__main__":
