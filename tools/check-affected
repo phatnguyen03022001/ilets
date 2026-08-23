@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+TOOLS = ROOT / "tools"
+sys.path.insert(0, str(TOOLS))
+
+from affected.classifier import Classification, ParseError, classify_changes, parse_name_status_z
+
+
+class FullFallback(RuntimeError):
+    pass
+
+
+def _git_bytes(*args: str) -> bytes:
+    proc = subprocess.run(
+        ["git", *args],
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.returncode != 0:
+        detail = proc.stderr.decode("utf-8", errors="replace").strip()
+        raise FullFallback(f"git {' '.join(args)} failed: {detail or proc.returncode}")
+    return proc.stdout
+
+
+def _resolve_changes(base: str) -> tuple[str, list]:
+    if not base.strip():
+        raise FullFallback("baseline is empty")
+    resolved_base = _git_bytes("rev-parse", "--verify", f"{base}^{{commit}}").decode("ascii").strip()
+    if not resolved_base:
+        raise FullFallback("baseline did not resolve to a commit")
+    head = _git_bytes("rev-parse", "--verify", "HEAD^{commit}").decode("ascii").strip()
+    if not head:
+        raise FullFallback("HEAD did not resolve to a commit")
+    merge_base = _git_bytes("merge-base", resolved_base, head).decode("ascii").strip()
+    if not merge_base:
+        raise FullFallback("merge-base is empty")
+    raw = _git_bytes(
+        "diff",
+        "--name-status",
+        "-z",
+        "--find-renames",
+        "--find-copies",
+        merge_base,
+        head,
+        "--",
+    )
+    try:
+        changes = parse_name_status_z(raw)
+    except ParseError as exc:
+        raise FullFallback(f"cannot parse git name-status stream: {exc}") from exc
+    return merge_base, changes
+
+
+def _mode_is_submodule(output: bytes) -> bool:
+    return any(record.startswith(b"160000 ") for record in output.split(b"\0") if record)
+
+
+def _touches_submodule(merge_base: str, changes: list) -> bool:
+    paths = sorted({path for change in changes for path in change.paths})
+    for path in paths:
+        base_entry = _git_bytes("ls-tree", "-z", merge_base, "--", path)
+        current_entry = _git_bytes("ls-files", "--stage", "-z", "--", path)
+        if _mode_is_submodule(base_entry) or _mode_is_submodule(current_entry):
+            return True
+    return False
+
+
+def _run_command(command: list[str], cwd: Path) -> bool:
+    print(f"AFFECTED run={' '.join(command)}")
+    return subprocess.run(command, cwd=cwd, check=False).returncode == 0
+
+
+def _run_web() -> bool:
+    web = ROOT / "apps" / "web"
+    try:
+        required_node = json.loads((web / "package.json").read_text(encoding="utf-8"))["engines"]["node"]
+    except (OSError, KeyError, json.JSONDecodeError, TypeError) as exc:
+        print(f"AFFECTED web toolchain resolution failed: {exc}", file=sys.stderr)
+        return False
+    node = subprocess.run(
+        ["node", "--version"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        check=False,
+    )
+    if node.returncode != 0 or node.stdout.strip() != f"v{required_node}":
+        print(
+            f"AFFECTED Node version mismatch: required v{required_node}, got {node.stdout.strip() or 'missing'}",
+            file=sys.stderr,
+        )
+        return False
+    commands = [
+        ["corepack", "enable"],
+        ["pnpm", "install", "--frozen-lockfile"],
+        ["pnpm", "format:check"],
+        ["pnpm", "lint"],
+        ["pnpm", "typecheck"],
+        ["pnpm", "test"],
+        ["pnpm", "build"],
+    ]
+    return all(_run_command(command, web) for command in commands)
+
+
+def _run_go() -> bool:
+    core = ROOT / "services" / "core-api"
+    formatted = subprocess.run(
+        ["gofmt", "-l", "."],
+        cwd=core,
+        stdout=subprocess.PIPE,
+        text=True,
+        check=False,
+    )
+    if formatted.returncode != 0:
+        return False
+    if formatted.stdout.strip():
+        print("AFFECTED Go sources need gofmt:", file=sys.stderr)
+        print(formatted.stdout, file=sys.stderr, end="")
+        return False
+    if not _run_command(["go", "vet", "./..."], core):
+        return False
+    if not _run_command(["go", "test", "./..."], core):
+        return False
+    with tempfile.TemporaryDirectory(prefix="ilets-affected-go-") as temp_dir:
+        return _run_command(
+            ["go", "build", "-o", str(Path(temp_dir) / "core-api"), "./cmd/core-api"],
+            core,
+        )
+
+
+def _run_full(reason: str) -> int:
+    print(f"AFFECTED fallback=full reason={reason}")
+    try:
+        result = subprocess.run([str(ROOT / "verify")], cwd=ROOT, check=False)
+    except OSError as exc:
+        print(f"CHECK_FAIL mode=full-fallback reason={exc}")
+        return 1
+    if result.returncode == 0:
+        print("CHECK_PASS mode=full-fallback")
+        return 0
+    print(f"CHECK_FAIL mode=full-fallback exit={result.returncode}")
+    return result.returncode or 1
+
+
+def _finish_lane(mode: str, ok: bool) -> int:
+    if ok:
+        print(f"CHECK_PASS mode={mode}")
+        return 0
+    print(f"CHECK_FAIL mode={mode}")
+    return 1
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run fail-closed checks for files affected since an explicit baseline."
+    )
+    parser.add_argument("--base", help="trusted Git baseline ref")
+    args = parser.parse_args(argv)
+
+    base = args.base if args.base is not None else os.environ.get("AFFECTED_BASE")
+    if base is None:
+        return _run_full("missing trusted baseline (--base or AFFECTED_BASE)")
+
+    try:
+        merge_base, changes = _resolve_changes(base)
+        if _touches_submodule(merge_base, changes):
+            raise FullFallback("change touches a Git submodule")
+        classification: Classification = classify_changes(changes)
+    except (FullFallback, OSError, UnicodeError, ValueError) as exc:
+        return _run_full(str(exc))
+
+    if classification.mode == "full":
+        reason = ",".join(classification.reasons) or "critical or unknown change"
+        return _run_full(reason)
+    if classification.mode == "no-changes":
+        print("CHECK_PASS mode=no-changes")
+        return 0
+    if classification.mode == "docs":
+        print("CHECK_PASS mode=docs")
+        return 0
+    if classification.mode == "web":
+        return _finish_lane("web", _run_web())
+    if classification.mode == "go":
+        return _finish_lane("go", _run_go())
+    if classification.mode == "web+go":
+        if not _run_web():
+            return _finish_lane("web+go", False)
+        return _finish_lane("web+go", _run_go())
+    return _run_full(f"unrecognized classification mode: {classification.mode}")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
