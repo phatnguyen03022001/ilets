@@ -1,0 +1,22 @@
+services:
+  runner:
+    image: ielts:latest
+    init: true
+    network_mode: host
+    shm_size: 1g
+    working_dir: /workspace
+    command: ["./verify"]
+    volumes:
+      - type: bind
+        source: ${IELTS_RUNNER_ROOT}
+        target: /workspace
+      - type: bind
+        source: ${IELTS_RUNNER_DOCKER_SOCKET}
+        target: /var/run/docker.sock
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      pnpm_config_store_dir: /tmp/ielts-pnpm-store
+      ILETS_VERIFY_COMPOSE_PROJECT: ${ILETS_VERIFY_COMPOSE_PROJECT:-ielts-verify}
+      ILETS_VERIFY_POSTGRES_PORT: ${ILETS_VERIFY_POSTGRES_PORT:-}
+      ILETS_E2E_CORE_PORT: ${ILETS_E2E_CORE_PORT:-}
+      ILETS_E2E_WEB_PORT: ${ILETS_E2E_WEB_PORT:-}
