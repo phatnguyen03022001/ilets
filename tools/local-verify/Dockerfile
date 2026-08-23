@@ -17,12 +17,14 @@ ENV PATH="/usr/local/go/bin:${PATH}" \
     PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 COPY --from=node_runtime /usr/local/bin/node /usr/local/bin/node
-COPY --from=node_runtime /usr/local/bin/corepack /usr/local/bin/corepack
-COPY --from=node_runtime /usr/local/bin/npm /usr/local/bin/npm
-COPY --from=node_runtime /usr/local/bin/npx /usr/local/bin/npx
-COPY --from=node_runtime /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=node_runtime /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+COPY --from=node_runtime /usr/local/lib/node_modules/corepack /usr/local/lib/node_modules/corepack
 COPY --from=docker_cli /usr/local/bin/docker /usr/local/bin/docker
 COPY --from=docker_cli /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
+
+RUN ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+    && ln -sf ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack
 
 RUN set -eux; \
     apt-get update; \
@@ -39,15 +41,24 @@ RUN set -eux; \
     rm /tmp/go.tgz; \
     go version; \
     node --version; \
+    test "$(node --version)" = "v${NODE_VERSION}"; \
     python3 --version; \
     docker --version; \
     docker compose version
 
-RUN corepack enable \
+RUN test -L /usr/local/bin/corepack \
+    && test -L /usr/local/bin/npm \
+    && test -L /usr/local/bin/npx \
+    && corepack --version \
+    && npm --version \
+    && npx --version \
+    && corepack enable \
     && corepack prepare "pnpm@${PNPM_VERSION}" --activate \
+    && test "$(pnpm --version)" = "${PNPM_VERSION}" \
     && pnpm --version
 
-RUN npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps chromium \
+RUN npx --version \
+    && npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps chromium \
     && rm -rf /root/.npm
 
 RUN git config --system --add safe.directory /workspace
