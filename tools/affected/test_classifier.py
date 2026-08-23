@@ -173,6 +173,14 @@ class EntrypointIntegrationTests(unittest.TestCase):
         self.assertIn("CHECK_PASS mode=docs", result.stdout)
         self.assertFalse((self.repo / ".full-called").exists())
 
+    def test_dirty_worktree_falls_back_full(self) -> None:
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repo, text=True).strip()
+        (self.repo / "README.md").write_text("dirty\n", encoding="utf-8")
+        result = self.run_check("--base", head)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("CHECK_PASS mode=full-fallback", result.stdout)
+        self.assertTrue((self.repo / ".full-called").exists())
+
     def test_unknown_path_falls_back_full(self) -> None:
         self.commit("evidence/new-note.md", "unknown\n")
         result = self.run_check("--base", self.base)

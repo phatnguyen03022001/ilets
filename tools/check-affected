@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 sys.path.insert(0, str(TOOLS))
+sys.dont_write_bytecode = True
 
 from affected.classifier import Classification, ParseError, classify_changes, parse_name_status_z
 
@@ -63,6 +64,12 @@ def _resolve_changes(base: str) -> tuple[str, list]:
     return merge_base, changes
 
 
+def _ensure_clean_worktree() -> None:
+    status = _git_bytes("status", "--porcelain=v1", "-z", "--untracked-files=all")
+    if status:
+        raise FullFallback("working tree is not clean; committed baseline diff would be incomplete")
+
+
 def _mode_is_submodule(output: bytes) -> bool:
     return any(record.startswith(b"160000 ") for record in output.split(b"\0") if record)
 
@@ -89,13 +96,7 @@ def _run_web() -> bool:
     except (OSError, KeyError, json.JSONDecodeError, TypeError) as exc:
         print(f"AFFECTED web toolchain resolution failed: {exc}", file=sys.stderr)
         return False
-    node = subprocess.run(
-        ["node", "--version"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
+    node = subprocess.run(["node", "--version"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, check=False)
     if node.returncode != 0 or node.stdout.strip() != f"v{required_node}":
         print(
             f"AFFECTED Node version mismatch: required v{required_node}, got {node.stdout.strip() or 'missing'}",
@@ -116,13 +117,7 @@ def _run_web() -> bool:
 
 def _run_go() -> bool:
     core = ROOT / "services" / "core-api"
-    formatted = subprocess.run(
-        ["gofmt", "-l", "."],
-        cwd=core,
-        stdout=subprocess.PIPE,
-        text=True,
-        check=False,
-    )
+    formatted = subprocess.run(["gofmt", "-l", "."], cwd=core, stdout=subprocess.PIPE, text=True, check=False)
     if formatted.returncode != 0:
         return False
     if formatted.stdout.strip():
@@ -134,10 +129,7 @@ def _run_go() -> bool:
     if not _run_command(["go", "test", "./..."], core):
         return False
     with tempfile.TemporaryDirectory(prefix="ilets-affected-go-") as temp_dir:
-        return _run_command(
-            ["go", "build", "-o", str(Path(temp_dir) / "core-api"), "./cmd/core-api"],
-            core,
-        )
+        return _run_command(["go", "build", "-o", str(Path(temp_dir) / "core-api"), "./cmd/core-api"], core)
 
 
 def _run_full(reason: str) -> int:
@@ -163,9 +155,7 @@ def _finish_lane(mode: str, ok: bool) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Run fail-closed checks for files affected since an explicit baseline."
-    )
+    parser = argparse.ArgumentParser(description="Run fail-closed checks for files affected since an explicit baseline.")
     parser.add_argument("--base", help="trusted Git baseline ref")
     args = parser.parse_args(argv)
 
@@ -174,6 +164,7 @@ def main(argv: list[str] | None = None) -> int:
         return _run_full("missing trusted baseline (--base or AFFECTED_BASE)")
 
     try:
+        _ensure_clean_worktree()
         merge_base, changes = _resolve_changes(base)
         if _touches_submodule(merge_base, changes):
             raise FullFallback("change touches a Git submodule")
