@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "docker CLI is required (OrbStack or Docker Desktop is supported)" >&2
+  exit 1
+fi
+if ! docker info >/dev/null 2>&1; then
+  echo "Docker daemon is not reachable; start OrbStack/Docker and retry" >&2
+  exit 1
+fi
+
+NODE_VERSION="$(tr -d '[:space:]' < "$ROOT/.node-version")"
+GO_VERSION="$(tr -d '[:space:]' < "$ROOT/.go-version")"
+PNPM_VERSION="$(sed -n 's/.*"packageManager": "pnpm@\([^"]*\)".*/\1/p' "$ROOT/apps/web/package.json")"
+PLAYWRIGHT_VERSION="$(sed -n 's/.*"@playwright\/test": "\([^"]*\)".*/\1/p' "$ROOT/apps/web/package.json")"
+PYTHON_VERSION="3.14.7"
+DOCKER_CLI_VERSION="29.7.2"
+
+if [[ -z "$NODE_VERSION" || -z "$GO_VERSION" || -z "$PNPM_VERSION" || -z "$PLAYWRIGHT_VERSION" ]]; then
+  echo "failed to resolve repository toolchain versions" >&2
+  exit 1
+fi
+
+DOCKER_ENDPOINT="${DOCKER_HOST:-}"
+if [[ -z "$DOCKER_ENDPOINT" ]]; then
+  DOCKER_ENDPOINT="$(docker context inspect "$(docker context show)" --format '{{.Endpoints.docker.Host}}')"
+fi
+case "$DOCKER_ENDPOINT" in
+  unix://*) DOCKER_SOCKET="${DOCKER_ENDPOINT#unix://}" ;;
+  *)
+    echo "local verification runner requires a Unix Docker endpoint; got: $DOCKER_ENDPOINT" >&2
+    exit 1
+    ;;
+esac
+if [[ ! -S "$DOCKER_SOCKET" ]]; then
+  echo "Docker socket does not exist or is not a Unix socket: $DOCKER_SOCKET" >&2
+  exit 1
+fi
+
+IMAGE_TAG="ilets-verify-runner:node-${NODE_VERSION}-go-${GO_VERSION}-python-${PYTHON_VERSION}-pnpm-${PNPM_VERSION}-playwright-${PLAYWRIGHT_VERSION}-docker-${DOCKER_CLI_VERSION}"
+
+docker build \
+  --build-arg "NODE_VERSION=$NODE_VERSION" \
+  --build-arg "GO_VERSION=$GO_VERSION" \
+  --build-arg "PYTHON_VERSION=$PYTHON_VERSION" \
+  --build-arg "PNPM_VERSION=$PNPM_VERSION" \
+  --build-arg "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" \
+  --build-arg "DOCKER_CLI_VERSION=$DOCKER_CLI_VERSION" \
+  --tag "$IMAGE_TAG" \
+  "$ROOT/tools/local-verify"
+
+exec docker run --rm --init \
+  --network host \
+  --shm-size 1g \
+  --mount "type=bind,src=$ROOT,dst=/workspace" \
+  --mount "type=bind,src=$DOCKER_SOCKET,dst=/var/run/docker.sock" \
+  --env DOCKER_HOST=unix:///var/run/docker.sock \
+  --env ILETS_VERIFY_COMPOSE_PROJECT \
+  --env ILETS_VERIFY_POSTGRES_PORT \
+  --env ILETS_E2E_CORE_PORT \
+  --env ILETS_E2E_WEB_PORT \
+  "$IMAGE_TAG" \
+  ./verify
