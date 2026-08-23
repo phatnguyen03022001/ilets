@@ -147,6 +147,8 @@ def _critical_reason(path: str) -> str | None:
         return f"critical:{path}"
     if path.startswith("apps/web/src/generated/"):
         return f"critical:{path}"
+    if path.startswith("services/core-api/") and path.endswith("_integration_test.go"):
+        return f"critical:{path}"
     for prefix in _CRITICAL_PREFIXES:
         if path.startswith(prefix):
             return f"critical:{path}"
