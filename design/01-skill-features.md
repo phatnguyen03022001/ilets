@@ -172,6 +172,35 @@ Part-specific behavior remains recognizable:
 - Part 3 supports responsive abstract discussion and follow-up questions;
 - general role-play/conversation may train responsiveness/fluency when mapped to canonical targets, but does not become an IELTS part merely because it is conversational.
 
+### Beginner L1-to-English speaking scaffold
+
+For learners who cannot yet respond reliably from an English-only prompt, existing Speaking features may use the learner's configured L1 as a temporary acquisition scaffold. This is a configuration of existing guided/controlled production and scaffold-fading mechanisms from `../spec/07-PRACTICE.md`, not another Speaking feature, IELTS construct, or evidence standard.
+
+A typical progression is:
+
+```text
+L1 situation / meaning cue
+→ learner produces the target response in English
+→ concise correction, model, contrast, or hint when needed
+→ repeat or vary with less L1/support
+→ English-only prompt
+→ spontaneous English response
+→ fresh transfer into the applicable Part 1/2/3 or other canonical Speaking target
+```
+
+Rules:
+
+1. L1 carries meaning or task context; it must not perform the learner's required English production for them.
+2. Support may include a simple L1 explanation, constrained cue, partial model, contrast, or learner-requested clarification, but the actual target response remains learner-produced English.
+3. As performance stabilizes, the product reduces L1 and other scaffold strength rather than making bilingual prompting permanent by default.
+4. A learner may remain on or return to stronger support when current learning need justifies it; scaffold fading is adaptive, not a one-way level badge.
+5. Success under material L1/model support records that assistance state and cannot masquerade as independent English Speaking evidence.
+6. Independent Assessment/readiness claims use the normal assistance/independence rules from `../spec/08-ASSESSMENT.md`; bilingual scaffolded training does not lower those standards.
+7. Translation quality, wording choice, or failure to understand an L1 prompt is not itself a Speaking weakness unless the scoped English capability was actually measured.
+8. The same pattern may serve simple rapid-response, role-play, retell, or targeted productive practice when bound to a canonical target; it does not create a generic conversation curriculum outside the IELTS learning model.
+
+The learner-facing language/scaffolding presentation remains governed by `00-learning-experience.md`, including preserved English/IELTS terminology and progressive disclosure.
+
 Inference follows the signal actually available:
 
 - transcript/text may support lexical, grammatical, discourse/content observations within evaluator quality limits;
