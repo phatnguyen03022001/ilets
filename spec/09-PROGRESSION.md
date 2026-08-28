@@ -35,6 +35,22 @@ Product Planner                    design/04
 
 No layer rewrites the historical evidence owned upstream.
 
+# Claim interpretation boundary
+
+Progression consumes the claim class and `ReadinessEvaluation` produced by Assessment; it never broadens inference scope.
+
+```text
+sampled EvidenceFact                 → historical evidence only until a scoped claim policy consumes it
+capability claim SUPPORTED            → MasteryEstimate may become currently_supported
+capability claim below requirement    → MasteryEstimate may become learning
+per-skill Band claim SUPPORTED        → BandCertificationState may become certified
+task/section readiness                → exam-condition interpretation for that scope only
+target/full readiness                 → planning/exam-preparation state; never rewrites per-skill evidence
+historical/external result            → history/reference; not automatically current mastery/readiness
+```
+
+A narrower claim cannot be promoted by Progression into a broader one. In particular, leaf support, Knowledge/SRS performance, one sampled activity, or one readiness snapshot cannot be converted into a Band merely by state aggregation.
+
 # `MasteryEstimate`
 
 A MasteryEstimate is the current uncertainty-aware interpretation of one scoped Skill Leaf or Knowledge Object.
@@ -100,6 +116,8 @@ Once a claim has evidence/certification history it does not return to `not_start
 
 Certification is not an official IELTS result or guarantee.
 
+An imported or historical official IELTS result is recorded as external/historical attainment with its variant/date/source provenance. It may inform current evidence only when normal Assessment scope/recency rules admit it; it is not rewritten into current `BandCertificationState` merely because the numeric Band matches.
+
 # Band advancement
 
 A skill-Band becomes `certified` when:
@@ -114,6 +132,21 @@ If a previously `certified` claim later evaluates to any non-`SUPPORTED` state, 
 Curriculum completion count is not a certification requirement. Valid evidence may accelerate past redundant acquisition stages.
 
 After Band N certification, Band N+1 work for that skill may become semantically eligible without waiting for other skills.
+
+# Assessment state → learner gap
+
+Assessment epistemic state and learner gaps remain distinct but map deterministically when justified:
+
+| Assessment/current condition | Progression consequence |
+|---|---|
+| `INSUFFICIENT_EVIDENCE` | `EVIDENCE_GAP` → `COLLECT_EVIDENCE` |
+| `CONFLICTING_EVIDENCE` | `CONFLICTING_EVIDENCE` → `RESOLVE_CONFLICT` |
+| `STALE_EVIDENCE` | `STALE_EVIDENCE` → `REASSESS` |
+| `NOT_YET_SUPPORTED` with admissible below-threshold evidence | `ABILITY_GAP` or a more specific demonstrated gap such as scaffold/transfer/fluency/exam-condition |
+| `NOT_YET_SUPPORTED` because a non-ability requirement fails | use the demonstrated specific gap (for example scaffold/transfer/fluency/exam-condition) where applicable; otherwise preserve the condition reason without manufacturing `ABILITY_GAP` |
+| `SUPPORTED` | no deficit is inferred; consolidate/advance only when other canonical conditions allow |
+
+A product `CoverageGap`, evaluator unavailable state, or unsupported product consequence is not a learner GapEvaluation. The learner claim may remain unknown while the product separately reports that it cannot currently measure/serve the required consequence.
 
 # `GapEvaluation`
 

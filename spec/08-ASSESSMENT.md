@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: measurement semantics, Assessment Type taxonomy, Observation→EvidenceFact admission, diagnostic sampling semantics, claim-scoped EvidenceRequirement, confidence/calibration policy, readiness evaluation, and certification evidence construction
-DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
-DOES_NOT_OWN: Skill/Knowledge definitions, curriculum ordering, practice pedagogy, learner-state transitions, band-progression decisions, product UX durations, or concrete assessment-item storage
+OWNS: measurement semantics, Assessment Type taxonomy, Observation→EvidenceFact admission, claim classes and inference ceilings, diagnostic sampling semantics, claim-scoped EvidenceRequirement, confidence/calibration policy, readiness evaluation, and certification evidence construction
+DEPENDS_ON: 01-LEARNER-MODEL.md, 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
+DOES_NOT_OWN: Skill/Knowledge definitions, curriculum ordering, practice pedagogy, learner-state transitions, band-progression decisions, TargetProfile product composition, product coverage/support state, product UX durations, or concrete assessment-item storage
 
 # 08 — Assessment
 
@@ -39,27 +39,52 @@ Eligibility is claim-scoped. The same Observation may be valid formative evidenc
 
 Historical EvidenceFacts remain historical facts. Later staleness changes what they support **now**; it does not rewrite what happened.
 
+# Claim classes and inference ceilings
+
+Assessment distinguishes the measurement record from the consequence being claimed. The minimum claim classes are:
+
+| Claim class | Meaning | Minimum inference boundary |
+|---|---|---|
+| sampled capability evidence | one admitted Observation supports only the Skill Leaf/Knowledge/criterion/task slice actually measured | never inflated into a whole-skill Band/readiness claim |
+| current capability support | current admissible EvidenceFacts support a scoped Skill Leaf, Knowledge Object, or criterion-level capability | does not imply whole-skill Band |
+| current per-skill Band support | admissible evidence satisfies the Band-N threshold for the complete applicable skill construct | requires a Band-scoped EvidenceRequirement; not derived from a micro/sampled activity |
+| task/section readiness | current evidence supports performance under a named task/section/part and material target-like conditions | narrower than whole-skill or full-test readiness |
+| target-condition readiness | current evidence supports one declared target condition, such as a per-skill minimum or delivery-condition requirement | evaluated against the exact declared condition, not a planner working target |
+| full IELTS readiness | all applicable current learner-evidence conditions for the resolved TargetProfile are supported under integrated target-like conditions | does not mean guaranteed external result or product support by itself |
+| historical attainment / external result | point-in-time external result or prior internal certification reference with provenance | Assessment decides only whether/how it may support a current claim; history ownership remains separate |
+
+An Assessment attempt can always produce an Observation if measurement succeeds. It may produce zero or more EvidenceFacts when claim-scoped admission succeeds. One attempt may therefore prove a narrow sampled fact; it never gains a broader inference merely because the activity was labelled assessment/readiness or produced a high score.
+
+A broad integrated attempt may contribute evidence across several required subscopes, but no architecture rule assumes that one attempt is sufficient for a per-skill Band or readiness claim. Sufficiency is determined only by the applicable versioned EvidenceRequirement and its evidence-backed calibration.
+
 ## EvidenceRequirement
 
-An EvidenceRequirement defines the logical conditions that must hold for a scoped claim to be `SUPPORTED`.
+An EvidenceRequirement defines the logical conditions that must hold for a scoped claim to be `SUPPORTED`. It is a reusable semantic policy, not a database/API schema.
 
-Depending on the claim, conditions may include:
+A consequential requirement resolves at minimum:
 
-- target/criterion coverage;
-- variant/task/section/context coverage;
-- task/context diversity;
-- independence from material support;
-- consistency when stable performance is claimed;
-- recency when current capability is claimed;
-- transfer/generalisation;
-- evaluator/scoring quality;
-- resolution of material conflicts;
-- required part/task/section coverage;
-- delivery-condition coverage only when the claim explicitly includes that delivery condition.
+```text
+claim class + exact claim scope
+threshold/criterion reference when applicable
+required target / sub-capability / criterion coverage
+eligible Assessment Type(s)
+variant / task / section / context applicability
+assistance + independence conditions
+exposure / novelty / contamination conditions where material
+evidence diversity / transfer coverage where material
+quantity / stability condition where material
+recency / staleness policy for current claims
+evaluator / scorer quality + calibration requirement
+material conflict handling / discriminating-evidence rule
+delivery-condition coverage only when part of the claim
+aggregation rule + policy version
+```
 
-There is **no universal attempt count, confidence cutoff, recency window, or transfer distance** for every target.
+A condition that is not material to a claim is explicitly non-applicable; omission must not silently weaken a consequential requirement.
 
-Numeric thresholds are calibration policy. They must be evidence-backed and versioned for the claim/evaluator where used.
+Quantity, consistency, diversity, recency, novelty, evaluator-quality, and calibration thresholds may be numeric only when justified by evidence for that claim/evaluator/use. There is **no universal attempt count, confidence cutoff, recency window, transfer distance, or weighted score formula** for every target.
+
+Where empirical calibration is not yet sufficient, the requirement records that calibration is required and the higher-consequence claim cannot become `SUPPORTED` merely to make the product executable.
 
 # EvidenceRequirement materialisation gate
 
@@ -76,6 +101,7 @@ missing conditions
 stale conditions
 material conflicts
 below-threshold conditions
+required next evidence / refresh / discriminating condition when unresolved
 applicable evaluator/calibration policy
 policy version
 ```
@@ -105,6 +131,18 @@ SUPPORTED
 These states must never be collapsed into one mastery/readiness percentage.
 
 `SUPPORTED` is an internal evidence statement, not a guaranteed future official IELTS result.
+
+State interpretation is condition-aware:
+
+- missing required subscopes, missing admissible samples, or unresolved required evaluator output → `INSUFFICIENT_EVIDENCE`;
+- current admissible evidence that materially disagrees → `CONFLICTING_EVIDENCE`;
+- previously adequate evidence whose recency requirement no longer holds → `STALE_EVIDENCE`;
+- current admissible evidence that is sufficient to conclude the scoped threshold/condition is not met → `NOT_YET_SUPPORTED`;
+- every applicable condition satisfied → `SUPPORTED`.
+
+`NOT_YET_SUPPORTED` must not be used as a convenience fallback for missing/uncalibrated evaluation. A learner ability gap is justified only when admissible evidence positively establishes below-requirement performance for that scope.
+
+If product/evaluator capability is unavailable for a required consequence, the learner claim remains unresolved from the available evidence and the product separately exposes the applicable CoverageGap. Product inability is not negative learner evidence.
 
 # Assessment Type registry
 
@@ -172,7 +210,9 @@ Repeated demonstrations, multiple contexts, independence, recency, transfer, cri
 
 ## `AT-06` Human verification
 
-Human expert scoring/verification is an optional escalation route. It may verify or replace an uncertain automated judgment but is not automatically required for every productive attempt.
+Human expert scoring/verification is an optional external/secondary evidence route. It may contribute productive EvidenceFacts when provenance, rubric fit, and normal claim-scoped eligibility are satisfied.
+
+No ordinary `SUPPORTED_FOR_PRODUCT` learner route may require hidden mandatory human scoring merely because the deterministic/automated evaluator is insufficient. If the product cannot safely evaluate the desired consequence without human input, that automated consequence remains unsupported/unresolved until a calibrated supported evaluator path exists. Optional coaching, learner-imported expert feedback, or explicitly chosen human-service extensions do not change this invariant.
 
 ## `AT-07` Full mock
 
@@ -223,6 +263,29 @@ A same-task success after material corrective feedback cannot independently sati
 - Historical Observations/EvidenceFacts remain immutable enough for governed reinterpretation.
 
 # Claim-scoped sufficiency
+
+## Capability → Band derivation
+
+A per-skill Band claim is a threshold claim over the applicable **whole skill construct**, not an average of leaf scores. The derivation is:
+
+```text
+Band threshold from 05-BANDS
++ applicable Skill Leaves / criteria / task-part conditions
++ admissible EvidenceFacts for those subscopes
++ versioned Band-scoped EvidenceRequirement
+→ current per-skill Band ReadinessEvaluation
+```
+
+Rules:
+
+1. leaf/criterion support may satisfy required subconditions but does not itself numerically compose a Band;
+2. a sampled micro-activity, SRS result, completion state, planner estimate, AI opinion, or unsupported weighted average cannot produce a Band claim;
+3. receptive Band inference uses the applicable official section scoring/conversion only when the measured scope legitimately supports that inference;
+4. productive Band inference preserves criterion/task/part coverage and evaluator calibration required by the Band-scoped policy;
+5. unresolved required sub-capability/task/criterion/context remains an explicit missing condition rather than being imputed from stronger neighboring evidence;
+6. support for Band N does not imply every canonical leaf is error-free; `05-BANDS.md` owns the threshold and permitted residual limitations.
+
+A lower Band may be supported while a higher Band remains unresolved or not yet supported. Assessment does not infer hidden intermediate Bands unless their own threshold/policy conditions are satisfied.
 
 ## Academic Writing
 
@@ -284,7 +347,7 @@ Rules:
 
 - model self-reported confidence is not calibration evidence;
 - uncalibrated/low-quality productive judgment cannot support a higher-consequence claim by itself;
-- uncertainty may trigger re-sampling, alternative scoring, or human verification;
+- uncertainty may trigger re-sampling, another supported evaluator/scoring route, or optional human verification; it may also leave the claim unresolved;
 - calibration is scoped by evaluator/model/rubric/task/population/variant where material;
 - policy/evaluator changes preserve provenance so historical observations can be reinterpreted without rewriting them.
 
@@ -313,7 +376,7 @@ AI may automate feedback and measurement; it is not assessment authority.
 
 Objective items use deterministic keys where possible. Productive evaluation must be benchmarked, versioned, uncertainty-aware, and fail closed above demonstrated evaluator quality.
 
-If no eligible evaluation route exists, the truthful result is pending/unavailable/insufficient evidence—not a fake score or silent lower-quality fallback.
+If no eligible evaluation route exists, the truthful measurement/result state is pending or unavailable and the learner claim remains unresolved/insufficiently evidenced. The product separately exposes the applicable evaluator/product CoverageGap; it does not emit a fake score, mandatory hidden-human dependency, or silent lower-quality fallback.
 
 # Output consumed by Progression
 
@@ -327,6 +390,7 @@ supporting_evidence_fact_refs
 blocking_conditions
 material_conflicts
 recency_state
+required_next_evidence when unresolved
 confidence/calibration refs where relevant
 policy/evaluator version
 ```

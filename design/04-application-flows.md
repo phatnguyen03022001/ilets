@@ -633,27 +633,43 @@ exam-preparation plan
 
 A normal target-relative full mock requires a resolved variant. `READINESS` is the primary purpose of a normal mock; it is not an automatic evidence decision. A mock Observation contributes to a claim only when pre-declared as an evidence candidate and independently admitted by normal Assessment policy.
 
+A mock result is a target-like performance snapshot. Full IELTS readiness becomes `SUPPORTED` only through its versioned integrated EvidenceRequirement; one favorable mock, four independent micro-skill claims, or four per-skill Band claims do not automatically satisfy exam-condition/integration requirements that the readiness policy makes material.
+
 A mixed Academic/GT mock is invalid for normal full-test readiness unless explicitly created as non-certifying comparison practice.
 
 Delivery-mode practice may change interaction conditions without changing scoring/Band semantics.
 
 # Flow J — target supported/unresolved
 
-For every known TargetProfile condition:
+Target interpretation preserves four separate axes:
 
 ```text
-current admissible evidence
-  ↓
-SUPPORTED | unresolved evidence state
+TargetProfile input resolved?
+learner evidence supports each applicable claim?
+exam/delivery readiness condition supported where material?
+product supports serving/measuring the requested scope?
 ```
+
+For each known TargetProfile condition, Core consumes the exact Assessment claim evaluation; it does not infer support from completion or nearby capability.
+
+Composition rules:
+
+1. an explicit per-skill minimum requires the corresponding current per-skill Band claim at or above that minimum;
+2. an overall-only target requires supported current Band claims for all four skills, then applies the official overall-score rule; it does not fabricate per-skill minima;
+3. mixed overall + per-skill constraints require both the derived overall and every explicit minimum;
+4. Academic/GT-scoped claims must use the applicable variant evidence/conversion/context;
+5. material delivery readiness is evaluated separately from the underlying Band claim;
+6. full IELTS readiness additionally requires the applicable integrated/exam-condition EvidenceRequirement; a collection of supported micro-capability claims is not a full-readiness shortcut.
 
 Target-input uncertainty and learner-evidence uncertainty remain separate. A missing target variant/Band condition is not converted into `INSUFFICIENT_EVIDENCE` about learner capability.
 
-When all learner evidence conditions are supported, the app may state that current evidence supports the declared target profile **only if the target itself is sufficiently resolved and product-support wording remains separately truthful**.
+Evidence states remain exact: missing → insufficient, material disagreement → conflicting, expired recency → stale, positively below threshold → not yet supported. Each unresolved condition yields the corresponding Progression evidence need/ActionIntent where product capability exists.
+
+When all learner evidence conditions are supported, the app may state that **current evidence supports the declared TargetProfile** only if the target itself is sufficiently resolved. Product support remains a separate statement.
+
+When a required evaluator/content/runtime/product capability is missing, preserve the learner claim as unresolved and surface the CoverageGap. Do not translate product inability into `ABILITY_GAP`, a low score, or mandatory hidden-human review.
 
 It must never state that the learner is guaranteed an external result.
-
-When product capability is missing for a resolved requested scope, route generation stops at the CoverageGap rather than manufacturing an invalid activity.
 
 # Flow K — content supply and learner assignment
 

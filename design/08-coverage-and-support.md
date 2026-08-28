@@ -332,7 +332,11 @@ A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified
 
 Principles in `08-ASSESSMENT.md` alone are not production policy.
 
-Before product support, each high-consequence claim resolves to a versioned executable EvidenceRequirement. Hidden heuristics, unversioned cutoffs, mechanical attempt-count rules, or pre-attempt “certification contributing” labels are blockers.
+Before product support, every consequential claim class used by the scoped target resolves to a versioned executable EvidenceRequirement, including per-skill Band and any task/section/delivery/full-readiness claim the product presents as supported. Hidden heuristics, unversioned cutoffs, mechanical attempt-count rules, unsupported weighted averaging, or pre-attempt “certification contributing” labels are blockers.
+
+The executable requirement must expose satisfied, missing, stale, conflicting, below-threshold, calibration-required, and non-applicable conditions without collapsing them into one percentage. A lower-scope implemented EvidenceFact cannot satisfy a broader claim merely because no broader evaluator/content path exists.
+
+For the intended ordinary AI-first product, `evaluator_scoring` for Writing/Speaking cannot be marked `SATISFIED` by making optional human verification a hidden mandatory dependency. The release needs an eligible deterministic/automated evaluator path calibrated for the claimed consequence. Until then the learner claim remains unresolved and the scoped product condition remains `CALIBRATION_REQUIRED`/`BLOCKED` as applicable. Optional/imported human evidence may still be admitted under normal Assessment rules.
 
 Official-family product coverage does not imply learner certification mechanically tests every family in every portfolio. Learner claim sufficiency remains Assessment-owned.
 

@@ -111,6 +111,31 @@ If planning requires working per-skill targets while only an overall target is k
 
 An overall-target readiness statement may be derived only from current supported section-Band claims plus the applicable official overall-score rule and any real per-skill minima. Self-estimates, planner working targets, or unsupported point predictions cannot be substituted for section evidence.
 
+## Target-readiness composition
+
+Learner-facing target state is composed from claim-scoped Assessment results; it is not one synthetic mastery score.
+
+- **per-skill minimum** — the corresponding current per-skill Band claim must be `SUPPORTED` at or above the declared minimum;
+- **overall-only target** — current supported Band claims for all four scored skills must exist so the official overall-score rule can be applied; the derived overall must meet the declared minimum; no hidden equal per-skill minima are invented;
+- **mixed overall + per-skill constraints** — both the derived overall condition and every explicit per-skill minimum must be satisfied;
+- **variant-specific condition** — evidence/claim scope must match Academic/GT where the construct or scoring differs;
+- **delivery-condition readiness** — required only when the declared target includes a material delivery interaction; it is an additional exam-condition claim, not a different Band standard.
+
+Any required claim that is insufficient, conflicting, or stale keeps the corresponding target condition unresolved. Evidence positively below threshold is shown as not yet supported. A product CoverageGap is shown separately as **product path unavailable/not yet supported**, never as learner weakness.
+
+The UI distinguishes:
+
+```text
+current capability evidence
+current per-skill Band support
+declared TargetProfile condition support
+exam-condition / full-test readiness
+product support for serving that route
+historical official/internal attainment
+```
+
+A learner may have current Band support while still having an exam-condition gap, or may have historical attainment while current evidence needs refresh.
+
 ## General rules
 
 1. overall target, per-skill minima, or both may be supplied;
@@ -321,19 +346,24 @@ Do not display a fabricated precise Band change after each micro-activity.
 
 # Skill-page contract
 
-Each skill page presents:
+Each skill page presents, with progressive disclosure:
 
 ```text
 Target condition
-Current estimate / readiness state
-Evidence state
-Canonical capability map
+Current per-skill Band support or unresolved state
+Capability / micro-skill support map
+Exact missing/stale/conflicting evidence conditions
+Task/section/exam-condition readiness where relevant
 Current blockers / unknowns
-Recommended actions
-Practice shortcuts
-Recent attempts
-Certification history
+Recommended evidence or learning action
+Recent Attempts / Observations
+EvidenceFact detail on demand
+Historical certification / external result separately
 ```
+
+A single sampled result is labelled by its actual scope (for example, “sampled T/F/NG classification evidence”), not as “Reading Band evidence” unless the Band-scoped requirement legitimately admits that inference.
+
+For each consequential claim, the learner can expand **Why? / What is missing?** to see plain-language required sub-capabilities/criteria/parts, currently supporting evidence, missing/stale/conflicting conditions, and the next evidence need. Internal policy IDs may remain behind deeper detail.
 
 Listening/Reading and Writing/Speaking may present different measurement detail because their external assessment mechanics differ.
 
@@ -404,12 +434,14 @@ what to do next
 Suitable labels include:
 
 - **Not sampled yet**;
+- **Sampled evidence only — no Band claim**;
 - **Needs more evidence**;
 - **Developing**;
 - **Ready to reassess**;
 - **Current evidence supports Band N**;
 - **Evidence stale — refresh needed**;
 - **Evidence conflicting**;
+- **Product cannot currently verify this claim**;
 - **Product path not yet supported**.
 
 Historical certification may remain visible separately even when current evidence is stale/conflicting and current certification is no longer active.
