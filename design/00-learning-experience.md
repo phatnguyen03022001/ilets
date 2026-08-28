@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, progressive-disclosure UX, study-session UX shapes, product timing defaults, learner agency, learner-visible AI tutoring behavior, entitlement-visible availability, and user-visible interpretation of learning/product state
+OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, progressive-disclosure UX, study-session UX shapes, product timing defaults, learner agency, learner-visible AI tutoring behavior, entitlement-visible availability, learner-visible target-trajectory advisory, strategy-change explanation, and user-visible interpretation of learning/product state
 DEPENDS_ON: ../spec/00-PRODUCT.md, ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/02-IELTS-MODEL.md
 DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, commercial pricing/tier policy, authorization role matrices, provider selection, API wire contracts, persistence, frameworks, or deployment
 
@@ -322,6 +322,35 @@ learner-specific plan   = today's composition from current state
 
 No Band implies a universal word count, exercise count, or items-per-day requirement. Numeric dosage, load estimates, review limits, and session-composition defaults may be versioned/tuned from product and learning evidence; until calibrated, they remain bounded product policy rather than invented learning truth. System-level composition semantics are owned by `04-application-flows.md`.
 
+## Target trajectory advisory
+
+When the target/date context and empirical basis are sufficient, the product may answer a narrower planning question:
+
+> Given what the system currently knows, does the current study envelope appear plausibly consistent with the learner's declared target and date?
+
+This is a product/planning advisory interpretation. It is not IELTS evidence, a Band claim, readiness evidence, a guaranteed score prediction, or authority to change TargetProfile.
+
+The advisory may consume only justified current information such as TargetProfile, time remaining, supported and unresolved target conditions, `GapEvaluation`/`ActionIntent`, available study envelope, recent admissible progression/history, planned workload, and calibrated empirical rate/load assumptions when those assumptions actually exist.
+
+Learner-visible interpretation preserves at least these distinctions without requiring one permanent enum vocabulary:
+
+- there is not yet enough evidence/history/calibration to estimate trajectory honestly;
+- the current planning envelope appears consistent with the target trajectory under the named projection policy;
+- the trajectory is materially at risk for explained reasons;
+- known required work exceeds the current time/planning envelope under the named projection policy.
+
+Rules:
+
+- insufficient learner evidence increases projection uncertainty; it is not assumed weakness or invented progress velocity;
+- evaluator/content/product unavailability remains a separate product limitation and must not be represented as slow learner progress;
+- an at-risk/insufficient-envelope message explains the material causes rather than presenting an opaque warning;
+- learner-visible options may include increasing available study time, changing scheduling/focus within eligible work, collecting missing evidence, or explicitly changing the test date/target;
+- the system never changes the target or date without learner action;
+- do not claim that a target is impossible unless a separately justified policy can support that claim; normally report that the current envelope/projection is insufficient or unresolved;
+- projection policy/version plus the material input/provenance used for a consequential learner-facing advisory remain reconstructable.
+
+Exact forecast coefficients and rate/load assumptions are empirical/versioned product policy, not canonical Band or progression truth. System-level projection composition is owned by `04-application-flows.md`.
+
 ## Quick — 10 minutes
 
 Typical envelope:
@@ -508,6 +537,8 @@ Suitable labels include:
 Historical certification may remain visible separately even when current evidence is stale/conflicting and current certification is no longer active.
 
 Numeric confidence appears only when it is meaningful and calibrated.
+
+When comparable intervention history justifies a strategy change, learner-facing explanation should state that the product is changing approach because the previous approach has not produced sufficient improvement under the current learning policy, and identify the meaningful change when useful (for example scaffold, practice type, mechanism, context, or load). This explanation must not imply that the learner became weaker merely because the prior intervention produced limited improvement. When history is insufficient, do not label the learner as plateaued.
 
 # Promise boundary
 

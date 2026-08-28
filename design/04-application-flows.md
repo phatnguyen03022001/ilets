@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, actor classification, privileged capability semantics and default RBAC capability bundles, learner-entitlement lifecycle versus operational authorization, runtime execution/trust/failure patterns, async result delivery, planner-stage separation/load composition, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, actor classification, privileged capability semantics and default RBAC capability bundles, learner-entitlement lifecycle versus operational authorization, runtime execution/trust/failure patterns, async result delivery, planner-stage separation/load composition, target-trajectory projection, intervention-effectiveness planning interpretation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
 DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation or credential mechanics, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
@@ -395,7 +395,24 @@ Ranking may consider only **eligible** candidates. Useful ranking signals includ
 - learner preference/friction;
 - fatigue/session coherence;
 - transfer/exposure diversity;
-- operational cost after semantic validity is preserved.
+- operational cost after semantic validity is preserved;
+- attributable intervention-effectiveness history where enough comparable learning history exists.
+
+### Intervention effectiveness signal
+
+The Planner may use a Practice-owned intervention-effectiveness interpretation to decide whether repeating an otherwise eligible intervention remains the best learning strategy. This signal does not create another `GapEvaluation` class and cannot reinterpret Assessment evidence.
+
+Comparison is scoped by the existing intervention dimensions from `spec/07-PRACTICE.md`, including where material the canonical target, `ActionIntent`, Learning Mechanism, Practice Type, scaffold, context/transfer condition, difficulty/load, relevant Attempts/outcomes, subsequent admissible evidence, recency/comparability, and learner friction/fatigue.
+
+Planner behavior is:
+
+- insufficient or incomparable history → preserve uncertainty and rank without a fabricated plateau conclusion;
+- repeated useful improvement → the same intervention may continue;
+- justified diminishing returns or inadequate improvement → candidate generation/ranking may vary an existing mechanism/type/scaffold/context/difficulty/load/frequency/sequence dimension;
+- evidence suggesting the diagnosis itself may be wrong → prefer an eligible discriminating evidence action rather than endlessly rotating remediation;
+- technical/content/evaluator/provider failure → exclude that event from learner-efficacy inference and handle it under its real failure/product state.
+
+Strategy variation preserves the same target standard, Required prerequisites, evidence policy, and historical Attempts/EvidenceFacts. It does not create novelty merely to appear adaptive. Where learner-facing consequence depends on the comparison, the relevant comparison basis/policy version and reason for continuing/changing strategy remain reconstructable.
 
 ### Daily load composition
 
@@ -430,6 +447,37 @@ Rules:
 
 Ranking still orders eligible candidates; load composition decides which ranked work fits the coherent session. Implementations may combine these computations internally, but must preserve the semantic distinction.
 
+### Target trajectory advisory
+
+After the current eligible work and coherent planning envelope are known, the product may derive a learner-facing trajectory advisory without feeding the projection back into learner truth. The question is whether the **current plan/envelope appears plausibly sufficient under the applicable projection policy** for the learner's declared target/date, not whether the product can predict an IELTS result.
+
+The projection may consume, where justified:
+
+```text
+TargetProfile + fixed test date when supplied
+time remaining
+current supported / unresolved target conditions
+GapEvaluation / ActionIntent
+available study envelope
+recent admissible progression/history
+current planned workload
+calibrated empirical rate/load assumptions when available
+product/evaluator/content availability as a separate constraint axis
+```
+
+Rules:
+
+1. missing history, insufficient calibration, or unresolved learner evidence that prevents a defensible projection yields an unresolved advisory rather than fabricated velocity;
+2. missing learner evidence contributes uncertainty, not assumed weakness;
+3. product/evaluator/content inability remains distinguishable from learner pace and may itself explain why trajectory cannot currently be established;
+4. a material at-risk interpretation names its causes; a known required-work-versus-time-envelope shortfall may be reported when the policy can justify it;
+5. the projection does not lower a target, invent per-skill minima, change a test date, certify readiness, or alter hard eligibility;
+6. learner options may include changing available study time, scheduling/focus among eligible work, collecting missing evidence, or explicitly editing the target/date; Core never performs that target/date change implicitly;
+7. do not emit `impossible` or equivalent certainty unless a separately justified policy supports it; normally preserve `unresolved`, `at risk`, or `current envelope insufficient` semantics;
+8. projection-policy version, material inputs/state references, calibration provenance, computed-at context, and explanatory causes are reconstructable wherever the advisory has learner-facing consequence.
+
+Exact trajectory coefficients, pace assumptions, and risk cutoffs are empirical/versioned policy. They are not Band, Assessment, Progression, or readiness truth.
+
 ### Ranker non-authority invariant
 
 A ranker may reorder eligible candidates. It may never:
@@ -449,7 +497,7 @@ A ranker may reorder eligible candidates. It may never:
 
 ## Stage 7 — plan/explanation
 
-A DailyPlan is a snapshot/recommendation produced from named state, not assignment authority. It records enough provenance to reconstruct why each activity was eligible, selected, and included at its planned amount, including where material the TargetProfile/target-context revision, learner/Progression state reference/version, due-review/retention state, applicable dosage/load-policy version or configuration, available-time/session constraint, content/release state, product support/coverage version, content-revision references, and unresolved conditions used by planning.
+A DailyPlan is a snapshot/recommendation produced from named state, not assignment authority. It records enough provenance to reconstruct why each activity was eligible, selected, and included at its planned amount, including where material the TargetProfile/target-context revision, learner/Progression state reference/version, due-review/retention state, applicable dosage/load-policy version or configuration, available-time/session constraint, content/release state, product support/coverage version, content-revision references, and unresolved conditions used by planning. When a learner-facing trajectory advisory or intervention-strategy change is emitted, its applicable projection/effectiveness policy version, material comparison/input references, and explanatory causes are likewise reconstructable rather than being an opaque model assertion.
 
 Before actual PracticeActivity/AssessmentActivity assignment or learner exposure, Core re-evaluates every **current** hard condition that can change. This includes where material current target context, learner/evidence state, product coverage/support scope, ContentRevision release/quarantine/operational state and validation eligibility for the actual intended use under the currently applicable policy/use scope, rights/source eligibility, learner exposure/novelty/independence and reservation state, and delivery/capture feasibility.
 
@@ -520,6 +568,8 @@ valid activity candidate generation
 ranking + coherent load composition
   ↓
 coherent DailyPlan + reason codes + amount/load provenance
+  ↓
+target-trajectory advisory when enough justified basis exists
 ```
 
 Representative reason codes include:
@@ -697,9 +747,20 @@ Learning Mechanism
 Practice Mode
   ↓
 fresh eligible Practice Item revision
+  ↓
+learner Attempt / suitable learning outcome / separately eligible re-evidence
+  ↓
+comparable intervention history when sufficient
+  ↓
+intervention-effectiveness interpretation
+  ├─ useful improvement → continue when still appropriate
+  ├─ diminishing / inadequate improvement → change an existing strategy dimension
+  └─ diagnosis uncertain → collect discriminating evidence
+  ↺
+next eligible intervention selection
 ```
 
-Direct `wrong answer → fixed exercise id` mapping is not a canonical remediation policy. Detectable secondary issues may be recorded/deferred rather than surfaced when they are outside the current feedback focus.
+Direct `wrong answer → fixed exercise id` mapping is not a canonical remediation policy. Detectable secondary issues may be recorded/deferred rather than surfaced when they are outside the current feedback focus. The product also must not run `same GapEvaluation → essentially same remediation` indefinitely merely because the gap still exists. Strategy continuation/change follows the Practice-owned effectiveness rules above: too little comparable history stays unresolved, effective repetition may continue, product/runtime failure is not plateau, and strategy change never rewrites historical Attempts/EvidenceFacts or the learner target.
 
 # Flow G — review
 
