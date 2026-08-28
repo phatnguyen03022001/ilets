@@ -55,10 +55,10 @@ describe("ReadingPractice target profile", () => {
     });
   });
 
-  it("hydrates the persisted minimum Reading Band", async () => {
+  it("hydrates the persisted target variant and minimum Reading Band", async () => {
     apiMocks.get.mockResolvedValue({
       data: {
-        test_variant: "ACADEMIC",
+        test_variant: "GENERAL_TRAINING",
         minimum_reading_band: 7.5,
         resource_revision: 3,
         updated_at: "2026-08-28T00:00:00Z",
@@ -68,13 +68,37 @@ describe("ReadingPractice target profile", () => {
 
     renderReadingPractice();
 
+    const variant = screen.getByLabelText("variant");
     const input = screen.getByLabelText("minimumReadingBand");
-    await waitFor(() => expect(input).toHaveValue(7.5));
+    await waitFor(() => {
+      expect(variant).toHaveValue("GENERAL_TRAINING");
+      expect(input).toHaveValue(7.5);
+    });
+  });
+
+  it("blocks the Academic-only practice when the persisted target is General Training", async () => {
+    apiMocks.get.mockResolvedValue({
+      data: {
+        test_variant: "GENERAL_TRAINING",
+        minimum_reading_band: 7,
+        resource_revision: 2,
+        updated_at: "2026-08-28T00:00:00Z",
+      },
+      response: { status: 200 },
+    });
+
+    renderReadingPractice();
+
+    const button = screen.getByRole("button", { name: "startActivity" });
+    await waitFor(() =>
+      expect(screen.getByText("academicPracticeOnly")).toBeVisible(),
+    );
+    expect(button).toBeDisabled();
   });
 
   it("preserves existing target constraints when Reading Band changes", async () => {
     const existingTarget = {
-      test_variant: "ACADEMIC" as const,
+      test_variant: "GENERAL_TRAINING" as const,
       target_overall_band: 7,
       minimum_listening_band: 6.5,
       minimum_reading_band: 7.5,
@@ -106,7 +130,7 @@ describe("ReadingPractice target profile", () => {
     await waitFor(() =>
       expect(apiMocks.put).toHaveBeenCalledWith("/v1/target-profile", {
         body: {
-          test_variant: "ACADEMIC",
+          test_variant: "GENERAL_TRAINING",
           target_overall_band: 7,
           minimum_listening_band: 6.5,
           minimum_reading_band: 8,
@@ -126,7 +150,11 @@ describe("ReadingPractice target profile", () => {
 
     renderReadingPractice();
 
+    const variant = screen.getByLabelText("variant");
     const input = screen.getByLabelText("minimumReadingBand");
-    await waitFor(() => expect(input).toHaveValue(null));
+    await waitFor(() => {
+      expect(variant).toHaveValue("");
+      expect(input).toHaveValue(null);
+    });
   });
 });

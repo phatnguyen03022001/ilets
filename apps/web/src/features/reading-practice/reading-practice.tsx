@@ -21,11 +21,13 @@ import { api } from "@/lib/api";
 import { newIdempotencyKey } from "@/lib/idempotency";
 
 type TargetProfile = components["schemas"]["TargetProfile"];
+type TestVariant = components["schemas"]["TestVariant"];
 type PracticeActivity = components["schemas"]["PracticeActivity"];
 type Attempt = components["schemas"]["Attempt"];
 type Choice = components["schemas"]["Choice"];
 
 type TargetForm = {
+  testVariant: "" | TestVariant;
   minimumReadingBand: string;
 };
 
@@ -39,7 +41,7 @@ export default function ReadingPractice() {
   const t = useTranslations("Reading");
   const queryClient = useQueryClient();
   const targetForm = useForm<TargetForm>({
-    defaultValues: { minimumReadingBand: "" },
+    defaultValues: { testVariant: "", minimumReadingBand: "" },
   });
   const answerForm = useForm<AnswerForm>({
     defaultValues: { answers: {} },
@@ -69,10 +71,12 @@ export default function ReadingPractice() {
   });
 
   const targetMutation = useMutation({
-    mutationFn: async ({ minimumReadingBand }: TargetForm) => {
+    mutationFn: async ({ testVariant, minimumReadingBand }: TargetForm) => {
+      if (!testVariant) throw new Error(t("errors.targetVariant"));
+
       const response = await api.PUT("/v1/target-profile", {
         body: {
-          test_variant: "ACADEMIC",
+          test_variant: testVariant,
           target_overall_band: targetQuery.data?.target_overall_band,
           minimum_listening_band: targetQuery.data?.minimum_listening_band,
           minimum_reading_band: Number(minimumReadingBand),
@@ -91,6 +95,7 @@ export default function ReadingPractice() {
     onSuccess: (target) => {
       queryClient.setQueryData(targetQueryKey, target);
       targetForm.reset({
+        testVariant: target.test_variant,
         minimumReadingBand:
           target.minimum_reading_band === undefined
             ? ""
@@ -103,6 +108,7 @@ export default function ReadingPractice() {
     if (!targetQuery.isSuccess || targetForm.formState.isDirty) return;
 
     targetForm.reset({
+      testVariant: targetQuery.data?.test_variant ?? "",
       minimumReadingBand:
         targetQuery.data?.minimum_reading_band === undefined
           ? ""
@@ -179,6 +185,8 @@ export default function ReadingPractice() {
     Boolean(activity) &&
     activity!.items.every((item) => Boolean(answers[item.item_id]));
   const ready = sessionQuery.isSuccess && !targetQuery.isPending;
+  const academicPracticeAvailable =
+    targetQuery.data?.test_variant === "ACADEMIC";
 
   const errors = [
     sessionQuery.error,
@@ -243,7 +251,17 @@ export default function ReadingPractice() {
           >
             <div className="grid gap-2">
               <Label htmlFor="variant">{t("variant")}</Label>
-              <Input id="variant" value={t("academic")} disabled readOnly />
+              <select
+                id="variant"
+                aria-label={t("variant")}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring"
+                required
+                {...targetForm.register("testVariant", { required: true })}
+              >
+                <option value="">{t("selectVariant")}</option>
+                <option value="ACADEMIC">{t("academic")}</option>
+                <option value="GENERAL_TRAINING">{t("generalTraining")}</option>
+              </select>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="minimum-reading-band">
@@ -286,10 +304,15 @@ export default function ReadingPractice() {
         <CardContent>
           <Button
             onClick={startActivity}
-            disabled={!targetQuery.data || activityMutation.isPending}
+            disabled={!academicPracticeAvailable || activityMutation.isPending}
           >
             {t("startActivity")}
           </Button>
+          {targetQuery.data?.test_variant === "GENERAL_TRAINING" && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              {t("academicPracticeOnly")}
+            </p>
+          )}
         </CardContent>
       </Card>
 
