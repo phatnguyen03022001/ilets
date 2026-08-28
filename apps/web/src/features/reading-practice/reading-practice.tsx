@@ -73,7 +73,11 @@ export default function ReadingPractice() {
       const response = await api.PUT("/v1/target-profile", {
         body: {
           test_variant: "ACADEMIC",
+          target_overall_band: targetQuery.data?.target_overall_band,
+          minimum_listening_band: targetQuery.data?.minimum_listening_band,
           minimum_reading_band: Number(minimumReadingBand),
+          minimum_writing_band: targetQuery.data?.minimum_writing_band,
+          minimum_speaking_band: targetQuery.data?.minimum_speaking_band,
           expected_resource_revision: targetQuery.data?.resource_revision ?? 0,
         },
       });
