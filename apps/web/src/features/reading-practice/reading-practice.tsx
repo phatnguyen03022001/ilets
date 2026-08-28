@@ -28,6 +28,7 @@ type Choice = components["schemas"]["Choice"];
 
 type TargetForm = {
   testVariant: "" | TestVariant;
+  targetOverallBand: string;
   minimumReadingBand: string;
 };
 
@@ -41,7 +42,11 @@ export default function ReadingPractice() {
   const t = useTranslations("Reading");
   const queryClient = useQueryClient();
   const targetForm = useForm<TargetForm>({
-    defaultValues: { testVariant: "", minimumReadingBand: "" },
+    defaultValues: {
+      testVariant: "",
+      targetOverallBand: "",
+      minimumReadingBand: "",
+    },
   });
   const answerForm = useForm<AnswerForm>({
     defaultValues: { answers: {} },
@@ -71,15 +76,34 @@ export default function ReadingPractice() {
   });
 
   const targetMutation = useMutation({
-    mutationFn: async ({ testVariant, minimumReadingBand }: TargetForm) => {
+    mutationFn: async ({
+      testVariant,
+      targetOverallBand,
+      minimumReadingBand,
+    }: TargetForm) => {
       if (!testVariant) throw new Error(t("errors.targetVariant"));
+
+      const overallBand = targetOverallBand
+        ? Number(targetOverallBand)
+        : undefined;
+      const readingBand = minimumReadingBand
+        ? Number(minimumReadingBand)
+        : undefined;
+      const hasAnyBand = Boolean(
+        overallBand ??
+        targetQuery.data?.minimum_listening_band ??
+        readingBand ??
+        targetQuery.data?.minimum_writing_band ??
+        targetQuery.data?.minimum_speaking_band,
+      );
+      if (!hasAnyBand) throw new Error(t("errors.targetBand"));
 
       const response = await api.PUT("/v1/target-profile", {
         body: {
           test_variant: testVariant,
-          target_overall_band: targetQuery.data?.target_overall_band,
+          target_overall_band: overallBand,
           minimum_listening_band: targetQuery.data?.minimum_listening_band,
-          minimum_reading_band: Number(minimumReadingBand),
+          minimum_reading_band: readingBand,
           minimum_writing_band: targetQuery.data?.minimum_writing_band,
           minimum_speaking_band: targetQuery.data?.minimum_speaking_band,
           expected_resource_revision: targetQuery.data?.resource_revision ?? 0,
@@ -96,6 +120,10 @@ export default function ReadingPractice() {
       queryClient.setQueryData(targetQueryKey, target);
       targetForm.reset({
         testVariant: target.test_variant,
+        targetOverallBand:
+          target.target_overall_band === undefined
+            ? ""
+            : String(target.target_overall_band),
         minimumReadingBand:
           target.minimum_reading_band === undefined
             ? ""
@@ -109,6 +137,10 @@ export default function ReadingPractice() {
 
     targetForm.reset({
       testVariant: targetQuery.data?.test_variant ?? "",
+      targetOverallBand:
+        targetQuery.data?.target_overall_band === undefined
+          ? ""
+          : String(targetQuery.data.target_overall_band),
       minimumReadingBand:
         targetQuery.data?.minimum_reading_band === undefined
           ? ""
@@ -264,6 +296,20 @@ export default function ReadingPractice() {
               </select>
             </div>
             <div className="grid gap-2">
+              <Label htmlFor="target-overall-band">
+                {t("targetOverallBand")}
+              </Label>
+              <Input
+                id="target-overall-band"
+                aria-label={t("targetOverallBand")}
+                type="number"
+                min="3"
+                max="9"
+                step="0.5"
+                {...targetForm.register("targetOverallBand")}
+              />
+            </div>
+            <div className="grid gap-2">
               <Label htmlFor="minimum-reading-band">
                 {t("minimumReadingBand")}
               </Label>
@@ -274,9 +320,7 @@ export default function ReadingPractice() {
                 min="3"
                 max="9"
                 step="0.5"
-                {...targetForm.register("minimumReadingBand", {
-                  required: true,
-                })}
+                {...targetForm.register("minimumReadingBand")}
               />
             </div>
             <Button type="submit" disabled={!ready || targetMutation.isPending}>

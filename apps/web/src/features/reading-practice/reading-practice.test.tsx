@@ -142,6 +142,48 @@ describe("ReadingPractice target profile", () => {
     );
   });
 
+  it("allows a learner to save an overall-only Band target", async () => {
+    apiMocks.get.mockResolvedValue({
+      error: { error: { message: "resource not found" } },
+      response: { status: 404 },
+    });
+    apiMocks.put.mockResolvedValue({
+      data: {
+        test_variant: "ACADEMIC",
+        target_overall_band: 7,
+        resource_revision: 1,
+        updated_at: "2026-08-29T00:00:00Z",
+      },
+      response: { status: 201 },
+    });
+
+    renderReadingPractice();
+
+    const save = screen.getByRole("button", { name: "saveTarget" });
+    await waitFor(() => expect(save).toBeEnabled());
+    fireEvent.change(screen.getByLabelText("variant"), {
+      target: { value: "ACADEMIC" },
+    });
+    fireEvent.change(screen.getByLabelText("targetOverallBand"), {
+      target: { value: "7" },
+    });
+    fireEvent.click(save);
+
+    await waitFor(() =>
+      expect(apiMocks.put).toHaveBeenCalledWith("/v1/target-profile", {
+        body: {
+          test_variant: "ACADEMIC",
+          target_overall_band: 7,
+          minimum_listening_band: undefined,
+          minimum_reading_band: undefined,
+          minimum_writing_band: undefined,
+          minimum_speaking_band: undefined,
+          expected_resource_revision: 0,
+        },
+      }),
+    );
+  });
+
   it("keeps an unknown Band constraint blank for a new learner", async () => {
     apiMocks.get.mockResolvedValue({
       error: { error: { message: "resource not found" } },

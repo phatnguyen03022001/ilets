@@ -7,6 +7,7 @@
     "academic": "Academic",
     "generalTraining": "General Training",
     "selectVariant": "Choose a variant",
+    "targetOverallBand": "Target overall Band",
     "minimumReadingBand": "Minimum Reading Band",
     "saveTarget": "Save target",
     "targetSaved": "Target saved at revision {revision}.",
@@ -27,6 +28,7 @@
       "targetRead": "Could not read target profile.",
       "targetSave": "Could not save target profile.",
       "targetVariant": "Choose Academic or General Training before saving the target.",
+      "targetBand": "Enter at least one overall or skill Band constraint before saving the target.",
       "activity": "Could not start activity.",
       "attempt": "Attempt creation failed.",
       "submission": "Could not submit answers."
