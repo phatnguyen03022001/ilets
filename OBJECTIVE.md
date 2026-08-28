@@ -12,6 +12,8 @@ The repository must define, with implementation-grade precision:
 - how diagnosis, planning, learning, practice, review, re-evidence, readiness, and mocks form one closed route toward the target;
 - how learner agency changes eligible delivery without weakening Required prerequisites or target conditions;
 - which learner-facing capabilities and practice experiences exist;
+- how the ordinary learner route can teach, practise, explain, review, and adapt without mandatory teacher dependency while keeping AI inside bounded non-authoritative roles;
+- how essentially every repeatable digital workflow materially useful to standard IELTS preparation is represented coherently without treating feature count as completeness;
 - how every supported official task/question family reaches content, interaction, evidence, and progression paths;
 - how attempts, observations, evidence, mastery/readiness, gaps, and next actions remain distinct;
 - how product coverage/support is declared without unsupported completeness percentages;
@@ -91,6 +93,8 @@ The active design must provide concrete, understandable learner surfaces for:
 - Today/plan, skills, practice, review, media, progress, and mock flows;
 - Listening, Reading, Writing, and Speaking interactions;
 - feedback, remediation, scaffold fading, transfer, re-evidence, fluency, review, and exam preparation;
+- vocabulary/grammar/phonology acquisition, learner-saved study material, spaced retrieval, and later application in skill work;
+- AI-supported ordinary tutoring and truthful Speaking/media interaction without making AI a learning/evidence authority;
 - section and full mock flows;
 - focused preparation for One Skill Retake without inventing a fifth Skill ontology.
 

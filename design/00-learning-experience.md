@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, study-session UX shapes, product timing defaults, learner agency, and user-visible interpretation of learning/product state
+OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, progressive-disclosure UX, study-session UX shapes, product timing defaults, learner agency, learner-visible AI tutoring behavior, entitlement-visible availability, and user-visible interpretation of learning/product state
 DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/02-IELTS-MODEL.md
-DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, API wire contracts, persistence, frameworks, or deployment
+DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, commercial pricing/tier policy, authorization role matrices, provider selection, API wire contracts, persistence, frameworks, or deployment
 
 # Learning Experience
 
@@ -36,6 +36,30 @@ The learner should always be able to answer:
 3. Why is this activity recommended now?
 4. What did the last attempt actually show?
 5. What should I do next?
+
+# Learner mental model and progressive disclosure
+
+The product presents one simple route over a deeper model:
+
+```text
+target
+→ four-skill current state
+→ blockers / unknowns / due review
+→ required capability or micro-skill
+→ enabling knowledge + evidence detail when needed
+→ recommended work
+→ next action
+```
+
+`Micro-skill` is learner-facing language for a canonical Skill Leaf; it is not a second ontology. Grammar, vocabulary, and phonology appear as enabling knowledge when they materially explain or block a skill outcome, not as a fifth IELTS score.
+
+Progressive-disclosure rules:
+
+1. default surfaces show target, current state, the few material blockers/unknowns, and next action;
+2. expanding a skill reveals its capability map, required Knowledge Objects, evidence state, and recent attempts;
+3. evidence/provenance/policy detail remains available for explanation without becoming the default learner view;
+4. internal IDs and ontology structure are hidden unless useful for support/debugging;
+5. no completeness percentage is inferred from the fraction of visible nodes completed.
 
 # `TargetProfile`
 
@@ -151,7 +175,7 @@ Primary destinations:
 2. **Skills** — Listening, Reading, Writing, Speaking profiles;
 3. **Practice** — concrete user-facing practice modes;
 4. **Review** — due retrieval, remediation, and re-evidence;
-5. **Media Lab** — eligible media-supported learning;
+5. **Media** — eligible embed/source-backed learning;
 6. **Progress** — target conditions, evidence state, certification history, blockers;
 7. **Mock** — section/full-test readiness activity.
 
@@ -181,6 +205,32 @@ UX invariants:
 - the UI cannot make an ineligible activity eligible.
 
 Eligibility, ranking, reason-code construction, and legal plan execution are owned by `04-application-flows.md`.
+
+# AI-first ordinary route
+
+AI assistance is available as a cross-surface tutor, not a separate learning authority. In eligible learning/practice/review contexts it may:
+
+- explain a concept or error in learner-appropriate language;
+- show a worked example or contrast;
+- ask guiding questions or give progressively stronger hints;
+- generate or adapt bounded practice that still validates against canonical targets/content rules;
+- summarize feedback and recurring error patterns;
+- help turn suitable vocabulary/grammar/phonology material into later review.
+
+The learner must perform the target cognitive/performance operation. During independent evidence/readiness work, assistance is reduced or disabled according to the activity/evidence configuration. AI output may explain Assessment/Progression results but cannot create a Band claim, EvidenceFact, gap, or next-action truth by assertion.
+
+Ordinary learning must remain usable without a teacher. Human help is an optional coaching preference or a consequence-specific Assessment escalation, not the default route dependency.
+
+# Entitlement-visible availability
+
+A learner entitlement may make an optional cost-intensive experience available, such as realtime AI conversation, without changing the learner model or standard. Learner-facing rules are:
+
+- unavailable paid capability is presented as product availability, never learner weakness;
+- free/paid labels do not alter target, prerequisites, evidence eligibility, Band standards, or historical state;
+- losing entitlement may block future use of a gated capability but does not erase attempts/evidence;
+- learner subscription/entitlement never grants content-operation/admin authority.
+
+Concrete pricing/tier definitions remain outside this owner. Operational authorization separation is owned by `04-application-flows.md`.
 
 # Daily study presets
 
@@ -296,6 +346,31 @@ One Review surface may combine presentation of three semantic queues:
 3. **Re-evidence** — stale, conflicting, or insufficient claims.
 
 Presentation may be unified. Scheduling/evidence meaning must remain distinct.
+
+# Vocabulary and knowledge experience
+
+Vocabulary/grammar/phonology form one enabling-knowledge experience that connects acquisition to later skill use. A learner may reach it from Today, a Skill blocker, Review, Media, feedback, or an explicit save action.
+
+Learner flow:
+
+```text
+encounter or recommended knowledge target
+→ understand in context / contrast / example
+→ optional save to personal study set
+→ active retrieval after delay
+→ controlled application
+→ later use inside Listening/Reading/Writing/Speaking
+```
+
+A saved vocabulary item may preserve the expression, learner-facing meaning, useful example/context, source/provenance, and applicable canonical Knowledge references. The saved item is content, not a new Knowledge Object.
+
+Review rules:
+
+- suitable items may enter spaced retrieval; not every encountered word/error does;
+- the system should not auto-add every unknown token or flood Review for collection metrics;
+- retrieval history can schedule review but does not certify target-skill capability;
+- successful card recall does not replace contextual receptive/productive evidence;
+- learner-created notes/examples remain visibly learner-created when provenance matters.
 
 # Exam-preparation experience
 

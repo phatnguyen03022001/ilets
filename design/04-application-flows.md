@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, learner-entitlement versus operational-authorization separation, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
 DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
@@ -789,6 +789,18 @@ Invariants:
 7. authorization implementation may later map authenticated identities/roles to these capabilities without redefining their meanings.
 
 Concrete role names, role hierarchy, identity-provider integration, and the role-to-capability matrix remain implementation/authorization concerns. API operations consume these capability meanings through `05-api.md` without creating a second authorization taxonomy.
+
+# Learner entitlement vs operational authorization
+
+Commercial learner entitlement and privileged operational authority are separate dimensions.
+
+- a learner entitlement may enable an optional learner-facing capability, including a cost-intensive realtime AI Speaking route;
+- entitlement does not grant content review/release/quarantine/admin capability;
+- operational capability grants do not imply paid learner entitlement or change learner evidence state;
+- neither entitlement nor operational role changes Skill/Band/Assessment/Progression truth;
+- changing entitlement affects future capability availability, not historical Attempts, Observations, EvidenceFacts, or target state.
+
+Labels such as free/pro are mutable commercial presentation, not canonical authorization roles. Content collaboration/review/admin behavior uses the capability-scoped operational model above rather than a second role taxonomy.
 
 # Legal lifecycle state machines
 

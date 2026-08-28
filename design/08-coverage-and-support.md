@@ -347,7 +347,8 @@ This coverage owner adds no parallel contract checklist. A contract or generated
 # Delivery closure
 
 When TargetProfile names a material delivery mode, exam-readiness coverage exposes that interaction honestly. Delivery preparation changes conditions, not Skill/Band truth.
-# Current design-state declaration — 2026-08-22
+
+# Current design-state declaration — 2026-08-29
 
 This is a documentation/design declaration, not production support.
 
@@ -386,12 +387,13 @@ Runtime engineering concern closure             MODELLED
 Boundary/evolution semantics                    MODELLED
 Academic product execution                      NOT YET COVERED
 General Training product execution              NOT YET COVERED
-Bounded Academic Reading TRAINING runtime        IMPLEMENTED (executable evidence only)
+Bounded Academic Reading TRAINING runtime        IMPLEMENTED (non-evidence training only)
+Bounded Academic Reading sampled AT-02 path      IMPLEMENTED (R-QT-02/03 sampled EvidenceFact only; no Band/readiness claim)
 Broader runtime/product execution                NOT YET COVERED
 Validated target-band outcome                   NOT ESTABLISHED
 ```
 
-The current bounded Academic Reading `TRAINING` + `NOT_EVIDENCE_CANDIDATE` bootstrap is executable implementation evidence only. It does not promote Academic Reading above `MODELLED`, establish full Academic/GT execution coverage, or establish product validation.
+The current bounded Academic Reading implementation provides `TRAINING + NOT_EVIDENCE_CANDIDATE` practice plus a separate sampled `AT-02` Assessment path whose admitted EvidenceFact is limited to `R-QT-02`/`R-QT-03` sampled classification performance. Neither path promotes Academic Reading above `MODELLED`, establishes Reading Band/readiness support, establishes full Academic/GT execution coverage, or establishes product validation.
 
 `Runtime engineering concern closure MODELLED` and `Boundary/evolution semantics MODELLED` mean the required design semantics/dispositions are defined; they do not mean runtime/security/contracts/operations implementation or executable verification is complete across the product scope.
 

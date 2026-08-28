@@ -218,6 +218,7 @@ Portability does not require a generic multi-provider framework. Minimum shape i
 | AI / LLM productive evaluation | Evaluator | `DEFERRED` | provider not pre-required; bounded adapter; minimum data; output never certification |
 | AI / LLM bounded generation / model-assisted validation | Evaluator | `DEFERRED` | optional demand-driven candidate/signals; provenance and exact revision/policy identity preserved |
 | Speech-to-text / acoustic analysis | Evaluator | `DEFERRED` | local/external routes eligible; quality/provenance/uncertainty preserved |
+| Realtime speech conversation | Web + bounded AI/audio capability | `DEFERRED` | optional Speaking interaction only; provider-neutral; explicit latency/cost/capacity/privacy limits; output never examiner/evidence authority by itself |
 | Text-to-speech / generated audio | content/media capability | `DEFERRED` | use only when content demand requires it and quality/provenance fit |
 | YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | supported embed/Data API capability path; activation still requires live policy/product gates; no arbitrary extraction |
 | Transactional email | Core API | `DEFERRED` | only for concrete notification/account flow; transport only |
@@ -245,6 +246,8 @@ provider/model provenance                      = required where material
 ```
 
 AI route selection follows privacy + semantic quality + reliability eligibility before cost/latency optimization.
+
+Realtime conversation is not required for the ordinary Speaking route. It may be activated only when the product intentionally offers that interaction and the selected local/external capability satisfies the same privacy, semantic-boundary, failure, and cost-control rules. Product entitlement may gate access, but payment/entitlement never upgrades evaluator or authorization authority.
 
 Learner audio is ephemeral-by-default unless product purpose explicitly requires retention. Prefer temporary processing and persisted derived observations/provenance over permanent raw audio. Any retained audio has explicit lifecycle state and participates in deletion/backup reconciliation.
 

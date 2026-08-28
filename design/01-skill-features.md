@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: user-facing feature capabilities for Listening, Reading, Writing, Speaking, and shared learning surfaces, including variant/delivery-aware feature behavior
+OWNS: user-facing feature capabilities for Listening, Reading, Writing, Speaking, and shared learning surfaces, including variant/delivery-aware feature behavior and Speaking capture/interaction capability boundaries
 DEPENDS_ON: ../spec/02-IELTS-MODEL.md, ../spec/03-SKILLS.md, ../spec/05-BANDS.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md
 DOES_NOT_OWN: live IELTS format/delivery facts, skill/Band truth, practice mechanisms, evidence sufficiency, planner policy, API wire shape, media rights, or frameworks
 
@@ -9,7 +9,7 @@ DOES_NOT_OWN: live IELTS format/delivery facts, skill/Band truth, practice mecha
 
 Define the learner-facing capability surface. Features consume canonical learning/exam semantics; they do not redefine them.
 
-The initial product contains **40 named feature capabilities**:
+The current design inventory contains **40 named feature capabilities**:
 
 ```text
 Listening  8
@@ -21,7 +21,7 @@ Shared     6
 Total     40
 ```
 
-Academic/GT and delivery differences normally appear as feature configuration/submodes where the interaction capability is shared. Do not inflate feature identity merely to mirror labels.
+Academic/GT and delivery differences normally appear as feature configuration/submodes where the interaction capability is shared. The number 40 is not a completeness target; add/merge/remove feature identities only when learner interaction semantics require it.
 
 # Variant/delivery behavior rule
 
@@ -152,6 +152,21 @@ During evidence/readiness attempts, autocomplete/rewriting/AI continuation may n
 
 Capture failure or poor microphone quality is evidence-quality state, not low Speaking ability.
 
+## Speaking capture and AI-interaction boundary
+
+The ordinary digital Speaking route uses browser microphone capture when available. Baseline capability may include record, timer, playback, re-record, and optional speech-to-text.
+
+Inference follows the signal actually available:
+
+- transcript/text may support lexical, grammatical, discourse/content observations within evaluator quality limits;
+- timing/turn metadata may support bounded fluency observations where capture is trustworthy;
+- phoneme quality, word/sentence stress, intonation, connected speech, and overall intelligibility require suitable acoustic evidence plus an eligible evaluator/calibration path;
+- transcript-only or missing-audio routes must not claim pronunciation assessment.
+
+An optional realtime AI conversation overlay may drive spontaneous turn-taking, follow-up questions, role-play, and fluency practice for eligible Speaking features. It is a delivery capability, not an examiner or learning authority. Realtime AI interaction does not automatically make an activity a Speaking mock/evidence candidate, and it cannot substitute for target interaction conditions when Assessment/readiness requires materially different conditions.
+
+The ordinary route must still support lower-cost record → submit → feedback Speaking without realtime conversation.
+
 Where external delivery uses a different interaction channel, readiness configuration may rehearse that channel; it does not redefine the human-interactive Speaking construct.
 
 # Shared — 6
@@ -161,9 +176,32 @@ Where external delivery uses a different interaction channel, readiness configur
 | `X-F01` | Daily Plan | explainable eligible recommended actions |
 | `X-F02` | Gap Map | show learner gap/evidence states without mixing CoverageGap |
 | `X-F03` | Review Queue | present retrieval, remediation, and re-evidence while preserving semantics |
-| `X-F04` | Vocabulary / Grammar SRS | spaced retrieval for suitable Knowledge Objects |
+| `X-F04` | Knowledge Lab & SRS | vocabulary/grammar/phonology acquisition, learner-saved study material, and spaced retrieval for suitable Knowledge Objects |
 | `X-F05` | Media Lesson Creator | create eligible media-supported practice under Media contract |
 | `X-F06` | Full IELTS Mock | variant/delivery-aware integrated readiness run; never certification shortcut |
+
+# Cross-feature AI tutor capability
+
+AI tutoring is a delivery overlay across eligible features rather than a 41st feature. It may explain, model, hint, question, generate bounded practice, and summarize feedback while preserving the target operation and the activity assistance/evidence state defined upstream. A feature remains usable through non-realtime/asynchronous interaction unless its own learning purpose materially requires realtime exchange.
+
+# Traditional workflow correspondence
+
+The current feature surface digitally represents the major repeatable standard-preparation workflows without treating this table as a completeness score:
+
+| Traditional workflow class | Product path |
+|---|---|
+| teacher explanation / worked example | AI tutor overlay + guided feature activity |
+| homework / focused drills | `Practice` modes across `L/R/W/S` |
+| vocabulary notebook / grammar review | `X-F04` + `X-F03` |
+| teacher correction / redraft / re-record | `W-F08`, `S-F07`, `S-F08` |
+| speaking partner / responsive practice | `S-F01..03`, optional realtime AI overlay |
+| reasoning / rapid-response practice | `R-F06`, `R-F07`, `S-F01`, `S-F03` |
+| timed section/task work | `L-F01`, `R-F08`, `W-F09`, `S-F09` |
+| progress conference / study plan | `X-F01`, `X-F02`, Progress surface |
+| authentic-media homework | `L-F08`, `S-F05`, `S-F06`, `X-F05` |
+| section/full mock | skill timed features + `X-F06` |
+
+Remaining material coverage is judged by target/construct/workflow reachability and `08-coverage-and-support.md`, not by increasing the number 40.
 
 # Full-mock invariant
 

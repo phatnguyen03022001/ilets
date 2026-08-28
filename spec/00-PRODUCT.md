@@ -94,9 +94,11 @@ First-language context may improve localization, explanations, examples, interfe
 
 # Human-support boundary
 
-The core learning loop must not require mandatory human review for ordinary operation.
+The ordinary learning route is self-directed and AI-first: the learner can receive explanation, modelling, guided practice, feedback, review, and next-action support without a mandatory teacher. AI assistance remains bounded by the learning/Assessment/Progression owners and may not perform evidence-critical learner work or become the standard itself.
 
-Human expert input may be an optional/required escalation only where the applicable Assessment/evaluator policy needs it for a particular consequence. This file does not define that evidence rule.
+Human expert input may be optional for preference/coaching and may be required only where the applicable Assessment/evaluator policy needs it for a particular consequence. Human availability is not a prerequisite for ordinary learning progression.
+
+Product breadth is measured by whether material learner workflows and target conditions have valid semantic paths, not by feature count, lesson count, or content volume.
 
 # Implementation boundary
 
