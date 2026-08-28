@@ -37,7 +37,7 @@ type Fixture struct {
 
 func main() {
 	registryPath := getenv("CANONICAL_REGISTRY_PATH", "../../tools/canonical/generated/reading-training-registry.json")
-	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json"), ",")
+	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json,internal/bootstrap/reading-assessment-001.json"), ",")
 	for _, fixturePath := range fixturePaths {
 		fixturePath = strings.TrimSpace(fixturePath)
 		if fixturePath != "" {
@@ -159,7 +159,7 @@ func getenv(key, fallback string) string {
 }
 
 func requiredRefs(payload map[string]any) []string {
-	keys := []string{"feature_id", "practice_mode_id", "content_context_id", "primary_activity_purpose", "evidence_candidacy"}
+	keys := []string{"feature_id", "practice_mode_id", "content_context_id", "primary_activity_purpose", "evidence_candidacy", "assessment_type_ref"}
 	var out []string
 	for _, key := range keys {
 		if value, ok := payload[key].(string); ok {

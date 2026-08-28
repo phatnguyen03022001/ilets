@@ -11,6 +11,65 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const getAssessmentActivity = `-- name: GetAssessmentActivity :one
+SELECT pa.content_revision_id, pa.assigned_at, pa.assessment_type_id, cr.semantic_payload
+FROM practice_activities pa
+JOIN content_revisions cr ON cr.revision_id = pa.content_revision_id
+WHERE pa.practice_activity_id = $1
+  AND pa.learner_id = $2
+  AND pa.primary_activity_purpose = 'ASSESSMENT'
+`
+
+type GetAssessmentActivityParams struct {
+	PracticeActivityID string
+	LearnerID          string
+}
+
+type GetAssessmentActivityRow struct {
+	ContentRevisionID string
+	AssignedAt        pgtype.Timestamptz
+	AssessmentTypeID  *string
+	SemanticPayload   []byte
+}
+
+func (q *Queries) GetAssessmentActivity(ctx context.Context, arg GetAssessmentActivityParams) (GetAssessmentActivityRow, error) {
+	row := q.db.QueryRow(ctx, getAssessmentActivity, arg.PracticeActivityID, arg.LearnerID)
+	var i GetAssessmentActivityRow
+	err := row.Scan(
+		&i.ContentRevisionID,
+		&i.AssignedAt,
+		&i.AssessmentTypeID,
+		&i.SemanticPayload,
+	)
+	return i, err
+}
+
+const getAssignableAssessmentContentRevision = `-- name: GetAssignableAssessmentContentRevision :one
+SELECT cr.revision_id, cr.semantic_payload
+FROM content_revisions cr
+JOIN content_use_states us ON us.content_revision_id = cr.revision_id
+JOIN validation_decisions vd ON vd.validation_decision_id = us.current_validation_decision_id
+WHERE cr.revision_id = 'reading-bootstrap-assessment-001-r1'
+  AND us.assignment_eligible = true
+  AND us.operational_state = 'ACTIVE'
+  AND vd.result = 'PASS'
+  AND vd.validation_policy_version = 'bootstrap-reading-assessment-v1'
+  AND vd.intended_use = 'ASSESSMENT_SAMPLED_CLASSIFICATION'
+FOR SHARE OF cr, us, vd
+`
+
+type GetAssignableAssessmentContentRevisionRow struct {
+	RevisionID      string
+	SemanticPayload []byte
+}
+
+func (q *Queries) GetAssignableAssessmentContentRevision(ctx context.Context) (GetAssignableAssessmentContentRevisionRow, error) {
+	row := q.db.QueryRow(ctx, getAssignableAssessmentContentRevision)
+	var i GetAssignableAssessmentContentRevisionRow
+	err := row.Scan(&i.RevisionID, &i.SemanticPayload)
+	return i, err
+}
+
 const getAssignableContentRevision = `-- name: GetAssignableContentRevision :one
 SELECT cr.revision_id, cr.semantic_payload
 FROM content_revisions cr
@@ -72,6 +131,32 @@ func (q *Queries) GetPracticeActivity(ctx context.Context, arg GetPracticeActivi
 	var i GetPracticeActivityRow
 	err := row.Scan(&i.ContentRevisionID, &i.AssignedAt, &i.SemanticPayload)
 	return i, err
+}
+
+const insertAssessmentActivity = `-- name: InsertAssessmentActivity :exec
+INSERT INTO practice_activities (
+  practice_activity_id,
+  learner_id,
+  content_revision_id,
+  feature_id,
+  practice_mode_id,
+  primary_activity_purpose,
+  evidence_candidacy,
+  test_variant,
+  assessment_type_id
+)
+VALUES ($1, $2, $3, 'R-F04', 'PM-R03', 'ASSESSMENT', 'ASSESSMENT_MAY_ADMIT', 'ACADEMIC', 'AT-02')
+`
+
+type InsertAssessmentActivityParams struct {
+	PracticeActivityID string
+	LearnerID          string
+	ContentRevisionID  string
+}
+
+func (q *Queries) InsertAssessmentActivity(ctx context.Context, arg InsertAssessmentActivityParams) error {
+	_, err := q.db.Exec(ctx, insertAssessmentActivity, arg.PracticeActivityID, arg.LearnerID, arg.ContentRevisionID)
+	return err
 }
 
 const insertPracticeActivity = `-- name: InsertPracticeActivity :exec

@@ -1,5 +1,5 @@
--- name: GetPracticeActivityRevision :one
-SELECT content_revision_id
+-- name: GetActivityForAttempt :one
+SELECT content_revision_id, primary_activity_purpose
 FROM practice_activities
 WHERE practice_activity_id = $1
   AND learner_id = $2;
@@ -20,8 +20,11 @@ SELECT
   a.status,
   a.resource_revision,
   a.content_revision_id,
+  pa.primary_activity_purpose,
+  pa.assessment_type_id,
   cr.semantic_payload
 FROM attempts a
+JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 JOIN content_revisions cr ON cr.revision_id = a.content_revision_id
 WHERE a.attempt_id = $1
   AND a.learner_id = $2
@@ -54,9 +57,16 @@ INSERT INTO observations (
 )
 VALUES ($1, $2, $3, $4, $5, $6, $7);
 
+-- name: InsertEvidenceFact :exec
+INSERT INTO evidence_facts (
+  evidence_fact_id, observation_id, learner_id, claim_scope, eligibility_status,
+  eligibility_reason, inference_scope, policy_version, admitted_at
+) VALUES ($1,$2,$3,$4,'ADMITTED',$5,$6,$7,$8);
+
 -- name: GetAttempt :one
 SELECT
   a.practice_activity_id,
+  pa.primary_activity_purpose,
   a.content_revision_id,
   a.status,
   a.resource_revision,
@@ -64,8 +74,17 @@ SELECT
   a.evaluated_at,
   o.observation_id,
   o.result_payload,
-  o.conditions_payload
+  o.conditions_payload,
+  ef.evidence_fact_id,
+  ef.claim_scope,
+  ef.eligibility_status,
+  ef.eligibility_reason,
+  ef.inference_scope,
+  ef.policy_version,
+  ef.admitted_at
 FROM attempts a
+JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 LEFT JOIN observations o ON o.attempt_id = a.attempt_id
+LEFT JOIN evidence_facts ef ON ef.observation_id = o.observation_id
 WHERE a.attempt_id = $1
   AND a.learner_id = $2;

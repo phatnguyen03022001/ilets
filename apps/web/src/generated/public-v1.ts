@@ -119,6 +119,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/assessment-activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createAssessmentActivity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/assessment-activities/{assessment_activity_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assessment_activity_id: components["parameters"]["AssessmentActivityId"];
+            };
+            cookie?: never;
+        };
+        get: operations["getAssessmentActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/attempts": {
         parameters: {
             query?: never;
@@ -270,9 +304,37 @@ export interface components {
             title: string;
             text: string;
         };
-        CreateAttemptRequest: {
-            practice_activity_id: components["schemas"]["ResourceId"];
+        CreateAssessmentActivityRequest: {
+            /** @enum {string} */
+            assessment_type_id: "AT-02";
         };
+        AssessmentActivity: {
+            assessment_activity_id: components["schemas"]["ResourceId"];
+            /** @enum {string} */
+            assessment_type_id: "AT-02";
+            /** @enum {string} */
+            feature_id: "R-F04";
+            skill_target_ids: ("R-QT-02" | "R-QT-03")[];
+            official_family_ids: ("IELTS-R-QF-02" | "IELTS-R-QF-03")[];
+            /** @enum {string} */
+            content_context_id: "CTX-READING-ACADEMIC";
+            /** @enum {string} */
+            content_revision_id: "reading-bootstrap-assessment-001-r1";
+            /** @enum {string} */
+            primary_activity_purpose: "ASSESSMENT";
+            /** @enum {string} */
+            evidence_candidacy: "ASSESSMENT_MAY_ADMIT";
+            /** @enum {string} */
+            test_variant: "ACADEMIC";
+            stimulus: components["schemas"]["LearnerStimulus"];
+            items: components["schemas"]["ActivityItem"][];
+            /** Format: date-time */
+            assigned_at: string;
+        };
+        CreateAttemptRequest: {
+            practice_activity_id?: components["schemas"]["ResourceId"];
+            assessment_activity_id?: components["schemas"]["ResourceId"];
+        } & (unknown | unknown);
         /** @enum {string} */
         AttemptStatus: "DRAFT" | "EVALUATED";
         AnswerInput: {
@@ -286,9 +348,10 @@ export interface components {
         };
         Attempt: {
             attempt_id: components["schemas"]["ResourceId"];
-            practice_activity_id: components["schemas"]["ResourceId"];
+            practice_activity_id?: components["schemas"]["ResourceId"];
+            assessment_activity_id?: components["schemas"]["ResourceId"];
             /** @enum {string} */
-            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1";
+            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1" | "reading-bootstrap-assessment-001-r1";
             status: components["schemas"]["AttemptStatus"];
             /** Format: int64 */
             resource_revision: number;
@@ -297,13 +360,14 @@ export interface components {
             /** Format: date-time */
             evaluated_at?: string;
             observation?: components["schemas"]["Observation"];
+            evidence_fact?: components["schemas"]["EvidenceFact"];
             feedback?: components["schemas"]["ItemFeedback"][];
         };
         Observation: {
             observation_id: components["schemas"]["ResourceId"];
             attempt_id: components["schemas"]["ResourceId"];
             /** @enum {string} */
-            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1";
+            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1" | "reading-bootstrap-assessment-001-r1";
             /** @enum {string} */
             content_context_id: "CTX-READING-ACADEMIC";
             skill_target_ids: ("R-QT-02" | "R-QT-03")[];
@@ -313,11 +377,34 @@ export interface components {
             raw_score: number;
             max_score: number;
             /** @enum {string} */
-            primary_activity_purpose: "TRAINING";
+            primary_activity_purpose: "TRAINING" | "ASSESSMENT";
             /** @enum {string} */
-            evidence_candidacy: "NOT_EVIDENCE_CANDIDATE";
+            evidence_candidacy: "NOT_EVIDENCE_CANDIDATE" | "ASSESSMENT_MAY_ADMIT";
             /** Format: date-time */
             created_at: string;
+        };
+        EvidenceFact: {
+            evidence_fact_id: components["schemas"]["ResourceId"];
+            observation_ref: components["schemas"]["ResourceId"];
+            claim_scope: {
+                /** @enum {string} */
+                assessment_type_id: "AT-02";
+                /** @enum {string} */
+                test_variant: "ACADEMIC";
+                /** @enum {string} */
+                content_context_id: "CTX-READING-ACADEMIC";
+                skill_target_ids: ("R-QT-02" | "R-QT-03")[];
+            };
+            /** @enum {string} */
+            eligibility_status: "ADMITTED";
+            /** @enum {string} */
+            eligibility_reason: "OBJECTIVE_KEYED_SAMPLED_ASSESSMENT";
+            /** @enum {string} */
+            inference_scope: "SAMPLED_CLASSIFICATION_PERFORMANCE";
+            /** @enum {string} */
+            policy_version: "reading-classification-sampled-evidence-v1";
+            /** Format: date-time */
+            admitted_at: string;
         };
         ItemFeedback: {
             item_id: components["schemas"]["ResourceId"];
@@ -404,6 +491,7 @@ export interface components {
         /** @description Caller-chosen logical operation identity scoped to current learner and operation. */
         IdempotencyKey: string;
         PracticeActivityId: components["schemas"]["ResourceId"];
+        AssessmentActivityId: components["schemas"]["ResourceId"];
         AttemptId: components["schemas"]["ResourceId"];
     };
     requestBodies: never;
@@ -634,6 +722,71 @@ export interface operations {
             404: components["responses"]["NotFound"];
         };
     };
+    createAssessmentActivity: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Caller-chosen logical operation identity scoped to current learner and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAssessmentActivityRequest"];
+            };
+        };
+        responses: {
+            /** @description Idempotent replay of the same assessment assignment. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssessmentActivity"];
+                };
+            };
+            /** @description Bounded Academic AT-02 assessment assigned without answer leakage. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssessmentActivity"];
+                };
+            };
+            400: components["responses"]["InvalidRequest"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["OriginRejected"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnmaterializedTarget"];
+        };
+    };
+    getAssessmentActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assessment_activity_id: components["parameters"]["AssessmentActivityId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Learner-owned assessment projection without hidden answer material. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssessmentActivity"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            404: components["responses"]["NotFound"];
+        };
+    };
     createAttempt: {
         parameters: {
             query?: never;
@@ -717,7 +870,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Idempotent deterministic submission/evaluation result. This TRAINING activity does not admit an EvidenceFact. */
+            /** @description Idempotent deterministic submission/evaluation result. TRAINING remains non-evidence; eligible bounded ASSESSMENT may include a sampled-scope EvidenceFact. */
             200: {
                 headers: {
                     [name: string]: unknown;

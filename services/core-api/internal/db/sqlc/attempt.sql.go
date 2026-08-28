@@ -53,9 +53,34 @@ func (q *Queries) EvaluateAttempt(ctx context.Context, arg EvaluateAttemptParams
 	return result.RowsAffected(), nil
 }
 
+const getActivityForAttempt = `-- name: GetActivityForAttempt :one
+SELECT content_revision_id, primary_activity_purpose
+FROM practice_activities
+WHERE practice_activity_id = $1
+  AND learner_id = $2
+`
+
+type GetActivityForAttemptParams struct {
+	PracticeActivityID string
+	LearnerID          string
+}
+
+type GetActivityForAttemptRow struct {
+	ContentRevisionID      string
+	PrimaryActivityPurpose string
+}
+
+func (q *Queries) GetActivityForAttempt(ctx context.Context, arg GetActivityForAttemptParams) (GetActivityForAttemptRow, error) {
+	row := q.db.QueryRow(ctx, getActivityForAttempt, arg.PracticeActivityID, arg.LearnerID)
+	var i GetActivityForAttemptRow
+	err := row.Scan(&i.ContentRevisionID, &i.PrimaryActivityPurpose)
+	return i, err
+}
+
 const getAttempt = `-- name: GetAttempt :one
 SELECT
   a.practice_activity_id,
+  pa.primary_activity_purpose,
   a.content_revision_id,
   a.status,
   a.resource_revision,
@@ -63,9 +88,18 @@ SELECT
   a.evaluated_at,
   o.observation_id,
   o.result_payload,
-  o.conditions_payload
+  o.conditions_payload,
+  ef.evidence_fact_id,
+  ef.claim_scope,
+  ef.eligibility_status,
+  ef.eligibility_reason,
+  ef.inference_scope,
+  ef.policy_version,
+  ef.admitted_at
 FROM attempts a
+JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 LEFT JOIN observations o ON o.attempt_id = a.attempt_id
+LEFT JOIN evidence_facts ef ON ef.observation_id = o.observation_id
 WHERE a.attempt_id = $1
   AND a.learner_id = $2
 `
@@ -76,15 +110,23 @@ type GetAttemptParams struct {
 }
 
 type GetAttemptRow struct {
-	PracticeActivityID string
-	ContentRevisionID  string
-	Status             string
-	ResourceRevision   int64
-	CreatedAt          pgtype.Timestamptz
-	EvaluatedAt        pgtype.Timestamptz
-	ObservationID      *string
-	ResultPayload      []byte
-	ConditionsPayload  []byte
+	PracticeActivityID     string
+	PrimaryActivityPurpose string
+	ContentRevisionID      string
+	Status                 string
+	ResourceRevision       int64
+	CreatedAt              pgtype.Timestamptz
+	EvaluatedAt            pgtype.Timestamptz
+	ObservationID          *string
+	ResultPayload          []byte
+	ConditionsPayload      []byte
+	EvidenceFactID         *string
+	ClaimScope             []byte
+	EligibilityStatus      *string
+	EligibilityReason      *string
+	InferenceScope         *string
+	PolicyVersion          *string
+	AdmittedAt             pgtype.Timestamptz
 }
 
 func (q *Queries) GetAttempt(ctx context.Context, arg GetAttemptParams) (GetAttemptRow, error) {
@@ -92,6 +134,7 @@ func (q *Queries) GetAttempt(ctx context.Context, arg GetAttemptParams) (GetAtte
 	var i GetAttemptRow
 	err := row.Scan(
 		&i.PracticeActivityID,
+		&i.PrimaryActivityPurpose,
 		&i.ContentRevisionID,
 		&i.Status,
 		&i.ResourceRevision,
@@ -100,27 +143,15 @@ func (q *Queries) GetAttempt(ctx context.Context, arg GetAttemptParams) (GetAtte
 		&i.ObservationID,
 		&i.ResultPayload,
 		&i.ConditionsPayload,
+		&i.EvidenceFactID,
+		&i.ClaimScope,
+		&i.EligibilityStatus,
+		&i.EligibilityReason,
+		&i.InferenceScope,
+		&i.PolicyVersion,
+		&i.AdmittedAt,
 	)
 	return i, err
-}
-
-const getPracticeActivityRevision = `-- name: GetPracticeActivityRevision :one
-SELECT content_revision_id
-FROM practice_activities
-WHERE practice_activity_id = $1
-  AND learner_id = $2
-`
-
-type GetPracticeActivityRevisionParams struct {
-	PracticeActivityID string
-	LearnerID          string
-}
-
-func (q *Queries) GetPracticeActivityRevision(ctx context.Context, arg GetPracticeActivityRevisionParams) (string, error) {
-	row := q.db.QueryRow(ctx, getPracticeActivityRevision, arg.PracticeActivityID, arg.LearnerID)
-	var content_revision_id string
-	err := row.Scan(&content_revision_id)
-	return content_revision_id, err
 }
 
 const insertAttempt = `-- name: InsertAttempt :exec
@@ -148,6 +179,38 @@ func (q *Queries) InsertAttempt(ctx context.Context, arg InsertAttemptParams) er
 		arg.LearnerID,
 		arg.PracticeActivityID,
 		arg.ContentRevisionID,
+	)
+	return err
+}
+
+const insertEvidenceFact = `-- name: InsertEvidenceFact :exec
+INSERT INTO evidence_facts (
+  evidence_fact_id, observation_id, learner_id, claim_scope, eligibility_status,
+  eligibility_reason, inference_scope, policy_version, admitted_at
+) VALUES ($1,$2,$3,$4,'ADMITTED',$5,$6,$7,$8)
+`
+
+type InsertEvidenceFactParams struct {
+	EvidenceFactID    string
+	ObservationID     string
+	LearnerID         string
+	ClaimScope        []byte
+	EligibilityReason string
+	InferenceScope    string
+	PolicyVersion     string
+	AdmittedAt        pgtype.Timestamptz
+}
+
+func (q *Queries) InsertEvidenceFact(ctx context.Context, arg InsertEvidenceFactParams) error {
+	_, err := q.db.Exec(ctx, insertEvidenceFact,
+		arg.EvidenceFactID,
+		arg.ObservationID,
+		arg.LearnerID,
+		arg.ClaimScope,
+		arg.EligibilityReason,
+		arg.InferenceScope,
+		arg.PolicyVersion,
+		arg.AdmittedAt,
 	)
 	return err
 }
@@ -193,8 +256,11 @@ SELECT
   a.status,
   a.resource_revision,
   a.content_revision_id,
+  pa.primary_activity_purpose,
+  pa.assessment_type_id,
   cr.semantic_payload
 FROM attempts a
+JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 JOIN content_revisions cr ON cr.revision_id = a.content_revision_id
 WHERE a.attempt_id = $1
   AND a.learner_id = $2
@@ -207,10 +273,12 @@ type LockAttemptForSubmissionParams struct {
 }
 
 type LockAttemptForSubmissionRow struct {
-	Status            string
-	ResourceRevision  int64
-	ContentRevisionID string
-	SemanticPayload   []byte
+	Status                 string
+	ResourceRevision       int64
+	ContentRevisionID      string
+	PrimaryActivityPurpose string
+	AssessmentTypeID       *string
+	SemanticPayload        []byte
 }
 
 func (q *Queries) LockAttemptForSubmission(ctx context.Context, arg LockAttemptForSubmissionParams) (LockAttemptForSubmissionRow, error) {
@@ -220,6 +288,8 @@ func (q *Queries) LockAttemptForSubmission(ctx context.Context, arg LockAttemptF
 		&i.Status,
 		&i.ResourceRevision,
 		&i.ContentRevisionID,
+		&i.PrimaryActivityPurpose,
+		&i.AssessmentTypeID,
 		&i.SemanticPayload,
 	)
 	return i, err

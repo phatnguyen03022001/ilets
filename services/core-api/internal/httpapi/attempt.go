@@ -24,17 +24,30 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	obj, err := decodeObject(r, []string{"practice_activity_id"}, []string{"practice_activity_id"})
+	obj, err := decodeObject(r, []string{"practice_activity_id", "assessment_activity_id"}, []string{})
 	if err != nil {
 		writeError(w, r, 400, "INVALID_REQUEST", err.Error())
 		return
 	}
-	activityID, err := rawString(obj, "practice_activity_id")
-	if err != nil {
-		writeError(w, r, 400, "INVALID_REQUEST", "invalid practice_activity_id")
+	practiceRaw, hasPractice := obj["practice_activity_id"]
+	assessmentRaw, hasAssessment := obj["assessment_activity_id"]
+	if hasPractice == hasAssessment {
+		writeError(w, r, 400, "INVALID_REQUEST", "exactly one activity identity is required")
 		return
 	}
-	payloadHash := hashJSON(map[string]any{"practice_activity_id": activityID})
+	activityField := "practice_activity_id"
+	activityID, err := rawString(map[string]json.RawMessage{"practice_activity_id": practiceRaw}, "practice_activity_id")
+	expectedPurpose := "TRAINING"
+	if hasAssessment {
+		activityField = "assessment_activity_id"
+		activityID, err = rawString(map[string]json.RawMessage{"assessment_activity_id": assessmentRaw}, "assessment_activity_id")
+		expectedPurpose = "ASSESSMENT"
+	}
+	if err != nil {
+		writeError(w, r, 400, "INVALID_REQUEST", "invalid activity identity")
+		return
+	}
+	payloadHash := hashJSON(map[string]any{activityField: activityID})
 	tx, err := s.db.Begin(r.Context())
 	if err != nil {
 		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
@@ -42,7 +55,7 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(r.Context())
 	queries := sqlcdb.New(tx)
-	revision, err := queries.GetPracticeActivityRevision(r.Context(), sqlcdb.GetPracticeActivityRevisionParams{
+	activity, err := queries.GetActivityForAttempt(r.Context(), sqlcdb.GetActivityForAttemptParams{
 		PracticeActivityID: activityID,
 		LearnerID:          learner,
 	})
@@ -51,6 +64,10 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
+		return
+	}
+	if activity.PrimaryActivityPurpose != expectedPurpose {
+		writeError(w, r, 404, "NOT_FOUND", "resource not found")
 		return
 	}
 	replay, claimed, err := claimIdempotency(r.Context(), tx, learner, "create_attempt", key, payloadHash)
@@ -76,7 +93,7 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
 		AttemptID:          id,
 		LearnerID:          learner,
 		PracticeActivityID: activityID,
-		ContentRevisionID:  revision,
+		ContentRevisionID:  activity.ContentRevisionID,
 	}); err == nil {
 		outcome := id
 		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
@@ -191,7 +208,15 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var content map[string]any
-	if json.Unmarshal(locked.SemanticPayload, &content) != nil || !validBootstrapContent(content) {
+	if json.Unmarshal(locked.SemanticPayload, &content) != nil {
+		writeError(w, r, 409, "CONTENT_INVALID", "assigned revision cannot be scored safely")
+		return
+	}
+	validContent := locked.PrimaryActivityPurpose == "TRAINING" && validBootstrapContent(content)
+	if locked.PrimaryActivityPurpose == "ASSESSMENT" {
+		validContent = validAssessmentContent(content)
+	}
+	if !validContent {
 		writeError(w, r, 409, "CONTENT_INVALID", "assigned revision cannot be scored safely")
 		return
 	}
@@ -218,7 +243,12 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 	}
 	observationID := newID("observation_")
 	result, _ := json.Marshal(map[string]any{"raw_score": rawScore, "max_score": maxScore, "feedback": feedback})
-	conditions, _ := json.Marshal(map[string]any{"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"}, "official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED", "primary_activity_purpose": "TRAINING", "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE"})
+	purpose := locked.PrimaryActivityPurpose
+	candidacy := "NOT_EVIDENCE_CANDIDATE"
+	if purpose == "ASSESSMENT" {
+		candidacy = "ASSESSMENT_MAY_ADMIT"
+	}
+	conditions, _ := json.Marshal(map[string]any{"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"}, "official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED", "primary_activity_purpose": purpose, "evidence_candidacy": candidacy, "assessment_type_id": locked.AssessmentTypeID})
 	if err = queries.InsertObservation(r.Context(), sqlcdb.InsertObservationParams{
 		ObservationID:     observationID,
 		AttemptID:         attemptID,
@@ -227,7 +257,15 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
 		ResultPayload:     result,
 		ConditionsPayload: conditions,
 		CreatedAt:         pgtype.Timestamptz{Time: now, Valid: true},
-	}); err == nil {
+	}); err == nil && purpose == "ASSESSMENT" {
+		claimScope, _ := json.Marshal(map[string]any{"assessment_type_id": "AT-02", "test_variant": "ACADEMIC", "content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"}})
+		err = queries.InsertEvidenceFact(r.Context(), sqlcdb.InsertEvidenceFactParams{
+			EvidenceFactID: newID("evidence_"), ObservationID: observationID, LearnerID: learner, ClaimScope: claimScope,
+			EligibilityReason: "OBJECTIVE_KEYED_SAMPLED_ASSESSMENT", InferenceScope: "SAMPLED_CLASSIFICATION_PERFORMANCE",
+			PolicyVersion: "reading-classification-sampled-evidence-v1", AdmittedAt: pgtype.Timestamptz{Time: now, Valid: true},
+		})
+	}
+	if err == nil {
 		outcome := attemptID
 		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
 			LearnerID:         learner,
@@ -258,12 +296,16 @@ func (s *Server) loadAttempt(ctx context.Context, learner, id string) (map[strin
 		return nil, err
 	}
 	out := map[string]any{
-		"attempt_id":           id,
-		"practice_activity_id": row.PracticeActivityID,
-		"content_revision_id":  row.ContentRevisionID,
-		"status":               row.Status,
-		"resource_revision":    row.ResourceRevision,
-		"created_at":           row.CreatedAt.Time.UTC().Format(time.RFC3339Nano),
+		"attempt_id":          id,
+		"content_revision_id": row.ContentRevisionID,
+		"status":              row.Status,
+		"resource_revision":   row.ResourceRevision,
+		"created_at":          row.CreatedAt.Time.UTC().Format(time.RFC3339Nano),
+	}
+	if row.PrimaryActivityPurpose == "ASSESSMENT" {
+		out["assessment_activity_id"] = row.PracticeActivityID
+	} else {
+		out["practice_activity_id"] = row.PracticeActivityID
 	}
 	if row.Status != "EVALUATED" || row.ObservationID == nil || !row.EvaluatedAt.Valid {
 		return out, nil
@@ -291,6 +333,18 @@ func (s *Server) loadAttempt(ctx context.Context, learner, id string) (map[strin
 		"primary_activity_purpose": conditionsPayload["primary_activity_purpose"],
 		"evidence_candidacy":       conditionsPayload["evidence_candidacy"],
 		"created_at":               evaluated.Format(time.RFC3339Nano),
+	}
+	if row.EvidenceFactID != nil && row.AdmittedAt.Valid {
+		var claimScope map[string]any
+		if err = json.Unmarshal(row.ClaimScope, &claimScope); err != nil {
+			return nil, err
+		}
+		out["evidence_fact"] = map[string]any{
+			"evidence_fact_id": *row.EvidenceFactID, "observation_ref": *row.ObservationID, "claim_scope": claimScope,
+			"eligibility_status": *row.EligibilityStatus, "eligibility_reason": *row.EligibilityReason,
+			"inference_scope": *row.InferenceScope, "policy_version": *row.PolicyVersion,
+			"admitted_at": row.AdmittedAt.Time.UTC().Format(time.RFC3339Nano),
+		}
 	}
 	return out, nil
 }

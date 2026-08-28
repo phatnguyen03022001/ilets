@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	contractVersion   = "1.0.0-bootstrap.1"
+	contractVersion   = "1.0.0-bootstrap.2"
 	cookieName        = "ilets_session"
 	bootstrapRevision = "reading-bootstrap-classification-001-r1"
 )
@@ -132,6 +132,14 @@ func (g *generatedServer) CreatePracticeActivity(w http.ResponseWriter, r *http.
 
 func (g *generatedServer) GetPracticeActivity(w http.ResponseWriter, r *http.Request, _ publicv1.PracticeActivityId) {
 	g.server.getPracticeActivity(w, r)
+}
+
+func (g *generatedServer) CreateAssessmentActivity(w http.ResponseWriter, r *http.Request, _ publicv1.CreateAssessmentActivityParams) {
+	g.server.createAssessmentActivity(w, r)
+}
+
+func (g *generatedServer) GetAssessmentActivity(w http.ResponseWriter, r *http.Request, _ publicv1.AssessmentActivityId) {
+	g.server.getAssessmentActivity(w, r)
 }
 
 func (g *generatedServer) ListPracticeModes(w http.ResponseWriter, r *http.Request) {

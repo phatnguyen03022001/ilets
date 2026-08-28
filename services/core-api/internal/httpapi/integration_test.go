@@ -186,10 +186,10 @@ func TestBootstrapReadingAcceptanceAndRedTeam(t *testing.T) {
 		t.Fatalf("same key changed body: got %d want 409", changed.status)
 	}
 
-	// G. There is deliberately no EvidenceFact persistence path in this slice.
-	var evidenceTableAbsent bool
-	if err := pool.QueryRow(context.Background(), `SELECT to_regclass('public.evidence_facts') IS NULL`).Scan(&evidenceTableAbsent); err != nil || !evidenceTableAbsent {
-		t.Fatalf("EvidenceFact persistence unexpectedly present: absent=%v err=%v", evidenceTableAbsent, err)
+	// G. TRAINING remains deliberately non-evidence even though Assessment now has an EvidenceFact path.
+	var trainingEvidenceCount int
+	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM evidence_facts ef JOIN observations o ON o.observation_id=ef.observation_id WHERE o.attempt_id=$1`, attemptID).Scan(&trainingEvidenceCount); err != nil || trainingEvidenceCount != 0 {
+		t.Fatalf("TRAINING unexpectedly admitted EvidenceFact: count=%d err=%v", trainingEvidenceCount, err)
 	}
 
 	// Immutable historical result and exact revision constraints survive direct DB writes.
@@ -339,6 +339,75 @@ func TestProductionCookieIsSecure(t *testing.T) {
 		if !strings.Contains(cookie, required) {
 			t.Fatalf("production cookie missing %s: %s", required, cookie)
 		}
+	}
+}
+
+func TestAcademicReadingAssessmentAdmitsOnlySampledEvidence(t *testing.T) {
+	pool := integrationPool(t)
+	resetLearnerState(t, pool)
+	server := httptest.NewServer(New(pool, Config{Environment: "test", WebOrigins: []string{testOrigin}, BuildVersion: "integration-test"}, slog.Default()))
+	defer server.Close()
+
+	learner := newAPIClient(t, server.URL)
+	bootstrapLearner(t, learner)
+	putTarget(t, learner, 0, 6.5)
+
+	activityResp := learner.do(t, http.MethodPost, "/v1/assessment-activities", map[string]any{"assessment_type_id": "AT-02"}, "assessment-activity-0001", testOrigin)
+	if activityResp.status != 201 {
+		t.Fatalf("create assessment activity: %d %s", activityResp.status, activityResp.body)
+	}
+	if bytes.Contains(activityResp.body, []byte("correct_choice")) || bytes.Contains(activityResp.body, []byte("explanation")) {
+		t.Fatalf("assessment answer leakage: %s", activityResp.body)
+	}
+	var activity map[string]any
+	mustJSON(t, activityResp.body, &activity)
+	if activity["primary_activity_purpose"] != "ASSESSMENT" || activity["evidence_candidacy"] != "ASSESSMENT_MAY_ADMIT" || activity["assessment_type_id"] != "AT-02" {
+		t.Fatalf("unexpected assessment semantics: %#v", activity)
+	}
+
+	attemptResp := learner.do(t, http.MethodPost, "/v1/attempts", map[string]any{"assessment_activity_id": activity["assessment_activity_id"]}, "assessment-attempt-0001", testOrigin)
+	if attemptResp.status != 201 {
+		t.Fatalf("create assessment attempt: %d %s", attemptResp.status, attemptResp.body)
+	}
+	var attempt map[string]any
+	mustJSON(t, attemptResp.body, &attempt)
+
+	answers := []map[string]any{
+		{"item_id": "item_assess_tfng_001", "choice": "TRUE"},
+		{"item_id": "item_assess_tfng_002", "choice": "FALSE"},
+		{"item_id": "item_assess_tfng_003", "choice": "NOT_GIVEN"},
+		{"item_id": "item_assess_ynng_001", "choice": "YES"},
+		{"item_id": "item_assess_ynng_002", "choice": "NO"},
+		{"item_id": "item_assess_ynng_003", "choice": "NOT_GIVEN"},
+	}
+	submit := learner.do(t, http.MethodPost, "/v1/attempts/"+attempt["attempt_id"].(string)+"/submissions", map[string]any{"expected_resource_revision": 1, "answers": answers}, "assessment-submit-0001", testOrigin)
+	if submit.status != 200 {
+		t.Fatalf("submit assessment: %d %s", submit.status, submit.body)
+	}
+	var evaluated map[string]any
+	mustJSON(t, submit.body, &evaluated)
+	observation := evaluated["observation"].(map[string]any)
+	if observation["primary_activity_purpose"] != "ASSESSMENT" || observation["evidence_candidacy"] != "ASSESSMENT_MAY_ADMIT" {
+		t.Fatalf("assessment observation semantics: %#v", observation)
+	}
+	evidence, ok := evaluated["evidence_fact"].(map[string]any)
+	if !ok {
+		t.Fatalf("missing EvidenceFact: %#v", evaluated)
+	}
+	if evidence["policy_version"] != "reading-classification-sampled-evidence-v1" || evidence["inference_scope"] != "SAMPLED_CLASSIFICATION_PERFORMANCE" {
+		t.Fatalf("unexpected EvidenceFact scope: %#v", evidence)
+	}
+	if _, exists := evaluated["readiness_evaluation"]; exists {
+		t.Fatalf("sampled assessment fabricated readiness: %#v", evaluated)
+	}
+
+	replay := learner.do(t, http.MethodPost, "/v1/attempts/"+attempt["attempt_id"].(string)+"/submissions", map[string]any{"expected_resource_revision": 1, "answers": answers}, "assessment-submit-0001", testOrigin)
+	if replay.status != 200 {
+		t.Fatalf("assessment replay: %d %s", replay.status, replay.body)
+	}
+	var evidenceCount int
+	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM evidence_facts WHERE observation_id=$1`, observation["observation_id"]).Scan(&evidenceCount); err != nil || evidenceCount != 1 {
+		t.Fatalf("EvidenceFact idempotency count=%d err=%v", evidenceCount, err)
 	}
 }
 

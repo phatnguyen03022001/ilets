@@ -1,0 +1,128 @@
+{
+  "content_id": "reading-bootstrap-assessment-001",
+  "revision_id": "reading-bootstrap-assessment-001-r1",
+  "provenance": {
+    "origin": "owned_synthetic_bootstrap",
+    "copyright": "original repository bootstrap fixture",
+    "official_ielts_material": false
+  },
+  "validation": {
+    "decision_id": "vd_bootstrap_reading_assessment_v1",
+    "policy_version": "bootstrap-reading-assessment-v1",
+    "intended_use": "ASSESSMENT_SAMPLED_CLASSIFICATION",
+    "result": "PASS",
+    "findings": [
+      "canonical_refs_valid",
+      "structure_executable",
+      "academic_context_compatible",
+      "owned_rights",
+      "answer_key_complete",
+      "learner_projection_hides_answers",
+      "deterministic_scoring_consistent",
+      "sampled_claim_scope_only"
+    ]
+  },
+  "semantic_payload": {
+    "feature_id": "R-F04",
+    "practice_mode_id": "PM-R03",
+    "practice_type_ids": [
+      "PT-13",
+      "PT-16"
+    ],
+    "skill_target_ids": [
+      "R-QT-02",
+      "R-QT-03"
+    ],
+    "official_family_ids": [
+      "IELTS-R-QF-02",
+      "IELTS-R-QF-03"
+    ],
+    "content_context_id": "CTX-READING-ACADEMIC",
+    "primary_activity_purpose": "ASSESSMENT",
+    "evidence_candidacy": "ASSESSMENT_MAY_ADMIT",
+    "assessment_type_ref": "AT-02",
+    "claim_candidate_refs": [
+      "R-QT-02",
+      "R-QT-03"
+    ],
+    "test_variant": "ACADEMIC",
+    "stimulus": {
+      "title": "Local history archive",
+      "text": "Westhaven Museum opened a small digital archive in January after volunteers scanned photographs, maps, and handwritten records donated by local families. Visitors can search the archive for free in the museum reading room, but the images are not yet available for unrestricted download. Staff say the archive is intended to make fragile material easier to study without repeated handling of the originals. The museum has not calculated whether digitisation has reduced storage costs. A project note states that schools may use selected archive images in classroom activities with attribution. It does not claim that digital copies are more historically reliable than the original documents. The curator believes similar small museums can begin useful digitisation projects without buying specialist scanning equipment immediately."
+    },
+    "items": [
+      {
+        "item_id": "item_assess_tfng_001",
+        "official_family_id": "IELTS-R-QF-02",
+        "statement": "The digital archive opened in January.",
+        "choices": [
+          "TRUE",
+          "FALSE",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "TRUE",
+        "explanation": "The passage states that the digital archive opened in January."
+      },
+      {
+        "item_id": "item_assess_tfng_002",
+        "official_family_id": "IELTS-R-QF-02",
+        "statement": "Visitors may download all archive images without restriction.",
+        "choices": [
+          "TRUE",
+          "FALSE",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "FALSE",
+        "explanation": "The passage says the images are not yet available for unrestricted download."
+      },
+      {
+        "item_id": "item_assess_tfng_003",
+        "official_family_id": "IELTS-R-QF-02",
+        "statement": "Digitisation has reduced the museum’s storage costs.",
+        "choices": [
+          "TRUE",
+          "FALSE",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "NOT_GIVEN",
+        "explanation": "The museum has not calculated whether digitisation reduced storage costs."
+      },
+      {
+        "item_id": "item_assess_ynng_001",
+        "official_family_id": "IELTS-R-QF-03",
+        "statement": "The curator believes small museums can start useful digitisation without immediately buying specialist scanners.",
+        "choices": [
+          "YES",
+          "NO",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "YES",
+        "explanation": "This matches the curator’s stated belief."
+      },
+      {
+        "item_id": "item_assess_ynng_002",
+        "official_family_id": "IELTS-R-QF-03",
+        "statement": "The project note argues digital copies are more historically reliable than originals.",
+        "choices": [
+          "YES",
+          "NO",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "NO",
+        "explanation": "The note does not claim that digital copies are more historically reliable than originals."
+      },
+      {
+        "item_id": "item_assess_ynng_003",
+        "official_family_id": "IELTS-R-QF-03",
+        "statement": "The curator believes every school should create its own digital archive.",
+        "choices": [
+          "YES",
+          "NO",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "NOT_GIVEN",
+        "explanation": "No such view is stated."
+      }
+    ]
+  }
+}

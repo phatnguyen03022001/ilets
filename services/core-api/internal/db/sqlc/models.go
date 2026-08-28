@@ -45,6 +45,18 @@ type ContentUseState struct {
 	UpdatedAt                   pgtype.Timestamptz
 }
 
+type EvidenceFact struct {
+	EvidenceFactID    string
+	ObservationID     string
+	LearnerID         string
+	ClaimScope        []byte
+	EligibilityStatus string
+	EligibilityReason string
+	InferenceScope    string
+	PolicyVersion     string
+	AdmittedAt        pgtype.Timestamptz
+}
+
 type IdempotencyOperation struct {
 	LearnerID         string
 	Operation         string
@@ -79,6 +91,7 @@ type PracticeActivity struct {
 	EvidenceCandidacy      string
 	TestVariant            string
 	AssignedAt             pgtype.Timestamptz
+	AssessmentTypeID       *string
 }
 
 type Session struct {

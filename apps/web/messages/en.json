@@ -36,7 +36,8 @@
       "targetBand": "Enter at least one overall or skill Band constraint before saving the target.",
       "activity": "Could not start activity.",
       "attempt": "Attempt creation failed.",
-      "submission": "Could not submit answers."
+      "submission": "Could not submit answers.",
+      "assessmentActivity": "Could not start the Reading assessment."
     },
     "choices": {
       "TRUE": "True",
@@ -44,6 +45,11 @@
       "NOT_GIVEN": "Not given",
       "YES": "Yes",
       "NO": "No"
-    }
+    },
+    "assessmentHeading": "Sampled Reading assessment",
+    "assessmentDescription": "Keyed Academic Reading classification sample. Evidence is limited to the sampled classification scope.",
+    "startAssessment": "Start assessment",
+    "assessmentEvidenceOnly": "Evidence admitted only for this sampled Reading classification performance. This does not establish a Reading Band, readiness, mastery, or certification.",
+    "academicAssessmentOnly": "This bounded assessment currently materializes Academic Reading only."
   }
 }

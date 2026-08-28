@@ -1,15 +1,102 @@
 {
   "version": 1,
-  "allowlisted_roots": ["spec", "design"],
-  "forbidden_authority_sources": ["research", "archive", "evidence", "spec/DECISIONS.md"],
+  "allowlisted_roots": [
+    "spec",
+    "design"
+  ],
+  "forbidden_authority_sources": [
+    "research",
+    "archive",
+    "evidence",
+    "spec/DECISIONS.md"
+  ],
   "registries": [
-    {"type":"feature","owner":"design/01-skill-features.md","section":"# Reading — 8","kind":"markdown_table","ids":["R-F04"]},
-    {"type":"practice_mode","owner":"design/02-practice-catalog.md","section":"# Reading — 6","kind":"markdown_table","ids":["PM-R03"]},
-    {"type":"practice_type","owner":"spec/07-PRACTICE.md","section":"# Canonical Practice Type registry","kind":"markdown_table","ids":["PT-13","PT-16"]},
-    {"type":"skill_leaf","owner":"spec/03-SKILLS.md","parent_section":"# Reading","section":"## Question-type strategies","kind":"markdown_table","ids":["R-QT-02","R-QT-03"]},
-    {"type":"official_family","owner":"spec/02-IELTS-MODEL.md","section":"## Reading family registry","kind":"markdown_table","ids":["IELTS-R-QF-02","IELTS-R-QF-03"]},
-    {"type":"content_context","owner":"spec/10-CONTENT-MODEL.md","section":"# Stable Content Context registry","kind":"markdown_table","ids":["CTX-READING-ACADEMIC"]},
-    {"type":"activity_purpose","owner":"design/02-practice-catalog.md","section":"## Primary activity purpose","kind":"code_enum","ids":["TRAINING"]},
-    {"type":"evidence_candidacy","owner":"design/02-practice-catalog.md","section":"## Evidence candidacy","kind":"code_enum","ids":["NOT_EVIDENCE_CANDIDATE"]}
+    {
+      "type": "feature",
+      "owner": "design/01-skill-features.md",
+      "section": "# Reading \u2014 8",
+      "kind": "markdown_table",
+      "ids": [
+        "R-F04"
+      ]
+    },
+    {
+      "type": "practice_mode",
+      "owner": "design/02-practice-catalog.md",
+      "section": "# Reading \u2014 6",
+      "kind": "markdown_table",
+      "ids": [
+        "PM-R03"
+      ]
+    },
+    {
+      "type": "practice_type",
+      "owner": "spec/07-PRACTICE.md",
+      "section": "# Canonical Practice Type registry",
+      "kind": "markdown_table",
+      "ids": [
+        "PT-13",
+        "PT-16"
+      ]
+    },
+    {
+      "type": "skill_leaf",
+      "owner": "spec/03-SKILLS.md",
+      "parent_section": "# Reading",
+      "section": "## Question-type strategies",
+      "kind": "markdown_table",
+      "ids": [
+        "R-QT-02",
+        "R-QT-03"
+      ]
+    },
+    {
+      "type": "official_family",
+      "owner": "spec/02-IELTS-MODEL.md",
+      "section": "## Reading family registry",
+      "kind": "markdown_table",
+      "ids": [
+        "IELTS-R-QF-02",
+        "IELTS-R-QF-03"
+      ]
+    },
+    {
+      "type": "content_context",
+      "owner": "spec/10-CONTENT-MODEL.md",
+      "section": "# Stable Content Context registry",
+      "kind": "markdown_table",
+      "ids": [
+        "CTX-READING-ACADEMIC"
+      ]
+    },
+    {
+      "type": "activity_purpose",
+      "owner": "design/02-practice-catalog.md",
+      "section": "## Primary activity purpose",
+      "kind": "code_enum",
+      "ids": [
+        "TRAINING",
+        "ASSESSMENT"
+      ]
+    },
+    {
+      "type": "evidence_candidacy",
+      "owner": "design/02-practice-catalog.md",
+      "section": "## Evidence candidacy",
+      "kind": "code_enum",
+      "ids": [
+        "NOT_EVIDENCE_CANDIDATE",
+        "ASSESSMENT_MAY_ADMIT"
+      ]
+    },
+    {
+      "type": "assessment_type",
+      "owner": "spec/08-ASSESSMENT.md",
+      "section": "# Assessment Type registry",
+      "kind": "markdown_table",
+      "ids": [
+        "AT-02"
+      ]
+    }
   ]
 }

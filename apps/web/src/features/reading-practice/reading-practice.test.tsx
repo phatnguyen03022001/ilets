@@ -399,6 +399,132 @@ describe("ReadingPractice target profile", () => {
     expect(screen.queryByTestId("result")).not.toBeInTheDocument();
   });
 
+  it("runs a separate sampled Reading assessment and shows admitted evidence scope", async () => {
+    apiMocks.get.mockResolvedValue({
+      data: {
+        test_variant: "ACADEMIC",
+        minimum_reading_band: 7,
+        resource_revision: 1,
+        updated_at: "2026-08-29T00:00:00Z",
+      },
+      response: { status: 200 },
+    });
+    apiMocks.post.mockImplementation(async (path: string) => {
+      if (path === "/v1/session") {
+        return { data: { learner_id: "learner_test", human_actor: "Learner" } };
+      }
+      if (path === "/v1/assessment-activities") {
+        return {
+          data: {
+            assessment_activity_id: "assessment_test",
+            assessment_type_id: "AT-02",
+            feature_id: "R-F04",
+            skill_target_ids: ["R-QT-02", "R-QT-03"],
+            official_family_ids: ["IELTS-R-QF-02", "IELTS-R-QF-03"],
+            content_context_id: "CTX-READING-ACADEMIC",
+            content_revision_id: "reading-bootstrap-assessment-001-r1",
+            primary_activity_purpose: "ASSESSMENT",
+            evidence_candidacy: "ASSESSMENT_MAY_ADMIT",
+            test_variant: "ACADEMIC",
+            stimulus: { title: "Assessment passage", text: "Assessment text." },
+            items: [
+              {
+                item_id: "item_assess_tfng_001",
+                official_family_id: "IELTS-R-QF-02",
+                statement: "Statement",
+                choices: ["TRUE", "FALSE", "NOT_GIVEN"],
+              },
+            ],
+            assigned_at: "2026-08-29T00:00:00Z",
+          },
+        };
+      }
+      if (path === "/v1/attempts") {
+        return {
+          data: {
+            attempt_id: "attempt_assessment",
+            assessment_activity_id: "assessment_test",
+            content_revision_id: "reading-bootstrap-assessment-001-r1",
+            status: "DRAFT",
+            resource_revision: 1,
+            created_at: "2026-08-29T00:00:00Z",
+          },
+        };
+      }
+      if (path === "/v1/attempts/{attempt_id}/submissions") {
+        return {
+          data: {
+            attempt_id: "attempt_assessment",
+            assessment_activity_id: "assessment_test",
+            content_revision_id: "reading-bootstrap-assessment-001-r1",
+            status: "EVALUATED",
+            resource_revision: 2,
+            created_at: "2026-08-29T00:00:00Z",
+            evaluated_at: "2026-08-29T00:01:00Z",
+            observation: {
+              observation_id: "observation_assessment",
+              attempt_id: "attempt_assessment",
+              content_revision_id: "reading-bootstrap-assessment-001-r1",
+              content_context_id: "CTX-READING-ACADEMIC",
+              skill_target_ids: ["R-QT-02", "R-QT-03"],
+              official_family_ids: ["IELTS-R-QF-02", "IELTS-R-QF-03"],
+              scoring_method: "DETERMINISTIC_KEYED",
+              raw_score: 1,
+              max_score: 1,
+              primary_activity_purpose: "ASSESSMENT",
+              evidence_candidacy: "ASSESSMENT_MAY_ADMIT",
+              created_at: "2026-08-29T00:01:00Z",
+            },
+            evidence_fact: {
+              evidence_fact_id: "evidence_test",
+              observation_ref: "observation_assessment",
+              claim_scope: {
+                assessment_type_id: "AT-02",
+                test_variant: "ACADEMIC",
+                content_context_id: "CTX-READING-ACADEMIC",
+                skill_target_ids: ["R-QT-02", "R-QT-03"],
+              },
+              eligibility_status: "ADMITTED",
+              eligibility_reason: "OBJECTIVE_KEYED_SAMPLED_ASSESSMENT",
+              inference_scope: "SAMPLED_CLASSIFICATION_PERFORMANCE",
+              policy_version: "reading-classification-sampled-evidence-v1",
+              admitted_at: "2026-08-29T00:01:00Z",
+            },
+            feedback: [
+              {
+                item_id: "item_assess_tfng_001",
+                learner_choice: "TRUE",
+                correct_choice: "TRUE",
+                correct: true,
+                explanation: "Correct.",
+              },
+            ],
+          },
+        };
+      }
+      throw new Error(`unexpected POST ${path}`);
+    });
+
+    renderReadingPractice();
+    const startAssessment = screen.getByRole("button", {
+      name: "startAssessment",
+    });
+    await waitFor(() => expect(startAssessment).toBeEnabled());
+    fireEvent.click(startAssessment);
+    const choice = await screen.findByRole("radio", { name: "choices.TRUE" });
+    fireEvent.click(choice);
+    fireEvent.click(screen.getByRole("button", { name: "submitAnswers" }));
+
+    await screen.findByTestId("result");
+    expect(screen.getByText("assessmentEvidenceOnly")).toBeVisible();
+    expect(apiMocks.post).toHaveBeenCalledWith(
+      "/v1/attempts",
+      expect.objectContaining({
+        body: { assessment_activity_id: "assessment_test" },
+      }),
+    );
+  });
+
   it("keeps an unknown Band constraint blank for a new learner", async () => {
     apiMocks.get.mockResolvedValue({
       error: { error: { message: "resource not found" } },

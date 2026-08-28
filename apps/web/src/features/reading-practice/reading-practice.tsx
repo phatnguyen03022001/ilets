@@ -23,6 +23,7 @@ import { newIdempotencyKey } from "@/lib/idempotency";
 type TargetProfile = components["schemas"]["TargetProfile"];
 type TestVariant = components["schemas"]["TestVariant"];
 type PracticeActivity = components["schemas"]["PracticeActivity"];
+type AssessmentActivity = components["schemas"]["AssessmentActivity"];
 type Attempt = components["schemas"]["Attempt"];
 type Choice = components["schemas"]["Choice"];
 
@@ -205,6 +206,25 @@ export default function ReadingPractice() {
     },
   });
 
+  const assessmentActivityMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.POST("/v1/assessment-activities", {
+        params: {
+          header: {
+            "Idempotency-Key": newIdempotencyKey("assessment-activity"),
+          },
+        },
+        body: { assessment_type_id: "AT-02" },
+      });
+      if (response.error || !response.data) {
+        throw new Error(
+          response.error?.error.message ?? t("errors.assessmentActivity"),
+        );
+      }
+      return response.data;
+    },
+  });
+
   const attemptMutation = useMutation({
     mutationFn: async (activity: PracticeActivity) => {
       const response = await api.POST("/v1/attempts", {
@@ -220,6 +240,23 @@ export default function ReadingPractice() {
     },
   });
 
+  const assessmentAttemptMutation = useMutation({
+    mutationFn: async (activity: AssessmentActivity) => {
+      const response = await api.POST("/v1/attempts", {
+        params: {
+          header: {
+            "Idempotency-Key": newIdempotencyKey("assessment-attempt"),
+          },
+        },
+        body: { assessment_activity_id: activity.assessment_activity_id },
+      });
+      if (response.error || !response.data) {
+        throw new Error(response.error?.error.message ?? t("errors.attempt"));
+      }
+      return response.data;
+    },
+  });
+
   const submissionMutation = useMutation({
     mutationFn: async ({
       attempt,
@@ -227,7 +264,7 @@ export default function ReadingPractice() {
       answers,
     }: {
       attempt: Attempt;
-      activity: PracticeActivity;
+      activity: PracticeActivity | AssessmentActivity;
       answers: Record<string, Choice>;
     }) => {
       const response = await api.POST("/v1/attempts/{attempt_id}/submissions", {
@@ -252,8 +289,47 @@ export default function ReadingPractice() {
     },
   });
 
-  const activity = activityMutation.data;
-  const attempt = submissionMutation.data ?? attemptMutation.data;
+  const assessmentSubmissionMutation = useMutation({
+    mutationFn: async ({
+      attempt,
+      activity,
+      answers,
+    }: {
+      attempt: Attempt;
+      activity: AssessmentActivity;
+      answers: Record<string, Choice>;
+    }) => {
+      const response = await api.POST("/v1/attempts/{attempt_id}/submissions", {
+        params: {
+          path: { attempt_id: attempt.attempt_id },
+          header: {
+            "Idempotency-Key": newIdempotencyKey("assessment-submit"),
+          },
+        },
+        body: {
+          expected_resource_revision: attempt.resource_revision,
+          answers: activity.items.map((item) => ({
+            item_id: item.item_id,
+            choice: answers[item.item_id],
+          })),
+        },
+      });
+      if (response.error || !response.data) {
+        throw new Error(
+          response.error?.error.message ?? t("errors.submission"),
+        );
+      }
+      return response.data;
+    },
+  });
+
+  const assessmentActivity = assessmentActivityMutation.data;
+  const activity = assessmentActivity ?? activityMutation.data;
+  const attempt =
+    assessmentSubmissionMutation.data ??
+    submissionMutation.data ??
+    assessmentAttemptMutation.data ??
+    attemptMutation.data;
   const answers = answerForm.watch("answers");
   const allAnswered =
     Boolean(activity) &&
@@ -267,8 +343,11 @@ export default function ReadingPractice() {
     targetQuery.error,
     targetMutation.error,
     activityMutation.error,
+    assessmentActivityMutation.error,
     attemptMutation.error,
+    assessmentAttemptMutation.error,
     submissionMutation.error,
+    assessmentSubmissionMutation.error,
   ];
   const currentError = errors.find(
     (error): error is Error => error instanceof Error,
@@ -276,20 +355,53 @@ export default function ReadingPractice() {
 
   function startActivity() {
     answerForm.reset({ answers: {} });
+    assessmentActivityMutation.reset();
+    assessmentAttemptMutation.reset();
+    assessmentSubmissionMutation.reset();
     attemptMutation.reset();
     submissionMutation.reset();
     activityMutation.mutate();
   }
 
+  function startAssessment() {
+    answerForm.reset({ answers: {} });
+    activityMutation.reset();
+    attemptMutation.reset();
+    submissionMutation.reset();
+    assessmentAttemptMutation.reset();
+    assessmentSubmissionMutation.reset();
+    assessmentActivityMutation.mutate();
+  }
+
   async function submitAnswers(values: AnswerForm) {
-    if (!activity || !allAnswered || submissionMutation.isPending) return;
+    if (
+      !activity ||
+      !allAnswered ||
+      submissionMutation.isPending ||
+      assessmentSubmissionMutation.isPending
+    )
+      return;
 
     try {
+      if (assessmentActivity) {
+        const currentAttempt =
+          assessmentAttemptMutation.data ??
+          (await assessmentAttemptMutation.mutateAsync(assessmentActivity));
+        await assessmentSubmissionMutation.mutateAsync({
+          attempt: currentAttempt,
+          activity: assessmentActivity,
+          answers: values.answers,
+        });
+        return;
+      }
+
+      const practiceActivity = activity as PracticeActivity;
       const currentAttempt =
-        attemptMutation.data ?? (await attemptMutation.mutateAsync(activity));
+        attemptMutation.data ??
+        (await attemptMutation.mutateAsync(practiceActivity));
       await submissionMutation.mutateAsync({
         attempt: currentAttempt,
-        activity,
+        activity: practiceActivity,
         answers: values.answers,
       });
     } catch {
@@ -444,6 +556,30 @@ export default function ReadingPractice() {
         </CardContent>
       </Card>
 
+      <Card aria-labelledby="assessment-heading">
+        <CardHeader>
+          <CardTitle id="assessment-heading">
+            {t("assessmentHeading")}
+          </CardTitle>
+          <CardDescription>{t("assessmentDescription")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={startAssessment}
+            disabled={
+              !academicPracticeAvailable || assessmentActivityMutation.isPending
+            }
+          >
+            {t("startAssessment")}
+          </Button>
+          {targetQuery.data?.test_variant === "GENERAL_TRAINING" && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              {t("academicAssessmentOnly")}
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
       {activity && (
         <Card aria-labelledby="activity-heading">
           <CardHeader>
@@ -474,7 +610,9 @@ export default function ReadingPractice() {
                         value={field.value}
                         disabled={
                           attemptMutation.isPending ||
+                          assessmentAttemptMutation.isPending ||
                           submissionMutation.isPending ||
+                          assessmentSubmissionMutation.isPending ||
                           attempt?.status === "EVALUATED"
                         }
                         onValueChange={(value) =>
@@ -503,6 +641,7 @@ export default function ReadingPractice() {
                 disabled={
                   !allAnswered ||
                   submissionMutation.isPending ||
+                  assessmentSubmissionMutation.isPending ||
                   attempt?.status === "EVALUATED"
                 }
               >
@@ -525,7 +664,11 @@ export default function ReadingPractice() {
                 max: attempt.observation.max_score,
               })}
             </p>
-            <p className="text-sm text-muted-foreground">{t("trainingOnly")}</p>
+            <p className="text-sm text-muted-foreground">
+              {attempt.evidence_fact
+                ? t("assessmentEvidenceOnly")
+                : t("trainingOnly")}
+            </p>
             {attempt.feedback?.map((feedback) => (
               <div className="rounded-lg border p-4" key={feedback.item_id}>
                 <p>
@@ -546,13 +689,15 @@ export default function ReadingPractice() {
                 </p>
               </div>
             ))}
-            <Button
-              type="button"
-              onClick={startActivity}
-              disabled={activityMutation.isPending}
-            >
-              {t("practiceAgain")}
-            </Button>
+            {!attempt.evidence_fact && (
+              <Button
+                type="button"
+                onClick={startActivity}
+                disabled={activityMutation.isPending}
+              >
+                {t("practiceAgain")}
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}

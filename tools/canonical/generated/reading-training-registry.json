@@ -1,7 +1,18 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:f354e2b454c825f2361128c3b426c005bc4f63bf0b9e84fb7d28a618ba5f4db3",
+  "canonical_source_revision": "canonical-source-revision/v1:62ee747f2aca19fc346c6ac96cb57ead8ff08a1bb13dd8c83d090927506c49f6",
   "entries": [
+    {
+      "cells": [],
+      "id": "ASSESSMENT",
+      "source": {
+        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "owner": "design/02-practice-catalog.md",
+        "parent_section": null,
+        "section": "## Primary activity purpose"
+      },
+      "type": "activity_purpose"
+    },
     {
       "cells": [],
       "id": "TRAINING",
@@ -12,6 +23,22 @@
         "section": "## Primary activity purpose"
       },
       "type": "activity_purpose"
+    },
+    {
+      "cells": [
+        "Objective receptive item set",
+        "keyed receptive measurement",
+        "Listening, Reading",
+        "may contribute EvidenceFacts within sampled scope"
+      ],
+      "id": "AT-02",
+      "source": {
+        "git_blob": "df556509cff04c10a78daa306b29a741f39f0471",
+        "owner": "spec/08-ASSESSMENT.md",
+        "parent_section": null,
+        "section": "# Assessment Type registry"
+      },
+      "type": "assessment_type"
     },
     {
       "cells": [
@@ -26,6 +53,17 @@
         "section": "# Stable Content Context registry"
       },
       "type": "content_context"
+    },
+    {
+      "cells": [],
+      "id": "ASSESSMENT_MAY_ADMIT",
+      "source": {
+        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "owner": "design/02-practice-catalog.md",
+        "parent_section": null,
+        "section": "## Evidence candidacy"
+      },
+      "type": "evidence_candidacy"
     },
     {
       "cells": [],
@@ -159,5 +197,5 @@
     }
   ],
   "schema_version": 1,
-  "source_map_sha256": "b9707db9d2c6e51b5be1279a594b61ff9101ea9a59623c36fa9d0caa86c1e77c"
+  "source_map_sha256": "4c317e92f98ead96c5bba58a30f9ccbcca7d60595f0e976ce3ea090f8b34c4d8"
 }

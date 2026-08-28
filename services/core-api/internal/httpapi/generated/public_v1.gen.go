@@ -38,8 +38,150 @@ func (e ActivityItemOfficialFamilyId) Valid() bool {
 	}
 }
 
+// Defines values for AssessmentActivityAssessmentTypeId.
+const (
+	AssessmentActivityAssessmentTypeIdAT02 AssessmentActivityAssessmentTypeId = "AT-02"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityAssessmentTypeId enum.
+func (e AssessmentActivityAssessmentTypeId) Valid() bool {
+	switch e {
+	case AssessmentActivityAssessmentTypeIdAT02:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityContentContextId.
+const (
+	AssessmentActivityContentContextIdCTXREADINGACADEMIC AssessmentActivityContentContextId = "CTX-READING-ACADEMIC"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityContentContextId enum.
+func (e AssessmentActivityContentContextId) Valid() bool {
+	switch e {
+	case AssessmentActivityContentContextIdCTXREADINGACADEMIC:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityContentRevisionId.
+const (
+	AssessmentActivityContentRevisionIdReadingBootstrapAssessment001R1 AssessmentActivityContentRevisionId = "reading-bootstrap-assessment-001-r1"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityContentRevisionId enum.
+func (e AssessmentActivityContentRevisionId) Valid() bool {
+	switch e {
+	case AssessmentActivityContentRevisionIdReadingBootstrapAssessment001R1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityEvidenceCandidacy.
+const (
+	AssessmentActivityEvidenceCandidacyASSESSMENTMAYADMIT AssessmentActivityEvidenceCandidacy = "ASSESSMENT_MAY_ADMIT"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityEvidenceCandidacy enum.
+func (e AssessmentActivityEvidenceCandidacy) Valid() bool {
+	switch e {
+	case AssessmentActivityEvidenceCandidacyASSESSMENTMAYADMIT:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityFeatureId.
+const (
+	AssessmentActivityFeatureIdRF04 AssessmentActivityFeatureId = "R-F04"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityFeatureId enum.
+func (e AssessmentActivityFeatureId) Valid() bool {
+	switch e {
+	case AssessmentActivityFeatureIdRF04:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityOfficialFamilyIds.
+const (
+	AssessmentActivityOfficialFamilyIdsIELTSRQF02 AssessmentActivityOfficialFamilyIds = "IELTS-R-QF-02"
+	AssessmentActivityOfficialFamilyIdsIELTSRQF03 AssessmentActivityOfficialFamilyIds = "IELTS-R-QF-03"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityOfficialFamilyIds enum.
+func (e AssessmentActivityOfficialFamilyIds) Valid() bool {
+	switch e {
+	case AssessmentActivityOfficialFamilyIdsIELTSRQF02:
+		return true
+	case AssessmentActivityOfficialFamilyIdsIELTSRQF03:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityPrimaryActivityPurpose.
+const (
+	AssessmentActivityPrimaryActivityPurposeASSESSMENT AssessmentActivityPrimaryActivityPurpose = "ASSESSMENT"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityPrimaryActivityPurpose enum.
+func (e AssessmentActivityPrimaryActivityPurpose) Valid() bool {
+	switch e {
+	case AssessmentActivityPrimaryActivityPurposeASSESSMENT:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivitySkillTargetIds.
+const (
+	AssessmentActivitySkillTargetIdsRQT02 AssessmentActivitySkillTargetIds = "R-QT-02"
+	AssessmentActivitySkillTargetIdsRQT03 AssessmentActivitySkillTargetIds = "R-QT-03"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivitySkillTargetIds enum.
+func (e AssessmentActivitySkillTargetIds) Valid() bool {
+	switch e {
+	case AssessmentActivitySkillTargetIdsRQT02:
+		return true
+	case AssessmentActivitySkillTargetIdsRQT03:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AssessmentActivityTestVariant.
+const (
+	AssessmentActivityTestVariantACADEMIC AssessmentActivityTestVariant = "ACADEMIC"
+)
+
+// Valid indicates whether the value is a known member of the AssessmentActivityTestVariant enum.
+func (e AssessmentActivityTestVariant) Valid() bool {
+	switch e {
+	case AssessmentActivityTestVariantACADEMIC:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AttemptContentRevisionId.
 const (
+	AttemptContentRevisionIdReadingBootstrapAssessment001R1     AttemptContentRevisionId = "reading-bootstrap-assessment-001-r1"
 	AttemptContentRevisionIdReadingBootstrapClassification001R1 AttemptContentRevisionId = "reading-bootstrap-classification-001-r1"
 	AttemptContentRevisionIdReadingBootstrapClassification002R1 AttemptContentRevisionId = "reading-bootstrap-classification-002-r1"
 )
@@ -47,6 +189,8 @@ const (
 // Valid indicates whether the value is a known member of the AttemptContentRevisionId enum.
 func (e AttemptContentRevisionId) Valid() bool {
 	switch e {
+	case AttemptContentRevisionIdReadingBootstrapAssessment001R1:
+		return true
 	case AttemptContentRevisionIdReadingBootstrapClassification001R1:
 		return true
 	case AttemptContentRevisionIdReadingBootstrapClassification002R1:
@@ -101,6 +245,21 @@ func (e Choice) Valid() bool {
 	}
 }
 
+// Defines values for CreateAssessmentActivityRequestAssessmentTypeId.
+const (
+	CreateAssessmentActivityRequestAssessmentTypeIdAT02 CreateAssessmentActivityRequestAssessmentTypeId = "AT-02"
+)
+
+// Valid indicates whether the value is a known member of the CreateAssessmentActivityRequestAssessmentTypeId enum.
+func (e CreateAssessmentActivityRequestAssessmentTypeId) Valid() bool {
+	switch e {
+	case CreateAssessmentActivityRequestAssessmentTypeIdAT02:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreatePracticeActivityRequestPracticeModeId.
 const (
 	CreatePracticeActivityRequestPracticeModeIdPMR03 CreatePracticeActivityRequestPracticeModeId = "PM-R03"
@@ -110,6 +269,129 @@ const (
 func (e CreatePracticeActivityRequestPracticeModeId) Valid() bool {
 	switch e {
 	case CreatePracticeActivityRequestPracticeModeIdPMR03:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactClaimScopeAssessmentTypeId.
+const (
+	EvidenceFactClaimScopeAssessmentTypeIdAT02 EvidenceFactClaimScopeAssessmentTypeId = "AT-02"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactClaimScopeAssessmentTypeId enum.
+func (e EvidenceFactClaimScopeAssessmentTypeId) Valid() bool {
+	switch e {
+	case EvidenceFactClaimScopeAssessmentTypeIdAT02:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactClaimScopeContentContextId.
+const (
+	EvidenceFactClaimScopeContentContextIdCTXREADINGACADEMIC EvidenceFactClaimScopeContentContextId = "CTX-READING-ACADEMIC"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactClaimScopeContentContextId enum.
+func (e EvidenceFactClaimScopeContentContextId) Valid() bool {
+	switch e {
+	case EvidenceFactClaimScopeContentContextIdCTXREADINGACADEMIC:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactClaimScopeSkillTargetIds.
+const (
+	EvidenceFactClaimScopeSkillTargetIdsRQT02 EvidenceFactClaimScopeSkillTargetIds = "R-QT-02"
+	EvidenceFactClaimScopeSkillTargetIdsRQT03 EvidenceFactClaimScopeSkillTargetIds = "R-QT-03"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactClaimScopeSkillTargetIds enum.
+func (e EvidenceFactClaimScopeSkillTargetIds) Valid() bool {
+	switch e {
+	case EvidenceFactClaimScopeSkillTargetIdsRQT02:
+		return true
+	case EvidenceFactClaimScopeSkillTargetIdsRQT03:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactClaimScopeTestVariant.
+const (
+	EvidenceFactClaimScopeTestVariantACADEMIC EvidenceFactClaimScopeTestVariant = "ACADEMIC"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactClaimScopeTestVariant enum.
+func (e EvidenceFactClaimScopeTestVariant) Valid() bool {
+	switch e {
+	case EvidenceFactClaimScopeTestVariantACADEMIC:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactEligibilityReason.
+const (
+	OBJECTIVEKEYEDSAMPLEDASSESSMENT EvidenceFactEligibilityReason = "OBJECTIVE_KEYED_SAMPLED_ASSESSMENT"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactEligibilityReason enum.
+func (e EvidenceFactEligibilityReason) Valid() bool {
+	switch e {
+	case OBJECTIVEKEYEDSAMPLEDASSESSMENT:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactEligibilityStatus.
+const (
+	ADMITTED EvidenceFactEligibilityStatus = "ADMITTED"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactEligibilityStatus enum.
+func (e EvidenceFactEligibilityStatus) Valid() bool {
+	switch e {
+	case ADMITTED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactInferenceScope.
+const (
+	SAMPLEDCLASSIFICATIONPERFORMANCE EvidenceFactInferenceScope = "SAMPLED_CLASSIFICATION_PERFORMANCE"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactInferenceScope enum.
+func (e EvidenceFactInferenceScope) Valid() bool {
+	switch e {
+	case SAMPLEDCLASSIFICATIONPERFORMANCE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvidenceFactPolicyVersion.
+const (
+	ReadingClassificationSampledEvidenceV1 EvidenceFactPolicyVersion = "reading-classification-sampled-evidence-v1"
+)
+
+// Valid indicates whether the value is a known member of the EvidenceFactPolicyVersion enum.
+func (e EvidenceFactPolicyVersion) Valid() bool {
+	switch e {
+	case ReadingClassificationSampledEvidenceV1:
 		return true
 	default:
 		return false
@@ -178,6 +460,7 @@ func (e ObservationContentContextId) Valid() bool {
 
 // Defines values for ObservationContentRevisionId.
 const (
+	ObservationContentRevisionIdReadingBootstrapAssessment001R1     ObservationContentRevisionId = "reading-bootstrap-assessment-001-r1"
 	ObservationContentRevisionIdReadingBootstrapClassification001R1 ObservationContentRevisionId = "reading-bootstrap-classification-001-r1"
 	ObservationContentRevisionIdReadingBootstrapClassification002R1 ObservationContentRevisionId = "reading-bootstrap-classification-002-r1"
 )
@@ -185,6 +468,8 @@ const (
 // Valid indicates whether the value is a known member of the ObservationContentRevisionId enum.
 func (e ObservationContentRevisionId) Valid() bool {
 	switch e {
+	case ObservationContentRevisionIdReadingBootstrapAssessment001R1:
+		return true
 	case ObservationContentRevisionIdReadingBootstrapClassification001R1:
 		return true
 	case ObservationContentRevisionIdReadingBootstrapClassification002R1:
@@ -196,12 +481,15 @@ func (e ObservationContentRevisionId) Valid() bool {
 
 // Defines values for ObservationEvidenceCandidacy.
 const (
+	ObservationEvidenceCandidacyASSESSMENTMAYADMIT   ObservationEvidenceCandidacy = "ASSESSMENT_MAY_ADMIT"
 	ObservationEvidenceCandidacyNOTEVIDENCECANDIDATE ObservationEvidenceCandidacy = "NOT_EVIDENCE_CANDIDATE"
 )
 
 // Valid indicates whether the value is a known member of the ObservationEvidenceCandidacy enum.
 func (e ObservationEvidenceCandidacy) Valid() bool {
 	switch e {
+	case ObservationEvidenceCandidacyASSESSMENTMAYADMIT:
+		return true
 	case ObservationEvidenceCandidacyNOTEVIDENCECANDIDATE:
 		return true
 	default:
@@ -229,12 +517,15 @@ func (e ObservationOfficialFamilyIds) Valid() bool {
 
 // Defines values for ObservationPrimaryActivityPurpose.
 const (
-	ObservationPrimaryActivityPurposeTRAINING ObservationPrimaryActivityPurpose = "TRAINING"
+	ObservationPrimaryActivityPurposeASSESSMENT ObservationPrimaryActivityPurpose = "ASSESSMENT"
+	ObservationPrimaryActivityPurposeTRAINING   ObservationPrimaryActivityPurpose = "TRAINING"
 )
 
 // Valid indicates whether the value is a known member of the ObservationPrimaryActivityPurpose enum.
 func (e ObservationPrimaryActivityPurpose) Valid() bool {
 	switch e {
+	case ObservationPrimaryActivityPurposeASSESSMENT:
+		return true
 	case ObservationPrimaryActivityPurposeTRAINING:
 		return true
 	default:
@@ -583,17 +874,63 @@ type AnswerInput struct {
 	ItemId ResourceId `json:"item_id"`
 }
 
+// AssessmentActivity defines model for AssessmentActivity.
+type AssessmentActivity struct {
+	AssessmentActivityId   ResourceId                               `json:"assessment_activity_id"`
+	AssessmentTypeId       AssessmentActivityAssessmentTypeId       `json:"assessment_type_id"`
+	AssignedAt             time.Time                                `json:"assigned_at"`
+	ContentContextId       AssessmentActivityContentContextId       `json:"content_context_id"`
+	ContentRevisionId      AssessmentActivityContentRevisionId      `json:"content_revision_id"`
+	EvidenceCandidacy      AssessmentActivityEvidenceCandidacy      `json:"evidence_candidacy"`
+	FeatureId              AssessmentActivityFeatureId              `json:"feature_id"`
+	Items                  []ActivityItem                           `json:"items"`
+	OfficialFamilyIds      []AssessmentActivityOfficialFamilyIds    `json:"official_family_ids"`
+	PrimaryActivityPurpose AssessmentActivityPrimaryActivityPurpose `json:"primary_activity_purpose"`
+	SkillTargetIds         []AssessmentActivitySkillTargetIds       `json:"skill_target_ids"`
+	Stimulus               LearnerStimulus                          `json:"stimulus"`
+	TestVariant            AssessmentActivityTestVariant            `json:"test_variant"`
+}
+
+// AssessmentActivityAssessmentTypeId defines model for AssessmentActivity.AssessmentTypeId.
+type AssessmentActivityAssessmentTypeId string
+
+// AssessmentActivityContentContextId defines model for AssessmentActivity.ContentContextId.
+type AssessmentActivityContentContextId string
+
+// AssessmentActivityContentRevisionId defines model for AssessmentActivity.ContentRevisionId.
+type AssessmentActivityContentRevisionId string
+
+// AssessmentActivityEvidenceCandidacy defines model for AssessmentActivity.EvidenceCandidacy.
+type AssessmentActivityEvidenceCandidacy string
+
+// AssessmentActivityFeatureId defines model for AssessmentActivity.FeatureId.
+type AssessmentActivityFeatureId string
+
+// AssessmentActivityOfficialFamilyIds defines model for AssessmentActivity.OfficialFamilyIds.
+type AssessmentActivityOfficialFamilyIds string
+
+// AssessmentActivityPrimaryActivityPurpose defines model for AssessmentActivity.PrimaryActivityPurpose.
+type AssessmentActivityPrimaryActivityPurpose string
+
+// AssessmentActivitySkillTargetIds defines model for AssessmentActivity.SkillTargetIds.
+type AssessmentActivitySkillTargetIds string
+
+// AssessmentActivityTestVariant defines model for AssessmentActivity.TestVariant.
+type AssessmentActivityTestVariant string
+
 // Attempt defines model for Attempt.
 type Attempt struct {
-	AttemptId          ResourceId               `json:"attempt_id"`
-	ContentRevisionId  AttemptContentRevisionId `json:"content_revision_id"`
-	CreatedAt          time.Time                `json:"created_at"`
-	EvaluatedAt        *time.Time               `json:"evaluated_at,omitempty"`
-	Feedback           *[]ItemFeedback          `json:"feedback,omitempty"`
-	Observation        *Observation             `json:"observation,omitempty"`
-	PracticeActivityId ResourceId               `json:"practice_activity_id"`
-	ResourceRevision   int64                    `json:"resource_revision"`
-	Status             AttemptStatus            `json:"status"`
+	AssessmentActivityId *ResourceId              `json:"assessment_activity_id,omitempty"`
+	AttemptId            ResourceId               `json:"attempt_id"`
+	ContentRevisionId    AttemptContentRevisionId `json:"content_revision_id"`
+	CreatedAt            time.Time                `json:"created_at"`
+	EvaluatedAt          *time.Time               `json:"evaluated_at,omitempty"`
+	EvidenceFact         *EvidenceFact            `json:"evidence_fact,omitempty"`
+	Feedback             *[]ItemFeedback          `json:"feedback,omitempty"`
+	Observation          *Observation             `json:"observation,omitempty"`
+	PracticeActivityId   *ResourceId              `json:"practice_activity_id,omitempty"`
+	ResourceRevision     int64                    `json:"resource_revision"`
+	Status               AttemptStatus            `json:"status"`
 }
 
 // AttemptContentRevisionId defines model for Attempt.ContentRevisionId.
@@ -608,10 +945,26 @@ type Band = float32
 // Choice defines model for Choice.
 type Choice string
 
+// CreateAssessmentActivityRequest defines model for CreateAssessmentActivityRequest.
+type CreateAssessmentActivityRequest struct {
+	AssessmentTypeId CreateAssessmentActivityRequestAssessmentTypeId `json:"assessment_type_id"`
+}
+
+// CreateAssessmentActivityRequestAssessmentTypeId defines model for CreateAssessmentActivityRequest.AssessmentTypeId.
+type CreateAssessmentActivityRequestAssessmentTypeId string
+
 // CreateAttemptRequest defines model for CreateAttemptRequest.
 type CreateAttemptRequest struct {
-	PracticeActivityId ResourceId `json:"practice_activity_id"`
+	AssessmentActivityId *ResourceId `json:"assessment_activity_id,omitempty"`
+	PracticeActivityId   *ResourceId `json:"practice_activity_id,omitempty"`
+	union                json.RawMessage
 }
+
+// CreateAttemptRequest0 defines model for CreateAttemptRequest.0.
+type CreateAttemptRequest0 = interface{}
+
+// CreateAttemptRequest1 defines model for CreateAttemptRequest.1.
+type CreateAttemptRequest1 = interface{}
 
 // CreatePracticeActivityRequest defines model for CreatePracticeActivityRequest.
 type CreatePracticeActivityRequest struct {
@@ -632,6 +985,47 @@ type ErrorDetail struct {
 type ErrorEnvelope struct {
 	Error ErrorDetail `json:"error"`
 }
+
+// EvidenceFact defines model for EvidenceFact.
+type EvidenceFact struct {
+	AdmittedAt time.Time `json:"admitted_at"`
+	ClaimScope struct {
+		AssessmentTypeId EvidenceFactClaimScopeAssessmentTypeId `json:"assessment_type_id"`
+		ContentContextId EvidenceFactClaimScopeContentContextId `json:"content_context_id"`
+		SkillTargetIds   []EvidenceFactClaimScopeSkillTargetIds `json:"skill_target_ids"`
+		TestVariant      EvidenceFactClaimScopeTestVariant      `json:"test_variant"`
+	} `json:"claim_scope"`
+	EligibilityReason EvidenceFactEligibilityReason `json:"eligibility_reason"`
+	EligibilityStatus EvidenceFactEligibilityStatus `json:"eligibility_status"`
+	EvidenceFactId    ResourceId                    `json:"evidence_fact_id"`
+	InferenceScope    EvidenceFactInferenceScope    `json:"inference_scope"`
+	ObservationRef    ResourceId                    `json:"observation_ref"`
+	PolicyVersion     EvidenceFactPolicyVersion     `json:"policy_version"`
+}
+
+// EvidenceFactClaimScopeAssessmentTypeId defines model for EvidenceFact.ClaimScope.AssessmentTypeId.
+type EvidenceFactClaimScopeAssessmentTypeId string
+
+// EvidenceFactClaimScopeContentContextId defines model for EvidenceFact.ClaimScope.ContentContextId.
+type EvidenceFactClaimScopeContentContextId string
+
+// EvidenceFactClaimScopeSkillTargetIds defines model for EvidenceFact.ClaimScope.SkillTargetIds.
+type EvidenceFactClaimScopeSkillTargetIds string
+
+// EvidenceFactClaimScopeTestVariant defines model for EvidenceFact.ClaimScope.TestVariant.
+type EvidenceFactClaimScopeTestVariant string
+
+// EvidenceFactEligibilityReason defines model for EvidenceFact.EligibilityReason.
+type EvidenceFactEligibilityReason string
+
+// EvidenceFactEligibilityStatus defines model for EvidenceFact.EligibilityStatus.
+type EvidenceFactEligibilityStatus string
+
+// EvidenceFactInferenceScope defines model for EvidenceFact.InferenceScope.
+type EvidenceFactInferenceScope string
+
+// EvidenceFactPolicyVersion defines model for EvidenceFact.PolicyVersion.
+type EvidenceFactPolicyVersion string
 
 // Health defines model for Health.
 type Health struct {
@@ -839,6 +1233,9 @@ type TargetProfile struct {
 // TestVariant defines model for TestVariant.
 type TestVariant string
 
+// AssessmentActivityId defines model for AssessmentActivityId.
+type AssessmentActivityId = ResourceId
+
 // AttemptId defines model for AttemptId.
 type AttemptId = ResourceId
 
@@ -869,6 +1266,12 @@ type Unauthenticated = ErrorEnvelope
 // UnmaterializedTarget defines model for UnmaterializedTarget.
 type UnmaterializedTarget = ErrorEnvelope
 
+// CreateAssessmentActivityParams defines parameters for CreateAssessmentActivity.
+type CreateAssessmentActivityParams struct {
+	// IdempotencyKey Caller-chosen logical operation identity scoped to current learner and operation.
+	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
+}
+
 // CreateAttemptParams defines parameters for CreateAttempt.
 type CreateAttemptParams struct {
 	// IdempotencyKey Caller-chosen logical operation identity scoped to current learner and operation.
@@ -887,6 +1290,9 @@ type CreatePracticeActivityParams struct {
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
 }
 
+// CreateAssessmentActivityJSONRequestBody defines body for CreateAssessmentActivity for application/json ContentType.
+type CreateAssessmentActivityJSONRequestBody = CreateAssessmentActivityRequest
+
 // CreateAttemptJSONRequestBody defines body for CreateAttempt for application/json ContentType.
 type CreateAttemptJSONRequestBody = CreateAttemptRequest
 
@@ -898,6 +1304,116 @@ type CreatePracticeActivityJSONRequestBody = CreatePracticeActivityRequest
 
 // PutTargetProfileJSONRequestBody defines body for PutTargetProfile for application/json ContentType.
 type PutTargetProfileJSONRequestBody = PutTargetProfileRequest
+
+// AsCreateAttemptRequest0 returns the union data inside the CreateAttemptRequest as a CreateAttemptRequest0
+func (t CreateAttemptRequest) AsCreateAttemptRequest0() (CreateAttemptRequest0, error) {
+	var body CreateAttemptRequest0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateAttemptRequest0 overwrites any union data inside the CreateAttemptRequest as the provided CreateAttemptRequest0
+func (t *CreateAttemptRequest) FromCreateAttemptRequest0(v CreateAttemptRequest0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateAttemptRequest0 performs a merge with any union data inside the CreateAttemptRequest, using the provided CreateAttemptRequest0
+func (t *CreateAttemptRequest) MergeCreateAttemptRequest0(v CreateAttemptRequest0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateAttemptRequest1 returns the union data inside the CreateAttemptRequest as a CreateAttemptRequest1
+func (t CreateAttemptRequest) AsCreateAttemptRequest1() (CreateAttemptRequest1, error) {
+	var body CreateAttemptRequest1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateAttemptRequest1 overwrites any union data inside the CreateAttemptRequest as the provided CreateAttemptRequest1
+func (t *CreateAttemptRequest) FromCreateAttemptRequest1(v CreateAttemptRequest1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateAttemptRequest1 performs a merge with any union data inside the CreateAttemptRequest, using the provided CreateAttemptRequest1
+func (t *CreateAttemptRequest) MergeCreateAttemptRequest1(v CreateAttemptRequest1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateAttemptRequest) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	object := make(map[string]json.RawMessage)
+	if t.union != nil {
+		err = json.Unmarshal(b, &object)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if t.AssessmentActivityId != nil {
+		object["assessment_activity_id"], err = json.Marshal(t.AssessmentActivityId)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'assessment_activity_id': %w", err)
+		}
+	}
+
+	if t.PracticeActivityId != nil {
+		object["practice_activity_id"], err = json.Marshal(t.PracticeActivityId)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'practice_activity_id': %w", err)
+		}
+	}
+	b, err = json.Marshal(object)
+	return b, err
+}
+
+func (t *CreateAttemptRequest) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	if err != nil {
+		return err
+	}
+	object := make(map[string]json.RawMessage)
+	err = json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["assessment_activity_id"]; found {
+		err = json.Unmarshal(raw, &t.AssessmentActivityId)
+		if err != nil {
+			return fmt.Errorf("error reading 'assessment_activity_id': %w", err)
+		}
+	}
+
+	if raw, found := object["practice_activity_id"]; found {
+		err = json.Unmarshal(raw, &t.PracticeActivityId)
+		if err != nil {
+			return fmt.Errorf("error reading 'practice_activity_id': %w", err)
+		}
+	}
+
+	return err
+}
 
 // AsPutTargetProfileRequest0 returns the union data inside the PutTargetProfileRequest as a PutTargetProfileRequest0
 func (t PutTargetProfileRequest) AsPutTargetProfileRequest0() (PutTargetProfileRequest0, error) {
@@ -1160,6 +1676,12 @@ type ServerInterface interface {
 	// (GET /healthz)
 	GetHealth(w http.ResponseWriter, r *http.Request)
 
+	// (POST /v1/assessment-activities)
+	CreateAssessmentActivity(w http.ResponseWriter, r *http.Request, params CreateAssessmentActivityParams)
+
+	// (GET /v1/assessment-activities/{assessment_activity_id})
+	GetAssessmentActivity(w http.ResponseWriter, r *http.Request, assessmentActivityId AssessmentActivityId)
+
 	// (POST /v1/attempts)
 	CreateAttempt(w http.ResponseWriter, r *http.Request, params CreateAttemptParams)
 
@@ -1197,6 +1719,16 @@ type Unimplemented struct{}
 
 // (GET /healthz)
 func (_ Unimplemented) GetHealth(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /v1/assessment-activities)
+func (_ Unimplemented) CreateAssessmentActivity(w http.ResponseWriter, r *http.Request, params CreateAssessmentActivityParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /v1/assessment-activities/{assessment_activity_id})
+func (_ Unimplemented) GetAssessmentActivity(w http.ResponseWriter, r *http.Request, assessmentActivityId AssessmentActivityId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -1264,6 +1796,77 @@ func (siw *ServerInterfaceWrapper) GetHealth(w http.ResponseWriter, r *http.Requ
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetHealth(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateAssessmentActivity operation middleware
+func (siw *ServerInterfaceWrapper) CreateAssessmentActivity(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateAssessmentActivityParams
+
+	headers := r.Header
+
+	// ------------- Required header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = IdempotencyKey
+
+	} else {
+		err := fmt.Errorf("Header parameter Idempotency-Key is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "Idempotency-Key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateAssessmentActivity(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetAssessmentActivity operation middleware
+func (siw *ServerInterfaceWrapper) GetAssessmentActivity(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "assessment_activity_id" -------------
+	var assessmentActivityId AssessmentActivityId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "assessment_activity_id", chi.URLParam(r, "assessment_activity_id"), &assessmentActivityId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "assessment_activity_id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAssessmentActivity(w, r, assessmentActivityId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1656,6 +2259,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/healthz", wrapper.GetHealth)
 	})
 	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/v1/assessment-activities", wrapper.CreateAssessmentActivity)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/v1/assessment-activities/{assessment_activity_id}", wrapper.GetAssessmentActivity)
+	})
+	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/v1/attempts", wrapper.CreateAttempt)
 	})
 	r.Group(func(r chi.Router) {
@@ -1694,64 +2303,72 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
-	"3FU1urbd5mTVfl2v/28A",
+	"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",
+	"sma28nXxo2eFDCGh4cZcla0r023O25hf1+v/HwA=",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,
