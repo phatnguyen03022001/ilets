@@ -199,105 +199,24 @@ A content generator is not a new coverage condition. Generation capability is re
 
 # Runtime and boundary engineering closure
 
-The system-engineering disposition and material-boundary model in `06-implementation-stack.md` are consumed through the existing coverage conditions above; they do not create another TargetCoverageSpecification condition or product status.
+This owner decides how implemented runtime/boundary evidence contributes to coverage. It does not restate the implementation invariants themselves.
 
-Boundary documentation by itself is never executable coverage evidence. An implemented material boundary can pass applicable coverage only when the selected implementation demonstrates the relevant combination of:
+Applicable runtime/boundary conditions consume current truth from the existing owners:
 
-- named semantic/state authority and legal caller/callee direction;
-- correct trust/access/auth boundary and protected-information isolation;
-- exact machine contract where the boundary crosses runtime units;
-- canonical applicability/stable-identity preservation;
-- authoritative transaction/commit and consistency behavior;
-- idempotency/concurrency/retry semantics where material;
-- failure/degradation/reconciliation behavior;
-- privacy/security/data-egress/ingress controls;
-- directional version/evolution compatibility for deployed skew;
-- data-lifecycle and security-critical configuration correctness where applicable;
-- privacy-safe observability/audit;
-- executable verification of the boundary and forbidden bypasses.
+| Coverage condition | Engineering/product owners consumed |
+|---|---|
+| `machine_contracts` | `05-api.md` for API semantics/evolution; `06-implementation-stack.md` for exact-boundary, contract, canonical-registry, generated-binding, conformance, and rollout-skew implementation rules |
+| `rights_privacy_security` | `04-application-flows.md` for legal runtime/trust behavior; `06-implementation-stack.md` for runtime/browser/storage/security/data-lifecycle invariants; `07-third-party-services.md` for external ingress/egress and processor obligations |
+| `reliability_recovery` | `04-application-flows.md` for lifecycle/failure semantics; `06-implementation-stack.md` for transaction, async/process, consistency, recovery, migration/deploy, capacity, and data-lifecycle invariants |
+| `cost_abuse_operations` | `06-implementation-stack.md` for bounded input/capacity/performance/operational requirements; `07-third-party-services.md` for external capability activation, usage, degradation, and exit constraints |
+| `observability_audit` | `04-application-flows.md` for consequential runtime/privileged behavior; `06-implementation-stack.md` for telemetry, audit, health, incident, and reconstruction requirements |
+| `feature_experience`, `accessibility_capture_quality` | `00-learning-experience.md` for learner-visible state; `04-application-flows.md` for runtime outcome semantics; `06-implementation-stack.md` for Browser/Web/device/capture boundary implementation |
 
-These requirements reduce through the existing conditions rather than a new `boundary` condition.
-## `machine_contracts`
+An applicable condition becomes `SATISFIED` only when the relevant owner-defined invariants are implemented and executable evidence demonstrates them for the scoped target and permitted runtime/deployment paths. Boundary prose, generated bindings, configuration, logs, or the presence of a named technology do not satisfy a condition by themselves.
 
-Where applicable this condition closes:
+These concerns reduce through the existing TargetCoverageSpecification conditions above; they do not create another `boundary`, `runtime`, or technology-presence condition.
 
-- exact public/internal cross-unit machine interface authority;
-- generated/validated consumer/provider conformance;
-- shared canonical registry/identity materialization actually consumed by runtime;
-- canonical distinction among present, optional-absent, NOT_APPLICABLE, unresolved, and invalid-required states where material;
-- directional compatibility for every old/new client/server or consumer/provider combination that deployment permits to coexist;
-- safe unknown field/enum/status behavior proven for affected consumers rather than assumed from additive schema shape;
-- no handwritten equivalent DTO/canonical-ID truth across parallel runtimes;
-- preservation of applicability/stable IDs across generated bindings.
-
-Generated bindings do not remove runtime version skew. Breaking change cannot assume atomic simultaneous deployment unless the deployment contract explicitly guarantees it.
-
-## `rights_privacy_security`
-
-Where applicable this condition closes deployed security/trust obligations including:
-
-- Browser/user untrusted-input boundaries;
-- authentication, authorization/capability and protected-resource non-disclosure;
-- SSE authentication/access scope and prevention of cross-learner/admin event leakage;
-- Next.js server/web-edge inability to bypass Go product/DB authority;
-- Python internal capability reachability and service authentication/authorization when its network trust boundary requires it;
-- SQL injection, XSS, SSRF, CORS/CSP/CSRF protections appropriate to selected routes;
-- secrets/key/session/token handling and revocation/rotation appropriate to actual credential design;
-- applicable transport/storage protection and least privilege;
-- object/media access/privacy and external processor data handling/deletion obligations;
-- provider/data-processor egress/ingress security and public-edge abuse protection appropriate to deployment.
-
-OAuth, JWT, a hosted identity provider, service mesh, or dedicated WAF product is not required unless selected/needed; the underlying concern still must pass.
-
-## `reliability_recovery`
-
-Where applicable this condition closes:
-
-- durable commit-before-success-ACK and authoritative transaction behavior;
-- required async work registered atomically/recoverably before acknowledgement depends on it;
-- idempotency scope/conflict handling, race/concurrency/stale-write correctness;
-- deadlines/timeouts, retry classification/backoff, ambiguous network/database/provider reconciliation, provider degradation, capacity/backpressure;
-- SSE duplicate/reorder/loss/reconnect recovery through durable resource state;
-- derived cache/index/projection staleness behavior;
-- application/schema and public/internal contract compatibility during permitted rollout skew;
-- backup plus verified restore and reconciliation with current deletion/tombstone state so deleted data cannot silently return to active use;
-- health/failure/degraded-state behavior, content/evaluator/work/object-reference recovery;
-- co-location without ownership/contract/DB bypass;
-- security-critical configuration failing closed rather than silently changing semantics.
-
-Reliable async evaluation can satisfy this gate without Kafka when durable DB work/recoverable/idempotent bounded dispatch meets the invariant.
-
-## `cost_abuse_operations`
-
-Where applicable this condition closes rate limiting/abuse protection, bounded inputs, provider quotas/duplicate-cost prevention, compute/storage/network/external usage visibility, traffic/capacity/backlog pressure, and scale strategy appropriate to measured demand.
-
-Horizontal autoscaling, load balancers, CDN, read replicas, sharding, or Kubernetes are not individually required. They become applicable only when their trigger is present.
-
-## `observability_audit`
-
-Where applicable this condition closes:
-
-- privacy-safe structured logging and correlation;
-- operational metrics including error/latency/capacity/backlog/provider health where material;
-- trace correlation when needed;
-- distinction among operational logs, security events, analytics, learner-visible history, and privileged audit;
-- privileged mutation and consequential decision/build/contract/config/provider provenance sufficient for reconstruction;
-- actionable alerting plus intended-release incident ownership/escalation;
-- measurable operational objectives appropriate to the intended release candidate without architecture inventing arbitrary numeric objectives.
-
-Telemetry is derived execution evidence; logs/metrics/traces never replace authoritative product/learner/content/evidence state.
-
-## `feature_experience` and `accessibility_capture_quality`
-
-These close learner-visible correctness at Browser/Web/device/capture boundaries where applicable, including truthful accepted/pending/stale/unavailable/unsupported states, recovery from client/SSE/capture failure, and prevention of device/browser/upload/infrastructure failure becoming false learner-performance evidence.
-
-## Technology-independence invariant
-
-Coverage evaluates whether the concern is satisfied, not whether a fashionable technology exists.
-
-Therefore none of the following is intrinsically required for `COVERED`/support: Kubernetes, Helm, Kafka/another broker, Redis, vector database, distributed transactions, Saga orchestration, service mesh/discovery infrastructure, multi-region, database sharding/read replicas, leader election, gRPC, WebSockets, JWT, OAuth, Docker, Terraform, external observability, or a paid GitHub capability.
-
-If an applicable release cannot satisfy an invariant without one of those technologies, the demonstrated trigger may make that technology/path necessary downstream. Absence of the technology alone is not a CoverageGap.
+Coverage is technology-independent: absence of a particular framework, broker, cache, proxy, orchestration system, deployment platform, auth mechanism, or observability product is not itself a CoverageGap. If an owner-defined invariant and demonstrated trigger require a capability that the selected implementation lacks, the missing capability can block coverage; technology selection remains owned by `06-implementation-stack.md` and `07-third-party-services.md`.
 
 # Derived reachability invariant
 
@@ -421,17 +340,9 @@ Content used for evidence preserves exact revision and exposure/independence con
 
 # Contract and machine-materialization closure
 
-A multi-runtime path cannot become `COVERED` while TypeScript, Go, and Python independently maintain handwritten interpretations of the same interface or equivalent manually copied canonical ID registries.
+Contract and canonical-materialization coverage is evaluated through the `machine_contracts` condition and the runtime/boundary owner mapping above. API semantics/evolution remain owned by `05-api.md`; implementation strategy, canonical-registry materialization, generated-binding/conformance rules, and rollout compatibility remain owned by `06-implementation-stack.md`; an exact materialized interface is owned by its machine contract under `contracts/`.
 
-Every implemented cross-unit boundary needs one machine contract authority, generated/validated consumers where appropriate, conformance verification, canonical applicability preservation, and directional compatibility for every old/new consumer-provider combination the selected deployment permits to coexist.
-
-Generated bindings do not prove tolerance of unknown fields/enums/statuses and do not remove runtime version skew. Breaking changes cannot assume simultaneous deployment unless that deployment guarantee is explicit and verified.
-
-For every implemented path consuming shared canonical identities, applicable derived machine-readable registry/binding materialization defined by `06-implementation-stack.md` exists and canonical-reference/ID-uniqueness/drift verification passes.
-
-Generated registries/bindings remain derived verification artifacts. They are not canonical learning/product truth, content coverage evidence, product validation evidence, or independent satisfaction of `content_assets`/support declaration.
-
-Implemented content generation/validation boundaries require contracts when they exist; unused optional generation does not require hypothetical contracts. SSE uses the public HTTP contract rather than requiring a separate event contract.
+This coverage owner adds no parallel contract checklist. A contract or generated registry can contribute executable evidence for `machine_contracts`, but neither becomes learning/product truth or independently satisfies content, evidence, or support conditions.
 
 # Delivery closure
 
