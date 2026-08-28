@@ -182,21 +182,22 @@ No standalone tool-heavy realtime capability/provider route is selected for the 
 
 # External infrastructure triggers
 
-External infrastructure products remain `DEFERRED` until their trigger exists.
+External infrastructure products remain `DEFERRED` until a concrete implementation/release need exists. A USER-approved `SELECTED_FOR_IMPLEMENTATION` route below records that the initial implementation has chosen a provider for that bounded concern; it does not make the route `ACTIVE`, move authority out of Core/PostgreSQL, or authorize a broader infrastructure class.
 
 - **Identity** — external custody only if selected auth route needs it.
-- **Managed PostgreSQL** — managed hosting only if operations/recovery/cost justify it; PostgreSQL-compatible semantics remain selected independently.
-- **Object storage** — external route only when retained/large artifacts require it beyond selected deployment capabilities.
-- **CDN/edge cache** — eligible traffic/latency need only; never private/authoritative state authority.
-- **Hosting/DNS/public edge** — concrete provider only once deployment/hostname exists; no separate gateway/LB/WAF implied.
-- **WAF/DDoS service** — only if public-edge risk/deployment warrants a dedicated product.
-- **Observability** — telemetry is required before support, external provider is optional.
-- **Email** — only when a concrete product/account notification flow requires it.
+- **Managed PostgreSQL** — selected only as hosting for the authoritative PostgreSQL-compatible store; database semantics and Core-only application access remain independent of vendor.
+- **Derived cache / rate-limit / short-lived coordination** — eligible only for acceleration/protection/coordination that can fail or be rebuilt without becoming product truth.
+- **Object storage** — eligible for retained/large artifacts while Core remains authoritative for identity, lifecycle, access, retention, deletion, and product usability.
+- **CDN/edge** — eligible for DNS/static/derived delivery and baseline edge protection; never private/authoritative state authority.
+- **Deployable hosting** — may host several logical units on one platform while preserving their caller/callee, trust, persistence, and machine-contract boundaries.
+- **Dedicated WAF/paid edge feature set** — remains conditional on demonstrated risk/deployment need; selecting an edge provider does not preselect a paid WAF plan.
+- **Observability** — telemetry is required before support; selected external delivery remains non-authoritative.
+- **Email** — only for a concrete notification/account flow.
 - **AI/LLM/STT/TTS** — optional behind bounded capability ports when local/deterministic execution cannot satisfy required contract.
 - **Feature-flag provider** — only if bounded first-party flags are insufficient.
-- **Queue/broker/PubSub** — only after measured dispatch reliability/throughput/fan-out need beyond durable DB work/recoverable dispatch.
-- **API gateway/load balancer/reverse proxy** — only when deployment/public-edge/multiple-instance routing needs it.
-- **Callbacks/webhooks** — only for a selected provider requiring callback delivery.
+- **Bounded asynchronous task dispatch** — may deliver already-authoritative durable work; dispatch infrastructure never becomes business-state authority, and no second broker/queue is implied.
+- **API gateway/load balancer/reverse proxy** — only when deployment/public-edge/multiple-instance routing needs it beyond selected hosting/edge capabilities.
+- **Callbacks/webhooks** — selected only when an adopted provider route requires callback delivery.
 
 # Mandatory portability boundaries
 
@@ -213,8 +214,10 @@ Portability does not require a generic multi-provider framework. Minimum shape i
 | Capability | Runtime owner | External-provider status | Required boundary/invariant |
 |---|---|---|---|
 | Identity / credential custody | Core API integration | `DEFERRED` | stable internal learner identity; external route not preselected; selected route supports appropriate revocation/export/security |
-| PostgreSQL-compatible persistence hosting | Core API | `DEFERRED` | PostgreSQL semantics selected; hosting route remains deployment choice; provider exit/recovery if external |
-| Object storage | Core API | `DEFERRED` | only when retained/large artifacts require it; private access, integrity, lifecycle, backup/orphan reconciliation |
+| PostgreSQL-compatible persistence hosting | Core API | `SELECTED_FOR_IMPLEMENTATION` | authoritative product truth remains PostgreSQL/Core-owned; provider hosting cannot change DB semantics or application access ownership |
+| Derived cache / rate-limit / short-lived coordination | Core API / applicable edge-safe callers | `SELECTED_FOR_IMPLEMENTATION` | non-authoritative derived acceleration/coordination only; correctness survives cache loss/staleness under owning policies |
+| Bounded asynchronous task dispatch | Core dispatch | `SELECTED_FOR_IMPLEMENTATION` | delivers durable Core-owned logical work; dispatch receipt/queue state never becomes business-state or evidence authority |
+| Object storage | Core API | `SELECTED_FOR_IMPLEMENTATION` | bytes may live externally; Core owns object identity/lifecycle/access/retention/deletion; narrow direct browser transfer is preferred where legal/safe |
 | AI / LLM productive evaluation | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | selected routes remain behind bounded adapter; minimum data; consequential use requires evaluator/model/configuration-specific calibration; output never certification |
 | AI / LLM bounded generation / model-assisted validation | Evaluator | `DEFERRED` | optional demand-driven candidate/signals; provenance and exact revision/policy identity preserved |
 | Speech-to-text | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | transcript capability only; realtime/batch form follows interaction need; quality/provenance/uncertainty preserved; transcript never substitutes for acoustic pronunciation evidence |
@@ -223,16 +226,16 @@ Portability does not require a generic multi-provider framework. Minimum shape i
 | Pure VI↔EN translation | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | translation assistance only; provider-neutral; translation output does not become Speaking/Writing evidence or learner ability truth |
 | Text-to-speech / generated audio | content/media capability | `SELECTED_FOR_IMPLEMENTATION` | static/lesson audio only when content demand requires it and quality/provenance fit |
 | YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | supported embed/Data API capability path; activation still requires live policy/product gates; no arbitrary extraction |
-| Transactional email | Core API | `DEFERRED` | only for concrete notification/account flow; transport only |
-| Product analytics | Web/Core API | `DEFERRED` | minimal classified events; no raw learner-content shadow authority |
-| Operational observability | all runtime units | `DEFERRED` | telemetry concern required before support; external provider optional |
-| Payments / billing | Core API | `DEFERRED` | only when product monetization actually requires it; entitlement cannot alter learning/evidence truth |
-| Hosting / DNS / public edge | deployable owners | `DEFERRED` | concrete route must satisfy TLS/routing/health/security/recovery/version visibility |
-| CDN / edge caching | Web/assets | `DEFERRED` | only eligible derived/static assets under privacy/rights/freshness rules |
-| WAF / DDoS service | public edge | `DEFERRED` | dedicated service only when risk/deployment justifies it |
-| Provider callbacks | Core API | `DEFERRED` | only selected provider callbacks; auth/replay/association/audit required |
-| External queue / broker / PubSub | Core dispatch | `DEFERRED` | only beyond measured durable DB/recoverable-dispatch capability |
-| Feature flags | Core API/Web | `DEFERRED` | external provider optional; flags never hidden policy authority |
+| Transactional email | Core API | `SELECTED_FOR_IMPLEMENTATION` | concrete transport route only; email delivery/receipt is not product-state authority |
+| Product analytics | Web/Core API | `SELECTED_FOR_IMPLEMENTATION` | minimal classified events; no raw learner-content shadow authority |
+| Operational observability | all runtime units | `SELECTED_FOR_IMPLEMENTATION` | logs/metrics are operational evidence only; telemetry delivery never becomes business truth |
+| Payments / subscription billing | Core API | `SELECTED_FOR_IMPLEMENTATION` | provider facts remain external observations; effective entitlement is committed only by Core reconciliation |
+| Deployable hosting | Web / Core API / Evaluator | `SELECTED_FOR_IMPLEMENTATION` | one hosting platform may run all three units while logical/runtime/trust/persistence boundaries remain intact |
+| DNS / CDN / baseline DDoS edge | Web/assets/public edge | `SELECTED_FOR_IMPLEMENTATION` | DNS/static/derived delivery and baseline edge protection only; no paid WAF/plan feature set frozen |
+| Dedicated WAF / paid edge add-ons | public edge | `DEFERRED` | only when risk/deployment proves the additional capability is needed |
+| Provider callbacks / webhooks | Core API | `SELECTED_FOR_IMPLEMENTATION` | selected only for the payOS payment route initially; auth/replay/association/audit and Core reconciliation required |
+| Additional external queue / broker / PubSub | Core dispatch | `DEFERRED` | Google Cloud Tasks is the sole selected bounded dispatcher; no second queue/broker is retained |
+| Feature flags | Core API/Web | `DEFERRED` | bounded first-party flags are sufficient initially; external flags never hidden policy authority |
 
 Research may contain named candidates; canonical design does not repeat them until a provider enters this lifecycle.
 
@@ -249,9 +252,65 @@ The USER-approved initial external routes below are `SELECTED_FOR_IMPLEMENTATION
 | Pure VI↔EN translation | GPT-Realtime-Translate | Gemini Live Translate — fallback | both selected for implementation; translation assistance does not establish learner language ability by itself |
 | Pronunciation / acoustic evaluation | `TBD` | none | no provider selected; any consequence needing acoustic judgment remains unresolved / calibration-required until a supported evaluator path exists |
 
-Selection rules for these routes:
+## Initial selected infrastructure and commerce routes
 
-1. `primary`, `fallback`, `escalation`, and `higher-quality route` describe intended routing roles only; they do not establish semantic interchangeability. A secondary route is usable for a consequence only when it independently satisfies that consequence's privacy/security/rights/quality/reliability and, where applicable, calibration requirements.
+These USER-approved initial routes are also `SELECTED_FOR_IMPLEMENTATION`, not `ACTIVE`. They use the existing runtime/provider boundaries rather than creating a generic infrastructure abstraction.
+
+| Capability / use | Initial selected route | Selection boundary |
+|---|---|---|
+| PostgreSQL-compatible hosting | Neon Launch | hosts the authoritative PostgreSQL-compatible product store; only Core has application-runtime DB authority |
+| Derived cache / rate-limit / short-lived coordination | Upstash Redis PAYG | non-authoritative acceleration/protection/short coordination only; Redis loss/staleness cannot redefine product/evidence/entitlement truth |
+| Bounded asynchronous task dispatch | Google Cloud Tasks | delivery/execution infrastructure for durable Core-owned work; task state/receipt is never business-state authority |
+| Object / media storage | Cloudflare R2 | stores bytes behind Core-owned object identity/lifecycle/access/retention/deletion; prefer narrow signed direct browser byte transfer where legal/safe and Core reconciles completion/integrity |
+| Deployable hosting | Google Cloud Run | selected for Web, Go Core API, and Python Evaluator; co-hosting platform choice does not collapse logical/runtime/trust/machine-contract boundaries |
+| DNS / CDN / baseline DDoS edge | Cloudflare | selected baseline edge route; no paid plan, dedicated WAF feature set, or permanent add-on bundle is frozen here |
+| Transactional email | Amazon SES | transport capability only; provider delivery facts do not become learner/product authority |
+| Product analytics | PostHog | classified/minimized product events only; no raw learner-content shadow authority |
+| Operational logs / metrics | Google Cloud Logging / Monitoring | operational telemetry only; non-authoritative and privacy-minimized under the existing observability boundary |
+| Vietnam payments / subscription billing | payOS | payment/subscription observations only; effective entitlement changes only through authenticated/associated Core reconciliation and authoritative commit |
+
+Provider callbacks/webhooks are selected initially only because the payOS route requires payment-event ingress. Callback receipt, signature validity, provider charge/subscription status, or dashboard state remains external observed state until Core associates and reconciles it under the existing payment/entitlement rules.
+
+The authority split remains:
+
+```text
+PostgreSQL   = authoritative durable product truth
+Redis        = derived acceleration / bounded coordination
+Cloud Tasks  = dispatch / execution delivery
+R2           = bytes behind Core-owned object state
+providers    = external capabilities / observations
+Core         = product mutation + payment/entitlement reconciliation authority
+```
+
+No Kubernetes, Kafka, service mesh, multi-region active-active, second queue, second cache, second initial payment provider, or generic infrastructure abstraction is selected by this pass.
+
+## Initial production planning envelope
+
+Initial provider/infrastructure selection is constrained by this operating objective:
+
+```text
+public API planning volume     ≈ up to 1.5 million requests / month
+total infrastructure + AI     ≈ target <= USD 40 / month initially
+```
+
+This is a planning/selection envelope, not a provider-price, free-tier, quota, capacity, performance, or availability guarantee. Mutable prices, promotions, free-tier allowances, model tariffs, and benchmark figures remain research/operational evidence rather than canonical constants.
+
+Selection and implementation should make the envelope plausible through:
+
+1. scale-to-zero or usage-based services where appropriate rather than pre-paying for idle capacity;
+2. horizontal scaling of stateless/eligible runtime work without changing semantic ownership, DB authority, or provider-neutral capability boundaries;
+3. hard application-level quotas/admission for expensive AI, productive evaluation, realtime, media, and other metered capabilities;
+4. provider budget/spend controls and operational alerts where the selected provider offers them, without treating those controls as product truth;
+5. semantically valid reuse, caching, batching, and pre-generation before duplicating expensive provider work;
+6. public API request volume remaining distinct from AI/provider invocation volume—one request does not imply one model call;
+7. graceful quota/cost degradation that delays, limits, disables optional work, or preserves unresolved state before lowering privacy, evidence, evaluator, or content-quality standards;
+8. explicit capacity/cost/latency/reliability upgrade triggers before moving to a higher-cost tier or additional infrastructure, rather than provisioning hypothetical scale in advance.
+
+This envelope does not override the normal activation gate. A route whose privacy, rights, security, reliability, deletion, calibration, or support requirements fail remains blocked even if it would be cheaper.
+
+Selected-route invariants:
+
+1. For routes with `primary`, `fallback`, `escalation`, or `higher-quality route` roles, those labels describe intended routing only; they do not establish semantic interchangeability. A secondary route is usable for a consequence only when it independently satisfies that consequence's privacy/security/rights/quality/reliability and, where applicable, calibration requirements.
 2. A provider/model/configuration change preserves exact provenance. Calibration for one productive/acoustic evaluator route does not transfer automatically to another provider, model, mode, prompt/rubric configuration, or materially different version.
 3. STT is transcription. A transcript, even from a selected realtime route, cannot substitute for acoustic evidence required for pronunciation/prosody/intelligibility inference.
 4. Realtime tutor output is interaction content. It gains Assessment consequence only through the normal separately eligible Attempt/Observation/evaluator path; provider conversation quality does not make the route an examiner.
@@ -259,6 +318,15 @@ Selection rules for these routes:
 6. No selected route becomes `ACTIVE` until the normal activation gate passes for its exact use. Selection alone does not approve data egress, learner-content reuse, release support, or production traffic.
 7. The initial route keeps only the approved primary and secondary provider where one is named. A third provider is not retained merely for hypothetical redundancy; adding one requires demonstrated quality/reliability/cost/exit value under the normal lifecycle.
 8. Pricing, latency, benchmark, quota, and quality figures remain mutable research/operational evidence. They are not canonical constants or guarantees in this owner.
+
+## Deferred / unresolved initial routes
+
+- external identity provider — `DEFERRED`; Core-owned learner identity remains unchanged;
+- Paddle — `DEFERRED` future candidate for international Merchant-of-Record / tax-compliance expansion; it is not a second initial payment route and has no activation authority;
+- external feature-flag provider — `DEFERRED`; bounded first-party flags remain sufficient initially;
+- pronunciation / acoustic evaluator — `TBD`; applicable higher-consequence acoustic evaluation remains calibration-required until an eligible provider/evaluator path is selected and calibrated;
+- model-assisted content-generation provider — `DEFERRED` unless a separately owned current implementation scope establishes a concrete requirement;
+- standalone tool-heavy realtime route — not selected for the initial product.
 
 # Learner data + AI processor rules
 
