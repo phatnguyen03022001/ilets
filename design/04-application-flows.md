@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content supply/assignment and content-incident recovery, privileged content-operation capability semantics, learner-entitlement versus operational-authorization separation, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, privileged content-operation capability semantics, learner-entitlement versus operational-authorization separation, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
 DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
@@ -635,6 +635,8 @@ A normal target-relative full mock requires a resolved variant. `READINESS` is t
 
 A mock result is a target-like performance snapshot. Full IELTS readiness becomes `SUPPORTED` only through its versioned integrated EvidenceRequirement; one favorable mock, four independent micro-skill claims, or four per-skill Band claims do not automatically satisfy exam-condition/integration requirements that the readiness policy makes material.
 
+Mock construction issues one integrated content demand whose component demands preserve the applicable external section/task/part composition, one coherent variant, exact revision/provenance, delivery overlay where material, and learner-specific independence/unseen conditions required by the readiness policy. Component reuse is allowed for familiarisation only when it does not contradict the intended inference.
+
 A mixed Academic/GT mock is invalid for normal full-test readiness unless explicitly created as non-certifying comparison practice.
 
 Delivery-mode practice may change interaction conditions without changing scoring/Band semantics.
@@ -673,7 +675,28 @@ It must never state that the learner is guaranteed an external result.
 
 # Flow K — content supply and learner assignment
 
-Content supply is reuse-first and mechanism-neutral.
+Content supply is reuse-first and mechanism-neutral. A `ContentDemand` describes **what eligible opportunity is needed**, not which database pool, generator, or source must satisfy it.
+
+For a concrete learner/product need, demand resolves only the applicable dimensions:
+
+```text
+canonical Skill/Knowledge target(s)
+Curriculum node/phase when the action is node-bound
+Practice Type or Assessment Type
+primary activity purpose + evidence candidacy
+variant / Content Context / official family / Presentation Class when material
+task / section / part / integrated scope when material
+difficulty / scaffold / transfer-distance requirements
+response interaction + answer/rubric/evaluator route
+delivery interaction when material
+rights/source constraints
+learner exposure / novelty / independence conditions for the intended consequence
+quantity/diversity/stability demand only where the owning learning/evidence/coverage policy makes it material
+```
+
+Fields that are semantically inapplicable remain inapplicable; demand construction must not invent a family, context, Band, or novelty requirement merely to fit a generic pool query.
+
+The same ContentRevision may satisfy several different demands over time only when it independently passes the current use-specific packaging, validation, rights, release, and learner-exposure gates.
 
 ```text
 canonical learning/product need
@@ -724,6 +747,10 @@ Rules:
 10. when the intended use requires proven unseen or sufficiently independent conditions, `UNKNOWN`, missing, or ambiguous material exposure is not treated as unseen. Core selects another eligible opportunity or preserves a truthful unresolved/ineligible state for that consequence; training that does not require novelty may remain eligible;
 11. reservation/assignment for delivery is not actual learner exposure. A failed/disconnected delivery must not fabricate `seen`; actual ExposureContext follows `spec/10-CONTENT-MODEL.md`;
 12. a reservation may temporarily exclude concurrent assignment until it is reconciled/released; exact reservation timeout/recovery mechanism remains implementation policy.
+13. no separate canonical `practice_pool`, `assessment_pool`, `readiness_pool`, or `unseen_pool` is required: current eligibility is derived from purpose/candidacy, validation/use scope, release state, content identities, and learner ExposureContext; an implementation may index/cache these dimensions without creating new authority.
+14. supply sufficiency is scoped to the demand set, not raw inventory count. Ten interchangeable near-duplicates do not satisfy a demand requiring materially different transfer opportunities; one high-quality revision may satisfy several training demands where reuse remains valid.
+15. when an EvidenceRequirement or readiness policy requires multiple/diverse/independent opportunities, the demand carries that requirement symbolically/versionedly; product design does not guess the numeric threshold.
+16. authored, licensed/imported, deterministic/template-produced, pre-generated AI-assisted, runtime-generated, learner-provided, and media-backed candidates enter the same validation/release path. Source preference may optimize cost/latency/editorial quality only after semantic eligibility is preserved.
 
 Content supply may be asynchronous. If the desired content is unavailable, the planner may use another genuinely eligible activity or expose an honest product/content gap; it must not silently relax semantic or evidence requirements merely to avoid generation latency/cost.
 
@@ -757,6 +784,16 @@ investigate / revalidate / replace
 Current release/use recomputation resolves the applicable validation policy and intended-use/consequence scope according to `spec/10-CONTENT-MODEL.md`; it does not implement a global “newest ValidationDecision wins” rule.
 
 Do not collapse validation state, release eligibility, operational safety, or incident consequence into one global ContentStatus/defect enum. A revision may be semantically validated yet not activated for a release, or may have been active and later be quarantined operationally pending investigation.
+
+Current assignment disposition is therefore derived rather than one canonical status enum:
+
+- **assignable/active for a use** — every current semantic, validation, release, rights, operational, and learner-specific gate for that use passes;
+- **quarantined** — new assignment is temporarily blocked for the affected use while safety/quality/rights validity is investigated or revalidated;
+- **superseded** — another semantic revision is preferred/current for a lineage; this alone does not rewrite history or determine whether the older revision may still be assigned for some use;
+- **retired from new assignment** — product/release policy intentionally stops future assignment while historical references remain resolvable;
+- **unavailable/ineligible for a use** — a current source, rights, validation, exposure, consequence, or product condition prevents assignment for that use.
+
+These dispositions may differ by intended use. A revision can remain valid low-consequence training content while being ineligible for independent evidence, or remain historically valid after retirement from all new assignment.
 
 Incident consequence is scoped by the discovered defect and the current use stage, not merely by `stop new assignment`:
 

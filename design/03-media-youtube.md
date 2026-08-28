@@ -181,6 +181,10 @@ provenance
 
 Generated proposals do not become valid lessons until canonical targets, practice mode, source rights, and transcript eligibility validate.
 
+When a MediaLesson is persisted as reusable product content, its source/segment/prompt configuration enters the normal ContentRevision/validation/assignment model from `../spec/10-CONTENT-MODEL.md`. Media rights/transcript state remains an additional current eligibility constraint; it does not create a separate media-only content lifecycle or exempt the lesson from normal exposure/evidence rules.
+
+Learner-provided transcript/text or vocabulary may support the learner's own permitted learning/review path, but it cannot be counted as official-family/readiness supply unless every applicable provenance, construct, scoring, independence, and coverage condition is independently satisfied.
+
 # Segmentation defaults
 
 For authorized transcript-backed media, bounded analysis may propose chunk boundaries.

@@ -317,10 +317,40 @@ A uniform implementation shape cannot fabricate identity or hide required identi
 
 Content closure has four concerns through applicable existing conditions:
 
-1. **Supply sufficiency** — enough executable eligible content exists for target/family/context/presentation/difficulty/diversity demand; authored/imported/deterministic/pre-generated/runtime-generated routes are eligible.
+1. **Supply sufficiency** — the scoped target's complete `ContentDemand` set can be satisfied by executable eligible revisions for every applicable target/family/context/presentation/curriculum/practice/assessment/readiness/diversity condition; authored/imported/deterministic/pre-generated/runtime-generated/learner-provided/media-backed routes are eligible when their use permits it.
 2. **Semantic/quality validity** — every assigned revision passes applicable content contract/universal hard/consequence-specific checks; global quality percentage cannot substitute for a failed requirement.
 3. **Assignment novelty/independence where applicable** — learner-specific exposure/similarity is checked before transfer/readiness/evidence assignment when required.
 4. **Operations/recovery viability** — revisions are auditable; problematic content can stop new assignment, be revalidated/replaced/retired without rewriting historical learner Attempts/evidence, and coverage-critical inventory can recover.
+
+## Supply-sufficiency reduction
+
+Coverage expands each scoped target into applicable content demand dimensions rather than comparing against one inventory count. At minimum the reduction can distinguish:
+
+```text
+canonical Skill/Knowledge/curriculum demand
+official family demand
+material Presentation Class demand
+Academic/GT Content Context demand
+learning/practice/remediation/review/transfer demand
+diagnostic/focused-assessment demand
+section/task/full-readiness demand
+productive prompt/part/rubric/evaluator demand
+delivery interaction demand where material
+rights/media-source demand where applicable
+diversity / independence / fresh-opportunity demand where the owning policy requires it
+```
+
+A demand is satisfied only when enough **eligible opportunities** exist for its intended consequence and target population/use. “Enough” is semantic and policy-scoped: if quantity/diversity/independence needs empirical calibration, that condition remains `CALIBRATION_REQUIRED`, `DEFINED`, or `PARTIAL` rather than receiving an invented universal item quota.
+
+Rules:
+
+- one revision may satisfy multiple demand cells only when reuse is semantically valid for each;
+- many exact/near duplicates cannot satisfy a diversity/transfer/independence requirement by volume;
+- a single family-capable feature cannot hide missing family/subformat assets;
+- Academic assets cannot satisfy GT-specific context/readiness demand and vice versa where context/scoring differs;
+- training supply does not establish assessment/readiness supply unless the same revisions remain eligible under the stronger consequence;
+- optional generation capacity is not substitute inventory until generated revisions exist, validate, and are assignable;
+- missing eligible content is a `CONTENT_OR_ASSET` CoverageGap, never learner weakness or evidence of inability.
 
 Generation is only an applicable sub-demand when scoped release relies on it. Absence of runtime AI generation is not a gap when sufficient eligible supply exists. A generator/template cannot satisfy `content_assets` until output demonstrates applicable quality/coverage/operations.
 
