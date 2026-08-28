@@ -15,7 +15,8 @@ const apiMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => (key: string, values?: Record<string, unknown>) =>
+    values ? `${key}:${JSON.stringify(values)}` : key,
 }));
 
 vi.mock("@/lib/api", () => ({
@@ -25,6 +26,46 @@ vi.mock("@/lib/api", () => ({
     PUT: apiMocks.put,
   },
 }));
+
+vi.mock("@/components/ui/radio-group", async () => {
+  const React = await import("react");
+  const RadioContext = React.createContext<{
+    value?: string;
+    disabled?: boolean;
+    onValueChange?: (value: string) => void;
+  }>({});
+
+  return {
+    RadioGroup: ({
+      children,
+      value,
+      disabled,
+      onValueChange,
+    }: {
+      children: React.ReactNode;
+      value?: string;
+      disabled?: boolean;
+      onValueChange?: (value: string) => void;
+    }) => (
+      <RadioContext.Provider value={{ value, disabled, onValueChange }}>
+        <div role="radiogroup">{children}</div>
+      </RadioContext.Provider>
+    ),
+    RadioGroupItem: ({ id, value }: { id: string; value: string }) => {
+      const context = React.useContext(RadioContext);
+      return (
+        <input
+          id={id}
+          type="radio"
+          value={value}
+          checked={context.value === value}
+          disabled={context.disabled}
+          onChange={() => context.onValueChange?.(value)}
+        />
+      );
+    },
+  };
+});
 
 import ReadingPractice from "./reading-practice";
 
@@ -245,6 +286,105 @@ describe("ReadingPractice target profile", () => {
         },
       }),
     );
+  });
+
+  it("keeps evaluated answers immutable and shows the submitted learner choice", async () => {
+    apiMocks.get.mockResolvedValue({
+      data: {
+        test_variant: "ACADEMIC",
+        minimum_reading_band: 7,
+        resource_revision: 1,
+        updated_at: "2026-08-29T00:00:00Z",
+      },
+      response: { status: 200 },
+    });
+    apiMocks.post.mockImplementation(async (path: string) => {
+      if (path === "/v1/session") {
+        return { data: { learner_id: "learner_test", human_actor: "Learner" } };
+      }
+      if (path === "/v1/practice-activities") {
+        return {
+          data: {
+            practice_activity_id: "activity_test",
+            stimulus: { title: "Passage", text: "A short passage." },
+            items: [
+              {
+                item_id: "item_1",
+                statement: "The statement is true.",
+                choices: ["TRUE", "FALSE", "NOT_GIVEN"],
+              },
+            ],
+          },
+        };
+      }
+      if (path === "/v1/attempts") {
+        return {
+          data: {
+            attempt_id: "attempt_test",
+            practice_activity_id: "activity_test",
+            content_revision_id: "reading-bootstrap-classification-001-r1",
+            status: "DRAFT",
+            resource_revision: 1,
+            created_at: "2026-08-29T00:00:00Z",
+          },
+        };
+      }
+      if (path === "/v1/attempts/{attempt_id}/submissions") {
+        return {
+          data: {
+            attempt_id: "attempt_test",
+            practice_activity_id: "activity_test",
+            content_revision_id: "reading-bootstrap-classification-001-r1",
+            status: "EVALUATED",
+            resource_revision: 2,
+            created_at: "2026-08-29T00:00:00Z",
+            evaluated_at: "2026-08-29T00:01:00Z",
+            observation: {
+              observation_id: "observation_test",
+              attempt_id: "attempt_test",
+              content_revision_id: "reading-bootstrap-classification-001-r1",
+              content_context_id: "CTX-READING-ACADEMIC",
+              skill_target_ids: ["R-QT-02"],
+              official_family_ids: ["IELTS-R-QF-02"],
+              scoring_method: "DETERMINISTIC_KEYED",
+              raw_score: 0,
+              max_score: 1,
+              primary_activity_purpose: "TRAINING",
+              evidence_candidacy: "NOT_EVIDENCE_CANDIDATE",
+              created_at: "2026-08-29T00:01:00Z",
+            },
+            feedback: [
+              {
+                item_id: "item_1",
+                learner_choice: "FALSE",
+                correct_choice: "TRUE",
+                correct: false,
+                explanation: "The passage states this directly.",
+              },
+            ],
+          },
+        };
+      }
+      throw new Error(`unexpected POST ${path}`);
+    });
+
+    renderReadingPractice();
+
+    const start = screen.getByRole("button", { name: "startActivity" });
+    await waitFor(() => expect(start).toBeEnabled());
+    fireEvent.click(start);
+
+    const falseChoice = await screen.findByRole("radio", {
+      name: "choices.FALSE",
+    });
+    fireEvent.click(falseChoice);
+    fireEvent.click(screen.getByRole("button", { name: "submitAnswers" }));
+
+    await screen.findByTestId("result");
+    expect(falseChoice).toBeDisabled();
+    expect(
+      screen.getByText('learnerAnswer:{"answer":"choices.FALSE"}'),
+    ).toBeVisible();
   });
 
   it("keeps an unknown Band constraint blank for a new learner", async () => {

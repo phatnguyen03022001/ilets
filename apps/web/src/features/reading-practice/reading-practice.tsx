@@ -472,6 +472,11 @@ export default function ReadingPractice() {
                     render={({ field }) => (
                       <RadioGroup
                         value={field.value}
+                        disabled={
+                          attemptMutation.isPending ||
+                          submissionMutation.isPending ||
+                          attempt?.status === "EVALUATED"
+                        }
                         onValueChange={(value) =>
                           field.onChange(value as Choice)
                         }
@@ -528,6 +533,11 @@ export default function ReadingPractice() {
                     {feedback.correct ? t("correct") : t("review")}
                   </strong>
                   : {feedback.explanation}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t("learnerAnswer", {
+                    answer: choiceLabel(feedback.learner_choice),
+                  })}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("correctAnswer", {

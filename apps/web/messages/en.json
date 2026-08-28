@@ -24,6 +24,7 @@
     "trainingOnly": "Training observation only — NOT_EVIDENCE_CANDIDATE.",
     "correct": "Correct",
     "review": "Review",
+    "learnerAnswer": "Your answer: {answer}",
     "correctAnswer": "Correct answer: {answer}",
     "loading": "Preparing learner session…",
     "errors": {
