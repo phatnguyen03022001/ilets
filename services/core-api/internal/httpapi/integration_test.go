@@ -87,6 +87,18 @@ func TestBootstrapReadingAcceptanceAndRedTeam(t *testing.T) {
 		t.Fatalf("wrong pinned revision: %#v", activity["content_revision_id"])
 	}
 
+	// A retry-capable training pool should prefer a different eligible revision
+	// over immediately repeating the learner's last assigned revision.
+	rotatedResp := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, "activity-key-rotation", testOrigin)
+	if rotatedResp.status != 201 {
+		t.Fatalf("create rotated activity: %d %s", rotatedResp.status, rotatedResp.body)
+	}
+	var rotated map[string]any
+	mustJSON(t, rotatedResp.body, &rotated)
+	if rotated["content_revision_id"] == activity["content_revision_id"] {
+		t.Fatalf("immediate training assignment repeated revision: %v", rotated["content_revision_id"])
+	}
+
 	// Invalid/manipulated canonical fields are rejected, not trusted from the browser.
 	manipulated := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03", "feature_id": "R-F04"}, "activity-key-0002", testOrigin)
 	if manipulated.status != 400 {
@@ -246,13 +258,13 @@ func TestBootstrapReadingAcceptanceAndRedTeam(t *testing.T) {
 	}
 
 	// N. A non-eligible validation/use state cannot be assigned.
-	if _, err := pool.Exec(context.Background(), `UPDATE content_use_states SET assignment_eligible=false WHERE content_revision_id=$1`, bootstrapRevision); err != nil {
+	if _, err := pool.Exec(context.Background(), `UPDATE content_use_states SET assignment_eligible=false WHERE content_revision_id IN ($1,$2)`, bootstrapRevision, "reading-bootstrap-classification-002-r1"); err != nil {
 		t.Fatal(err)
 	}
 	if got := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, "invalid-content-0001", testOrigin).status; got != 422 {
 		t.Fatalf("ineligible content assignment: got %d want 422", got)
 	}
-	if _, err := pool.Exec(context.Background(), `UPDATE content_use_states SET assignment_eligible=true WHERE content_revision_id=$1`, bootstrapRevision); err != nil {
+	if _, err := pool.Exec(context.Background(), `UPDATE content_use_states SET assignment_eligible=true WHERE content_revision_id IN ($1,$2)`, bootstrapRevision, "reading-bootstrap-classification-002-r1"); err != nil {
 		t.Fatal(err)
 	}
 

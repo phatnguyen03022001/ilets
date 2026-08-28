@@ -16,8 +16,11 @@ test("Reading training remains non-evidence and does not leak answer keys", asyn
   });
 
   await page.goto("/");
+  const saveTarget = page.getByRole("button", { name: "Save target" });
+  await expect(saveTarget).toBeEnabled();
+  await page.getByLabel("Variant").selectOption("ACADEMIC");
   await page.getByLabel("Minimum Reading Band").fill("6.5");
-  await page.getByRole("button", { name: "Save target" }).click();
+  await saveTarget.click();
   await expect(page.getByTestId("target-saved")).toBeVisible();
 
   await page.getByRole("button", { name: "Start activity" }).click();

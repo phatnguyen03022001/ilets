@@ -16,12 +16,24 @@ SELECT cr.revision_id, cr.semantic_payload
 FROM content_revisions cr
 JOIN content_use_states us ON us.content_revision_id = cr.revision_id
 JOIN validation_decisions vd ON vd.validation_decision_id = us.current_validation_decision_id
-WHERE cr.revision_id = $1
-  AND us.assignment_eligible = true
+WHERE us.assignment_eligible = true
   AND us.operational_state = 'ACTIVE'
   AND vd.result = 'PASS'
   AND vd.validation_policy_version = 'bootstrap-reading-training-v1'
-FOR SHARE
+  AND cr.semantic_payload->>'practice_mode_id' = 'PM-R03'
+  AND cr.semantic_payload->>'primary_activity_purpose' = 'TRAINING'
+  AND cr.semantic_payload->>'evidence_candidacy' = 'NOT_EVIDENCE_CANDIDATE'
+  AND cr.semantic_payload->>'test_variant' = 'ACADEMIC'
+ORDER BY CASE WHEN cr.revision_id = COALESCE((
+  SELECT pa.content_revision_id
+  FROM practice_activities pa
+  WHERE pa.learner_id = $1
+    AND pa.practice_mode_id = 'PM-R03'
+  ORDER BY pa.assigned_at DESC, pa.practice_activity_id DESC
+  LIMIT 1
+), '') THEN 1 ELSE 0 END, cr.revision_id
+LIMIT 1
+FOR SHARE OF cr, us, vd
 `
 
 type GetAssignableContentRevisionRow struct {
@@ -29,8 +41,8 @@ type GetAssignableContentRevisionRow struct {
 	SemanticPayload []byte
 }
 
-func (q *Queries) GetAssignableContentRevision(ctx context.Context, revisionID string) (GetAssignableContentRevisionRow, error) {
-	row := q.db.QueryRow(ctx, getAssignableContentRevision, revisionID)
+func (q *Queries) GetAssignableContentRevision(ctx context.Context, learnerID string) (GetAssignableContentRevisionRow, error) {
+	row := q.db.QueryRow(ctx, getAssignableContentRevision, learnerID)
 	var i GetAssignableContentRevisionRow
 	err := row.Scan(&i.RevisionID, &i.SemanticPayload)
 	return i, err

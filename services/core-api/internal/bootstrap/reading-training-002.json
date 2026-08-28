@@ -1,0 +1,122 @@
+{
+  "content_id": "reading-bootstrap-classification-002",
+  "revision_id": "reading-bootstrap-classification-002-r1",
+  "provenance": {
+    "origin": "owned_synthetic_bootstrap",
+    "copyright": "original repository bootstrap fixture",
+    "official_ielts_material": false
+  },
+  "validation": {
+    "decision_id": "vd_bootstrap_reading_training_v2",
+    "policy_version": "bootstrap-reading-training-v1",
+    "intended_use": "TRAINING_LOW_CONSEQUENCE",
+    "result": "PASS",
+    "findings": [
+      "canonical_refs_valid",
+      "structure_executable",
+      "academic_context_compatible",
+      "owned_rights",
+      "answer_key_complete",
+      "learner_projection_hides_answers",
+      "deterministic_scoring_consistent"
+    ]
+  },
+  "semantic_payload": {
+    "feature_id": "R-F04",
+    "practice_mode_id": "PM-R03",
+    "practice_type_ids": [
+      "PT-13",
+      "PT-16"
+    ],
+    "skill_target_ids": [
+      "R-QT-02",
+      "R-QT-03"
+    ],
+    "official_family_ids": [
+      "IELTS-R-QF-02",
+      "IELTS-R-QF-03"
+    ],
+    "content_context_id": "CTX-READING-ACADEMIC",
+    "primary_activity_purpose": "TRAINING",
+    "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
+    "test_variant": "ACADEMIC",
+    "stimulus": {
+      "title": "Community repair cafe",
+      "text": "A volunteer repair cafe opened in Westford Town Hall last autumn. Residents bring small household items such as lamps, kettles, and radios to weekend sessions, where volunteers help diagnose faults and attempt simple repairs. The service does not accept large appliances or charge a repair fee, although visitors may donate toward replacement parts. Organisers say the main aim is to teach practical skills and reduce unnecessary waste. They have not measured whether the project has lowered household spending. A survey found that many visitors returned for a second session, but it did not compare Westford with repair cafes in other towns. The organisers believe local councils can support similar projects by providing safe workspace and basic tools rather than employing professional repair staff."
+    },
+    "items": [
+      {
+        "item_id": "item_tfng_004",
+        "official_family_id": "IELTS-R-QF-02",
+        "statement": "Visitors can bring large household appliances to the repair cafe.",
+        "choices": [
+          "TRUE",
+          "FALSE",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "FALSE",
+        "explanation": "The passage says the service does not accept large appliances."
+      },
+      {
+        "item_id": "item_tfng_005",
+        "official_family_id": "IELTS-R-QF-02",
+        "statement": "Visitors must pay a repair fee.",
+        "choices": [
+          "TRUE",
+          "FALSE",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "FALSE",
+        "explanation": "The service does not charge a repair fee, although donations for parts are possible."
+      },
+      {
+        "item_id": "item_tfng_006",
+        "official_family_id": "IELTS-R-QF-02",
+        "statement": "The organisers know the project has reduced household spending.",
+        "choices": [
+          "TRUE",
+          "FALSE",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "FALSE",
+        "explanation": "They have not measured whether the project lowered household spending."
+      },
+      {
+        "item_id": "item_ynng_004",
+        "official_family_id": "IELTS-R-QF-03",
+        "statement": "The organisers think teaching practical skills is an important purpose of the project.",
+        "choices": [
+          "YES",
+          "NO",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "YES",
+        "explanation": "They say the main aim includes teaching practical skills and reducing unnecessary waste."
+      },
+      {
+        "item_id": "item_ynng_005",
+        "official_family_id": "IELTS-R-QF-03",
+        "statement": "The organisers believe councils should employ professional repair staff for similar projects.",
+        "choices": [
+          "YES",
+          "NO",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "NO",
+        "explanation": "They say councils can provide workspace and tools rather than employing professional repair staff."
+      },
+      {
+        "item_id": "item_ynng_006",
+        "official_family_id": "IELTS-R-QF-03",
+        "statement": "The organisers believe Westford performs better than repair cafes in other towns.",
+        "choices": [
+          "YES",
+          "NO",
+          "NOT_GIVEN"
+        ],
+        "correct_choice": "NOT_GIVEN",
+        "explanation": "The survey did not compare Westford with repair cafes in other towns."
+      }
+    ]
+  }
+}

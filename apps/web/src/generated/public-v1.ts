@@ -254,7 +254,7 @@ export interface components {
             /** @enum {string} */
             content_context_id: "CTX-READING-ACADEMIC";
             /** @enum {string} */
-            content_revision_id: "reading-bootstrap-classification-001-r1";
+            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1";
             /** @enum {string} */
             primary_activity_purpose: "TRAINING";
             /** @enum {string} */
@@ -288,7 +288,7 @@ export interface components {
             attempt_id: components["schemas"]["ResourceId"];
             practice_activity_id: components["schemas"]["ResourceId"];
             /** @enum {string} */
-            content_revision_id: "reading-bootstrap-classification-001-r1";
+            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1";
             status: components["schemas"]["AttemptStatus"];
             /** Format: int64 */
             resource_revision: number;
@@ -303,7 +303,7 @@ export interface components {
             observation_id: components["schemas"]["ResourceId"];
             attempt_id: components["schemas"]["ResourceId"];
             /** @enum {string} */
-            content_revision_id: "reading-bootstrap-classification-001-r1";
+            content_revision_id: "reading-bootstrap-classification-001-r1" | "reading-bootstrap-classification-002-r1";
             /** @enum {string} */
             content_context_id: "CTX-READING-ACADEMIC";
             skill_target_ids: ("R-QT-02" | "R-QT-03")[];

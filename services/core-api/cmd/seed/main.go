@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/phatnguyen03022001/ilets/services/core-api/internal/db"
@@ -35,9 +36,18 @@ type Fixture struct {
 }
 
 func main() {
-	ctx := context.Background()
-	fixturePath := getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json")
 	registryPath := getenv("CANONICAL_REGISTRY_PATH", "../../tools/canonical/generated/reading-training-registry.json")
+	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json"), ",")
+	for _, fixturePath := range fixturePaths {
+		fixturePath = strings.TrimSpace(fixturePath)
+		if fixturePath != "" {
+			seedPath(fixturePath, registryPath)
+		}
+	}
+}
+
+func seedPath(fixturePath, registryPath string) {
+	ctx := context.Background()
 
 	fixtureBytes, err := os.ReadFile(fixturePath)
 	if err != nil {

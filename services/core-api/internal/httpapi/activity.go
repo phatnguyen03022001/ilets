@@ -91,7 +91,7 @@ func (s *Server) createPracticeActivity(w http.ResponseWriter, r *http.Request) 
 	}
 
 	queries := sqlcdb.New(tx)
-	assignable, err := queries.GetAssignableContentRevision(r.Context(), bootstrapRevision)
+	assignable, err := queries.GetAssignableContentRevision(r.Context(), learner)
 	if err != nil {
 		writeError(w, r, 422, "CONTENT_UNAVAILABLE", "validated bootstrap content is not assignable")
 		return
