@@ -172,7 +172,7 @@ No retention duration is invented here. Provider deletion completion is an exter
 
 # Conditional AI/tool capability boundary
 
-No model tool execution is selected by this architecture. If introduced later:
+No standalone tool-heavy realtime capability/provider route is selected for the initial product, and no model tool execution is selected merely because a realtime model can support tools. If tool execution is independently required by a later canonical product capability, this existing boundary applies:
 
 - prompt, learner, content, or provider text cannot grant tool authority;
 - tool capabilities are explicitly allowlisted/bounded by application policy;
@@ -215,11 +215,13 @@ Portability does not require a generic multi-provider framework. Minimum shape i
 | Identity / credential custody | Core API integration | `DEFERRED` | stable internal learner identity; external route not preselected; selected route supports appropriate revocation/export/security |
 | PostgreSQL-compatible persistence hosting | Core API | `DEFERRED` | PostgreSQL semantics selected; hosting route remains deployment choice; provider exit/recovery if external |
 | Object storage | Core API | `DEFERRED` | only when retained/large artifacts require it; private access, integrity, lifecycle, backup/orphan reconciliation |
-| AI / LLM productive evaluation | Evaluator | `DEFERRED` | provider not pre-required; bounded adapter; minimum data; output never certification |
+| AI / LLM productive evaluation | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | selected routes remain behind bounded adapter; minimum data; consequential use requires evaluator/model/configuration-specific calibration; output never certification |
 | AI / LLM bounded generation / model-assisted validation | Evaluator | `DEFERRED` | optional demand-driven candidate/signals; provenance and exact revision/policy identity preserved |
-| Speech-to-text / acoustic analysis | Evaluator | `DEFERRED` | local/external routes eligible; quality/provenance/uncertainty preserved |
-| Realtime speech conversation | Web + bounded AI/audio capability | `DEFERRED` | optional Speaking interaction only; provider-neutral; explicit latency/cost/capacity/privacy limits; output never examiner/evidence authority by itself |
-| Text-to-speech / generated audio | content/media capability | `DEFERRED` | use only when content demand requires it and quality/provenance fit |
+| Speech-to-text | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | transcript capability only; realtime/batch form follows interaction need; quality/provenance/uncertainty preserved; transcript never substitutes for acoustic pronunciation evidence |
+| Pronunciation / acoustic evaluation | Evaluator | `TBD` | no provider selected; required acoustic consequence remains unresolved / calibration-required until an eligible calibrated route exists |
+| Realtime speech conversation | Web + bounded AI/audio capability | `SELECTED_FOR_IMPLEMENTATION` | optional Speaking/tutor interaction only; provider-neutral; explicit latency/cost/capacity/privacy limits; output never examiner/evidence authority by itself |
+| Pure VI↔EN translation | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | translation assistance only; provider-neutral; translation output does not become Speaking/Writing evidence or learner ability truth |
+| Text-to-speech / generated audio | content/media capability | `SELECTED_FOR_IMPLEMENTATION` | static/lesson audio only when content demand requires it and quality/provenance fit |
 | YouTube playback/metadata | Web + Core API | `SELECTED_FOR_IMPLEMENTATION` | supported embed/Data API capability path; activation still requires live policy/product gates; no arbitrary extraction |
 | Transactional email | Core API | `DEFERRED` | only for concrete notification/account flow; transport only |
 | Product analytics | Web/Core API | `DEFERRED` | minimal classified events; no raw learner-content shadow authority |
@@ -233,6 +235,30 @@ Portability does not require a generic multi-provider framework. Minimum shape i
 | Feature flags | Core API/Web | `DEFERRED` | external provider optional; flags never hidden policy authority |
 
 Research may contain named candidates; canonical design does not repeat them until a provider enters this lifecycle.
+
+## Initial selected provider routes
+
+The USER-approved initial external routes below are `SELECTED_FOR_IMPLEMENTATION`, not `ACTIVE`. Selection authorizes implementation behind the existing provider-neutral capability boundary only. Normal activation gates still apply independently to every provider/model/configuration/use.
+
+| Capability / use | Primary selected route | Secondary selected route | Lifecycle / consequence |
+|---|---|---|---|
+| Text / productive grading | GPT-4o mini | DeepSeek V4 Flash — fallback / escalation | both selected for implementation; every consequential evaluator/model/configuration version requires independent calibration for its intended consequence |
+| Speech-to-text | ElevenLabs Scribe v2 | Gemini 3.5 Transcribe — fallback | both selected for implementation; use realtime variants where realtime interaction requires them and batch variants for completed-audio work that does not require realtime latency |
+| Static / lesson text-to-speech | Google Cloud WaveNet | Google Neural2 — fallback / higher-quality route | both selected for implementation; generated audio remains content/media output with normal quality/provenance/rights gates |
+| Realtime VI↔EN tutor | Gemini 3.1 Flash Live | GPT-Realtime-2.1 Mini — fallback | both selected for implementation; this is interaction/tutoring capability, not automatically a Speaking examiner or evidence authority |
+| Pure VI↔EN translation | GPT-Realtime-Translate | Gemini Live Translate — fallback | both selected for implementation; translation assistance does not establish learner language ability by itself |
+| Pronunciation / acoustic evaluation | `TBD` | none | no provider selected; any consequence needing acoustic judgment remains unresolved / calibration-required until a supported evaluator path exists |
+
+Selection rules for these routes:
+
+1. `primary`, `fallback`, `escalation`, and `higher-quality route` describe intended routing roles only; they do not establish semantic interchangeability. A secondary route is usable for a consequence only when it independently satisfies that consequence's privacy/security/rights/quality/reliability and, where applicable, calibration requirements.
+2. A provider/model/configuration change preserves exact provenance. Calibration for one productive/acoustic evaluator route does not transfer automatically to another provider, model, mode, prompt/rubric configuration, or materially different version.
+3. STT is transcription. A transcript, even from a selected realtime route, cannot substitute for acoustic evidence required for pronunciation/prosody/intelligibility inference.
+4. Realtime tutor output is interaction content. It gains Assessment consequence only through the normal separately eligible Attempt/Observation/evaluator path; provider conversation quality does not make the route an examiner.
+5. Provider failure, timeout, degraded service, or fallback exhaustion remains product/runtime state and never becomes learner weakness, a fake score, or fabricated evidence.
+6. No selected route becomes `ACTIVE` until the normal activation gate passes for its exact use. Selection alone does not approve data egress, learner-content reuse, release support, or production traffic.
+7. The initial route keeps only the approved primary and secondary provider where one is named. A third provider is not retained merely for hypothetical redundancy; adding one requires demonstrated quality/reliability/cost/exit value under the normal lifecycle.
+8. Pricing, latency, benchmark, quota, and quality figures remain mutable research/operational evidence. They are not canonical constants or guarantees in this owner.
 
 # Learner data + AI processor rules
 
