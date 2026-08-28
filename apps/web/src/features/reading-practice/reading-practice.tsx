@@ -29,7 +29,10 @@ type Choice = components["schemas"]["Choice"];
 type TargetForm = {
   testVariant: "" | TestVariant;
   targetOverallBand: string;
+  minimumListeningBand: string;
   minimumReadingBand: string;
+  minimumWritingBand: string;
+  minimumSpeakingBand: string;
 };
 
 type AnswerForm = {
@@ -45,7 +48,10 @@ export default function ReadingPractice() {
     defaultValues: {
       testVariant: "",
       targetOverallBand: "",
+      minimumListeningBand: "",
       minimumReadingBand: "",
+      minimumWritingBand: "",
+      minimumSpeakingBand: "",
     },
   });
   const answerForm = useForm<AnswerForm>({
@@ -79,22 +85,34 @@ export default function ReadingPractice() {
     mutationFn: async ({
       testVariant,
       targetOverallBand,
+      minimumListeningBand,
       minimumReadingBand,
+      minimumWritingBand,
+      minimumSpeakingBand,
     }: TargetForm) => {
       if (!testVariant) throw new Error(t("errors.targetVariant"));
 
       const overallBand = targetOverallBand
         ? Number(targetOverallBand)
         : undefined;
+      const listeningBand = minimumListeningBand
+        ? Number(minimumListeningBand)
+        : undefined;
       const readingBand = minimumReadingBand
         ? Number(minimumReadingBand)
         : undefined;
+      const writingBand = minimumWritingBand
+        ? Number(minimumWritingBand)
+        : undefined;
+      const speakingBand = minimumSpeakingBand
+        ? Number(minimumSpeakingBand)
+        : undefined;
       const hasAnyBand = Boolean(
         overallBand ??
-        targetQuery.data?.minimum_listening_band ??
+        listeningBand ??
         readingBand ??
-        targetQuery.data?.minimum_writing_band ??
-        targetQuery.data?.minimum_speaking_band,
+        writingBand ??
+        speakingBand,
       );
       if (!hasAnyBand) throw new Error(t("errors.targetBand"));
 
@@ -102,10 +120,10 @@ export default function ReadingPractice() {
         body: {
           test_variant: testVariant,
           target_overall_band: overallBand,
-          minimum_listening_band: targetQuery.data?.minimum_listening_band,
+          minimum_listening_band: listeningBand,
           minimum_reading_band: readingBand,
-          minimum_writing_band: targetQuery.data?.minimum_writing_band,
-          minimum_speaking_band: targetQuery.data?.minimum_speaking_band,
+          minimum_writing_band: writingBand,
+          minimum_speaking_band: speakingBand,
           expected_resource_revision: targetQuery.data?.resource_revision ?? 0,
         },
       });
@@ -124,10 +142,22 @@ export default function ReadingPractice() {
           target.target_overall_band === undefined
             ? ""
             : String(target.target_overall_band),
+        minimumListeningBand:
+          target.minimum_listening_band === undefined
+            ? ""
+            : String(target.minimum_listening_band),
         minimumReadingBand:
           target.minimum_reading_band === undefined
             ? ""
             : String(target.minimum_reading_band),
+        minimumWritingBand:
+          target.minimum_writing_band === undefined
+            ? ""
+            : String(target.minimum_writing_band),
+        minimumSpeakingBand:
+          target.minimum_speaking_band === undefined
+            ? ""
+            : String(target.minimum_speaking_band),
       });
     },
   });
@@ -141,10 +171,22 @@ export default function ReadingPractice() {
         targetQuery.data?.target_overall_band === undefined
           ? ""
           : String(targetQuery.data.target_overall_band),
+      minimumListeningBand:
+        targetQuery.data?.minimum_listening_band === undefined
+          ? ""
+          : String(targetQuery.data.minimum_listening_band),
       minimumReadingBand:
         targetQuery.data?.minimum_reading_band === undefined
           ? ""
           : String(targetQuery.data.minimum_reading_band),
+      minimumWritingBand:
+        targetQuery.data?.minimum_writing_band === undefined
+          ? ""
+          : String(targetQuery.data.minimum_writing_band),
+      minimumSpeakingBand:
+        targetQuery.data?.minimum_speaking_band === undefined
+          ? ""
+          : String(targetQuery.data.minimum_speaking_band),
     });
   }, [targetForm, targetQuery.data, targetQuery.isSuccess]);
 
@@ -310,6 +352,20 @@ export default function ReadingPractice() {
               />
             </div>
             <div className="grid gap-2">
+              <Label htmlFor="minimum-listening-band">
+                {t("minimumListeningBand")}
+              </Label>
+              <Input
+                id="minimum-listening-band"
+                aria-label={t("minimumListeningBand")}
+                type="number"
+                min="3"
+                max="9"
+                step="0.5"
+                {...targetForm.register("minimumListeningBand")}
+              />
+            </div>
+            <div className="grid gap-2">
               <Label htmlFor="minimum-reading-band">
                 {t("minimumReadingBand")}
               </Label>
@@ -321,6 +377,34 @@ export default function ReadingPractice() {
                 max="9"
                 step="0.5"
                 {...targetForm.register("minimumReadingBand")}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="minimum-writing-band">
+                {t("minimumWritingBand")}
+              </Label>
+              <Input
+                id="minimum-writing-band"
+                aria-label={t("minimumWritingBand")}
+                type="number"
+                min="3"
+                max="9"
+                step="0.5"
+                {...targetForm.register("minimumWritingBand")}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="minimum-speaking-band">
+                {t("minimumSpeakingBand")}
+              </Label>
+              <Input
+                id="minimum-speaking-band"
+                aria-label={t("minimumSpeakingBand")}
+                type="number"
+                min="3"
+                max="9"
+                step="0.5"
+                {...targetForm.register("minimumSpeakingBand")}
               />
             </div>
             <Button type="submit" disabled={!ready || targetMutation.isPending}>

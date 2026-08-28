@@ -55,11 +55,15 @@ describe("ReadingPractice target profile", () => {
     });
   });
 
-  it("hydrates the persisted target variant and minimum Reading Band", async () => {
+  it("hydrates all persisted TargetProfile Band constraints", async () => {
     apiMocks.get.mockResolvedValue({
       data: {
         test_variant: "GENERAL_TRAINING",
+        target_overall_band: 7,
+        minimum_listening_band: 6.5,
         minimum_reading_band: 7.5,
+        minimum_writing_band: 6,
+        minimum_speaking_band: 6.5,
         resource_revision: 3,
         updated_at: "2026-08-28T00:00:00Z",
       },
@@ -68,11 +72,13 @@ describe("ReadingPractice target profile", () => {
 
     renderReadingPractice();
 
-    const variant = screen.getByLabelText("variant");
-    const input = screen.getByLabelText("minimumReadingBand");
     await waitFor(() => {
-      expect(variant).toHaveValue("GENERAL_TRAINING");
-      expect(input).toHaveValue(7.5);
+      expect(screen.getByLabelText("variant")).toHaveValue("GENERAL_TRAINING");
+      expect(screen.getByLabelText("targetOverallBand")).toHaveValue(7);
+      expect(screen.getByLabelText("minimumListeningBand")).toHaveValue(6.5);
+      expect(screen.getByLabelText("minimumReadingBand")).toHaveValue(7.5);
+      expect(screen.getByLabelText("minimumWritingBand")).toHaveValue(6);
+      expect(screen.getByLabelText("minimumSpeakingBand")).toHaveValue(6.5);
     });
   });
 
@@ -142,6 +148,63 @@ describe("ReadingPractice target profile", () => {
     );
   });
 
+  it("allows editing Listening, Writing, and Speaking minima while preserving the rest", async () => {
+    const existingTarget = {
+      test_variant: "ACADEMIC" as const,
+      target_overall_band: 7,
+      minimum_listening_band: 6,
+      minimum_reading_band: 7.5,
+      minimum_writing_band: 6,
+      minimum_speaking_band: 6,
+      resource_revision: 7,
+      updated_at: "2026-08-29T00:00:00Z",
+    };
+    apiMocks.get.mockResolvedValue({
+      data: existingTarget,
+      response: { status: 200 },
+    });
+    apiMocks.put.mockResolvedValue({
+      data: {
+        ...existingTarget,
+        minimum_listening_band: 6.5,
+        minimum_writing_band: 6.5,
+        minimum_speaking_band: 7,
+        resource_revision: 8,
+      },
+      response: { status: 200 },
+    });
+
+    renderReadingPractice();
+
+    const listening = screen.getByLabelText("minimumListeningBand");
+    const writing = screen.getByLabelText("minimumWritingBand");
+    const speaking = screen.getByLabelText("minimumSpeakingBand");
+    await waitFor(() => {
+      expect(listening).toHaveValue(6);
+      expect(writing).toHaveValue(6);
+      expect(speaking).toHaveValue(6);
+    });
+
+    fireEvent.change(listening, { target: { value: "6.5" } });
+    fireEvent.change(writing, { target: { value: "6.5" } });
+    fireEvent.change(speaking, { target: { value: "7" } });
+    fireEvent.click(screen.getByRole("button", { name: "saveTarget" }));
+
+    await waitFor(() =>
+      expect(apiMocks.put).toHaveBeenCalledWith("/v1/target-profile", {
+        body: {
+          test_variant: "ACADEMIC",
+          target_overall_band: 7,
+          minimum_listening_band: 6.5,
+          minimum_reading_band: 7.5,
+          minimum_writing_band: 6.5,
+          minimum_speaking_band: 7,
+          expected_resource_revision: 7,
+        },
+      }),
+    );
+  });
+
   it("allows a learner to save an overall-only Band target", async () => {
     apiMocks.get.mockResolvedValue({
       error: { error: { message: "resource not found" } },
@@ -192,11 +255,13 @@ describe("ReadingPractice target profile", () => {
 
     renderReadingPractice();
 
-    const variant = screen.getByLabelText("variant");
-    const input = screen.getByLabelText("minimumReadingBand");
     await waitFor(() => {
-      expect(variant).toHaveValue("");
-      expect(input).toHaveValue(null);
+      expect(screen.getByLabelText("variant")).toHaveValue("");
+      expect(screen.getByLabelText("targetOverallBand")).toHaveValue(null);
+      expect(screen.getByLabelText("minimumListeningBand")).toHaveValue(null);
+      expect(screen.getByLabelText("minimumReadingBand")).toHaveValue(null);
+      expect(screen.getByLabelText("minimumWritingBand")).toHaveValue(null);
+      expect(screen.getByLabelText("minimumSpeakingBand")).toHaveValue(null);
     });
   });
 });
