@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { components } from "@/generated/public-v1";
 import { Alert } from "@/components/ui/alert";
@@ -38,7 +39,7 @@ export default function ReadingPractice() {
   const t = useTranslations("Reading");
   const queryClient = useQueryClient();
   const targetForm = useForm<TargetForm>({
-    defaultValues: { minimumReadingBand: "6.5" },
+    defaultValues: { minimumReadingBand: "" },
   });
   const answerForm = useForm<AnswerForm>({
     defaultValues: { answers: {} },
@@ -83,8 +84,27 @@ export default function ReadingPractice() {
       }
       return response.data;
     },
-    onSuccess: (target) => queryClient.setQueryData(targetQueryKey, target),
+    onSuccess: (target) => {
+      queryClient.setQueryData(targetQueryKey, target);
+      targetForm.reset({
+        minimumReadingBand:
+          target.minimum_reading_band === undefined
+            ? ""
+            : String(target.minimum_reading_band),
+      });
+    },
   });
+
+  useEffect(() => {
+    if (!targetQuery.isSuccess || targetForm.formState.isDirty) return;
+
+    targetForm.reset({
+      minimumReadingBand:
+        targetQuery.data?.minimum_reading_band === undefined
+          ? ""
+          : String(targetQuery.data.minimum_reading_band),
+    });
+  }, [targetForm, targetQuery.data, targetQuery.isSuccess]);
 
   const activityMutation = useMutation({
     mutationFn: async () => {
