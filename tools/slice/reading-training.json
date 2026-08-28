@@ -12,5 +12,5 @@
   "public_api_operation_ids": ["bootstrapSession","getMe","getTargetProfile","putTargetProfile","listPracticeModes","createPracticeActivity","getPracticeActivity","createAttempt","getAttempt","submitAttempt"],
   "runtime_owner": "services/core-api",
   "persistence_resources": ["learners","sessions","target_profiles","contents","content_revisions","validation_decisions","content_use_states","practice_activities","attempts","observations","idempotency_operations"],
-  "verification_refs": ["tools/canonical/test_materialize.py","services/core-api/internal/app/integration_test.go","apps/web/e2e/reading-training.spec.ts"]
+  "verification_refs": ["tools/canonical/test_materialize.py","services/core-api/internal/httpapi/integration_test.go","apps/web/e2e/reading-training.spec.ts"]
 }

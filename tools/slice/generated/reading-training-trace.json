@@ -51,7 +51,7 @@
     "slice_id": "reading-training-bootstrap-v1",
     "verification_refs": [
       "tools/canonical/test_materialize.py",
-      "services/core-api/internal/app/integration_test.go",
+      "services/core-api/internal/httpapi/integration_test.go",
       "apps/web/e2e/reading-training.spec.ts"
     ]
   }

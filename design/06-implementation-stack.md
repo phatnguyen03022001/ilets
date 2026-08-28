@@ -518,7 +518,7 @@ SSE is selected for server→Web update hints under the public HTTP contract. We
 - internal Go/Python rollout cannot assume simultaneous replacement unless deployment explicitly guarantees it;
 - DB migration supports the application/schema skew window selected by deployment.
 
-Exact contract files/version numbers are materialized later.
+The bounded bootstrap public HTTP contract is already materialized under `../contracts/http/`. Any future boundary that is not yet materialized receives its exact contract file/version only when that boundary is implemented.
 
 # Canonical registry materialization
 
