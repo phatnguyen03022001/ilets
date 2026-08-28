@@ -236,6 +236,8 @@ A future product/support check must preserve these different failure classes rat
 
 A scoped target cannot be declared unsupported merely because one learner is not commercially entitled to an optional capability when a supported ordinary route exists. Conversely, paid entitlement cannot make an uncovered/evaluator-uncalibrated route supported.
 
+For the product's ordinary baseline, support evidence must demonstrate a genuinely usable ungated route for truthful TargetProfile/evidence/gap/progress visibility plus ordinary eligible learning/practice/review. A paid-only expensive capability may have its own scoped support condition, but paid entitlement is not allowed to be the only path to knowing the learner's current truth or receiving an ordinary target-relevant next action. Commercial quotas may reduce optional capacity without redefining the target/evidence standard.
+
 For Speaking product support, the ordinary asynchronous capture/submit/feedback route and any optional realtime route are evaluated separately where their interaction requirements differ. Realtime degradation must not break the ordinary route unless the scoped learner activity genuinely requires realtime semantics.
 
 # Derived reachability invariant

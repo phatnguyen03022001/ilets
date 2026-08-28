@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, feature-first source organization, cross-runtime naming/test/generated-code placement discipline, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
+OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, feature-first source organization, cross-runtime naming/test/generated-code placement discipline, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, content-authoring/released-materialization boundary, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
-DOES_NOT_OWN: learning/product truth, parser/materializer implementation, canonical-registry serialization details, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, package-manager lock state, or CI platform configuration
+DOES_NOT_OWN: learning/product truth, parser/materializer implementation, canonical-registry or content-authoring-package serialization details, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, package-manager lock state, or CI platform configuration
 
 # Implementation Stack
 
@@ -565,6 +565,37 @@ Invariants:
 10. historical references remain reconstructable across later canonical evolution.
 
 Exact parser, source-map representation, serialization, and codegen choices remain implementation decisions except where an approved runtime family above names a generator family for a cross-language contract.
+
+# Content authoring and released-materialization boundary
+
+Content authoring may use repository-tracked source/packages plus deterministic tooling, including the parallel shard model owned by `04-application-flows.md`. The authority direction is:
+
+```text
+canonical spec/design IDs + content schema/policy
+        ↓
+authored / generated candidate source packages
+        ↓
+validation + deterministic integration
+        ↓
+released materialized ContentRevision/product artifacts
+        ↓
+Core-owned runtime database / governed object storage projection
+```
+
+Rules:
+
+1. when parallel/bulk authoring is materialized, one repository-owned machine-checkable candidate-package/shard schema defines the exact authoring package shape and allowed identity fields from current canonical registries/policies; it is authoring/tooling contract, not a new learning SSOT;
+2. repository-tracked authoring packages may be source inputs/provenance, but they do not redefine Skill/Knowledge/Band/Assessment truth;
+3. the runtime database is authoritative for current operational/runtime state after release, not the canonical authoring source from which content semantics are casually edited backward;
+4. released runtime rows/artifacts resolve exact ContentRevision identity/provenance and are reproducibly traceable to their accepted source/materialization path where material;
+5. normal AI workers consume deterministic shard/package contracts and emit candidates; they do not require cross-worker coordination or direct runtime-DB mutation;
+6. deterministic integration fails on overlapping shard identity, duplicate candidate ID, unresolved canonical reference, package/schema error, or non-deterministic merge ambiguity;
+7. text/metadata/source packages may live in Git when appropriate for review/versioning. Large generated audio/media/binary assets may remain outside Git behind governed object/media storage with integrity identity and lifecycle/provenance references;
+8. generated difficulty/Band/evidence labels remain non-authoritative candidate data until owning policy/calibration admits the consequence;
+9. materialization tooling does not grant release authority: normal ValidationDecision/release/authorization rules still apply after structural integration;
+10. no queue/registry/orchestrator/agent platform is introduced merely to parallelize independent deterministic shards. Existing repository tooling/processes are sufficient until measured operational need proves otherwise.
+
+First-party AI workers are service identities under the RBAC/capability model in `04-application-flows.md`; being local, internal, or repository-adjacent does not grant filesystem, secret, provider, protected-data, release, or administrative privilege beyond explicit capability and execution scope.
 
 # Distinct state/version identities
 

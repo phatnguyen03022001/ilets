@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, actor classification, privileged capability semantics, learner-entitlement lifecycle versus operational authorization, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, actor classification, privileged capability semantics and default RBAC capability bundles, learner-entitlement lifecycle versus operational authorization, runtime execution/trust/failure patterns, async result delivery, planner-stage separation/load composition, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
-DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
+DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation or credential mechanics, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
 # Application Flows
 
@@ -190,24 +190,51 @@ response / post-commit dispatch
 
 Capability remains distinct from identity, role label, learning authority, Assessment/evidence authority, validation-bypass authority, and historical ContentRevision mutation authority. Consequential privileged operations require durable reconstructable audit; admin UI never bypasses Core API to mutate storage/provider state directly.
 
-### Actor and capability model
+### Actor, capability, and RBAC model
 
-The product does not need a fixed five-role hierarchy. It needs stable actor classes plus explicit capability grants:
+Authorization is capability-based underneath every role. Stable actor classes are:
 
 | Actor class | Product meaning | Authority boundary |
 |---|---|---|
 | learner | authenticated person acting on their own learner/account scope | normal learner operations only unless separately granted privileged capability |
 | privileged human | authenticated person with one or more explicit content/operations/security capabilities | may perform only granted operations through Core; privilege never becomes learning/evidence authority |
-| service/system identity | first-party runtime/workload acting through a narrowly authorized internal capability | cannot impersonate learner intent or gain human/admin scope from network location alone |
+| service/system identity | first-party runtime/workload, including authorized AI content workers | receives only explicit capability grants/bundles; internal reachability is never privilege |
 | external principal | provider/callback/source identity observed at a bounded external ingress | untrusted until authenticated/associated/reconciled; never direct product authority |
 
-One human may possess several privileged capabilities; job title or marketing role does not create authority by itself. A future UI may label capability bundles for convenience, but those labels are not canonical semantics.
+Capabilities remain the authorization truth. Named RBAC roles are stable default capability bundles for operator usability; they do not create another authority layer, and a human or first-party service identity may receive a narrower explicit grant when the bundle would be excessive. One actor may hold several compatible grants.
 
-Privileged capability meanings remain explicit rather than inferred from the actor class. Content capabilities are defined in **Privileged content-operation capabilities** below; additional families may cover bounded operational/support mutation, protected learner-data access for an explicit support/security purpose, and privileged capability-grant/security administration where the product exposes those functions.
+The minimum privileged capability families are:
 
-Content activation/quarantine/retirement, protected learner-data access, capability-grant changes, security-sensitive configuration/operation, and other consequential privileged mutations require stronger authentication/authorization as appropriate plus durable audit sufficient to reconstruct actor, capability, target resource, reason, and outcome. Exact authentication factors/role bundles remain implementation policy.
+- **content authoring** — draft/create/edit candidates or create a new semantic revision candidate;
+- **AI content generation/processing** — request/run bounded generation, classification, deduplication, or correction proposal work;
+- **content inspection/review** — inspect content/provenance/validation state and record review findings;
+- **content validation decision input** — approve/reject or otherwise record an authorized validation/review outcome under the applicable policy without bypassing deterministic hard gates;
+- **content release operations** — activate/release, quarantine/stop new assignment, retire, request/re-run revalidation, and resolve content incidents within legal state/preconditions;
+- **user support operations** — perform bounded support mutations on learner/account product state without fabricating learner activity/evidence;
+- **entitlement reconciliation** — reconcile effective commercial entitlement from accepted provider/commercial facts;
+- **operational visibility** — inspect runtime/provider/content/work state appropriate to support/operations;
+- **protected learner-data access** — inspect otherwise protected learner data only for an explicit authorized purpose and scope;
+- **authorization administration** — grant/revoke roles/capabilities subject to the current actor's own grant authority;
+- **security-sensitive operations** — perform explicitly authorized secret/config/recovery/destructive security operations.
 
-No privileged actor may rewrite historical ContentRevision payloads, fabricate learner actions, bypass a known hard content/evidence failure, alter Band/Skill/Assessment truth, or directly mutate another runtime's authoritative state outside normal Core operations.
+A capability may carry resource, purpose, environment, or action scope. Possessing one capability does not imply a neighboring one: content review does not imply release; user support does not imply protected-data access; entitlement reconciliation does not imply learner/admin role; operational visibility does not imply mutation; release does not imply validation bypass.
+
+Default bundles:
+
+| Role bundle | Default capability intent | Explicit limits |
+|---|---|---|
+| `COLLABORATOR` | draft/create/edit content candidates; run/request AI generation; classify/tag; run duplicate/similarity checks; propose corrections; inspect non-restricted content/provenance needed for that work | no release/activation, entitlement mutation, protected learner-data access, grant administration, or security-sensitive operation |
+| `REVIEWER` | `COLLABORATOR` plus semantic/content review, validation input, approve/reject candidate validation outcome where policy permits, request/re-run revalidation, inspect validation/provenance, and quarantine new assignment for a material content incident | cannot bypass hard gates, grant roles, or perform unrelated learner/security administration |
+| `ADMIN` | operational content activation/release/retirement after gates pass; incident resolution; user-support operations; entitlement reconciliation; operational visibility; bounded protected learner-data access only when separately purpose-authorized; ordinary administrative mutations | no automatic authority to change canonical learning/evidence truth or top-level privilege/security policy |
+| `OWNER` | `ADMIN` plus role/capability grant/revoke, security-sensitive configuration/operations, highest-level administrative control, and explicitly authorized destructive/recovery operations | still cannot bypass immutable history, hard content/evidence gates, or product truth |
+
+`REVIEWER` approval is operational validation input, not learning/Assessment authority. Release is permitted only when the applicable deterministic/content/evidence/release gates already pass. No role contains a generic `override_validation` power.
+
+AI workers are first-party service identities. They may be granted `COLLABORATOR`, `REVIEWER`, or narrower explicit capabilities and may perform most content labor—generation, editing, classification, semantic review, validation signalling, deduplication, and correction proposals—without a mandatory human-review step merely because the actor is AI. Consequential release, security, grant/revoke, protected-data, entitlement, or destructive operations still require the corresponding explicit capability and reconstructable audit; whether a human or service identity is permitted to hold such a capability is an operational security decision constrained by least privilege, not an assumption of trust.
+
+Content activation/quarantine/retirement, protected learner-data access, entitlement reconciliation, capability-grant changes, security-sensitive configuration/operation, and other consequential privileged mutations require stronger authentication/authorization as appropriate plus durable audit sufficient to reconstruct actor identity, actor class, effective role/capability, target resource, reason, and outcome. Exact authentication factors remain implementation policy.
+
+No privileged actor—human or service—may rewrite historical ContentRevision payloads, fabricate learner actions, bypass a known hard content/evidence failure, alter Band/Skill/Assessment truth, infer privilege from internal network position, or directly mutate another runtime's authoritative state outside normal Core operations. Learner entitlement remains completely separate from RBAC.
 
 ## E. Event/status propagation
 
@@ -370,6 +397,39 @@ Ranking may consider only **eligible** candidates. Useful ranking signals includ
 - transfer/exposure diversity;
 - operational cost after semantic validity is preserved.
 
+### Daily load composition
+
+After hard eligibility and candidate construction, the Planner composes **how much** work to schedule rather than treating ranking as an unlimited list. The plan may allocate load across due review/Knowledge retrieval, prerequisite acquisition, focused grammar/cohesion/language work, topic/context transfer, Listening/Reading practice, Writing/Speaking production, remediation, re-evidence, and exam-preparation work according to current need.
+
+Composition consumes, where applicable:
+
+```text
+TargetProfile + target/test-date urgency
+Assessment/Progression evidence state + GapEvaluation/ActionIntent
+Required prerequisites
+due review / retention state
+learner available time
+activity duration + difficulty/cognitive/performance load estimate
+recent performance/retention history
+fatigue, interruption risk, and session coherence
+transfer/diversity/re-evidence need
+product/capability availability and operational cost after eligibility
+```
+
+Rules:
+
+1. Band thresholds define required quality; they do not prescribe daily counts.
+2. Content inventory defines available eligible opportunities; inventory size is not dosage.
+3. Daily dosage is a versioned product/planning policy over eligible work, not a new learning truth or one fixed formula for every learner.
+4. The learner-specific DailyPlan is the current composition produced from that policy and current state; it may differ across learners with the same target Band.
+5. Due review and Required prerequisites receive their semantic priority without forcing every due item into one session when available time/load makes that incoherent; deferred required/due work remains visible and schedulable rather than being marked satisfied.
+6. Re-evidence is scheduled when Assessment/Progression calls for it; the Planner does not create repetitive assessment merely to fill time.
+7. Production/timed/high-load work may be spaced or reduced when current fatigue/history would make another attempt low-value, while target/test-date urgency may legitimately increase exam-condition exposure within safe product bounds.
+8. Numeric word/item/activity counts, load scores, daily maxima, and spacing/dosage coefficients are empirical/versioned policy when calibrated. The architecture does not invent claims such as a universal words-per-day requirement for Band N.
+9. The plan records enough policy/provenance to explain why both the selected work and the chosen amount were reasonable under the current state.
+
+Ranking still orders eligible candidates; load composition decides which ranked work fits the coherent session. Implementations may combine these computations internally, but must preserve the semantic distinction.
+
 ### Ranker non-authority invariant
 
 A ranker may reorder eligible candidates. It may never:
@@ -389,7 +449,7 @@ A ranker may reorder eligible candidates. It may never:
 
 ## Stage 7 — plan/explanation
 
-A DailyPlan is a snapshot/recommendation produced from named state, not assignment authority. It records enough provenance to reconstruct why each activity was eligible and selected at plan time, including where material the TargetProfile/target-context revision, learner/Progression state reference/version, content/release state, product support/coverage version, content-revision references, and unresolved conditions used by planning.
+A DailyPlan is a snapshot/recommendation produced from named state, not assignment authority. It records enough provenance to reconstruct why each activity was eligible, selected, and included at its planned amount, including where material the TargetProfile/target-context revision, learner/Progression state reference/version, due-review/retention state, applicable dosage/load-policy version or configuration, available-time/session constraint, content/release state, product support/coverage version, content-revision references, and unresolved conditions used by planning.
 
 Before actual PracticeActivity/AssessmentActivity assignment or learner exposure, Core re-evaluates every **current** hard condition that can change. This includes where material current target context, learner/evidence state, product coverage/support scope, ContentRevision release/quarantine/operational state and validation eligibility for the actual intended use under the currently applicable policy/use scope, rights/source eligibility, learner exposure/novelty/independence and reservation state, and delivery/capture feasibility.
 
@@ -457,9 +517,9 @@ hard eligibility
   ↓
 valid activity candidate generation
   ↓
-ranking
+ranking + coherent load composition
   ↓
-coherent DailyPlan + reason codes + plan-time provenance
+coherent DailyPlan + reason codes + amount/load provenance
 ```
 
 Representative reason codes include:
@@ -821,6 +881,50 @@ Rules:
 
 Content supply may be asynchronous. If the desired content is unavailable, the planner may use another genuinely eligible activity or expose an honest product/content gap; it must not silently relax semantic or evidence requirements merely to avoid generation latency/cost.
 
+## Parallel AI content-authoring/materialization
+
+Bulk or pre-generated content may be produced by many independent first-party AI/service workers without introducing an orchestration platform. Parallelism is safe only when work is deterministically partitioned before generation.
+
+```text
+canonical schema + allowed stable canonical/external IDs
+        ↓
+versioned content-demand set
+        ↓
+deterministic non-overlapping shard contract
+        ↓
+independent authorized workers
+        ↓
+candidate content packages + provenance
+        ↓
+structural/reference validation
+        ↓
+semantic/answer/rubric/rights validation as applicable
+        ↓
+duplicate + purpose-aware similarity checks
+        ↓
+deterministic integration of accepted candidates
+        ↓
+normal ContentRevision validation/release lifecycle
+```
+
+A shard identifies a bounded slice from pre-existing canonical dimensions such as target IDs, official family/context/presentation, Practice/Assessment role, variant, and a deterministic shard/slot identity. Workers consume that contract; they cannot invent new Skill, Knowledge, family, context, presentation, Practice, Assessment, or Band identities to make generation convenient. Two normal workers assigned distinct shards must not be expected to coordinate with each other or edit the same candidate identity.
+
+Candidate-package rules:
+
+1. candidate IDs/slot identities are deterministic or collision-checked within the shard contract; duplicate candidate identity is rejected rather than last-writer-wins;
+2. exact duplicate content is rejected unless the owning purpose explicitly requires identity/repetition; semantic near-duplicates are measured as facts and judged by intended training/transfer/evidence use rather than globally forbidden;
+3. canonical references are validated against the current allowed registry/source before integration; unknown/invented references fail closed;
+4. AI-proposed difficulty, learner level, Band suitability, scoring, or evidence claims are candidate metadata only. They gain consequence only through the owning Band/content/evaluator/calibration policy;
+5. generation/review by multiple AI workers does not constitute independent evidence merely because models/threads differ; validation policy decides what signals are sufficient;
+6. provenance identifies generator/worker/configuration/source/shard as needed for reconstruction, rights/privacy review, quality incidents, and replacement;
+7. authored and AI-produced candidates enter the same ContentRevision immutability, ValidationDecision, release, quarantine, retirement, and historical-reference rules;
+8. deterministic integration rejects shard overlap, duplicate IDs, unresolved canonical refs, invalid package structure, or another merge ambiguity rather than asking workers to negotiate;
+9. a candidate package is authoring/materialization input, not runtime assignment authority and not learner evidence.
+
+Git may store text/source candidate packages and reviewed authored source when appropriate. Large generated audio/media or other heavy binary artifacts may live behind the governed object/media boundary with integrity/provenance references rather than becoming repository blobs. `06-implementation-stack.md` owns the source/materialization boundary; runtime product storage remains a released projection, not canonical authoring authority.
+
+No queue, registry service, agent framework, or bespoke content-orchestration platform is required by this model. Introduce one only if measured throughput/recovery/concurrency requirements cannot be met by deterministic shard production plus normal repository/runtime materialization.
+
 # Flow L — content report, quarantine, revalidation, and retirement
 
 Content operational safety is independent from immutable revision identity and from whether a revision previously passed validation.
@@ -888,16 +992,7 @@ Historical learner facts are never repaired by mutating an old revision or earli
 
 # Privileged content-operation capabilities
 
-Privileged content operations are capability-scoped rather than defined by a canonical role taxonomy. The product semantics distinguish at least these operational capabilities:
-
-- draft/create/edit candidate content before immutable ContentRevision establishment, or create a new revision when material semantics change;
-- inspect content, provenance, validation evidence, and operational state;
-- record/request authorized content review or validation input without becoming validation-bypass authority;
-- stop new assignment / quarantine content when warranted;
-- activate or release content that already satisfies every applicable semantic, validation, release, and operational condition;
-- retire content from new assignment;
-- request content supply, regeneration, replacement, or revalidation;
-- resolve content reports with reconstructable operational reason/provenance.
+Flow L uses the content-authoring, AI-generation/processing, content-inspection/review, validation-input, and content-release capability families defined in the actor/RBAC section above. Content-specific execution includes candidate editing/new-revision creation, review/validation input, quarantine/stop-assignment, activation/release after gates pass, retirement, regeneration/replacement/revalidation requests, and incident/report resolution. These are capability semantics; the default RBAC bundles only package them.
 
 Invariants:
 
@@ -909,7 +1004,7 @@ Invariants:
 6. activation/release capability may act only on content that already satisfies the applicable semantic, validation, release, and operational policy;
 7. authorization implementation may later map authenticated identities/roles to these capabilities without redefining their meanings.
 
-Concrete role names, role hierarchy, identity-provider integration, and the role-to-capability matrix remain implementation/authorization concerns. API operations consume these capability meanings through `05-api.md` without creating a second authorization taxonomy.
+The default RBAC bundles above are canonical authorization convenience semantics; exact persistence, identity-provider mapping, custom/narrow grants, authentication factors, and machine-contract encoding remain implementation/authorization concerns. API operations consume these capability meanings through `05-api.md` without creating a second authorization taxonomy.
 
 # Learner entitlement vs operational authorization
 

@@ -4,6 +4,20 @@
 
 Build a complete, evidence-based IELTS learning-system specification and product/runtime design that an implementation team or future reasoning session can consume without re-deciding major learning semantics, learner-route semantics, product-coverage semantics, external-provider boundaries, or first-order runtime responsibilities.
 
+The primary learner is a self-directed IELTS candidate who has a real target but otherwise faces fragmented preparation: vocabulary/SRS, pronunciation, listening/shadowing, generic AI, media, and exam-practice tools may each perform useful local work while leaving the learner to reconcile diagnosis, priorities, dosage, evidence, and next actions manually. The product owns that coordination problem end to end:
+
+```text
+target
+→ know current evidence
+→ know exact gaps / unknowns
+→ know what to learn next
+→ perform the right learning / practice modality
+→ collect truthful evidence
+→ re-plan automatically
+```
+
+Individual tools or modalities remain replaceable capabilities inside this loop. The durable product differentiation is the governed target-to-evidence-to-next-action system, not possession of a particular AI model, media source, SRS algorithm, or exercise format.
+
 The repository must define, with implementation-grade precision:
 
 - what the learner must know and demonstrate;

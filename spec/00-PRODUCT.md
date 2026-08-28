@@ -7,7 +7,23 @@ DOES_NOT_OWN: live IELTS format/scoring/delivery facts, learner state, skill dec
 
 ## Product identity
 
-This project specifies an evidence-based IELTS learning system whose primary value is learner capability and truthful readiness evidence, not feature count or content volume.
+This project specifies an evidence-based IELTS learning system for a self-directed learner with a concrete IELTS target who needs more than isolated exercises or tool-specific scores. Its primary value is learner capability and truthful readiness evidence, not feature count or content volume.
+
+Standalone vocabulary/SRS, pronunciation, listening/shadowing, generic AI, media, and IELTS-practice capabilities may each be useful. Combining them does not by itself solve the product problem: the learner still needs one authority-preserving route that coordinates target interpretation, evidence-limited diagnosis, exact gaps/unknowns, prerequisites, learning modality, daily load, re-evidence, and next-action selection without converting tool output into learner truth.
+
+The product therefore owns this durable loop:
+
+```text
+target
+→ current evidence
+→ exact gaps / unknowns
+→ next learning need
+→ appropriate learning / practice modality
+→ truthful new evidence
+→ automatic re-planning
+```
+
+A particular AI model, SRS algorithm, media provider, evaluator, exercise format, or realtime interaction is a replaceable capability inside that loop, not the product's semantic center.
 
 The learning specification should be complete enough that implementation can build delivery and technology around it without re-deciding the core learning model.
 
@@ -99,6 +115,14 @@ The ordinary learning route is self-directed and AI-first: the learner can recei
 Human expert input may be optional for preference/coaching or may enter as external evidence where normal Assessment rules admit it. A supported ordinary product route must not depend on mandatory human scoring merely to manufacture a consequence that the product's own evaluator cannot safely support; that consequence remains unresolved/unsupported until an eligible product evaluator path exists. Human availability is not a prerequisite for ordinary learning progression.
 
 Product breadth is measured by whether material learner workflows and target conditions have valid semantic paths, not by feature count, lesson count, or content volume.
+
+# Commercial access boundary
+
+Commercial packaging may change how much optional expensive capability a learner can consume, but the ordinary product must remain a genuinely usable IELTS learning system without paid entitlement. At minimum, an ungated ordinary route preserves the learner's TargetProfile, truthful current evidence/gap/unknown state, an eligible next-learning route, ordinary practice/review, progress interpretation, and applicable historical learner state.
+
+Paid entitlement may increase access to cost-intensive capability such as realtime interaction, productive-evaluation volume/depth, adaptive tutoring compute, media transformation, assessment/mock capacity, speed/priority, quota, extended history, or analytics when product policy justifies it. It must not buy a different Band standard, stronger EvidenceFact validity, hidden prerequisite bypass, fabricated learner certainty, administrative privilege, or ownership of learner history/data rights.
+
+Exact prices, quotas, marketing tier names, launch promotions, and commercial packaging remain mutable product policy rather than learning truth.
 
 # Implementation boundary
 

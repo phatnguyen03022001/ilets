@@ -1,6 +1,6 @@
 STATUS: CANONICAL
 OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, progressive-disclosure UX, study-session UX shapes, product timing defaults, learner agency, learner-visible AI tutoring behavior, entitlement-visible availability, and user-visible interpretation of learning/product state
-DEPENDS_ON: ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/02-IELTS-MODEL.md
+DEPENDS_ON: ../spec/00-PRODUCT.md, ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/02-IELTS-MODEL.md
 DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, commercial pricing/tier policy, authorization role matrices, provider selection, API wire contracts, persistence, frameworks, or deployment
 
 # Learning Experience
@@ -275,21 +275,52 @@ None of these messages is displayed as a low Speaking score.
 
 # Entitlement-visible availability
 
-A learner entitlement may make an optional cost-intensive experience available, such as realtime AI conversation, without changing the learner model or standard. Learner-facing rules are:
+A learner entitlement may make optional cost-intensive experiences available without changing the learner model or standard. The ungated baseline remains a genuinely usable IELTS learning product: the learner can set/understand the target, see truthful current evidence/gaps/unknowns, receive an eligible ordinary next action, learn/practise/review through the supported ordinary route, and inspect applicable progress/history without buying epistemic truth.
+
+Learner-facing rules are:
 
 - unavailable paid capability is presented as product availability, never learner weakness;
 - activation/restoration makes future eligible gated capability available only after authoritative product reconciliation;
 - pending/ambiguous commercial state is shown as pending rather than fabricated active/expired access;
 - expiry/downgrade may block new gated sessions while an already accepted session follows the safe bounded continuation/termination semantics in `04-application-flows.md`;
+- paid access may primarily increase expensive AI/realtime use, productive-evaluation volume/depth, adaptive tutoring compute, media transformation, assessment/mock capacity, speed/priority/quota, extended history, or analytics where justified;
 - free/paid labels do not alter target, prerequisites, evidence eligibility, Band standards, product-support truth, or historical state;
 - losing entitlement does not erase attempts/evidence/saved learning history and does not by itself remove normal learner access to applicable history/export/deletion controls;
+- basic understanding of what is missing/unresolved is not paywalled merely to create an upgrade incentive;
 - learner subscription/entitlement never grants content-operation/admin authority.
 
-Concrete pricing/tier definitions remain outside this owner. Effective entitlement lifecycle and operational authorization separation are owned by `04-application-flows.md`.
+Concrete pricing, quotas, marketing tier names, launch discounts, and commercial packaging remain outside this owner. Effective entitlement lifecycle and operational authorization separation are owned by `04-application-flows.md`.
 
 # Daily study presets
 
 Product defaults provide predictable session sizes without becoming learning dosage laws.
+
+## Daily load semantics
+
+A DailyPlan decides both **what** eligible work is useful now and **how much** of that work fits the learner's current planning envelope. Learner-visible load may include any justified mix of:
+
+- due vocabulary/Knowledge retrieval and review;
+- grammar or other prerequisite acquisition/practice;
+- cohesion/linking-language or other focused productive work;
+- topic/context exposure needed for transfer;
+- Listening/Reading practice;
+- Writing/Speaking production;
+- reassessment/re-evidence;
+- due remediation/review;
+- exam-preparation/timed work.
+
+The Planner derives load from the current TargetProfile, current evidence/GapEvaluation/ActionIntent, Required prerequisites, due review state, learner available time, test-date/target urgency, activity difficulty/load estimate, recent fatigue/session coherence, retention/performance history, and need for transfer or re-evidence. The learner may shorten/swap only within the eligibility rules already defined above; skipped required work remains visible.
+
+Keep these meanings separate:
+
+```text
+Band requirement        = quality/capability threshold
+content inventory       = available eligible opportunities
+daily dosage            = versioned planning/load policy
+learner-specific plan   = today's composition from current state
+```
+
+No Band implies a universal word count, exercise count, or items-per-day requirement. Numeric dosage, load estimates, review limits, and session-composition defaults may be versioned/tuned from product and learning evidence; until calibrated, they remain bounded product policy rather than invented learning truth. System-level composition semantics are owned by `04-application-flows.md`.
 
 ## Quick — 10 minutes
 
