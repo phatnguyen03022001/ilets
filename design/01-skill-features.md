@@ -152,22 +152,61 @@ During evidence/readiness attempts, autocomplete/rewriting/AI continuation may n
 
 Capture failure or poor microphone quality is evidence-quality state, not low Speaking ability.
 
-## Speaking capture and AI-interaction boundary
+## Speaking capture and interaction boundary
 
-The ordinary digital Speaking route uses browser microphone capture when available. Baseline capability may include record, timer, playback, re-record, and optional speech-to-text.
+The ordinary digital Speaking route uses browser microphone capture when available and remains complete without realtime AI:
+
+```text
+record
+→ replay/re-record before submission when allowed
+→ submit one learner performance
+→ process / evaluate within the configured consequence
+→ feedback
+→ later review / fresh re-record where useful
+```
+
+Part-specific behavior remains recognizable:
+
+- Part 1 supports short spontaneous responses and follow-up practice;
+- Part 2 preserves preparation followed by a sustained learner long turn;
+- Part 3 supports responsive abstract discussion and follow-up questions;
+- general role-play/conversation may train responsiveness/fluency when mapped to canonical targets, but does not become an IELTS part merely because it is conversational.
 
 Inference follows the signal actually available:
 
 - transcript/text may support lexical, grammatical, discourse/content observations within evaluator quality limits;
-- timing/turn metadata may support bounded fluency observations where capture is trustworthy;
+- trustworthy turn/timing metadata may support bounded fluency observations where the intended claim allows it;
 - phoneme quality, word/sentence stress, intonation, connected speech, and overall intelligibility require suitable acoustic evidence plus an eligible evaluator/calibration path;
-- transcript-only or missing-audio routes must not claim pronunciation assessment.
+- transcript-only, failed STT, missing audio, or acoustically unusable audio must not claim pronunciation quality;
+- capture/provider failure is not learner silence, hesitation, pronunciation weakness, or low Speaking ability.
 
-An optional realtime AI conversation overlay may drive spontaneous turn-taking, follow-up questions, role-play, and fluency practice for eligible Speaking features. It is a delivery capability, not an examiner or learning authority. Realtime AI interaction does not automatically make an activity a Speaking mock/evidence candidate, and it cannot substitute for target interaction conditions when Assessment/readiness requires materially different conditions.
+An optional realtime AI conversation overlay may add responsive turn-taking, context-aware follow-ups, role-play, interruption/barge-in where the interaction supports it, and lower-latency fluency practice. It is a delivery capability, not an examiner, Skill, Assessment standard, or learning authority.
 
-The ordinary route must still support lower-cost record → submit → feedback Speaking without realtime conversation.
+Realtime rules:
+
+1. AI turns/prompts and learner spoken turns preserve reconstructable order/provenance when the session matters to feedback/evidence;
+2. learner silence is interpreted as learner performance only when trustworthy capture establishes that silence occurred under an activity whose normal Assessment conditions make it material; capture uncertainty is never converted into silence evidence;
+3. AI latency/network interruption may pause, reconnect, degrade, or end the interaction without becoming learner failure;
+4. fallback from realtime to record/submit is allowed only when it still performs the selected learning purpose. A readiness/mock condition requiring responsive target-like interaction remains unresolved rather than silently changing activity meaning;
+5. partial realtime sessions preserve only the scope actually completed; completion/abandonment does not imply evidence admission;
+6. realtime interaction is evidence-eligible only when independently configured as a candidate and normal Assessment/capture/independence/evaluator conditions pass. Cost or interaction difficulty never upgrades evidence status.
 
 Where external delivery uses a different interaction channel, readiness configuration may rehearse that channel; it does not redefine the human-interactive Speaking construct.
+
+## Capture-quality product semantics
+
+Browser/device/audio handling must preserve these distinct outcomes conceptually rather than collapsing them into a Speaking score:
+
+- **usable performance** — required audio/interaction signal is sufficiently captured for the configured use;
+- **capture unavailable** — permission denied, no eligible device, device/init failure, or an unsupported browser/device path prevents capture;
+- **capture uncertain/unusable** — clipping, inaudibility, severe noise, interruption, truncation, device change, or another condition prevents trustworthy interpretation for the intended consequence;
+- **transcription unavailable/conflicting** — audio may remain usable while STT fails or transcript materially disagrees with the audio;
+- **acoustic evaluation unavailable** — usable audio exists but the required acoustic evaluator/calibration path cannot currently support the requested inference;
+- **product capability unsupported** — the requested supported interaction/evidence route does not exist for the scoped product release.
+
+The product may request permission/device correction, retry capture, re-record, another supported device/interaction, delayed evaluation, or another eligible assessment path according to the failure class. It must not lower the evidence standard or convert technical/accessibility failure into a learner gap.
+
+Accessibility or assistive interaction may change presentation, controls, timing mechanics, capture method, or delivery workflow when supported. Any material difference relevant to exam/readiness inference remains visible in the attempt conditions; accommodation never silently changes Skill/Band truth or makes an otherwise ineligible evidence claim eligible.
 
 # Shared — 6
 

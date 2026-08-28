@@ -286,6 +286,10 @@ Derived stores cannot silently resurrect deleted data into active product use. R
 
 Deletion is therefore a reconciliation fence where consequential, not merely eventual background cleanup. This architecture does not invent retention durations or legal obligations.
 
+Raw learner audio is ephemeral by default under `07-third-party-services.md`. When product purpose explicitly retains audio—for example learner replay/history or evidence/audit needs—the authoritative product state must identify that retained artifact/lifecycle sufficiently for access, export where applicable, deletion, provider cleanup, backup/restore reconciliation, and late-result fencing. Temporary capture/upload/processor copies are not silently promoted into permanent learner history.
+
+Entitlement loss is not a deletion instruction. Premium capability expiry/downgrade may stop new paid processing while retained learner data/history continues under its normal data-lifecycle policy.
+
 # Configuration boundary
 
 Configuration is derived implementation/deployment input, not semantic authority.
@@ -420,6 +424,21 @@ MSW is trigger-based rather than always-installed: add it only when isolated com
 Owns learner/admin rendering, interactive workspaces, browser capture, embedded-player interaction, transient timers/drafts/optimistic presentation, SSE client behavior, presentation transformations, accessibility/responsiveness, and presentation-side Next.js server rendering/web-edge mechanics.
 
 Does not own learning/evidence/progression policy, deterministic IELTS scoring, content eligibility, evaluator algorithms, durable learner/product truth, authoritative DB access, or independent DTO truth.
+
+## Browser audio/capture implementation boundary
+
+Web implements the product capture semantics from `01-skill-features.md` without inventing ability conclusions. When audio is required:
+
+- microphone permission denial, unavailable devices, capture initialization failure, device removal/change, recorder/browser interruption, clipping/inaudibility/noise signals, truncation, and upload/network failure remain distinguishable operational conditions where material;
+- the UI must not mark a recording successfully submitted/evidence-usable before the required bytes/metadata are durably accepted by Core;
+- local replay/re-record is presentation behavior permitted by the activity; it does not mutate a submitted Attempt;
+- audio capture and STT are separate capabilities. A successfully captured recording remains the primary captured learner signal for acoustic use even when transcription fails; a transcript never silently replaces missing/unusable audio for an acoustic claim;
+- material disagreement between transcript and audio is preserved as evaluator/input uncertainty rather than silently trusting whichever result is easier to process;
+- browser/tab/network interruption preserves enough local/product state to retry safely where possible and never fabricates uninterrupted timing/capture;
+- accessibility-compatible controls and supported alternate capture/input routes preserve keyboard/screen-reader/focus usability and surface any condition material to readiness inference; they do not redefine IELTS/Band truth;
+- capture feasibility is checked before evidence-critical activity admission when practical, while an unexpected mid-attempt failure still produces an honest unusable/partial outcome rather than learner failure.
+
+Exact browser APIs, codec/container choices, audio thresholds, retry timings, and device-quality cutoffs remain implementation/empirical decisions.
 
 # Go — Core API + deterministic orchestration
 

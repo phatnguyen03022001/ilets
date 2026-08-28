@@ -249,7 +249,15 @@ AI route selection follows privacy + semantic quality + reliability eligibility 
 
 Realtime conversation is not required for the ordinary Speaking route. It may be activated only when the product intentionally offers that interaction and the selected local/external capability satisfies the same privacy, semantic-boundary, failure, and cost-control rules. Product entitlement may gate access, but payment/entitlement never upgrades evaluator or authorization authority.
 
-Learner audio is ephemeral-by-default unless product purpose explicitly requires retention. Prefer temporary processing and persisted derived observations/provenance over permanent raw audio. Any retained audio has explicit lifecycle state and participates in deletion/backup reconciliation.
+A realtime capability must support the product failure semantics in `04-application-flows.md`: bounded session admission, turn provenance/association, cancellation, reconnect/ambiguous-outcome handling, idempotent logical work, partial-session reporting, and graceful degradation without converting provider latency/drop into learner performance. Provider transport/streaming technology remains replaceable and is not selected here.
+
+STT, acoustic analysis, conversational generation, and realtime transport are separable capabilities even when one provider bundles them. Failure of one does not silently authorize another signal as equivalent evidence. Transcript disagreement with retained/available audio remains uncertainty; provider transcript confidence is not acoustic truth.
+
+Learner audio is ephemeral-by-default unless product purpose explicitly requires retention. Prefer temporary processing and persisted derived observations/provenance over permanent raw audio. Any retained audio has explicit lifecycle state and participates in deletion/backup reconciliation. External processors receive only the minimum audio/text/turn context needed for the admitted capability; processor retention/reuse/training must satisfy the declared policy before activation.
+
+Optional high-cost realtime use may be entitlement-gated, rate-limited, capacity-bounded, suspended, or degraded while ordinary record→submit Speaking remains available. Cost/quota pressure may reduce availability, not evaluator/evidence/privacy quality for the same intended consequence.
+
+Payment/billing provider output is external observed state. A callback, charge status, renewal flag, or provider-side subscription label cannot directly grant/revoke effective product entitlement or terminate accepted learner work; Core authenticates, associates, reconciles, and commits the effective entitlement transition under `04-application-flows.md`. Ambiguous provider state remains pending/reconcilable rather than being guessed.
 
 # Durable external work, retry, and fallback
 

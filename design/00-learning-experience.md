@@ -246,16 +246,46 @@ The learner must perform the target cognitive/performance operation. During inde
 
 Ordinary learning must remain usable without a teacher. Human help is an optional coaching preference or a consequence-specific Assessment escalation, not the default route dependency.
 
+# Speaking interaction experience
+
+The default Speaking experience remains usable through record → submit → feedback without realtime AI. Realtime conversation is an optional higher-cost interaction for eligible learners, not the primary route the rest of the product depends on.
+
+Learner-visible realtime behavior:
+
+- show whose turn it is and preserve Part 1/2/3 activity semantics rather than presenting one generic conversation;
+- show reconnecting/delayed/degraded states when AI/network latency interrupts responsiveness;
+- after a dropped session, resume the same logical interaction when safe or explain that only a partial session was completed;
+- offer record/submit fallback when the selected learning purpose remains valid without realtime; otherwise preserve the unmet readiness/interaction condition rather than pretending fallback was equivalent;
+- distinguish learner silence from “we could not hear/capture you”;
+- post-session feedback reflects only turns/signals actually available and never upgrades the session into evidence by presentation.
+
+Capture/product messages remain distinct enough for the learner to act correctly, for example:
+
+```text
+Microphone permission/device unavailable
+Recording interrupted or audio not usable — retry capture
+Audio captured; transcription unavailable
+Audio captured; pronunciation/acoustic analysis unavailable
+Realtime conversation temporarily unavailable — ordinary Speaking still available
+This capability requires an active entitlement
+Product cannot currently verify this evidence condition
+```
+
+None of these messages is displayed as a low Speaking score.
+
 # Entitlement-visible availability
 
 A learner entitlement may make an optional cost-intensive experience available, such as realtime AI conversation, without changing the learner model or standard. Learner-facing rules are:
 
 - unavailable paid capability is presented as product availability, never learner weakness;
-- free/paid labels do not alter target, prerequisites, evidence eligibility, Band standards, or historical state;
-- losing entitlement may block future use of a gated capability but does not erase attempts/evidence;
+- activation/restoration makes future eligible gated capability available only after authoritative product reconciliation;
+- pending/ambiguous commercial state is shown as pending rather than fabricated active/expired access;
+- expiry/downgrade may block new gated sessions while an already accepted session follows the safe bounded continuation/termination semantics in `04-application-flows.md`;
+- free/paid labels do not alter target, prerequisites, evidence eligibility, Band standards, product-support truth, or historical state;
+- losing entitlement does not erase attempts/evidence/saved learning history and does not by itself remove normal learner access to applicable history/export/deletion controls;
 - learner subscription/entitlement never grants content-operation/admin authority.
 
-Concrete pricing/tier definitions remain outside this owner. Operational authorization separation is owned by `04-application-flows.md`.
+Concrete pricing/tier definitions remain outside this owner. Effective entitlement lifecycle and operational authorization separation are owned by `04-application-flows.md`.
 
 # Daily study presets
 

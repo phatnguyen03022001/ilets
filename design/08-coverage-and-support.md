@@ -218,6 +218,26 @@ These concerns reduce through the existing TargetCoverageSpecification condition
 
 Coverage is technology-independent: absence of a particular framework, broker, cache, proxy, orchestration system, deployment platform, auth mechanism, or observability product is not itself a CoverageGap. If an owner-defined invariant and demonstrated trigger require a capability that the selected implementation lacks, the missing capability can block coverage; technology selection remains owned by `06-implementation-stack.md` and `07-third-party-services.md`.
 
+# Learner evidence, interaction availability, entitlement, and authorization separation
+
+A future product/support check must preserve these different failure classes rather than reducing them to one “not available” state:
+
+| Condition | Owning interpretation | Coverage consequence |
+|---|---|---|
+| learner evidence missing/stale/conflicting/below requirement | Assessment/Progression | learner evidence/gap state; not a CoverageGap by itself |
+| supported capture route failed for this attempt/device/session | Speaking/capture runtime semantics | attempt may be unusable/partial and require retry/alternative; not learner weakness; not automatically a product gap |
+| scoped release cannot support a required accessible/capture interaction | product support | `accessibility_capture_quality` / `feature_experience` CoverageGap |
+| productive/acoustic evaluator exists but is not calibrated for the consequence | product support | `evaluator_scoring = CALIBRATION_REQUIRED` |
+| evaluator/provider temporarily unavailable on an otherwise supported route | runtime/provider availability | delayed/degraded/unavailable operation; support may be revoked if release gates no longer hold, but no fake learner conclusion |
+| realtime AI capability absent/disabled | product availability | no gap for the ordinary record→submit Speaking route; a gap only for a scoped product promise/route that explicitly requires realtime interaction |
+| learner lacks paid entitlement | commercial access | gated capability unavailable to that learner; not CoverageGap, evidence state, or authorization role |
+| privileged actor lacks capability | authorization/access | operation denied; not learner weakness, content invalidity, or CoverageGap unless the product itself lacks the required operational capability for support |
+| product cannot serve/measure a required resolved target condition | product support | explicit applicable CoverageGap |
+
+A scoped target cannot be declared unsupported merely because one learner is not commercially entitled to an optional capability when a supported ordinary route exists. Conversely, paid entitlement cannot make an uncovered/evaluator-uncalibrated route supported.
+
+For Speaking product support, the ordinary asynchronous capture/submit/feedback route and any optional realtime route are evaluated separately where their interaction requirements differ. Realtime degradation must not break the ordinary route unless the scoped learner activity genuinely requires realtime semantics.
+
 # Derived reachability invariant
 
 Coverage must be derivable from canonical identities and declared applicability rather than a manually maintained completeness matrix.

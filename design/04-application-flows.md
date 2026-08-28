@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, privileged content-operation capability semantics, learner-entitlement versus operational-authorization separation, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
+OWNS: end-to-end product/system flows across web, core API, evaluator, learner state, target route, media, content demand/supply/assignment and content-incident recovery, actor classification, privileged capability semantics, learner-entitlement lifecycle versus operational authorization, runtime execution/trust/failure patterns, async result delivery, planner-stage separation, hard eligibility, and legal runtime lifecycle semantics
 DEPENDS_ON: ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 00-learning-experience.md, 01-skill-features.md, 02-practice-catalog.md, 03-media-youtube.md
 DOES_NOT_OWN: API field schemas, learning/mastery truth, content semantic identity/quality truth, product coverage declaration, identity-provider implementation, concrete authorization role matrix, exact persistence topology, provider selection, framework internals, deployment technology selection, or learner-facing UX defaults
 
@@ -189,6 +189,25 @@ response / post-commit dispatch
 ```
 
 Capability remains distinct from identity, role label, learning authority, Assessment/evidence authority, validation-bypass authority, and historical ContentRevision mutation authority. Consequential privileged operations require durable reconstructable audit; admin UI never bypasses Core API to mutate storage/provider state directly.
+
+### Actor and capability model
+
+The product does not need a fixed five-role hierarchy. It needs stable actor classes plus explicit capability grants:
+
+| Actor class | Product meaning | Authority boundary |
+|---|---|---|
+| learner | authenticated person acting on their own learner/account scope | normal learner operations only unless separately granted privileged capability |
+| privileged human | authenticated person with one or more explicit content/operations/security capabilities | may perform only granted operations through Core; privilege never becomes learning/evidence authority |
+| service/system identity | first-party runtime/workload acting through a narrowly authorized internal capability | cannot impersonate learner intent or gain human/admin scope from network location alone |
+| external principal | provider/callback/source identity observed at a bounded external ingress | untrusted until authenticated/associated/reconciled; never direct product authority |
+
+One human may possess several privileged capabilities; job title or marketing role does not create authority by itself. A future UI may label capability bundles for convenience, but those labels are not canonical semantics.
+
+Privileged capability meanings remain explicit rather than inferred from the actor class. Content capabilities are defined in **Privileged content-operation capabilities** below; additional families may cover bounded operational/support mutation, protected learner-data access for an explicit support/security purpose, and privileged capability-grant/security administration where the product exposes those functions.
+
+Content activation/quarantine/retirement, protected learner-data access, capability-grant changes, security-sensitive configuration/operation, and other consequential privileged mutations require stronger authentication/authorization as appropriate plus durable audit sufficient to reconstruct actor, capability, target resource, reason, and outcome. Exact authentication factors/role bundles remain implementation policy.
+
+No privileged actor may rewrite historical ContentRevision payloads, fabricate learner actions, bypass a known hard content/evidence failure, alter Band/Skill/Assessment truth, or directly mutate another runtime's authoritative state outside normal Core operations.
 
 ## E. Event/status propagation
 
@@ -520,6 +539,8 @@ Planner → next action
 Web receives status/result via SSE or resource refresh
 ```
 
+For the ordinary Speaking route, browser recording before submission is draft interaction state. The learner may replay or replace that draft when the activity permits. Once submitted, the Attempt is immutable; feedback-driven re-record/retry creates a new related Attempt rather than rewriting the submitted performance.
+
 Rules:
 
 - accepted learner work and required evaluation continuation are durably discoverable before learner-visible acceptance;
@@ -533,6 +554,52 @@ Rules:
 - accepting a result does not permit a crash gap that permanently strands required semantic continuation: accepted result/Observation and/or durable recoverable continuation state must allow idempotent reconstruction of missing Assessment/EvidenceFact/Progression consequences;
 - no progression occurs from failed, stale, superseded, deleted/ineligible, or invalid evaluator output;
 - fallback must meet the same applicable quality/privacy floor.
+
+## Realtime Speaking interaction
+
+Realtime conversation is an optional learner interaction layered over eligible Speaking training/practice. Core retains authoritative session/admission/entitlement state; external realtime/audio/AI capability owns no learner truth.
+
+```text
+eligible activity + current entitlement/capability admission where gated
+  ↓
+logical Speaking interaction session
+  ↓
+AI prompt / question / follow-up
+  ↓
+learner spoken turn + capture provenance
+  ↓
+bounded transcript/acoustic/semantic interpretation where eligible
+  ↓
+next responsive AI turn
+  ↺ until completed / abandoned / unavailable
+  ↓
+post-session feedback / normal Assessment path only when separately eligible
+```
+
+System rules:
+
+1. one logical session preserves activity target, Speaking part/role-play scope, assistance/evidence configuration, entitlement admission, and reconstructable turn/capture/provider provenance where material;
+2. Part 1 may use short responsive turns, Part 2 preserves preparation then learner long-turn independence, and Part 3 may use responsive follow-up discussion. Realtime follow-up must not interrupt or replace the learner operation required by the selected activity;
+3. interruption/barge-in is a delivery behavior only when the configured interaction supports it; whether interruption is pedagogically/evidentially meaningful remains target/Assessment scoped;
+4. learner silence/timeout is distinguished from capture/network/provider silence. Only trustworthy learner-performance conditions may become an Observation; technical ambiguity remains capture/provider failure;
+5. AI latency does not consume learner-performance timing unless the activity explicitly defines a target-like interaction condition that can distinguish system delay from learner delay;
+6. dropped connection moves the logical session to reconnect/degraded handling rather than creating a new learner Attempt or paid logical work automatically. Reconnect resumes/fences the same accepted session where safe; duplicated turn delivery is idempotent;
+7. if reconnect cannot safely restore the interaction, preserve completed turns and mark the remaining session partial/abandoned/unavailable as appropriate. Partial completion supports only its actual scope;
+8. graceful fallback to ordinary record→submit is allowed only for a learning purpose whose semantics remain valid after the mode change. It cannot silently satisfy a realtime/readiness/mock condition that required responsive interaction;
+9. provider/evaluator unavailability may delay feedback or end/degrade the realtime route while leaving the ordinary Speaking route usable; it never authorizes lower evidence quality;
+10. completion, abandonment, network failure, entitlement change, or paid-provider accounting does not itself admit EvidenceFacts. Normal Assessment consumes only eligible Attempts/Observations.
+
+Conceptual lifecycle:
+
+```text
+created → active ↔ reconnecting → completed
+            ├───────────────→ abandoned
+            └───────────────→ unavailable
+reconnecting ├──────────────→ abandoned
+             └──────────────→ unavailable
+```
+
+`completed` means the configured interaction ended successfully, not that Speaking capability/readiness is supported.
 
 # Flow E — objective Listening/Reading attempt
 
@@ -823,12 +890,13 @@ Historical learner facts are never repaired by mutating an old revision or earli
 
 Privileged content operations are capability-scoped rather than defined by a canonical role taxonomy. The product semantics distinguish at least these operational capabilities:
 
+- draft/create/edit candidate content before immutable ContentRevision establishment, or create a new revision when material semantics change;
 - inspect content, provenance, validation evidence, and operational state;
+- record/request authorized content review or validation input without becoming validation-bypass authority;
 - stop new assignment / quarantine content when warranted;
 - activate or release content that already satisfies every applicable semantic, validation, release, and operational condition;
 - retire content from new assignment;
-- request content supply, regeneration, or replacement;
-- request revalidation;
+- request content supply, regeneration, replacement, or revalidation;
 - resolve content reports with reconstructable operational reason/provenance.
 
 Invariants:
@@ -845,15 +913,26 @@ Concrete role names, role hierarchy, identity-provider integration, and the role
 
 # Learner entitlement vs operational authorization
 
-Commercial learner entitlement and privileged operational authority are separate dimensions.
+Commercial learner entitlement and privileged operational authority are separate dimensions. Marketing tier names such as Free/Pro are mutable presentation; the canonical product needs only provider-neutral capability entitlement semantics.
 
-- a learner entitlement may enable an optional learner-facing capability, including a cost-intensive realtime AI Speaking route;
-- entitlement does not grant content review/release/quarantine/admin capability;
-- operational capability grants do not imply paid learner entitlement or change learner evidence state;
-- neither entitlement nor operational role changes Skill/Band/Assessment/Progression truth;
-- changing entitlement affects future capability availability, not historical Attempts, Observations, EvidenceFacts, or target state.
+Conceptually, Core owns the effective entitlement state and any pending provider reconciliation:
 
-Labels such as free/pro are mutable commercial presentation, not canonical authorization roles. Content collaboration/review/admin behavior uses the capability-scoped operational model above rather than a second role taxonomy.
+- **absent/not entitled** — the gated capability cannot admit new paid use; ordinary ungated learning remains available;
+- **active** — the named gated capability may be admitted subject to all normal product/support/rate/cost/capture gates;
+- **pending change** — activation/renewal/downgrade/payment information is delayed, ambiguous, or not yet reconciled; provider output alone does not grant/revoke authority;
+- **expired/downgraded** — future use of capabilities no longer entitled is blocked from the effective product boundary;
+- **restored/reactivated** — future eligible gated use becomes available again after authoritative reconciliation.
+
+Rules:
+
+1. entitlement activation/revocation is an authoritative Core-owned product decision derived from accepted commercial/provider facts, not direct authority of a payment webhook, client flag, or provider dashboard;
+2. ambiguous provider/payment state does not change effective entitlement by itself; the last authoritative state remains until another Core-owned rule (including a known effective expiry) changes it or the observation is reconciled. Ambiguity must not invent free premium access or erase an unexpired accepted entitlement merely from a callback;
+3. a gated session admitted while entitlement is valid carries a bounded admission snapshot/logical work identity. Later expiry/downgrade blocks new gated sessions but does not duplicate, erase, or arbitrarily rewrite already accepted learner work; the admitted session may reach a safe bounded completion or graceful termination according to current abuse/security/provider/product constraints;
+4. entitlement loss/restoration never rewrites Attempts, Observations, EvidenceFacts, certification history, TargetProfile, or learner-owned saved data;
+5. entitlement does not change Skill/Band thresholds, evidence eligibility/quality, prerequisites, content validation, or product CoverageGap meaning;
+6. entitlement never grants content contribution/review/release/quarantine/admin/security capabilities, and privileged operational capability never implies paid learner entitlement;
+7. normal access to applicable learner history plus account data export/deletion controls is governed by learner-data/product/privacy policy, not withheld merely because premium capability access expired;
+8. rate/cost limits may bound an entitled optional capability, but exhaustion/degradation is product availability rather than learner weakness and cannot lower evaluator/evidence quality.
 
 # Legal lifecycle state machines
 
