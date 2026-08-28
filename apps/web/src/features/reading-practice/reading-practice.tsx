@@ -546,6 +546,13 @@ export default function ReadingPractice() {
                 </p>
               </div>
             ))}
+            <Button
+              type="button"
+              onClick={startActivity}
+              disabled={activityMutation.isPending}
+            >
+              {t("practiceAgain")}
+            </Button>
           </CardContent>
         </Card>
       )}

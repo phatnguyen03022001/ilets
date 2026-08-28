@@ -26,6 +26,7 @@
     "review": "Review",
     "learnerAnswer": "Your answer: {answer}",
     "correctAnswer": "Correct answer: {answer}",
+    "practiceAgain": "Practice again",
     "loading": "Preparing learner session…",
     "errors": {
       "session": "Could not establish learner session.",

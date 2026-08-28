@@ -385,6 +385,18 @@ describe("ReadingPractice target profile", () => {
     expect(
       screen.getByText('learnerAnswer:{"answer":"choices.FALSE"}'),
     ).toBeVisible();
+
+    const retry = screen.getByRole("button", { name: "practiceAgain" });
+    fireEvent.click(retry);
+
+    await waitFor(() =>
+      expect(
+        apiMocks.post.mock.calls.filter(
+          ([path]) => path === "/v1/practice-activities",
+        ),
+      ).toHaveLength(2),
+    );
+    expect(screen.queryByTestId("result")).not.toBeInTheDocument();
   });
 
   it("keeps an unknown Band constraint blank for a new learner", async () => {
