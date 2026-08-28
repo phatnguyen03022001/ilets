@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, progressive-disclosure UX, study-session UX shapes, product timing defaults, learner agency, learner-visible AI tutoring behavior, entitlement-visible availability, learner-visible target-trajectory advisory, strategy-change explanation, and user-visible interpretation of learning/product state
+OWNS: end-to-end learner product journey, TargetProfile product semantics, navigation surfaces, progressive-disclosure UX, learner-facing visual/interaction language, study-session UX shapes, product timing defaults, learner agency, learner-visible AI tutoring behavior, entitlement-visible availability, learner-visible target-trajectory advisory, strategy-change explanation, and user-visible interpretation of learning/product state
 DEPENDS_ON: ../spec/00-PRODUCT.md, ../spec/01-LEARNER-MODEL.md, ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/02-IELTS-MODEL.md
-DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, commercial pricing/tier policy, authorization role matrices, provider selection, API wire contracts, persistence, frameworks, or deployment
+DOES_NOT_OWN: skill definitions, mastery thresholds, evidence sufficiency, practice taxonomy, planner decision internals, legal runtime lifecycle transitions, coverage declarations, commercial pricing/tier policy, authorization role matrices, provider selection, API wire contracts, persistence, frameworks, deployment, pixel-level design tokens, or component implementation
 
 # Learning Experience
 
@@ -60,6 +60,102 @@ Progressive-disclosure rules:
 3. evidence/provenance/policy detail remains available for explanation without becoming the default learner view;
 4. internal IDs and ontology structure are hidden unless useful for support/debugging;
 5. no completeness percentage is inferred from the fraction of visible nodes completed.
+
+# Learner-facing visual and interaction language
+
+The product uses one calm, precise visual language across ordinary study. The reference direction is translated into durable qualities—restraint, clear components, high finish, and subtle depth—rather than copied from another product. Premium quality means the interface feels deliberate and trustworthy without luxury theatrics, cinematic presentation, or generic “AI product” styling.
+
+## Primary visual character
+
+The default learner surface is typography-led and content-first:
+
+- hierarchy comes primarily from type, spacing, grouping, and clear primary/secondary action relationships;
+- neutral surfaces, restrained borders/elevation, deliberate whitespace, and consistent component behavior create structure without turning every concept into a card;
+- progressive disclosure keeps deep semantics available without making the default view dense;
+- readability and long-session comfort outrank decorative novelty;
+- one coherent interaction/component language is reused across Today, Skills, Practice, Review, Media, Progress, Mock, and activity workspaces.
+
+Avoid childish edtech styling, decorative gamification without learning value, excessive gradients/glass effects, glowing/futuristic AI motifs, dense dashboard mosaics, badge/icon clutter, and visual treatment that exposes internal ontology merely because it exists.
+
+These are product-quality semantics, not a fixed token catalogue. Exact color values, type scale, spacing scale, radii, shadows, and component implementation remain downstream design/implementation choices provided they preserve this character and the accessibility/performance boundaries below.
+
+## Capability-first learner language
+
+Normal learner-facing copy names the capability, action, or result rather than advertising the implementation mechanism. Suitable language includes concepts such as **Explain**, **Analyze**, **Feedback**, **Practice**, **Suggestion**, **Next step**, **Conversation**, **Writing feedback**, **Speaking practice**, **Tutor**, and **Help**.
+
+Generic promotional labels such as **AI Tutor**, **AI Coach**, **AI Analysis**, **AI-powered**, **Powered by AI**, or **Ask AI** are not normal product chrome merely because a model participates. The learner experiences one IELTS product rather than a collection of AI-labelled features.
+
+This naming rule is presentation-only:
+
+- it never hides a material evaluator/product limitation or changes Assessment/evidence authority;
+- explicit model/automation disclosure remains available where required for legal, privacy, provenance, safety, settings, support, or informed-use purposes;
+- internal architecture may still name AI/model capabilities precisely even when ordinary learner copy does not.
+
+## Iconography
+
+Icons are functional aids, not decoration.
+
+- prefer text when text communicates the action/status more clearly;
+- use one restrained coherent icon family for scanning, navigation, action recognition, or status interpretation;
+- do not use emoji, cartoon imagery, mixed icon packs, or an icon beside every heading/card as normal product chrome;
+- internal taxonomy must not become dozens of learner-facing symbols;
+- required status or action meaning is always available in text or another accessible non-icon-only form.
+
+## Imagery and background depth
+
+The product may use sparse high-quality imagery or atmospheric depth when it improves orientation, tone, or context without competing with learning. Suitable treatments include subtle editorial/contextual photography, abstract light/material/architectural imagery, soft texture, restrained atmospheric backgrounds, and low-contrast visual fields.
+
+Rules:
+
+- learning content and controls remain the foreground and text contrast/readability always wins;
+- background imagery never carries required state, instruction, or evidence meaning;
+- avoid stock-looking decoration, futuristic/robot/AI imagery, repeated large hero art, or constant visual spectacle;
+- prefer a few memorable visual moments over persistent decoration;
+- Today, activity workspaces, Writing, Speaking, and Review remain visually quiet enough for long study sessions.
+
+## Motion and responsiveness
+
+Motion exists to communicate state transition, hierarchy, completion, feedback, expansion/collapse, or navigation continuity. It is not spectacle.
+
+Avoid scroll-driven showpieces, unnecessary parallax, atmospheric background video, long blocking transitions, excessive blur/compositing, or animation that delays study. Navigation and controls should feel immediate, layout should remain stable, loading should be predictable, and ordinary scrolling/input should not visibly jank or jump.
+
+Reduced-motion preferences are respected gracefully. If visual motion conflicts with responsiveness, input latency, readability, accessibility, or stable layout, responsiveness and usability win. Concrete implementation/performance mechanisms remain owned by the Web/implementation boundary.
+
+## Interaction micro-quality
+
+Every ordinary surface applies the same quality bar to non-happy paths and control states:
+
+- loading/skeleton treatment preserves useful layout shape without pretending unknown content is already known;
+- empty states explain what is absent and, when useful, the next valid action rather than showing decorative emptiness;
+- error, degraded, disabled, pending, and unavailable states remain distinguishable when their learner consequence differs;
+- hover, focus, pressed, selected, expanded, and disabled states are perceivable and behaviorally consistent;
+- keyboard/focus/screen-reader accessibility is preserved where applicable and status is not communicated by color/icon alone;
+- copy remains concise and action-oriented while preserving important uncertainty/limitation semantics;
+- primary actions are visually clear without making secondary/recovery actions hard to find;
+- responsive/mobile layouts preserve task hierarchy, readable text, stable controls, and safe input/capture rather than merely shrinking desktop composition.
+
+Micro-quality must remain consistent across long sessions; visual polish may not introduce avoidable fatigue, content jumping, ambiguous controls, or inaccessible interaction.
+
+## Beginner and L1 scaffold compatibility
+
+The same visual language supports beginner scaffolding; there is no separate beginner design system. When L1 support materially improves understanding, the product may present a simple L1-first explanation while preserving important canonical English/IELTS terminology and allowing deeper detail on demand.
+
+A typical disclosure pattern is:
+
+```text
+Task Response  [info]
+  → simple learner-language / L1 explanation
+  → tiny concrete example when useful
+  → deeper canonical detail on demand
+```
+
+The information control is functional and accessible rather than decorative. As learner independence grows, L1 explanation may become less prominent or user-invoked without changing the underlying canonical target. L1 support remains the localization/explanation overlay defined by `../spec/00-PRODUCT.md`; it never creates a different IELTS standard.
+
+## Simple surface / deep system invariant
+
+The learner interface exposes only concepts that help the learner understand state or act correctly. Internal structures such as Skill Leaves, Knowledge Objects, Practice Types, Learning Mechanisms, EvidenceRequirement, GapEvaluation, and ActionIntent do not become menu/navigation complexity or visual badges by default.
+
+The primary learner surface remains centered on **Today, Skills, Practice, Review, Media, Progress, Mock**, and the current next action. Internal depth is reached progressively through plain learner-facing concepts and explanations rather than by exposing implementation/canonical taxonomy directly.
 
 # `TargetProfile`
 
