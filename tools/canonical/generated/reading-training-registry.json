@@ -1,12 +1,12 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:62ee747f2aca19fc346c6ac96cb57ead8ff08a1bb13dd8c83d090927506c49f6",
+  "canonical_source_revision": "canonical-source-revision/v1:c0a39e94dc74dc4fb64e92dfb4f46d90847f8e98d255db864eb9c0cc86950302",
   "entries": [
     {
       "cells": [],
       "id": "ASSESSMENT",
       "source": {
-        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
         "owner": "design/02-practice-catalog.md",
         "parent_section": null,
         "section": "## Primary activity purpose"
@@ -17,7 +17,7 @@
       "cells": [],
       "id": "TRAINING",
       "source": {
-        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
         "owner": "design/02-practice-catalog.md",
         "parent_section": null,
         "section": "## Primary activity purpose"
@@ -33,7 +33,7 @@
       ],
       "id": "AT-02",
       "source": {
-        "git_blob": "df556509cff04c10a78daa306b29a741f39f0471",
+        "git_blob": "4707e092da46c45f2a10919dabce489b2eb44fcd",
         "owner": "spec/08-ASSESSMENT.md",
         "parent_section": null,
         "section": "# Assessment Type registry"
@@ -47,7 +47,7 @@
       ],
       "id": "CTX-READING-ACADEMIC",
       "source": {
-        "git_blob": "d783af19aa6a13c62ce197b7b433eddfb1c27916",
+        "git_blob": "23fead249ac0bc58aea9b3a758eadca420aecc7f",
         "owner": "spec/10-CONTENT-MODEL.md",
         "parent_section": null,
         "section": "# Stable Content Context registry"
@@ -58,7 +58,7 @@
       "cells": [],
       "id": "ASSESSMENT_MAY_ADMIT",
       "source": {
-        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
         "owner": "design/02-practice-catalog.md",
         "parent_section": null,
         "section": "## Evidence candidacy"
@@ -69,7 +69,7 @@
       "cells": [],
       "id": "NOT_EVIDENCE_CANDIDATE",
       "source": {
-        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
         "owner": "design/02-practice-catalog.md",
         "parent_section": null,
         "section": "## Evidence candidacy"
@@ -84,7 +84,7 @@
       ],
       "id": "R-F04",
       "source": {
-        "git_blob": "b6edafd0beb45fc1927cfd4964b4d35fae47eca3",
+        "git_blob": "fc0c5e9d0f66b935b63d23ddb40b4ceb0e2ff273",
         "owner": "design/01-skill-features.md",
         "parent_section": null,
         "section": "# Reading \u2014 8"
@@ -126,7 +126,7 @@
       ],
       "id": "PM-R03",
       "source": {
-        "git_blob": "e04c566aac329c467518dadd204db070fb7b6f34",
+        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
         "owner": "design/02-practice-catalog.md",
         "parent_section": null,
         "section": "# Reading \u2014 6"
@@ -143,7 +143,7 @@
       ],
       "id": "PT-13",
       "source": {
-        "git_blob": "72b0a63a2b98cf950c0a0d65ae1714fec570c71c",
+        "git_blob": "cb16428b5d5f7bddf866351bb3c502c9a2546a93",
         "owner": "spec/07-PRACTICE.md",
         "parent_section": null,
         "section": "# Canonical Practice Type registry"
@@ -160,7 +160,7 @@
       ],
       "id": "PT-16",
       "source": {
-        "git_blob": "72b0a63a2b98cf950c0a0d65ae1714fec570c71c",
+        "git_blob": "cb16428b5d5f7bddf866351bb3c502c9a2546a93",
         "owner": "spec/07-PRACTICE.md",
         "parent_section": null,
         "section": "# Canonical Practice Type registry"
