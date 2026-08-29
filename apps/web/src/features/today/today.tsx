@@ -150,6 +150,9 @@ export default function Today() {
   });
 
   const profile = configuredProfile(dailyPlanQuery.data);
+  const academicDirectPracticeAvailable =
+    profile?.test_variant.state === "PRESENT" &&
+    profile.test_variant.value === "Academic";
 
   useEffect(() => {
     if (!dailyPlanQuery.isSuccess || targetForm.formState.isDirty) return;
@@ -507,7 +510,9 @@ export default function Today() {
           <Button
             variant="outline"
             onClick={startDirectPractice}
-            disabled={!profile || activityMutation.isPending}
+            disabled={
+              !academicDirectPracticeAvailable || activityMutation.isPending
+            }
           >
             {t("startDirect")}
           </Button>

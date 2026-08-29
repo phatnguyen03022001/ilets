@@ -276,6 +276,23 @@ describe("Today canonical consumer", () => {
     expect(screen.getByRole("button", { name: "startDirect" })).toBeDisabled();
   });
 
+  it("keeps direct PM-R03 non-actionable for configured General Training", async () => {
+    sdk.getDailyPlan.mockResolvedValue({
+      data: plan({
+        target_context: profile("General Training"),
+        items: [],
+      }),
+    });
+    renderSubject();
+    await waitFor(() =>
+      expect(screen.getByLabelText("variant")).toHaveValue("General Training"),
+    );
+    const direct = screen.getByRole("button", { name: "startDirect" });
+    expect(direct).toBeDisabled();
+    fireEvent.click(direct);
+    expect(sdk.createPracticeActivity).not.toHaveBeenCalled();
+  });
+
   it("renders unresolved target explanations without exposing condition IDs", async () => {
     sdk.getDailyPlan.mockResolvedValue({
       data: plan({
@@ -452,7 +469,9 @@ describe("Today canonical consumer", () => {
     expect(
       screen.getByRole("heading", { name: "directHeading" }),
     ).toBeVisible();
-    fireEvent.click(screen.getByRole("button", { name: "startDirect" }));
+    const direct = screen.getByRole("button", { name: "startDirect" });
+    expect(direct).toBeEnabled();
+    fireEvent.click(direct);
     await waitFor(() =>
       expect(sdk.createPracticeActivity).toHaveBeenCalledWith(
         expect.objectContaining({ body: { practice_mode_id: "PM-R03" } }),
