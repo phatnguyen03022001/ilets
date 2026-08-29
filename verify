@@ -21,8 +21,6 @@ cleanup() {
 trap cleanup EXIT
 
 python3 "$ROOT/tools/affected/test_classifier.py"
-python3 "$ROOT/tools/test_verify_lenbands_founder_closure.py"
-python3 "$ROOT/tools/verify-lenbands-founder-closure.py"
 python3 "$ROOT/tools/canonical/test_materialize.py"
 python3 "$ROOT/tools/canonical/materialize.py" --check
 

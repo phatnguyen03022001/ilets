@@ -10,7 +10,7 @@ Canonical policy lives in the owning `spec/*.md` file. This research exists to e
 
 ## Provenance
 
-The pre-refactor repository contained an independently audited learning-science brief at:
+The pre-refactor repository contained an independently audited learning-science brief preserved in Git history at immutable commit `43cddc45160016beb6d2d9342acc2fd9db4b1075`, path:
 
 ```text
 archive/legacy-2026-07-16/blueprint/learning/learning-science-evidence-brief.md
@@ -151,4 +151,4 @@ The audited legacy brief discusses, among others:
 - DeKeyser — adult L2 skill acquisition;
 - Swain — output in language learning.
 
-For full bibliographic detail and the citation-audit history, consult the archived brief rather than treating this summary as a bibliography.
+For full bibliographic detail and the citation-audit history, consult the historical brief at the immutable Git reference above rather than treating this summary as a bibliography.

@@ -38,7 +38,7 @@ Every external capability/provider relationship is in exactly one of:
 
 The lifecycle applies to the external relationship, not the underlying capability. `DEFERRED` is not a product failure. Promoting `DEFERRED → TBD` requires a concrete reason an external route is needed rather than a checklist item or vendor preference.
 
-Historical candidates in `research/` or `archive/` have no active status until adopted here.
+Historical candidates in Git history and non-canonical `research/` material have no active status until adopted here.
 
 # Selection order
 

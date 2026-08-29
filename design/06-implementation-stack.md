@@ -633,7 +633,7 @@ Invariants:
 
 1. each materialized registry knows its expected canonical owner and owner-specific canonical structure/source region; the Markdown owner remains semantic authority;
 2. materialization extracts declared canonical objects, not arbitrary ID-looking tokens discovered by repository-wide grep/regex;
-3. supporting prose/references, examples, `spec/DECISIONS.md`, research, archive, and other non-owner material do not become registry entries merely because they contain a matching-looking identifier;
+3. supporting prose/references, examples, `spec/DECISIONS.md`, research, historical material, and other non-owner material do not become registry entries merely because they contain a matching-looking identifier;
 4. duplicate, ambiguous, structurally unparseable, or unexpectedly sourced canonical definitions fail verification or remain unresolved rather than being guessed;
 5. derived registry entries preserve source-owner identity and enough source fingerprint/repository revision provenance for drift/reconstruction;
 6. a derived tooling source map/config may identify expected owner/source regions but is tooling configuration, not another semantic SSOT and cannot invent objects absent from the owner;
