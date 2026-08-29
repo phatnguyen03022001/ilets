@@ -22,7 +22,7 @@ contracts/  exact machine interface truth once materialized
 
 The user is the final authority for constitutional changes.
 
-`README.md`, supporting decisions, research, evidence, archive, generated code, vendor instructions, implementation artifacts, and tooling cannot override this hierarchy.
+`README.md`, supporting decisions, research, evidence, historical material, generated code, vendor instructions, implementation artifacts, and tooling cannot override this hierarchy.
 
 A downstream owner may operationalize an upstream semantic but may not redefine it.
 
@@ -99,7 +99,7 @@ Conversely, independently evolving semantics with genuinely distinct ownership m
 
 The number 25 is a governance baseline, not a substitute for reasoning.
 
-Implementation source files, machine contracts, generated code, research, evidence, and archive do not count toward the active Markdown count.
+Implementation source files, machine contracts, generated code, research, evidence, and historical material do not count toward the active Markdown count.
 
 ## 6. Learning plane vs design plane
 
@@ -187,13 +187,11 @@ canonical owner
 
 Supporting material must not become a parallel specification hierarchy.
 
-## 10. Archive semantics
+## 10. Historical material
 
-`archive/` is historical only. It preserves superseded structures, exact prior wording, reviews, and migration provenance.
+Superseded structures, exact prior wording, reviews, migrations, and retired workflow/process artifacts live in Git history unless a current provenance, legal, or recovery need justifies a tracked supporting artifact.
 
-When archive and active owners differ, active owners win.
-
-Historical material must not be silently copied back without re-establishing current ownership and validity.
+Historical material cannot override active owners and must not be silently copied back without re-establishing current ownership and validity.
 
 ## 11. Evidence discipline
 

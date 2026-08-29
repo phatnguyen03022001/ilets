@@ -12,7 +12,6 @@ This repository is self-describing. It contains canonical IELTS learning truth, 
 6. Read `design/08-coverage-and-support.md` before making any completeness, support, or readiness-of-product claim.
 7. Use `spec/DECISIONS.md` for rationale only.
 8. Use `research/` and `evidence/` for provenance/validation only.
-9. Treat `archive/` as historical only.
 
 ## Authority
 
@@ -102,14 +101,12 @@ The detailed rules remain owned by the referenced canonical documents; this sect
 ## Supporting and historical material
 
 ```text
-research/   exploration and imported provenance; never canonical
+research/   current non-canonical research/provenance; never canonical
 
 evidence/   source/evidence records supporting current canonical claims; never canonical
-
-archive/    superseded structures, reviews, migrations, and historical snapshots
 ```
 
-A review, migration report, or close-out verdict must not become an alternative source of current truth. Once it is historical, it belongs under `archive/` or Git history rather than the active evidence surface.
+Historical reviews, migration reports, superseded structures, and retired workflow artifacts live in Git history rather than the active tree unless a current provenance, legal, or recovery need requires them to remain tracked.
 
 ## Current project state
 

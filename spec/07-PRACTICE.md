@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: how capability is trained, learning phases, Learning Mechanism taxonomy, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, feedback timing, and feedback-focus/noise-control policy for learning
+OWNS: how capability is trained, learning phases, Learning Mechanism taxonomy, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, feedback timing, feedback-focus/noise-control policy for learning, and intervention-effectiveness semantics for adapting practice strategy
 DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 09-PROGRESSION.md
 DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, assessment sufficiency/certification, learner-state transitions, concrete generated exercise instances, or product/runtime feedback delivery workflow
 
@@ -136,6 +136,40 @@ Concrete bindings must resolve target families to explicit stable Skill/Knowledg
 7. **Transfer gap** — vary context, reduce pattern repetition, and use unseen or materially different conditions when the claim requires generalization.
 8. **Fluency gap** — use rehearsal only after target quality is sufficiently stable.
 9. **Exam-condition gap** — use timed/integrated practice without redefining underlying mastery.
+
+# Intervention effectiveness and strategy change
+
+Practice selection is revisable. After enough comparable learning history exists, the product may interpret whether continuing the current intervention remains useful for the same canonical target and `ActionIntent`. This is a **planning/learning interpretation**, not a new learner GapEvaluation, Assessment result, or evidence class.
+
+An intervention comparison may use only existing material dimensions such as:
+
+```text
+canonical target
++ ActionIntent
++ Learning Mechanism
++ Practice Type
++ scaffold/support state
++ context / transfer condition
++ difficulty / load
++ relevant Attempts and learning outcomes
++ subsequent admissible evidence when separately available
++ recency / comparability
++ learner friction / fatigue
+```
+
+Implementation may preserve an attributable intervention instance/signature for comparison, but no new canonical intervention ontology is required. The comparison must remain scoped tightly enough that unlike targets, assistance states, contexts, or difficulty conditions are not treated as equivalent merely because the same Practice Type was used.
+
+Rules:
+
+1. too little comparable history, inadequate calibration, or materially incomparable work means effectiveness is unresolved; do not manufacture a plateau;
+2. lack of improvement does not by itself establish greater learner weakness, regression, or a new prerequisite gap;
+3. capture, evaluator, provider, content-quality, rights, or other product/runtime failures are excluded from learner-intervention efficacy inference and remain their own failure/product states;
+4. a repeatedly effective intervention may legitimately continue; adaptation is not a novelty quota;
+5. when comparable history supports diminishing returns or inadequate improvement, selection may change an existing dimension such as Learning Mechanism, Practice Type, scaffold, context/transfer distance, difficulty/load, frequency, or recommended sequencing while preserving the target and all Required prerequisites;
+6. if the history makes the original diagnosis materially uncertain, use the existing diagnostic/Assessment path to collect discriminating evidence rather than inventing a new learner weakness;
+7. a Required prerequisite may be revisited only when current evidence/prerequisite semantics justify doing so; strategy change cannot invent a hidden prerequisite;
+8. changing strategy never rewrites historical Attempts, Observations, EvidenceFacts, or the target/Band standard;
+9. intervention history/effectiveness is learning/planning information. It becomes Assessment evidence only when a separately eligible Observation is admitted under `08-ASSESSMENT.md`.
 
 # Binding model
 

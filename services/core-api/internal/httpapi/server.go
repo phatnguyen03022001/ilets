@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -18,26 +17,29 @@ import (
 	"strings"
 	"time"
 
+	clerkhttp "github.com/clerk/clerk-sdk-go/v2/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
-	publicv1 "github.com/phatnguyen03022001/ilets/services/core-api/internal/httpapi/generated"
+	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
 )
 
 const (
-	contractVersion   = "1.0.0-bootstrap.2"
-	cookieName        = "ilets_session"
+	contractVersion   = "1.0.0"
 	bootstrapRevision = "reading-bootstrap-classification-001-r1"
 )
 
 var idempotencyPattern = regexp.MustCompile(`^[A-Za-z0-9._:-]{8,128}$`)
 
 type Config struct {
-	Environment  string
-	WebOrigins   []string
-	BuildVersion string
+	Environment            string
+	WebOrigins             []string
+	BuildVersion           string
+	ClerkIssuer            string
+	ClerkAudience          string
+	ClerkAuthorizedParties []string
+	ClerkSecretKey         string
 }
 
 type Server struct {
@@ -48,10 +50,11 @@ type Server struct {
 }
 
 type generatedServer struct {
+	public.Unimplemented
 	server *Server
 }
 
-var _ publicv1.ServerInterface = (*generatedServer)(nil)
+var _ public.ServerInterface = (*generatedServer)(nil)
 
 type ctxKey string
 
@@ -76,27 +79,55 @@ func (w *statusWriter) Write(b []byte) (int, error) {
 func (w *statusWriter) SetErrorCode(code string) { w.errorCode = code }
 
 func New(pool *pgxpool.Pool, cfg Config, logger *slog.Logger) http.Handler {
+	opts, err := productionClerkAuthorizationOptions(cfg)
+	if err != nil {
+		panic(err)
+	}
+	return newWithClerkAuthorizationOptions(pool, cfg, logger, opts...)
+}
+
+func newWithClerkAuthorizationOptions(pool *pgxpool.Pool, cfg Config, logger *slog.Logger, authOptions ...clerkhttp.AuthorizationOption) http.Handler {
 	s := &Server{db: pool, cfg: cfg, origins: map[string]struct{}{}, log: logger}
 	for _, origin := range cfg.WebOrigins {
 		s.origins[origin] = struct{}{}
 	}
+	auth := newClerkAuthMiddleware(clerkAuthConfig{
+		Issuer:            cfg.ClerkIssuer,
+		Audience:          cfg.ClerkAudience,
+		AuthorizedParties: cfg.ClerkAuthorizedParties,
+	}, authOptions...)
+
 	r := chi.NewRouter()
 	r.Use(s.requestLog)
 	r.Use(s.browserBoundary)
-	return publicv1.HandlerWithOptions(&generatedServer{server: s}, publicv1.ChiServerOptions{
-		BaseRouter:       r,
-		ErrorHandlerFunc: generatedBoundaryError,
+
+	generated := &generatedServer{server: s}
+	wrapper := &public.ServerInterfaceWrapper{Handler: generated, ErrorHandlerFunc: generatedBoundaryError}
+	r.Get("/healthz", wrapper.GetCoreHealth)
+	r.Group(func(r chi.Router) {
+		r.Use(auth)
+		r.Get("/v1/me", wrapper.GetMe)
+		r.Get("/v1/target-profile", wrapper.GetTargetProfile)
+		r.Put("/v1/target-profile", wrapper.PutTargetProfile)
+		r.Get("/v1/daily-plan", wrapper.GetDailyPlan)
+		r.Get("/v1/practice-modes", wrapper.ListPracticeModes)
+		r.Post("/v1/practice-activities", wrapper.CreatePracticeActivity)
+		r.Get("/v1/practice-activities/{practice_activity_id}", wrapper.GetPracticeActivity)
+		r.Post("/v1/attempts", wrapper.CreateAttempt)
+		r.Get("/v1/attempts/{attempt_id}", wrapper.GetAttempt)
+		r.Post("/v1/attempts/{attempt_id}/submissions", wrapper.SubmitAttempt)
 	})
+	return r
 }
 
 func generatedBoundaryError(w http.ResponseWriter, r *http.Request, err error) {
 	paramName := ""
 	switch typed := err.(type) {
-	case *publicv1.RequiredHeaderError:
+	case *public.RequiredHeaderError:
 		paramName = typed.ParamName
-	case *publicv1.InvalidParamFormatError:
+	case *public.InvalidParamFormatError:
 		paramName = typed.ParamName
-	case *publicv1.TooManyValuesForParamError:
+	case *public.TooManyValuesForParamError:
 		paramName = typed.ParamName
 	}
 	if paramName == "Idempotency-Key" {
@@ -106,56 +137,36 @@ func generatedBoundaryError(w http.ResponseWriter, r *http.Request, err error) {
 	writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "invalid request parameters")
 }
 
-func (g *generatedServer) GetHealth(w http.ResponseWriter, r *http.Request) {
+func (g *generatedServer) GetCoreHealth(w http.ResponseWriter, r *http.Request) {
 	g.server.health(w, r)
 }
-
-func (g *generatedServer) CreateAttempt(w http.ResponseWriter, r *http.Request, _ publicv1.CreateAttemptParams) {
-	g.server.createAttempt(w, r)
-}
-
-func (g *generatedServer) GetAttempt(w http.ResponseWriter, r *http.Request, _ publicv1.AttemptId) {
-	g.server.getAttempt(w, r)
-}
-
-func (g *generatedServer) SubmitAttempt(w http.ResponseWriter, r *http.Request, _ publicv1.AttemptId, _ publicv1.SubmitAttemptParams) {
-	g.server.submitAttempt(w, r)
-}
-
-func (g *generatedServer) GetMe(w http.ResponseWriter, r *http.Request) {
-	g.server.getMe(w, r)
-}
-
-func (g *generatedServer) CreatePracticeActivity(w http.ResponseWriter, r *http.Request, _ publicv1.CreatePracticeActivityParams) {
-	g.server.createPracticeActivity(w, r)
-}
-
-func (g *generatedServer) GetPracticeActivity(w http.ResponseWriter, r *http.Request, _ publicv1.PracticeActivityId) {
-	g.server.getPracticeActivity(w, r)
-}
-
-func (g *generatedServer) CreateAssessmentActivity(w http.ResponseWriter, r *http.Request, _ publicv1.CreateAssessmentActivityParams) {
-	g.server.createAssessmentActivity(w, r)
-}
-
-func (g *generatedServer) GetAssessmentActivity(w http.ResponseWriter, r *http.Request, _ publicv1.AssessmentActivityId) {
-	g.server.getAssessmentActivity(w, r)
-}
-
-func (g *generatedServer) ListPracticeModes(w http.ResponseWriter, r *http.Request) {
-	g.server.listPracticeModes(w, r)
-}
-
-func (g *generatedServer) BootstrapSession(w http.ResponseWriter, r *http.Request) {
-	g.server.bootstrapSession(w, r)
-}
-
+func (g *generatedServer) GetMe(w http.ResponseWriter, r *http.Request) { g.server.getMe(w, r) }
 func (g *generatedServer) GetTargetProfile(w http.ResponseWriter, r *http.Request) {
 	g.server.getTargetProfile(w, r)
 }
-
-func (g *generatedServer) PutTargetProfile(w http.ResponseWriter, r *http.Request) {
-	g.server.putTargetProfile(w, r)
+func (g *generatedServer) PutTargetProfile(w http.ResponseWriter, r *http.Request, params public.PutTargetProfileParams) {
+	g.server.putTargetProfile(w, r, params)
+}
+func (g *generatedServer) GetDailyPlan(w http.ResponseWriter, r *http.Request) {
+	g.server.getDailyPlan(w, r)
+}
+func (g *generatedServer) ListPracticeModes(w http.ResponseWriter, r *http.Request) {
+	g.server.listPracticeModes(w, r)
+}
+func (g *generatedServer) CreatePracticeActivity(w http.ResponseWriter, r *http.Request, params public.CreatePracticeActivityParams) {
+	g.server.createPracticeActivity(w, r, params)
+}
+func (g *generatedServer) GetPracticeActivity(w http.ResponseWriter, r *http.Request, id public.PracticeActivityId) {
+	g.server.getPracticeActivity(w, r, id)
+}
+func (g *generatedServer) CreateAttempt(w http.ResponseWriter, r *http.Request, params public.CreateAttemptParams) {
+	g.server.createAttempt(w, r, params)
+}
+func (g *generatedServer) GetAttempt(w http.ResponseWriter, r *http.Request, id public.AttemptId) {
+	g.server.getAttempt(w, r, id)
+}
+func (g *generatedServer) SubmitAttempt(w http.ResponseWriter, r *http.Request, id public.AttemptId, params public.SubmitAttemptParams) {
+	g.server.submitAttempt(w, r, id, params)
 }
 
 func (s *Server) requestLog(next http.Handler) http.Handler {
@@ -185,25 +196,24 @@ func (s *Server) browserBoundary(next http.Handler) http.Handler {
 		origin := r.Header.Get("Origin")
 		if origin != "" {
 			if _, ok := s.origins[origin]; !ok {
-				writeError(w, r, 403, "ORIGIN_REJECTED", "request origin is not allowed")
+				writeError(w, r, http.StatusForbidden, "ORIGIN_REJECTED", "request origin is not allowed")
 				return
 			}
 			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Add("Vary", "Origin")
 		}
 		if r.Method == http.MethodOptions {
 			if origin == "" {
-				writeError(w, r, 403, "ORIGIN_REJECTED", "preflight origin is required")
+				writeError(w, r, http.StatusForbidden, "ORIGIN_REJECTED", "preflight origin is required")
 				return
 			}
 			w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Idempotency-Key")
+			w.Header().Set("Access-Control-Allow-Headers", "Authorization,Content-Type,Idempotency-Key,Expected-Resource-Revision")
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 		if isUnsafe(r.Method) && strings.EqualFold(r.Header.Get("Sec-Fetch-Site"), "cross-site") {
-			writeError(w, r, 403, "ORIGIN_REJECTED", "cross-site mutation rejected")
+			writeError(w, r, http.StatusForbidden, "ORIGIN_REJECTED", "cross-site mutation rejected")
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -218,80 +228,71 @@ func (s *Server) health(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
 	if err := s.db.Ping(ctx); err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "authoritative database is unavailable")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "authoritative database is unavailable")
 		return
 	}
-	writeJSON(w, 200, map[string]any{"status": "ok", "database": "reachable", "contract_version": contractVersion, "build_version": s.cfg.BuildVersion})
+	writeJSON(w, http.StatusOK, public.Health{
+		Service:         public.HealthService("core-api"),
+		Status:          public.HealthStatus("ready"),
+		ContractVersion: contractVersion,
+		BuildVersion:    s.cfg.BuildVersion,
+	})
 }
 
-func (s *Server) bootstrapSession(w http.ResponseWriter, r *http.Request) {
-	if learner, ok := s.authenticate(r); ok {
-		writeJSON(w, 200, map[string]any{"learner_id": learner, "human_actor": "Learner"})
-		return
+func (s *Server) requireIdentity(w http.ResponseWriter, r *http.Request) (coreIdentity, bool) {
+	principal, ok := authenticatedExternalPrincipal(r.Context())
+	if !ok {
+		writeError(w, r, http.StatusUnauthorized, "UNAUTHENTICATED", "valid bearer token required")
+		return coreIdentity{}, false
 	}
-	tokenBytes := make([]byte, 32)
-	if _, err := rand.Read(tokenBytes); err != nil {
-		writeError(w, r, 503, "RANDOM_UNAVAILABLE", "session entropy unavailable")
-		return
-	}
-	token := base64.RawURLEncoding.EncodeToString(tokenBytes)
-	digest := sha256.Sum256([]byte(token))
-	learnerID := newID("learner_")
-	sessionID := newID("session_")
-	expires := time.Now().UTC().Add(30 * 24 * time.Hour)
-	tx, err := s.db.Begin(r.Context())
+	identity, err := s.resolveExternalPrincipal(r.Context(), principal)
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot establish session")
-		return
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve authenticated principal")
+		return coreIdentity{}, false
 	}
-	defer tx.Rollback(r.Context())
-	queries := sqlcdb.New(tx)
-	if err = queries.InsertLearner(r.Context(), learnerID); err == nil {
-		err = queries.InsertSession(r.Context(), sqlcdb.InsertSessionParams{
-			SessionID:   sessionID,
-			LearnerID:   learnerID,
-			TokenDigest: digest[:],
-			ExpiresAt:   pgtype.Timestamptz{Time: expires, Valid: true},
-		})
-	}
-	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot establish session")
-		return
-	}
-	if err = tx.Commit(r.Context()); err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot establish session")
-		return
-	}
-	secure := s.cfg.Environment != "development" && s.cfg.Environment != "test"
-	http.SetCookie(w, &http.Cookie{Name: cookieName, Value: token, Path: "/", HttpOnly: true, Secure: secure, SameSite: http.SameSiteLaxMode, Expires: expires, MaxAge: int((30 * 24 * time.Hour).Seconds())})
-	writeJSON(w, 201, map[string]any{"learner_id": learnerID, "human_actor": "Learner"})
-}
-
-func (s *Server) authenticate(r *http.Request) (string, bool) {
-	cookie, err := r.Cookie(cookieName)
-	if err != nil || cookie.Value == "" {
-		return "", false
-	}
-	digest := sha256.Sum256([]byte(cookie.Value))
-	learner, err := sqlcdb.New(s.db).AuthenticateSession(r.Context(), digest[:])
-	return learner, err == nil
+	return identity, true
 }
 
 func (s *Server) requireLearner(w http.ResponseWriter, r *http.Request) (string, bool) {
-	learner, ok := s.authenticate(r)
+	identity, ok := s.requireIdentity(w, r)
 	if !ok {
-		writeError(w, r, 401, "UNAUTHENTICATED", "valid learner session required")
 		return "", false
 	}
-	return learner, true
+	return identity.LearnerID, true
 }
 
 func (s *Server) getMe(w http.ResponseWriter, r *http.Request) {
-	learner, ok := s.requireLearner(w, r)
+	identity, ok := s.requireIdentity(w, r)
 	if !ok {
 		return
 	}
-	writeJSON(w, 200, map[string]any{"learner_id": learner, "human_actor": "Learner"})
+	writeJSON(w, http.StatusOK, public.Me{ActorId: identity.ActorID, LearnerId: identity.LearnerID})
+}
+
+func claimIdempotencyPayload(ctx context.Context, tx pgx.Tx, learner, operation, key string, payloadHash []byte) ([]byte, bool, error) {
+	queries := sqlcdb.New(tx)
+	_, err := queries.ClaimIdempotency(ctx, sqlcdb.ClaimIdempotencyParams{
+		LearnerID: learner, Operation: operation, IdempotencyKey: key, PayloadHash: payloadHash,
+	})
+	if err == nil {
+		return nil, true, nil
+	}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return nil, false, err
+	}
+	row, err := queries.LockIdempotency(ctx, sqlcdb.LockIdempotencyParams{
+		LearnerID: learner, Operation: operation, IdempotencyKey: key,
+	})
+	if err != nil {
+		return nil, false, err
+	}
+	if !bytes.Equal(row.PayloadHash, payloadHash) {
+		return nil, false, fmt.Errorf("payload conflict")
+	}
+	if len(row.OutcomePayload) == 0 {
+		return nil, false, fmt.Errorf("idempotency outcome missing")
+	}
+	return row.OutcomePayload, false, nil
 }
 
 func claimIdempotency(ctx context.Context, tx pgx.Tx, learner, operation, key string, payloadHash []byte) (string, bool, error) {
@@ -338,6 +339,19 @@ func hashJSON(v any) []byte {
 	body, _ := json.Marshal(v)
 	hash := sha256.Sum256(body)
 	return hash[:]
+}
+
+func decodeCanonicalJSON(r *http.Request, out any) error {
+	decoder := json.NewDecoder(io.LimitReader(r.Body, 1<<20))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(out); err != nil {
+		return err
+	}
+	var trailing any
+	if err := decoder.Decode(&trailing); err != io.EOF {
+		return fmt.Errorf("request must contain one JSON value")
+	}
+	return nil
 }
 
 func decodeObject(r *http.Request, allowed, required []string) (map[string]json.RawMessage, error) {
@@ -434,8 +448,43 @@ func writeJSON(w http.ResponseWriter, status int, value any) {
 }
 
 func writeError(w http.ResponseWriter, r *http.Request, status int, code, message string) {
-	if sw, ok := w.(interface{ SetErrorCode(string) }); ok {
-		sw.SetErrorCode(code)
+	canonicalCode := public.ErrorCode("INVALID_REQUEST")
+	switch {
+	case status == http.StatusUnauthorized:
+		canonicalCode = public.ErrorCode("UNAUTHENTICATED")
+	case status == http.StatusForbidden:
+		canonicalCode = public.ErrorCode("FORBIDDEN")
+	case status == http.StatusNotFound:
+		canonicalCode = public.ErrorCode("NOT_FOUND_OR_NOT_VISIBLE")
+	case status == http.StatusPreconditionFailed:
+		canonicalCode = public.ErrorCode("STALE_RESOURCE_REVISION")
+	case status == http.StatusUnprocessableEntity:
+		canonicalCode = public.ErrorCode("SEMANTIC_PRECONDITION_FAILED")
+	case status == http.StatusConflict && code == "IDEMPOTENCY_CONFLICT":
+		canonicalCode = public.ErrorCode("IDEMPOTENCY_CONFLICT")
+	case status == http.StatusConflict:
+		canonicalCode = public.ErrorCode("STATE_CONFLICT")
+	case status == http.StatusTooManyRequests:
+		canonicalCode = public.ErrorCode("RATE_LIMITED")
+	case status == http.StatusServiceUnavailable:
+		canonicalCode = public.ErrorCode("DEPENDENCY_UNAVAILABLE")
+	case status >= 500:
+		canonicalCode = public.ErrorCode("INTERNAL_FAILURE")
 	}
-	writeJSON(w, status, map[string]any{"error": map[string]any{"code": code, "message": message, "request_id": requestID(r)}})
+	failureClass := public.OPERATIONREJECTED
+	retryAdvice := public.DONOTRETRY
+	if status >= 500 {
+		failureClass = public.INFRASTRUCTUREFAILURE
+		retryAdvice = public.RETRYAFTER
+	}
+	if sw, ok := w.(interface{ SetErrorCode(string) }); ok {
+		sw.SetErrorCode(string(canonicalCode))
+	}
+	var envelope public.ErrorEnvelope
+	envelope.Error.Code = canonicalCode
+	envelope.Error.FailureClass = failureClass
+	envelope.Error.Message = message
+	envelope.Error.RequestId = requestID(r)
+	envelope.Error.RetryAdvice = retryAdvice
+	writeJSON(w, status, envelope)
 }

@@ -1,7 +1,7 @@
 STATUS: CANONICAL
-OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, feature-first source organization, cross-runtime naming/test/generated-code placement discipline, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
+OWNS: initial deployable-unit allocation, primary-language/framework assignment, stable framework/library-family ownership, dependency-selection/reuse policy, bootstrap toolchain profile, runtime responsibility split, material implementation-boundary model, feature-first source organization, cross-runtime naming/test/generated-code placement discipline, system-engineering concern disposition, cross-language contract/evolution strategy, canonical-registry materialization/evolution strategy, content-authoring/released-materialization boundary, persistence/consistency engineering baseline, configuration/data-lifecycle/security/observability/performance/deployment engineering invariants, repository/native verification contract, and repository automation/CI constraints
 DEPENDS_ON: ../CONSTITUTION.md, 04-application-flows.md, 05-api.md
-DOES_NOT_OWN: learning/product truth, parser/materializer implementation, canonical-registry serialization details, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, package-manager lock state, or CI platform configuration
+DOES_NOT_OWN: learning/product truth, parser/materializer implementation, canonical-registry or content-authoring-package serialization details, exact dependency patch versions, cloud/provider choice, final database schema, concrete deployment topology, external-provider lifecycle/selection/ingress/egress details, evaluator model vendor, numerical SLO/timeout/retry/scaling thresholds, package-manager lock state, or CI platform configuration
 
 # Implementation Stack
 
@@ -111,16 +111,19 @@ Database access uses parameterized SQL, explicit transaction ownership, bounded 
 
 Go owns authoritative work identity/state and is the permitted product caller. Python owns bounded evaluation/media/content-analysis capabilities behind one internal HTTP machine contract.
 
-The evaluator is an **internal capability**, not public API surface:
+The evaluator is an **internal capability**, not public API surface. For the selected Cloud Run topology, authenticated internal invocation uses **Cloud Run IAM plus Google-signed OIDC identity tokens**:
 
-- Browser and admin UI cannot call it directly;
-- public-internet reachability is not assumed;
-- deployment restricts reachability according to the selected topology;
-- trust is determined by actual reachability, authorized principals, process/container isolation, deployment controls, and attack surface rather than network labels;
-- `localhost`, a private IP, same VPC, same host, same cluster, or an `internal` hostname alone does not prove a trusted caller boundary;
-- if an unauthorized principal/process/workload can reach the evaluator, caller/service authentication and authorization are required;
-- a smaller mechanism is acceptable only when the selected isolation/reachability boundary actually makes it safe;
-- this design does not freeze mTLS, JWT, or service mesh.
+```text
+Go Core Cloud Run service identity
+        ↓ Google-signed OIDC identity token
+restricted/private Evaluator Cloud Run service
+        ↓ IAM authorization
+bounded evaluator capability
+```
+
+Browser and admin UI cannot call the evaluator directly. Network placement alone is insufficient authorization: `localhost`, a private IP, same VPC/host, or an `internal` hostname does not establish caller identity. Use distinct least-privilege service identities where material. Cloud Tasks delivery to protected handlers likewise uses an appropriate service identity/OIDC route.
+
+Do not introduce a shared `INTERNAL_SECRET`, home-made service-JWT or HMAC authentication protocol, mTLS, or service mesh for this boundary. Exact Cloud Run ingress/topology details remain deployment configuration, but they may not weaken the IAM/principal authorization invariant.
 
 Python returns bounded result/signals plus provenance/model/evaluator identity and uncertainty/quality where material. Responses remain non-authoritative until Core validates/interprets them through owning policy. Python cannot directly read/write the product DB.
 
@@ -148,15 +151,15 @@ An accepted capability completion that requires Observation/Assessment/Progressi
 
 Cache is derived. Correctness-sensitive cache identity includes relevant source identity/revision, policy/model/contract identity where material, access scope, and freshness/invalidation state.
 
-Stale cached output cannot overwrite newer authority. Cache never becomes learner/evidence/content/product/progression/capability authority. Redis is not implied.
+Stale cached output cannot overwrite newer authority. Cache never becomes learner/evidence/content/product/progression/capability authority. The selected Upstash Redis route in `07-third-party-services.md` remains disposable/non-authoritative and is accessed through the approved Go Redis family below.
 
 ## Object/media storage boundary
 
-When large artifacts are stored separately, authoritative Core state stores the reference/metadata needed to govern them; object/media storage stores bytes behind that authority. The chosen implementation addresses access scope, integrity, private-by-default behavior, lifecycle/recovery, provenance/rights, and orphan reconciliation as applicable. No provider is selected here.
+When large artifacts are stored separately, authoritative Core state stores the reference/metadata needed to govern them; object/media storage stores bytes behind that authority. The selected Cloudflare R2 route in `07-third-party-services.md` addresses access scope, integrity, private-by-default behavior, lifecycle/recovery, provenance/rights, and orphan reconciliation without becoming product-state authority.
 
 ### Conditional direct browser byte transfer
 
-If a future storage route uses direct browser upload/download:
+For the selected R2 route, prefer narrow signed direct browser upload/download where the product flow permits it:
 
 ```text
 Core authorizes one narrow temporary transfer grant
@@ -284,32 +287,85 @@ Current deletion/tombstone/retention eligibility also participates in live async
 
 Derived stores cannot silently resurrect deleted data into active product use. Restore procedures reconcile restored data against current deletion/tombstone state before normal active use. Historical semantic records needed for integrity may be retained only under an explicit applicable product/security/data policy rather than accidental persistence.
 
+An authoritative restore also creates a reconciliation boundary for external work that may have been dispatched before the restored snapshot. A pre-restore evaluator/provider execution or callback cannot mutate restored authoritative state merely because its resource/logical IDs still match. Implementation provides an equivalent fencing/reconciliation mechanism sufficient to reject, quarantine, or safely reconcile stale pre-restore external work against the restored current authority before mutation, while preserving retained historical/audit/provenance integrity. The exact fence representation is implementation-owned.
+
 Deletion is therefore a reconciliation fence where consequential, not merely eventual background cleanup. This architecture does not invent retention durations or legal obligations.
 
-# Configuration boundary
+Raw learner audio is ephemeral by default under `07-third-party-services.md`. When product purpose explicitly retains audio—for example learner replay/history or evidence/audit needs—the authoritative product state must identify that retained artifact/lifecycle sufficiently for access, export where applicable, deletion, provider cleanup, backup/restore reconciliation, and late-result fencing. Temporary capture/upload/processor copies are not silently promoted into permanent learner history.
 
-Configuration is derived implementation/deployment input, not semantic authority.
+Entitlement loss is not a deletion instruction. Premium capability expiry/downgrade may stop new paid processing while retained learner data/history continues under its normal data-lifecycle policy.
 
-Configuration may select, where already authorized by canonical design:
+# Secrets, runtime policy, and deployment configuration boundary
 
-- endpoint/location;
-- runtime/deployment mode;
-- capacity/concurrency;
-- feature availability/kill switch;
-- credential/secret reference;
-- an already eligible provider/capability route;
-- operational threshold owned by runtime policy.
+Keep three implementation classes distinct:
 
-Configuration must not redefine:
+```text
+A. secrets
+   → Google Secret Manager
 
-- Band semantics;
-- Skill/Knowledge identity;
-- evidence meaning or Assessment authority;
-- content semantic identity;
-- Progression rules;
-- Coverage meaning.
+B. operator-adjustable typed runtime policy
+   → Core-owned authoritative configuration
+   → changeable without redeploy where appropriate
 
-Security-critical missing/invalid configuration fails closed. Secrets and ordinary configuration are separate classes. A consequential configuration/revision that changes evaluator/provider execution or interpretation must be reconstructable where required for audit/provenance. `.env` files or deployment variables are never policy authority.
+C. deployment/bootstrap environment
+   → static deployment/bootstrap configuration
+   → not dynamic product-policy authority
+```
+
+Secrets include provider/API credentials and other values whose disclosure grants sensitive access. Deployment/bootstrap configuration may select endpoints, runtime mode, service identity references, bootstrap secret references, and static wiring. Typed runtime policy may select, where already authorized by canonical design, provider enabled/suspended state, capability/per-user quotas, approved-route role, rate-limit profile, cost admission policy, operating financial target, variable-spend safety ceiling, and bounded capacity policy.
+
+`.env` files and deployment environment variables never become authoritative runtime policy. Admin/BOPS exposes no generic raw environment-variable editor. Routine secret operations expose only minimum safe metadata such as configured/not-configured state, reference/version/fingerprint/status; routine Admin users cannot read/export stored plaintext secrets. Credential creation, rotation, or switching requires the applicable elevated `security-sensitive operations` capability from `04-application-flows.md` and durable audit.
+
+Runtime policy must not redefine Band semantics, Skill/Knowledge identity, evidence meaning or Assessment authority, content semantic identity, Progression rules, Coverage meaning, or provider/model calibration eligibility. Security-critical missing/invalid bootstrap configuration fails closed. Consequential runtime-policy revisions are reconstructable where required for audit/provenance.
+
+## Financial operating policy and concurrency-safe admission
+
+Initial runtime defaults are:
+
+```text
+operating target                 = USD 10 / month
+variable-spend safety ceiling    = USD 20 / month
+```
+
+These are operator-adjustable runtime-policy defaults, not architecture constants and not invoice guarantees. The **operating target** is an optimization/planning objective for forecasts, alerts, quota decisions, and optional-capability policy. The **variable-spend safety ceiling** is an application-level admission boundary for new discretionary cost-bearing external operations.
+
+The safety ceiling cannot guarantee a final provider invoice because fixed infrastructure, metering/reporting delay, already admitted or in-flight work, estimation error, and provider-side billing behavior can all create charges beyond the currently configured discretionary boundary. Provider budget alerts/dashboards are observations and warning controls, not the sole concurrency boundary and not enforcement guarantees.
+
+A new cost-bearing logical operation must not independently read a remaining-budget value and then call a provider when concurrent callers could oversubscribe the same allowance. The implementation preserves an invariant equivalent to:
+
+```text
+logical paid operation
+        ↓
+estimate / reserve bounded spend
+        ↓
+atomic or serializable admission against available discretionary budget
+        ↓ admitted
+execute
+        ↓
+reconcile reservation against observed/estimated actual usage
+        ↓
+release / adjust reservation
+```
+
+Exact tables/counters/algorithms remain implementation choices. A reservation ledger, transactional counter, or equivalent mechanism is sufficient only if it proves the same concurrency invariant. Cost authority belongs to the logical operation: retry, repair, fallback, escalation, replacement execution, or continuation cannot obtain fresh independent allowance that bypasses the original operation's quota/admission policy.
+
+If the next eligible paid attempt can conservatively cost more than the logical operation's currently reserved amount, the **same logical-operation reservation** is atomically/serializably extended before the next paid dispatch/execution. Successful extension permits dispatch; failed extension permits no new paid dispatch and the work remains delayed/pending/unavailable under its owning semantics. An ambiguous potentially billable execution retains enough conservative liability/reservation until reconciled or otherwise safely settled under explicit policy. Timeout, cancellation, or client disconnect does not prove zero provider cost.
+
+A financial-period boundary does not erase unresolved prior-period liability, release ambiguous potentially billable reservations, authorize stale optional backlog, or turn a calendar reset into fresh execution eligibility. Before delayed optional paid work executes in a later period, admission revalidates where material its current usefulness/freshness, product eligibility, provider-route status, quota, financial policy, applicable price basis, and unresolved existing liability. A reservation spanning a period boundary remains one logical financial obligation and is reconciled once under its owning model; it is not duplicated merely because the calendar changed.
+
+Where conservative cost estimation is material, the admission decision is reconstructable enough to identify as applicable the provider, capability/model/route identity, price/rate revision or equivalent policy identity, effective/verified time, budget currency, and estimation basis. Live provider-price scraping is not required and provider dashboards remain observations. If the applicable price basis is materially stale, unavailable, or uncertain, new discretionary paid work uses conservative admission or fails closed according to policy; unknown pricing never means unlimited execution. Refunds, credits, or late adjustments may reconcile later without rewriting original usage/execution history. Repeated/duplicated provider usage is reconciled idempotently, and absence of provider-reported usage does not prove zero cost.
+
+Where material, operator cost state considers settled/observed spend, estimated unsettled spend, reserved in-flight spend, short-window burn rate, and projected month-end spend. If current cost-policy state cannot be established safely, deterministic zero/near-zero-cost core paths plus durable learner history/state, payment reconciliation, and integrity paths remain available where their own dependencies are healthy; **new discretionary paid external work fails closed, remains pending/delayed, or is truthfully unavailable according to product semantics**. Uncertainty never means unlimited paid execution.
+
+Budget policy can represent states equivalent to `NORMAL`, `WARN`, `OVER_TARGET`, `SAFETY`, and `EXHAUSTED`; exact numeric transitions are typed runtime policy, not architecture thresholds. `NORMAL` admits optional work under ordinary policy, `WARN` increases operator visibility, `OVER_TARGET` may tighten expensive optional quotas/prefer already eligible cheaper or batch routes/delay optional work, `SAFETY` denies or suspends selected expensive discretionary work, and `EXHAUSTED` denies new discretionary external spend while keeping critical integrity-preserving paths alive.
+
+Cost pressure never lowers evaluator/evidence/privacy/security quality, silently substitutes an uncalibrated evaluator, fabricates learner weakness/Band/readiness evidence, or discards durable learner state. If a consequential evaluator cannot run within admitted policy, honest states such as `PENDING`, `TEMPORARILY_UNAVAILABLE`, or another already-owned unresolved/degraded state are used instead of lower-quality fake completion.
+
+## Admin / BOPS operational control
+
+Admin/BOPS is an observation and typed-policy surface over Core; it is not direct database/provider mutation authority. Where available and material it can expose current-period API traffic, request/error/latency metrics, provider health and capability usage, AI tokens/calls/audio minutes, settled/estimated-unsettled/reserved spend, operating target, safety ceiling, quota consumption, queue/backlog state, storage growth, month-end projection, cost by capability, and useful unit-economic measures when product data exists. Telemetry/business dashboards remain non-authoritative observations.
+
+A normal `ADMIN` may change routine approved typed operational policy only through its granted `operational policy administration` capability and within configured policy bounds. Raising a safety-critical financial ceiling requires the elevated `security-sensitive operations` capability (normally `OWNER` by default bundle). Consequential policy mutation records actor, timestamp, old revision/value, new revision/value, and reason where required in durable non-rewritable audit appropriate to the operation. Exact BOPS navigation, tables, and dashboard layout are not frozen.
 
 # System-engineering concern disposition
 
@@ -338,7 +394,7 @@ Before applicable `COVERED`/`SUPPORTED_FOR_PRODUCT` promotion, the release candi
 
 ## Conditional / initial non-selection
 
-Reverse proxies/gateways/load balancers, CDN, autoscaling, read replicas/sharding, distributed locks/transactions/Sagas, brokers/PubSub/DLQ, WebSockets, gRPC, circuit breakers beyond bounded retry/degradation, multi-region, chaos engineering, dedicated WAF/DDoS products, Terraform/IaC, Kubernetes/Helm/service discovery, serverless-specific handling, OAuth/JWT-specific mechanics, and external feature-flag services remain trigger-based.
+Reverse proxies/gateways/load balancers beyond the selected hosting/edge route, read replicas/sharding, distributed locks/transactions/Sagas, additional brokers/PubSub/DLQ beyond selected Cloud Tasks, WebSockets, gRPC, circuit breakers beyond bounded retry/degradation, multi-region, chaos engineering, dedicated paid WAF products, Terraform/IaC, Kubernetes/Helm/service discovery, and external feature-flag services remain trigger-based.
 
 Local PostgreSQL launched through Compose is current development/integration-test implementation packaging. It is not production topology authority and does not select containerized production deployment.
 
@@ -383,17 +439,15 @@ Unit: `apps/web/`.
 Approved family ownership:
 
 ```text
-runtime/framework        TypeScript + React + Next.js App Router
-package/lock management pnpm
-public HTTP contract     exact OpenAPI contract
-HTTP type generation     openapi-typescript
-HTTP contract client     openapi-fetch
-server state             TanStack Query
-forms                    React Hook Form
-i18n                     next-intl
-styling                  Tailwind CSS
-UI primitives            shadcn/ui source-distribution model; Radix primitives only as actually consumed
-icons                    lucide-react
+runtime/framework        TypeScript strict + React 19 family + Next.js App Router on an Active LTS/currently supported security release
+package/lock management    pnpm
+public HTTP contract       exact OpenAPI contract
+HTTP client/bindings       Hey API generated from OpenAPI
+server state               TanStack Query where client-side server-state management is needed
+i18n                       next-intl
+styling                    Tailwind CSS v4 family
+UI primitives              shadcn/ui source-distribution model; Radix primitives only as actually consumed
+icons                      Lucide / lucide-react
 format/lint              Prettier + ESLint
 component/unit tests     Vitest + React Testing Library + user-event + jest-dom
 browser E2E              Playwright
@@ -405,21 +459,36 @@ Exact versions remain owned by `package.json` and `pnpm-lock.yaml`.
 State ownership is narrow:
 
 ```text
-server state                         → TanStack Query
-form state                           → React Hook Form
-shareable navigation / filter state → URL / Next.js router where appropriate
-small transient presentation state  → React state
+server state                         → TanStack Query where client-side server-state management is needed
+local UI / simple form state           → React state
+complex form state                     → focused form library only when complexity earns it
+shareable navigation / filter state    → URL / Next.js router where appropriate
 ```
 
 A new global state library requires a demonstrated state-ownership problem that these mechanisms cannot represent cleanly. Do not create a generic project state framework.
 
-Implementation must not independently recreate query/cache lifecycle, mutation invalidation, form state, translation plumbing, accessible primitive behavior, or HTTP DTO truth when the selected stack already owns those concerns. Do not add generic framework wrappers such as `QueryManager`, `FormEngine`, `TranslationEngine`, `UIComponentFactory`, or `HTTPClientFramework` merely to make selected libraries swappable. Thin domain/presentation adapters remain allowed.
+Implementation must not independently recreate query/cache lifecycle, mutation invalidation, translation plumbing, accessible primitive behavior, or HTTP DTO truth when the selected stack already owns those concerns. Form libraries are conditional on demonstrated form complexity; do not preselect one for simple forms. Do not add generic framework wrappers such as `QueryManager`, `FormEngine`, `TranslationEngine`, `UIComponentFactory`, or `HTTPClientFramework` merely to make selected libraries swappable. Thin domain/presentation adapters remain allowed.
 
 MSW is trigger-based rather than always-installed: add it only when isolated component/integration HTTP mocking becomes useful. Redux, Zustand, Axios, a generic custom cache, a generic custom form framework, and a custom i18n framework are not selected while the ownership model above is sufficient.
 
 Owns learner/admin rendering, interactive workspaces, browser capture, embedded-player interaction, transient timers/drafts/optimistic presentation, SSE client behavior, presentation transformations, accessibility/responsiveness, and presentation-side Next.js server rendering/web-edge mechanics.
 
 Does not own learning/evidence/progression policy, deterministic IELTS scoring, content eligibility, evaluator algorithms, durable learner/product truth, authoritative DB access, or independent DTO truth.
+
+## Browser audio/capture implementation boundary
+
+Web implements the product capture semantics from `01-skill-features.md` without inventing ability conclusions. When audio is required:
+
+- microphone permission denial, unavailable devices, capture initialization failure, device removal/change, recorder/browser interruption, clipping/inaudibility/noise signals, truncation, and upload/network failure remain distinguishable operational conditions where material;
+- the UI must not mark a recording successfully submitted/evidence-usable before the required bytes/metadata are durably accepted by Core;
+- local replay/re-record is presentation behavior permitted by the activity; it does not mutate a submitted Attempt;
+- audio capture and STT are separate capabilities. A successfully captured recording remains the primary captured learner signal for acoustic use even when transcription fails; a transcript never silently replaces missing/unusable audio for an acoustic claim;
+- material disagreement between transcript and audio is preserved as evaluator/input uncertainty rather than silently trusting whichever result is easier to process;
+- browser/tab/network interruption preserves enough local/product state to retry safely where possible and never fabricates uninterrupted timing/capture;
+- accessibility-compatible controls and supported alternate capture/input routes preserve keyboard/screen-reader/focus usability and surface any condition material to readiness inference; they do not redefine IELTS/Band truth;
+- capture feasibility is checked before evidence-critical activity admission when practical, while an unexpected mid-attempt failure still produces an honest unusable/partial outcome rather than learner failure.
+
+Exact browser APIs, codec/container choices, audio thresholds, retry timings, and device-quality cutoffs remain implementation/empirical decisions.
 
 # Go — Core API + deterministic orchestration
 
@@ -429,11 +498,16 @@ Approved family ownership:
 
 ```text
 runtime                  Go
-HTTP                     net/http + chi/v5
+HTTP                     Go standard-library net/http + chi/v5
 PostgreSQL access        pgx/v5
 typed SQL generation     sqlc
-migrations               tern
+migrations               goose with SQL-first migrations
 public OpenAPI server    oapi-codegen
+Redis client             go-redis/v9
+rate-limit helper        redis_rate or equivalent narrow maintained helper only when it removes justified complexity
+R2 object client         AWS SDK for Go v2 S3 client against Cloudflare R2
+async dispatch           official Google Cloud Tasks SDK
+payments                 official payOS Go SDK where suitable for the selected payOS route
 logging                  log/slog
 security / IDs           Go standard-library crypto primitives where sufficient
 tests                    testing + httptest + real PostgreSQL integration tests
@@ -465,7 +539,7 @@ Owns learner/admin `/v1`, authoritative product DB access, durable learner/targe
 - application/schema compatibility supports the selected rollout window rather than assuming lock-step deployment;
 - migration/deploy recovery preserves committed accepted learner work.
 
-Architecture does not require a migration product as semantic truth. The current bootstrap implementation uses `tern` as the selected SQL-first PostgreSQL migration tool. Exact version remains implementation/tooling-owned.
+Architecture does not make a migration product semantic truth. `goose` is the selected SQL-first PostgreSQL migration family; migration files remain explicit ordered SQL and exact versions remain implementation/tooling-owned.
 
 # Python — Evaluator/media analysis
 
@@ -477,19 +551,20 @@ Approved future family ownership:
 
 ```text
 runtime/package          Python + uv
-lockfile                 uv.lock once materialized
-HTTP API                 FastAPI + Uvicorn
-models/config            Pydantic v2 + pydantic-settings
-outbound HTTP            httpx
-quality                  Ruff + Pyright
-tests                    pytest + pytest-asyncio
-machine-contract models  generated/validated Pydantic models from the exact internal contract
-intended model generator datamodel-code-generator, subject to implementation-time compatibility/security verification
+lockfile                   uv.lock once materialized
+HTTP API                   FastAPI + Uvicorn
+models                     Pydantic v2
+bootstrap config           pydantic-settings where useful; never dynamic product-policy authority
+outbound HTTP              httpx
+quality                    Ruff + Pyright
+tests                      pytest + pytest-asyncio
+machine-contract models    OpenAPI-derived Pydantic v2 models
+model generator            datamodel-code-generator
 ```
 
 `respx` is conditional on real external HTTP adapter tests. `tenacity` is conditional on a real external retry policy. SQLAlchemy, Alembic, Celery, Redis, LangChain, and LlamaIndex are not selected by this profile.
 
-Owns bounded Writing/Speaking observations, eligible speech/transcription/acoustic extraction, bounded text/media analysis, bounded generated feedback/content candidates, optional model-assisted validation signals, and evaluator/model/generator/validator provenance/uncertainty.
+Keep the runtime intentionally thin: internal HTTP adapter → bounded capability/evaluation service → provider adapters/evaluator functions. It owns bounded Writing/Speaking observations, eligible speech/transcription/acoustic extraction, bounded text/media analysis, bounded generated feedback/content candidates, optional model-assisted validation signals, and evaluator/model/generator/validator provenance/uncertainty.
 
 Does not own public API, authoritative DB access, learner/progression/content operational state, content activation/assignment, certification, evidence sufficiency, Band advancement, or DailyPlan selection. Python must not access the authoritative product PostgreSQL store.
 
@@ -518,7 +593,29 @@ SSE is selected for server→Web update hints under the public HTTP contract. We
 - internal Go/Python rollout cannot assume simultaneous replacement unless deployment explicitly guarantees it;
 - DB migration supports the application/schema skew window selected by deployment.
 
-The bounded bootstrap public HTTP contract is already materialized under `../contracts/http/`. Any future boundary that is not yet materialized receives its exact contract file/version only when that boundary is implemented.
+Contract tooling families are `oapi-codegen`, Hey API, `datamodel-code-generator`, and `oasdiff` for OpenAPI compatibility/breaking-change verification. Runtime DTO/schema families are derived consumers and never become a second machine-contract authority.
+
+The intended next materialization direction is:
+
+```text
+canonical design semantics
+        ↓
+exact machine contract
+        ↓
+generated bindings
+        ↓
+implementation
+
+public OpenAPI
+  → Go public server bindings/interfaces via oapi-codegen
+  → TypeScript client/types/integration bindings via Hey API
+
+internal evaluator OpenAPI
+  → Go internal evaluator client/bindings via oapi-codegen
+  → Python Pydantic v2 models via datamodel-code-generator
+```
+
+Exact generator flags remain implementation verification. The exact active machine-contract authorities are now `contracts/http/public.openapi.yaml` and `contracts/http/evaluator.openapi.yaml`. The former bounded bootstrap JSON authority is retired. Existing Go/TypeScript artifacts generated from that bootstrap may remain temporarily as frozen implementation consumers until the explicitly authorized generated-binding migration; contract validation does not regenerate them, and they do not constitute machine-contract authority. The next consumer-migration boundary is the selected `oapi-codegen`/Hey API public path plus `oapi-codegen`/`datamodel-code-generator` evaluator path above.
 
 # Canonical registry materialization
 
@@ -536,7 +633,7 @@ Invariants:
 
 1. each materialized registry knows its expected canonical owner and owner-specific canonical structure/source region; the Markdown owner remains semantic authority;
 2. materialization extracts declared canonical objects, not arbitrary ID-looking tokens discovered by repository-wide grep/regex;
-3. supporting prose/references, examples, `spec/DECISIONS.md`, research, archive, and other non-owner material do not become registry entries merely because they contain a matching-looking identifier;
+3. supporting prose/references, examples, `spec/DECISIONS.md`, research, historical material, and other non-owner material do not become registry entries merely because they contain a matching-looking identifier;
 4. duplicate, ambiguous, structurally unparseable, or unexpectedly sourced canonical definitions fail verification or remain unresolved rather than being guessed;
 5. derived registry entries preserve source-owner identity and enough source fingerprint/repository revision provenance for drift/reconstruction;
 6. a derived tooling source map/config may identify expected owner/source regions but is tooling configuration, not another semantic SSOT and cannot invent objects absent from the owner;
@@ -546,6 +643,37 @@ Invariants:
 10. historical references remain reconstructable across later canonical evolution.
 
 Exact parser, source-map representation, serialization, and codegen choices remain implementation decisions except where an approved runtime family above names a generator family for a cross-language contract.
+
+# Content authoring and released-materialization boundary
+
+Content authoring may use repository-tracked source/packages plus deterministic tooling, including the parallel shard model owned by `04-application-flows.md`. The authority direction is:
+
+```text
+canonical spec/design IDs + content schema/policy
+        ↓
+authored / generated candidate source packages
+        ↓
+validation + deterministic integration
+        ↓
+released materialized ContentRevision/product artifacts
+        ↓
+Core-owned runtime database / governed object storage projection
+```
+
+Rules:
+
+1. when parallel/bulk authoring is materialized, one repository-owned machine-checkable candidate-package/shard schema defines the exact authoring package shape and allowed identity fields from current canonical registries/policies; it is authoring/tooling contract, not a new learning SSOT;
+2. repository-tracked authoring packages may be source inputs/provenance, but they do not redefine Skill/Knowledge/Band/Assessment truth;
+3. the runtime database is authoritative for current operational/runtime state after release, not the canonical authoring source from which content semantics are casually edited backward;
+4. released runtime rows/artifacts resolve exact ContentRevision identity/provenance and are reproducibly traceable to their accepted source/materialization path where material;
+5. normal AI workers consume deterministic shard/package contracts and emit candidates; they do not require cross-worker coordination or direct runtime-DB mutation;
+6. deterministic integration fails on overlapping shard identity, duplicate candidate ID, unresolved canonical reference, package/schema error, or non-deterministic merge ambiguity;
+7. text/metadata/source packages may live in Git when appropriate for review/versioning. Large generated audio/media/binary assets may remain outside Git behind governed object/media storage with integrity identity and lifecycle/provenance references;
+8. generated difficulty/Band/evidence labels remain non-authoritative candidate data until owning policy/calibration admits the consequence;
+9. materialization tooling does not grant release authority: normal ValidationDecision/release/authorization rules still apply after structural integration;
+10. no queue/registry/orchestrator/agent platform is introduced merely to parallelize independent deterministic shards. Existing repository tooling/processes are sufficient until measured operational need proves otherwise.
+
+First-party AI workers are service identities under the RBAC/capability model in `04-application-flows.md`; being local, internal, or repository-adjacent does not grant filesystem, secret, provider, protected-data, release, or administrative privilege beyond explicit capability and execution scope.
 
 # Distinct state/version identities
 
@@ -579,7 +707,7 @@ old Go + new Python
 
 Therefore public/internal compatibility is verified for the actually allowed skew. A breaking boundary change cannot assume atomic simultaneous deployment unless that guarantee is explicit in the deployment contract. Generated bindings do not eliminate runtime skew.
 
-Database migrations likewise support the application/schema compatibility window required by the rollout. This architecture does not select blue-green, canary, rolling, Kubernetes, or another rollout technology.
+Database migrations likewise support the application/schema compatibility window required by the rollout. Capacity verification for rollout/recovery also accounts for applicable overlapping downstream consumers, including old and new revisions, worker/evaluator instances, migrations/admin operations, and recovery/maintenance headroom. Steady-state configuration alone is insufficient when overlap can temporarily create greater DB/queue/provider pressure. Exact formulas and rollout technology remain deployment/verification policy; this architecture does not select blue-green, canary, rolling, Kubernetes, or another rollout technology.
 
 # Async/process correctness
 
@@ -607,16 +735,18 @@ Race-sensitive operations use transaction/conditional-write/equivalent serializa
 - secrets never committed/logged or exposed in browser-readable configuration;
 - production sensitive cross-network transport protected according to its trust boundary;
 - applicable data-at-rest protection satisfied by selected storage/deployment;
-- OAuth/JWT-specific behavior only if selected;
+- public Bearer/JWT behavior follows the selected Clerk transport in `05-api.md`; custom auth/session protocols are not introduced;
 - public-edge abuse/resilience addressed without requiring a dedicated WAF product.
 
-Before public auth contract materialization, make the credential/session transport decision required by `05-api.md`.
+Public contract materialization must encode the selected Clerk bearer transport from `05-api.md` rather than inventing another credential/session mechanism.
 
 # Health, observability, and incidents
 
-Each runnable unit exposes deployment-appropriate process/readiness health without claiming downstream semantic correctness it did not check.
+Each runnable unit exposes deployment-appropriate process/readiness health without claiming downstream semantic correctness it did not check. Selected implementation families are Go `slog` for structured application logging, OpenTelemetry for traces/metrics, and Google Cloud Logging / Monitoring as the initial operational backend.
 
-Privacy-safe telemetry may include request/work/execution correlation, execution-claim/dispatch state, runtime/unit, operation, duration, result/failure/reconciliation class, downstream-recovery state, non-sensitive error code, and consequential software/contract/config/provider provenance. Stale/superseded/deletion-fenced async completions are observable where needed to reconstruct why they were rejected. Metrics cover relevant latency, failures, DB pressure, backlog, retries, provider use/cost, and capacity.
+Privacy-safe telemetry may include request/work/execution correlation, execution-claim/dispatch state, runtime/unit, operation, duration, result/failure/reconciliation class, downstream-recovery state, non-sensitive error code, and consequential software/contract/config/provider provenance. Do not log by default auth tokens, API/provider secrets, raw learner audio, unnecessary full essays/responses, provider credentials, or hidden model reasoning.
+
+A consequential operation should be traceable across material boundaries using privacy-safe correlation/provenance, for example browser → Go request → DB transaction → durable async work → Cloud Tasks → Python evaluator → external provider → Core reconciliation → learner resource/SSE update. Metrics cover relevant latency, failures, DB pressure, backlog, retries, provider use/cost, and capacity. Telemetry remains operational evidence, not product-state authority.
 
 Before product support, incident handling can detect, contain/degrade safely, preserve accepted work, recover, verify, and record material cause/follow-up. Operational history is not canonical learning truth.
 
@@ -625,6 +755,7 @@ Before product support, incident handling can detect, contain/degrade safely, pr
 Before applicable support promotion:
 
 - backup/restore is verified for authoritative/retained consequential data;
+- where provider-account/control-plane loss or suspension is inside the supported recovery envelope, credible PostgreSQL restore/exit evidence does not depend exclusively on continued access to that failed/suspended provider control plane; the smallest sufficient PostgreSQL-native export/backup/restore mechanism may satisfy this, while exact storage target/schedule remain operations policy;
 - migration/deploy failure has rollback or forward-recovery procedure;
 - network/provider ambiguity stays pending/unresolved until safely reconciled;
 - execution claiming prevents accidental duplicate dispatch when exclusive execution is required and claimant failure remains recoverable without unsafe blind redrive;
@@ -633,10 +764,39 @@ Before applicable support promotion:
 - measurable latency/throughput/backlog/cost objectives exist for the intended release without architecture inventing numeric thresholds;
 - builds are reproducible from pinned/locked dependencies;
 - running software/contract/config identity is observable where consequential;
-- deployment keeps environment config and secrets separated;
+- deployment keeps bootstrap environment and Secret Manager references separated from typed runtime policy;
 - rollout/recovery preserves the compatibility windows above.
 
-Production container packaging, Terraform/IaC, load balancing, autoscaling, multi-region, and Kubernetes remain conditional on actual deployment need. Local Compose use for repository verification does not select those production technologies.
+Scale changes capacity/policy, not semantic ownership. Web, Go, and Python are stateless where their owned semantics permit and may horizontally autoscale on Cloud Run, but each deployable has bounded instance capacity and request/work concurrency sized to measured downstream capacity. Autoscaling never means unbounded DB, queue, AI, or provider concurrency; exact max-instance/concurrency numbers remain deployment/load-test policy.
+
+Under capacity exhaustion, the system sacrifices latency and optional capability before correctness, evidence integrity, privacy, security, or durable learner/product state. The conceptual degradation priority is: shed/defer decorative or nonessential work; delay optional generation/transformation; throttle optional realtime; throttle expensive productive evaluation; queue eligible async work only within bounded backlog policy; deny new optional paid work when admission cannot be established; and preserve healthy critical paths such as authentication/authorization, payment reconciliation, learner history, authoritative learner/product state, accepted-work integrity, and truthful reads where their required dependencies remain healthy. This is priority under pressure, not a claim that a critical path survives a failed dependency it requires.
+
+Upstream capacity is bounded by narrower downstream capacity rather than allowed to overwhelm it. Relational invariants are equivalent to:
+
+```text
+Web admitted request load    <= sustainable Core capacity
+Core admitted concurrency    <= safe PostgreSQL + queue/dispatch + provider downstream capacity
+Evaluator execution          <= provider quota/concurrency + financial admission + evaluator compute capacity
+Cloud Tasks dispatch         <= sustainable evaluator/provider execution rate
+```
+
+These relations are canonical; instance counts, pool sizes, concurrency, RPS, quotas, and dispatch numbers remain deployment/load-test/runtime policy.
+
+Scale decisions follow measured evidence: **observe → identify the measured bottleneck → remove obvious query/code/contention inefficiency → tune bounded concurrency/pooling/admission → increase vertical capacity where appropriate → increase horizontal capacity inside downstream bounds → change topology only when measured evidence shows existing capacity knobs are insufficient**. Connection-pool growth is not a default performance strategy.
+
+For PostgreSQL specifically: observe actual query/lock/connection/compute pressure → improve query/index/schema behavior → increase compute when justified → adjust the connection budget only when justified → add read replicas only for proven stale-tolerant read pressure → partition/shard only when materially demonstrated later.
+
+Operators treat likely bottleneck classes as monitoring hypotheses, not guaranteed first-failure points. Economic classes include realtime AI/audio, productive evaluation volume, database active duty cycle, Redis command density, and later ordinary HTTP volume. Technical classes include PostgreSQL connection/compute pressure, provider/AI concurrency, async backlog age, media/upload bursts, and runtime CPU/memory/request capacity. Observable triggers, not speculative numeric bottlenecks, drive scaling.
+
+PostgreSQL remains authoritative durable product truth with bounded pooled application access and a bounded global connection capacity across autoscaled compute. Pool size is not a generic performance knob: observe/query/index/schema tuning precedes or accompanies justified vertical compute increase. Prefer vertical scaling before partitioning/sharding. Read replicas are not selected initially; if later justified, only explicitly stale-tolerant reads may use them where replica lag cannot violate product semantics.
+
+Redis remains disposable/non-authoritative. Redis loss or staleness cannot lose/redefine learner progress, Attempts, payment, entitlement, evidence, or history.
+
+Cloud Tasks preserves the already-owned durable-work/claim/fencing/idempotency/ambiguous-outcome model. Dispatch rate/concurrency and external AI/provider concurrency are bounded independently; backlog is observable; optional expensive work may be throttled or suspended before it creates unbounded provider spend. No physical four-queue topology is frozen—separate queues/classes require demonstrated independent admission/prioritization need.
+
+R2/media keeps the existing direct-transfer boundary: Core temporary authorization → narrow signed browser byte transfer → completion/integrity reconciliation → normal policy before usability. Existing lifecycle/orphan cleanup remains required; arbitrary upload-size/expiry constants are deployment/runtime policy.
+
+Terraform/IaC, multi-region, Kubernetes, service mesh, read replicas, partitioning/sharding, and additional broker topology remain trigger-based. Local Compose use for repository verification does not select those production technologies.
 
 # Feature flags
 
@@ -753,22 +913,11 @@ Repository automation should use read-only repository permissions for verificati
 
 A replacement requires architecture review when it materially changes deployable boundaries, API/transport ownership, rendering/runtime model, persistence ownership/consistency, cross-language contracts, provider/trust boundary, operational complexity, or an approved concern→library/tool family. Patch/minor maintenance inside the same responsibility boundary is implementation work.
 
-# Initial non-goals
+# Deliberate initial non-selections
 
-Do not introduce at bootstrap without demonstrated trigger:
+The selected narrow stack is not permission to add overlapping infrastructure. Without a demonstrated trigger, do not introduce Prisma, GORM, Ent, GraphQL, tRPC, gRPC, Redux, Zustand, Kafka, RabbitMQ, Kubernetes, service mesh, custom authentication/session machinery, a custom component system, LangChain, LlamaIndex, CrewAI, a vector database, Elasticsearch, a generic AI routing/orchestration framework, a custom job framework, or a custom object-storage protocol.
 
-```text
-need async        → Kafka/broker
-need cache        → Redis
-need similarity   → vector database
-need scaling      → Kubernetes
-need reliability  → multi-region
-need auth         → mandatory JWT/OAuth
-need events       → event-source everything
-need architecture → microservice-per-feature
-```
-
-Also do not add GraphQL beside REST, a Next.js product backend/BFF, duplicate Go/Python domain rules, direct Python/Next.js authoritative DB access, or frontend-owned Band/mastery/content eligibility without an explicit architecture change.
+Likewise do not add a Next.js product backend/BFF, duplicate Go/Python domain rules, direct Python/Next.js authoritative DB access, event-source-everything, microservice-per-feature, or frontend-owned Band/mastery/content eligibility. These choices are not forbidden forever; they require demonstrated need and normal architecture review rather than speculative bootstrap complexity.
 
 # Feature-first source organization and naming discipline
 

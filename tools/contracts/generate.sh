@@ -1,12 +1,19 @@
-#!/usr/bin/env bash
-set -euo pipefail
-# This local command is the only generation procedure; CI may invoke it but does not own generated truth.
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+PUBLIC="$ROOT/contracts/http/public.openapi.yaml"
+EVALUATOR="$ROOT/contracts/http/evaluator.openapi.yaml"
+PUBLIC_GO_DIR="$ROOT/services/core-api/internal/generated/openapi/public"
+EVALUATOR_GO_DIR="$ROOT/services/core-api/internal/generated/openapi/evaluator"
+PUBLIC_TS_DIR="$ROOT/apps/web/src/generated/public"
+
+rm -rf "$PUBLIC_GO_DIR" "$EVALUATOR_GO_DIR" "$PUBLIC_TS_DIR"
+mkdir -p "$PUBLIC_GO_DIR" "$EVALUATOR_GO_DIR"
+
 cd "$ROOT/services/core-api"
-go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.8.0 \
-  -generate types,chi-server,spec \
-  -package generated \
-  -o internal/httpapi/generated/public_v1.gen.go \
-  ../../contracts/http/public-v1.json
+go tool oapi-codegen -config ../../tools/contracts/oapi-public.yaml "$PUBLIC"
+go tool oapi-codegen -config ../../tools/contracts/oapi-evaluator.yaml "$EVALUATOR"
+
 cd "$ROOT/apps/web"
-pnpm contract:generate
+corepack pnpm exec openapi-ts   --input "$PUBLIC"   --output "$PUBLIC_TS_DIR"   --client @hey-api/client-fetch   --no-log-file   --silent

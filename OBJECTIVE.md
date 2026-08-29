@@ -4,6 +4,20 @@
 
 Build a complete, evidence-based IELTS learning-system specification and product/runtime design that an implementation team or future reasoning session can consume without re-deciding major learning semantics, learner-route semantics, product-coverage semantics, external-provider boundaries, or first-order runtime responsibilities.
 
+The primary learner is a self-directed IELTS candidate who has a real target but otherwise faces fragmented preparation: vocabulary/SRS, pronunciation, listening/shadowing, generic AI, media, and exam-practice tools may each perform useful local work while leaving the learner to reconcile diagnosis, priorities, dosage, evidence, and next actions manually. The product owns that coordination problem end to end:
+
+```text
+target
+→ know current evidence
+→ know exact gaps / unknowns
+→ know what to learn next
+→ perform the right learning / practice modality
+→ collect truthful evidence
+→ re-plan automatically
+```
+
+Individual tools or modalities remain replaceable capabilities inside this loop. The durable product differentiation is the governed target-to-evidence-to-next-action system, not possession of a particular AI model, media source, SRS algorithm, or exercise format.
+
 The repository must define, with implementation-grade precision:
 
 - what the learner must know and demonstrate;
@@ -12,6 +26,8 @@ The repository must define, with implementation-grade precision:
 - how diagnosis, planning, learning, practice, review, re-evidence, readiness, and mocks form one closed route toward the target;
 - how learner agency changes eligible delivery without weakening Required prerequisites or target conditions;
 - which learner-facing capabilities and practice experiences exist;
+- how the ordinary learner route can teach, practise, explain, review, and adapt without mandatory teacher dependency while keeping AI inside bounded non-authoritative roles;
+- how essentially every repeatable digital workflow materially useful to standard IELTS preparation is represented coherently without treating feature count as completeness;
 - how every supported official task/question family reaches content, interaction, evidence, and progression paths;
 - how attempts, observations, evidence, mastery/readiness, gaps, and next actions remain distinct;
 - how product coverage/support is declared without unsupported completeness percentages;
@@ -91,6 +107,8 @@ The active design must provide concrete, understandable learner surfaces for:
 - Today/plan, skills, practice, review, media, progress, and mock flows;
 - Listening, Reading, Writing, and Speaking interactions;
 - feedback, remediation, scaffold fading, transfer, re-evidence, fluency, review, and exam preparation;
+- vocabulary/grammar/phonology acquisition, learner-saved study material, spaced retrieval, and later application in skill work;
+- AI-supported ordinary tutoring and truthful Speaking/media interaction without making AI a learning/evidence authority;
 - section and full mock flows;
 - focused preparation for One Skill Retake without inventing a fifth Skill ontology.
 

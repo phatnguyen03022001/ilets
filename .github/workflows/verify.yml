@@ -1,18 +1,62 @@
 name: verify
 
 on:
-  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - dev
+    paths:
+      - '.github/verification-boundary/candidate'
 
 permissions:
   contents: read
 
+concurrency:
+  group: verify-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout boundary
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Bind candidate to boundary parent
+        id: candidate
+        shell: bash
+        env:
+          BOUNDARY_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          sentinel=.github/verification-boundary/candidate
+          test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
+          candidate="$(cat "$sentinel")"
+          if [[ ! "$candidate" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "invalid candidate SHA" >&2
+            exit 1
+          fi
+          printf '%s\n' "$candidate" | cmp -s - "$sentinel"
+          git cat-file -e "${candidate}^{commit}"
+          parent="$(git rev-parse "${BOUNDARY_SHA}^")"
+          test "$candidate" = "$parent"
+          echo "sha=$candidate" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout declared candidate
+        shell: bash
+        env:
+          CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
+        run: git checkout --detach "$CANDIDATE_SHA"
+
+      - name: Assert exact candidate HEAD
+        shell: bash
+        env:
+          CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
+        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+
       - uses: actions/setup-go@v5
         with:
           go-version: '1.27.0'
@@ -23,5 +67,5 @@ jobs:
         with:
           python-version: '3.14'
       - run: corepack enable && corepack prepare pnpm@11.21.0 --activate
-      - run: chmod +x verify tools/contracts/generate.sh tools/db/generate.sh tools/db/migrate.sh
+      - run: chmod +x verify tools/contracts/validate.sh tools/contracts/generate.sh tools/db/generate.sh tools/db/migrate.sh
       - run: ./verify

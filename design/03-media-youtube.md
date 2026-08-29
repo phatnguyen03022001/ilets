@@ -38,6 +38,24 @@ Eligible media may instantiate existing practice semantics for:
 
 Do not create a parallel “YouTube practice” taxonomy. Source type and learning action remain separate dimensions.
 
+# Learner experience
+
+The Media surface keeps source playback and learning action in one coherent flow:
+
+```text
+eligible embedded/source playback
+→ choose or receive a target-linked task
+→ work on a bounded segment
+→ attempt / record / respond
+→ feedback or self-review
+→ optional save of permitted or learner-entered vocabulary
+→ later Review / skill transfer
+```
+
+With authorized transcript material, the product may support transcript-backed dictation, comprehension, vocabulary/collocation work, and targeted segment navigation. Without an authorized transcript, playback may still support shadowing, learner notes, retell/discussion, browser-mic recording, and learner-entered vocabulary, but transcript-dependent keys/scoring remain unavailable.
+
+Speaking capture/acoustic claim limits follow `01-skill-features.md`; media playback does not create a pronunciation-assessment shortcut.
+
 # YouTube source flow
 
 ```text
@@ -162,6 +180,10 @@ provenance
 ```
 
 Generated proposals do not become valid lessons until canonical targets, practice mode, source rights, and transcript eligibility validate.
+
+When a MediaLesson is persisted as reusable product content, its source/segment/prompt configuration enters the normal ContentRevision/validation/assignment model from `../spec/10-CONTENT-MODEL.md`. Media rights/transcript state remains an additional current eligibility constraint; it does not create a separate media-only content lifecycle or exempt the lesson from normal exposure/evidence rules.
+
+Learner-provided transcript/text or vocabulary may support the learner's own permitted learning/review path, but it cannot be counted as official-family/readiness supply unless every applicable provenance, construct, scoring, independence, and coverage condition is independently satisfied.
 
 # Segmentation defaults
 

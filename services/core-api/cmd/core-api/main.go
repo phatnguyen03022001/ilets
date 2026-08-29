@@ -24,9 +24,13 @@ func main() {
 	}
 	defer pool.Close()
 	cfg := httpapi.Config{
-		Environment:  getenv("ILETS_ENV", "development"),
-		WebOrigins:   splitCSV(getenv("WEB_ORIGINS", "http://127.0.0.1:3000,http://localhost:3000")),
-		BuildVersion: getenv("BUILD_VERSION", "dev"),
+		Environment:            getenv("ILETS_ENV", "development"),
+		WebOrigins:             splitCSV(getenv("WEB_ORIGINS", "http://127.0.0.1:3000,http://localhost:3000")),
+		BuildVersion:           getenv("BUILD_VERSION", "dev"),
+		ClerkIssuer:            getenv("CLERK_ISSUER", ""),
+		ClerkAudience:          getenv("CLERK_AUDIENCE", ""),
+		ClerkAuthorizedParties: splitCSV(getenv("CLERK_AUTHORIZED_PARTIES", "")),
+		ClerkSecretKey:         getenv("CLERK_SECRET_KEY", ""),
 	}
 	handler := httpapi.New(pool, cfg, slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 	server := &http.Server{Addr: getenv("CORE_ADDR", "127.0.0.1:8080"), Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}

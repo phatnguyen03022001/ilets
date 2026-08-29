@@ -89,6 +89,8 @@ The following are intentionally not canonical object fields unless future eviden
 
 `K-VOC-012` represents the topic-set system. Individual topic lexicons are concrete content under `10-CONTENT-MODEL.md`, not new canonical domains.
 
+Learner-saved words, phrases, collocations, examples, and personal review cards are also concrete content/review instances. They may reference one or more canonical Knowledge Objects, but saving an item never creates a new `K-*` identity.
+
 ## Phonology graph
 
 | ID | Object | Canonical definition | Requires |

@@ -1,0 +1,2346 @@
+openapi: 3.0.3
+info:
+  title: IELTS Learning System Public API
+  version: 1.0.0
+  description: >-
+    Canonical learner/client HTTP machine contract for the Go Core public boundary.
+    The contract transports canonical product semantics but does not redefine Band,
+    evidence sufficiency, Progression, planner ranking, content quality, or product
+    coverage policy. Durable learner/product truth remains in Core.
+security:
+  - ClerkBearer: []
+paths:
+  /healthz:
+    get:
+      operationId: getCoreHealth
+      summary: Read Core deployment health
+      description: >-
+        Deployment-oriented process/readiness health only. A ready response does not
+        assert learner-state, evaluator, content-supply, or product-support correctness.
+      security: []
+      responses:
+        '200':
+          description: Core is ready to serve its bounded public HTTP role.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/me:
+    get:
+      operationId: getMe
+      summary: Read the authenticated Core actor projection
+      responses:
+        '200':
+          description: Learner-safe identity projection for the authenticated actor.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/target-profile:
+    get:
+      operationId: getTargetProfile
+      summary: Read the current TargetProfile
+      description: >-
+        Missing target input is represented as a normal unresolved/not-configured domain
+        result. It is not learner evidence insufficiency and is not a CoverageGap.
+      responses:
+        '200':
+          description: Current TargetProfile state, including an ordinary not-configured result.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetProfileReadResult'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+    put:
+      operationId: putTargetProfile
+      summary: Replace the current TargetProfile
+      description: >-
+        PUT is a full replacement of supplied TargetProfile constraints. Omitted optional
+        request fields mean that constraint is not supplied in the resulting profile.
+        The resource-revision precondition is decisive with the mutation. A value of 0
+        means the caller expects no TargetProfile to exist; a positive value must equal
+        the current resource revision. Partial targets are valid domain state, while
+        target-relative planning/readiness/support remains unresolved until canonical
+        resolution requirements are met.
+      parameters:
+        - $ref: '#/components/parameters/ExpectedResourceRevision'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutTargetProfileRequest'
+      responses:
+        '200':
+          description: Existing TargetProfile replaced.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetProfile'
+        '201':
+          description: TargetProfile created while the expected revision was 0.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetProfile'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '412':
+          $ref: '#/components/responses/StaleResourceRevision'
+        '422':
+          $ref: '#/components/responses/SemanticPreconditionFailed'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/daily-plan:
+    get:
+      operationId: getDailyPlan
+      summary: Read the current DailyPlan snapshot
+      description: >-
+        The DailyPlan is a snapshot and never an assignment grant. Starting a referenced
+        activity requires current hard-eligibility and assignment checks. Unresolved
+        target conditions and product CoverageGaps remain separate from learner gaps.
+      responses:
+        '200':
+          description: Current plan snapshot, including valid unresolved/coverage-blocked states.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyPlan'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/practice-modes:
+    get:
+      operationId: listPracticeModes
+      summary: List the stable learner-facing practice-mode catalog
+      description: >-
+        Returns catalog identity/packaging only. Catalog presence does not assert that a
+        mode is currently assignable for this learner, target, product-support state, or
+        evidence consequence.
+      responses:
+        '200':
+          description: Small stable canonical practice-mode catalog projection.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PracticeModeList'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/practice-activities:
+    post:
+      operationId: createPracticeActivity
+      summary: Resolve and assign one current eligible PracticeActivity
+      description: >-
+        Current hard eligibility is resolved at assignment time. A DailyPlan reference
+        cannot force stale assignment. Accepted/replayed assignment is keyed by the same
+        Idempotency-Key and actor/operation scope; the same key with an incompatible
+        request fails closed. Valid learner-specific unavailability is a domain result,
+        not an infrastructure failure. Learner-facing activity material never includes
+        hidden answer/model/rubric/evaluator material before reveal is permitted.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePracticeActivityRequest'
+      responses:
+        '200':
+          description: >-
+            Idempotent replay of the authoritative logical result, or a valid domain
+            result explaining why no current assignment is available.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PracticeActivityCreationResult'
+        '201':
+          description: A new exact eligible ContentRevision was authoritatively assigned.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PracticeActivityCreationResult'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '422':
+          $ref: '#/components/responses/SemanticPreconditionFailed'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+        '504':
+          $ref: '#/components/responses/AmbiguousOutcome'
+
+  /v1/practice-activities/{practice_activity_id}:
+    parameters:
+      - $ref: '#/components/parameters/PracticeActivityId'
+    get:
+      operationId: getPracticeActivity
+      summary: Read one learner-owned PracticeActivity projection
+      responses:
+        '200':
+          description: >-
+            Exact assigned revision and learner-safe material. Hidden answer/model/rubric
+            material remains absent unless the owning reveal policy permits it.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PracticeActivity'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/attempts:
+    post:
+      operationId: createAttempt
+      summary: Create a draft Attempt against an assigned PracticeActivity
+      description: >-
+        The Attempt binds the exact assigned ContentRevision. Creation is idempotent
+        because duplicate retry would duplicate learner history.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttemptRequest'
+      responses:
+        '200':
+          description: Idempotent replay of the same authoritative draft Attempt.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attempt'
+        '201':
+          description: New draft Attempt created.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attempt'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '422':
+          $ref: '#/components/responses/SemanticPreconditionFailed'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/attempts/{attempt_id}:
+    parameters:
+      - $ref: '#/components/parameters/AttemptId'
+    get:
+      operationId: getAttempt
+      summary: Read one learner-owned Attempt
+      responses:
+        '200':
+          description: Current authoritative Attempt state.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attempt'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+    patch:
+      operationId: patchAttempt
+      summary: Replace mutable draft response state on an Attempt
+      description: >-
+        Only a draft Attempt may be mutated. The expected resource revision is compared
+        atomically with the guarded mutation. Submitted/evaluating/evaluated/invalid
+        Attempts are immutable for this Attempt identity; retry/redraft creates another
+        related Attempt under owning product semantics rather than rewriting history.
+      parameters:
+        - $ref: '#/components/parameters/ExpectedResourceRevision'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchAttemptRequest'
+      responses:
+        '200':
+          description: Draft response updated and resource revision advanced.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attempt'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '409':
+          $ref: '#/components/responses/StateConflict'
+        '412':
+          $ref: '#/components/responses/StaleResourceRevision'
+        '422':
+          $ref: '#/components/responses/SemanticPreconditionFailed'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/attempts/{attempt_id}/submissions:
+    parameters:
+      - $ref: '#/components/parameters/AttemptId'
+    post:
+      operationId: submitAttempt
+      summary: Submit an Attempt exactly once as one logical operation
+      description: >-
+        Submission is explicit and idempotent. The accepted result preserves exact
+        ContentRevision identity and actual assistance/exposure/delivery/input/timing
+        conditions. Durable acceptance means required asynchronous continuation is
+        already committed or recoverably derivable. Pending evaluation is a normal
+        domain state, never score zero or learner weakness.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAttemptRequest'
+      responses:
+        '200':
+          description: >-
+            Deterministic/terminal submission result or idempotent replay of the same
+            authoritative logical submission outcome.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptSubmissionResult'
+        '202':
+          description: >-
+            Learner work and required pending continuation are durably accepted; later
+            Evaluation/resource state is authoritative.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptSubmissionResult'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '422':
+          $ref: '#/components/responses/SemanticPreconditionFailed'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+        '504':
+          $ref: '#/components/responses/AmbiguousOutcome'
+
+  /v1/evaluations/{evaluation_id}:
+    parameters:
+      - $ref: '#/components/parameters/EvaluationId'
+    get:
+      operationId: getEvaluation
+      summary: Read one learner-safe Evaluation projection
+      description: >-
+        Exposes status and permitted learner-meaningful observations/feedback only.
+        Hidden evaluator instructions, internal diagnostics, provider/runtime details,
+        chain-of-thought, and evidence-admission machinery are not public fields.
+      responses:
+        '200':
+          description: >-
+            Evaluation lifecycle state. pending/running/unavailable/invalid are valid
+            resource states and do not imply learner score or weakness.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/progress:
+    get:
+      operationId: getProgress
+      summary: Read target-relative learner progress and current claim state
+      description: >-
+        Current capability/evidence state, per-skill certification state, declared target
+        conditions, historical attainment, and product CoverageGap remain distinct.
+        Certification history is cursor-paged independently from current state.
+      parameters:
+        - $ref: '#/components/parameters/HistoryCursor'
+        - $ref: '#/components/parameters/HistoryLimit'
+      responses:
+        '200':
+          description: Current learner progress projection.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/gaps:
+    get:
+      operationId: listGaps
+      summary: List learner GapEvaluation and ActionIntent results
+      description: >-
+        This route contains learner GapEvaluation results only. Product CoverageGap is
+        not a learner weakness and does not appear as a GapEvaluation class.
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Cursor-paged learner gaps.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GapList'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/review-queue:
+    get:
+      operationId: getReviewQueue
+      summary: Read due review work while preserving semantic queue kind
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Cursor-paged review items.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewQueue'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+  /v1/event-stream:
+    get:
+      operationId: streamResourceEvents
+      summary: Stream access-scoped non-authoritative resource update hints
+      description: >-
+        Authenticated SSE over the public HTTP boundary. Clients may use fetch-based SSE
+        consumption so the required Authorization bearer header remains available. The
+        stream is only an update hint: events may be lost, duplicated, delayed, or
+        reordered. Durable resource GETs restore authoritative truth. Last-Event-ID is a
+        best-effort transport cursor; inability to resume returns a transport conflict so
+        the client can refresh durable resources and reconnect without the stale cursor.
+      parameters:
+        - $ref: '#/components/parameters/LastEventId'
+      responses:
+        '200':
+          description: >-
+            UTF-8 SSE frames. Each resource.changed frame has `id: <event_id>`,
+            `event: resource.changed`, one `data: <JSON ResourceChangedEvent>` line, then
+            a blank line. Comment keepalives may occur and carry no product state.
+          headers:
+            Cache-Control:
+              description: Stream responses are not cacheable.
+              schema:
+                type: string
+                enum: [no-cache]
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            text/event-stream:
+              schema:
+                type: string
+              x-sse-data-schema: '#/components/schemas/ResourceChangedEvent'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '409':
+          $ref: '#/components/responses/EventResumeUnavailable'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+components:
+  securitySchemes:
+    ClerkBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        Short-lived Clerk-issued token supplied as `Authorization: Bearer <token>`.
+        Go Core verifies the selected Clerk integration security conditions and maps the
+        authenticated external principal to a stable Core actor. Clerk roles, permissions,
+        organizations, and metadata are not product authorization authority; Core owns
+        capabilities, entitlements, and all product authorization.
+
+  headers:
+    RequestId:
+      description: Privacy-safe request correlation identifier.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: >-
+        Caller-chosen logical operation identity, scoped by the authenticated actor,
+        operation, and addressed resource where applicable. Replay with a compatible
+        request resolves to the same authoritative logical outcome. Reuse with an
+        incompatible request fails with IDEMPOTENCY_CONFLICT. No retention duration is
+        promised by this transport contract.
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 128
+        pattern: '^[A-Za-z0-9._:-]+$'
+    ExpectedResourceRevision:
+      name: Expected-Resource-Revision
+      in: header
+      required: true
+      description: >-
+        Optimistic-concurrency revision expected by the caller. 0 represents expected
+        non-existence only for an operation that explicitly permits create-on-absence; a
+        positive value must equal the authoritative current resource revision. It is not a
+        ContentRevision, API version, database schema version, work identity, or model
+        version.
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    PracticeActivityId:
+      name: practice_activity_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceId'
+    AttemptId:
+      name: attempt_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceId'
+    EvaluationId:
+      name: evaluation_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceId'
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque transport cursor valid only for this query/access scope.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 1024
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    HistoryCursor:
+      name: history_cursor
+      in: query
+      required: false
+      description: Opaque cursor for certification/attainment history only.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 1024
+    HistoryLimit:
+      name: history_limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    LastEventId:
+      name: Last-Event-ID
+      in: header
+      required: false
+      description: Best-effort SSE resume cursor from a previously delivered event id.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 256
+
+  responses:
+    InvalidRequest:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: INVALID_REQUEST
+      description: Request framing, syntax, or machine-contract validation failed.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Unauthenticated:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: UNAUTHENTICATED
+      description: A valid authenticated public principal could not be established.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Forbidden:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: FORBIDDEN
+      description: Authenticated actor lacks permission for the requested capability/scope.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    NotFoundOrNotVisible:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: NOT_FOUND_OR_NOT_VISIBLE
+      description: >-
+        Resource is absent or not visible to this actor. The response deliberately does
+        not disclose whether a protected resource exists outside the caller's access scope.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    IdempotencyConflict:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: IDEMPOTENCY_CONFLICT
+      description: The same Idempotency-Key was reused with an incompatible logical request.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    StateConflict:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: STATE_CONFLICT
+      description: Current lifecycle state does not permit the requested mutation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    StaleResourceRevision:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: STALE_RESOURCE_REVISION
+      description: Expected-Resource-Revision does not match authoritative current state.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    SemanticPreconditionFailed:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: SEMANTIC_PRECONDITION_FAILED
+      description: >-
+        The requested operation is not legally executable under already-resolved semantic
+        preconditions. Normal unresolved target/evidence/CoverageGap/pending domain results
+        are not converted into this response merely because the desired outcome is absent.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: RATE_LIMITED
+      x-retry-requirement: RETRY_AFTER
+      description: Transport/abuse/capacity admission rejected this request temporarily.
+      headers:
+        Retry-After:
+          description: Retry delay where the server can safely provide one.
+          schema:
+            type: integer
+            minimum: 0
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    DependencyUnavailable:
+      x-failure-class: INFRASTRUCTURE_FAILURE
+      x-error-code: DEPENDENCY_UNAVAILABLE
+      description: >-
+        Required infrastructure cannot currently establish the intended authoritative
+        result. This is never encoded as learner weakness, CoverageGap, or score zero.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    InternalFailure:
+      x-failure-class: INFRASTRUCTURE_FAILURE
+      x-error-code: INTERNAL_FAILURE
+      description: >-
+        Core encountered an internal infrastructure/runtime failure and did not convert it
+        into learner evidence, weakness, CoverageGap, or score.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    AmbiguousOutcome:
+      x-failure-class: AMBIGUOUS_FAILURE
+      x-error-code: OUTCOME_AMBIGUOUS
+      x-retry-requirement: RETRY_SAME_IDEMPOTENCY_KEY
+      description: >-
+        A remote/async outcome cannot yet be established safely. Retrying a protected
+        mutation must preserve the same Idempotency-Key; ambiguity never authorizes a new
+        logical operation identity.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    EventResumeUnavailable:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: EVENT_RESUME_UNAVAILABLE
+      x-retry-requirement: REFRESH_DURABLE_STATE_THEN_RECONNECT
+      description: >-
+        The supplied Last-Event-ID cannot be resumed. Refresh durable resources, then
+        reconnect without treating the SSE cursor as product authority.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+
+  schemas:
+    ResourceId:
+      type: string
+      minLength: 1
+      maxLength: 128
+      pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'
+      description: Stable Core resource identity; semantics come from the named resource field.
+    CanonicalId:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: >-
+        Existing canonical ID serialized unchanged. This transport schema intentionally
+        does not duplicate the canonical registry as a second hand-maintained enum.
+    ContentRevisionId:
+      type: string
+      minLength: 1
+      maxLength: 160
+      description: Exact immutable semantic ContentRevision identity used by the learner path.
+    AbsoluteInstant:
+      type: string
+      format: date-time
+      description: Timezone-aware absolute instant; not a concurrency or causal-ordering identity.
+    TestVariant:
+      type: string
+      enum:
+        - Academic
+        - General Training
+    DeliveryMode:
+      type: string
+      enum:
+        - Test-centre computer
+        - Test-centre computer with Writing on Paper
+        - IELTS Online Academic
+    Skill:
+      type: string
+      enum: [Listening, Reading, Writing, Speaking]
+    Band:
+      type: number
+      minimum: 3
+      maximum: 9
+      multipleOf: 0.5
+      description: Product structured-program Band value; meaning remains canonical upstream.
+    IELTSBand:
+      type: number
+      minimum: 0
+      maximum: 9
+      multipleOf: 0.5
+      description: External/historical IELTS Band value, including diagnostic/external 0-2 boundaries.
+    ApplicabilityState:
+      type: string
+      enum: [PRESENT, NOT_APPLICABLE, UNKNOWN]
+    TargetVariantState:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          type: string
+          enum: [PRESENT, UNKNOWN]
+        value:
+          $ref: '#/components/schemas/TestVariant'
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedTestVariant:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          $ref: '#/components/schemas/TestVariant'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedDeliveryMode:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          $ref: '#/components/schemas/DeliveryMode'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedSkill:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          $ref: '#/components/schemas/Skill'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedString:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          type: string
+          minLength: 1
+          maxLength: 500
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedCanonicalIds:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        values:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, values]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [values]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [values]
+    ConditionFact:
+      type: object
+      additionalProperties: false
+      required: [condition_id, state]
+      properties:
+        condition_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: Named material condition from the owning assistance/exposure/input/timing semantics.
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          oneOf:
+            - type: string
+              maxLength: 2000
+            - type: boolean
+            - type: integer
+              format: int64
+            - type: number
+              format: double
+            - type: array
+              maxItems: 100
+              items:
+                type: string
+                maxLength: 500
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [condition_id, state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [condition_id, state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [condition_id, state]
+          not:
+            required: [value]
+    ActualAttemptConditions:
+      type: object
+      additionalProperties: false
+      required: [delivery, assistance, exposure, input, timing]
+      properties:
+        delivery:
+          $ref: '#/components/schemas/ScopedDeliveryMode'
+        assistance:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        exposure:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        input:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        timing:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+    Me:
+      type: object
+      additionalProperties: false
+      required: [actor_id, learner_id]
+      properties:
+        actor_id:
+          $ref: '#/components/schemas/ResourceId'
+        learner_id:
+          $ref: '#/components/schemas/ResourceId'
+    Health:
+      type: object
+      additionalProperties: false
+      required: [service, status, contract_version, build_version]
+      properties:
+        service:
+          type: string
+          enum: [core-api]
+        status:
+          type: string
+          enum: [ready]
+        contract_version:
+          type: string
+          minLength: 1
+        build_version:
+          type: string
+          minLength: 1
+    TargetResolution:
+      type: object
+      additionalProperties: false
+      required: [state, unresolved_conditions]
+      properties:
+        state:
+          type: string
+          enum: [RESOLVED, UNRESOLVED]
+          description: >-
+            RESOLVED means the minimum TargetProfile context exists for target-relative
+            planning/readiness/support evaluation; it is not a readiness or support result.
+        unresolved_conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TargetUnresolvedCondition'
+    TargetUnresolvedCondition:
+      type: object
+      additionalProperties: false
+      required: [condition_id, explanation]
+      properties:
+        condition_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        explanation:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    TargetProfile:
+      type: object
+      additionalProperties: false
+      required:
+        - resource_revision
+        - test_variant
+        - delivery_mode
+        - purpose_or_receiving_rule
+        - selected_skill_retake
+        - resolution
+        - updated_at
+      properties:
+        resource_revision:
+          type: integer
+          format: int64
+          minimum: 1
+        test_variant:
+          $ref: '#/components/schemas/TargetVariantState'
+        delivery_mode:
+          $ref: '#/components/schemas/ScopedDeliveryMode'
+        purpose_or_receiving_rule:
+          $ref: '#/components/schemas/ScopedString'
+        target_overall_band:
+          $ref: '#/components/schemas/Band'
+        minimum_listening_band:
+          $ref: '#/components/schemas/Band'
+        minimum_reading_band:
+          $ref: '#/components/schemas/Band'
+        minimum_writing_band:
+          $ref: '#/components/schemas/Band'
+        minimum_speaking_band:
+          $ref: '#/components/schemas/Band'
+        test_date:
+          type: string
+          format: date
+        selected_skill_retake:
+          $ref: '#/components/schemas/ScopedSkill'
+        resolution:
+          $ref: '#/components/schemas/TargetResolution'
+        updated_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    TargetProfileReadResult:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          type: string
+          enum: [NOT_CONFIGURED, CONFIGURED]
+        profile:
+          $ref: '#/components/schemas/TargetProfile'
+      oneOf:
+        - properties:
+            state:
+              enum: [NOT_CONFIGURED]
+          required: [state]
+          not:
+            required: [profile]
+        - properties:
+            state:
+              enum: [CONFIGURED]
+          required: [state, profile]
+    PutTargetProfileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        test_variant:
+          $ref: '#/components/schemas/TestVariant'
+        delivery_mode:
+          $ref: '#/components/schemas/DeliveryMode'
+        purpose_or_receiving_rule:
+          type: string
+          minLength: 1
+          maxLength: 500
+        target_overall_band:
+          $ref: '#/components/schemas/Band'
+        minimum_listening_band:
+          $ref: '#/components/schemas/Band'
+        minimum_reading_band:
+          $ref: '#/components/schemas/Band'
+        minimum_writing_band:
+          $ref: '#/components/schemas/Band'
+        minimum_speaking_band:
+          $ref: '#/components/schemas/Band'
+        test_date:
+          type: string
+          format: date
+        selected_skill_retake:
+          $ref: '#/components/schemas/Skill'
+    ActivityPurpose:
+      type: string
+      enum: [TRAINING, DIAGNOSTIC, ASSESSMENT, READINESS]
+    EvidenceCandidacy:
+      type: string
+      enum: [NOT_EVIDENCE_CANDIDATE, ASSESSMENT_MAY_ADMIT]
+    PlanReasonCode:
+      type: string
+      enum:
+        - PREREQUISITE_GAP
+        - ABILITY_GAP
+        - INSUFFICIENT_EVIDENCE
+        - CONFLICTING_EVIDENCE
+        - STALE_EVIDENCE
+        - SCAFFOLD_DEPENDENCE
+        - TRANSFER_GAP
+        - FLUENCY_GAP
+        - REVIEW_DUE
+        - EXAM_CONDITION_GAP
+        - DELIVERY_MODE_PREPARATION
+        - PRODUCT_COVERAGE_BLOCKED
+    CoverageGapClass:
+      type: string
+      enum:
+        - MODEL_OR_SPEC
+        - INTERVENTION_OR_ACTIVITY
+        - CONTENT_OR_ASSET
+        - EVIDENCE_OR_EVALUATOR
+        - EXPERIENCE
+        - TRANSITION
+        - CONTRACT_OR_INTEGRATION
+        - COST_OR_OPERATIONS
+        - RIGHTS_PRIVACY_RELIABILITY
+        - CALIBRATION_OR_VALIDATION
+    CoverageConditionStatus:
+      type: string
+      enum: [UNKNOWN, DEFINED, PARTIAL, SATISFIED, BLOCKED, NOT_APPLICABLE, CALIBRATION_REQUIRED]
+    CoverageGap:
+      type: object
+      additionalProperties: false
+      required:
+        - gap_class
+        - scoped_target_ids
+        - condition_id
+        - condition_status
+        - blocking_consequence
+        - dependencies
+        - demand_class
+        - provenance_version
+      properties:
+        gap_class:
+          $ref: '#/components/schemas/CoverageGapClass'
+        scoped_target_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        condition_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        condition_status:
+          $ref: '#/components/schemas/CoverageConditionStatus'
+        blocking_consequence:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        dependencies:
+          type: array
+          items:
+            type: string
+            maxLength: 256
+        demand_class:
+          type: string
+          minLength: 1
+          maxLength: 128
+        provenance_version:
+          type: string
+          minLength: 1
+          maxLength: 256
+    DailyPlan:
+      type: object
+      additionalProperties: false
+      required:
+        - daily_plan_id
+        - generated_at
+        - target_context
+        - unresolved_target_conditions
+        - coverage_gaps
+        - items
+      properties:
+        daily_plan_id:
+          $ref: '#/components/schemas/ResourceId'
+        generated_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+        target_context:
+          $ref: '#/components/schemas/TargetProfileReadResult'
+        unresolved_target_conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TargetUnresolvedCondition'
+        coverage_gaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoverageGap'
+        items:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/DailyPlanItem'
+    DailyPlanItem:
+      type: object
+      additionalProperties: false
+      required:
+        - plan_item_id
+        - practice_mode_id
+        - canonical_target_ids
+        - reason_codes
+        - primary_activity_purpose
+        - evidence_candidacy
+        - test_variant
+        - content_context_ids
+        - official_family_ids
+        - presentation_class_ids
+        - delivery_mode
+      properties:
+        plan_item_id:
+          $ref: '#/components/schemas/ResourceId'
+        practice_mode_id:
+          $ref: '#/components/schemas/CanonicalId'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        reason_codes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/PlanReasonCode'
+        primary_activity_purpose:
+          $ref: '#/components/schemas/ActivityPurpose'
+        evidence_candidacy:
+          $ref: '#/components/schemas/EvidenceCandidacy'
+        expected_duration_minutes:
+          type: integer
+          minimum: 1
+          maximum: 300
+        test_variant:
+          $ref: '#/components/schemas/ScopedTestVariant'
+        content_context_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        official_family_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        presentation_class_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        delivery_mode:
+          $ref: '#/components/schemas/ScopedDeliveryMode'
+    PracticeModeList:
+      type: object
+      additionalProperties: false
+      required: [modes]
+      properties:
+        modes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PracticeMode'
+    PracticeMode:
+      type: object
+      additionalProperties: false
+      required: [practice_mode_id, label, practice_type_ids, duration_label]
+      properties:
+        practice_mode_id:
+          $ref: '#/components/schemas/CanonicalId'
+        label:
+          type: string
+          minLength: 1
+          maxLength: 120
+        practice_type_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        duration_label:
+          type: string
+          minLength: 1
+          maxLength: 120
+    CreatePracticeActivityRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        daily_plan_item_id:
+          $ref: '#/components/schemas/ResourceId'
+        practice_mode_id:
+          $ref: '#/components/schemas/CanonicalId'
+      oneOf:
+        - required: [daily_plan_item_id]
+          not:
+            required: [practice_mode_id]
+        - required: [practice_mode_id]
+          not:
+            required: [daily_plan_item_id]
+    PracticeActivityCreationResult:
+      type: object
+      additionalProperties: false
+      required: [outcome]
+      properties:
+        outcome:
+          type: string
+          enum: [ASSIGNED, UNAVAILABLE]
+        activity:
+          $ref: '#/components/schemas/PracticeActivity'
+        unavailability:
+          $ref: '#/components/schemas/PracticeActivityUnavailability'
+      oneOf:
+        - properties:
+            outcome:
+              enum: [ASSIGNED]
+          required: [outcome, activity]
+          not:
+            required: [unavailability]
+        - properties:
+            outcome:
+              enum: [UNAVAILABLE]
+          required: [outcome, unavailability]
+          not:
+            required: [activity]
+    PracticeActivityUnavailability:
+      type: object
+      additionalProperties: false
+      required: [reason, unresolved_target_conditions, coverage_gaps]
+      properties:
+        reason:
+          type: string
+          enum:
+            - TARGET_UNRESOLVED
+            - PRODUCT_COVERAGE_BLOCKED
+            - CONTENT_UNAVAILABLE
+            - CURRENT_ELIGIBILITY_BLOCKED
+        unresolved_target_conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TargetUnresolvedCondition'
+        coverage_gaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoverageGap'
+        explanation:
+          type: string
+          maxLength: 1000
+    PracticeActivity:
+      type: object
+      additionalProperties: false
+      required:
+        - practice_activity_id
+        - content_revision_id
+        - practice_mode_id
+        - practice_type_ids
+        - canonical_target_ids
+        - test_variant
+        - content_context_ids
+        - official_family_ids
+        - presentation_class_ids
+        - delivery_mode
+        - primary_activity_purpose
+        - evidence_candidacy
+        - assistance_conditions
+        - exposure_conditions
+        - material
+        - assigned_at
+      properties:
+        practice_activity_id:
+          $ref: '#/components/schemas/ResourceId'
+        content_revision_id:
+          $ref: '#/components/schemas/ContentRevisionId'
+        practice_mode_id:
+          $ref: '#/components/schemas/CanonicalId'
+        practice_type_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        test_variant:
+          $ref: '#/components/schemas/ScopedTestVariant'
+        content_context_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        official_family_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        presentation_class_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        delivery_mode:
+          $ref: '#/components/schemas/ScopedDeliveryMode'
+        primary_activity_purpose:
+          $ref: '#/components/schemas/ActivityPurpose'
+        evidence_candidacy:
+          $ref: '#/components/schemas/EvidenceCandidacy'
+        assistance_conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        exposure_conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        material:
+          $ref: '#/components/schemas/LearnerActivityMaterial'
+        assigned_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    LearnerActivityMaterial:
+      type: object
+      additionalProperties: false
+      required: [stimuli, tasks]
+      properties:
+        stimuli:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearnerStimulusBlock'
+        tasks:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/LearnerTask'
+      description: >-
+        Learner-safe projection only. Answer keys, model/reference answers, hidden rubrics,
+        future feedback, validator/evaluator instructions, and privileged provenance are
+        deliberately outside this schema.
+    LearnerStimulusBlock:
+      type: object
+      additionalProperties: false
+      required: [stimulus_id, kind]
+      properties:
+        stimulus_id:
+          $ref: '#/components/schemas/ResourceId'
+        kind:
+          type: string
+          enum: [TEXT, MEDIA_REFERENCE]
+        title:
+          type: string
+          maxLength: 500
+        text:
+          type: string
+          maxLength: 100000
+        media_reference:
+          $ref: '#/components/schemas/ResourceId'
+      oneOf:
+        - properties:
+            kind:
+              enum: [TEXT]
+          required: [stimulus_id, kind, text]
+          not:
+            required: [media_reference]
+        - properties:
+            kind:
+              enum: [MEDIA_REFERENCE]
+          required: [stimulus_id, kind, media_reference]
+          not:
+            required: [text]
+    LearnerTask:
+      type: object
+      additionalProperties: false
+      required: [task_id, prompt, response_contract]
+      properties:
+        task_id:
+          $ref: '#/components/schemas/ResourceId'
+        prompt:
+          type: string
+          minLength: 1
+          maxLength: 20000
+        response_contract:
+          $ref: '#/components/schemas/LearnerResponseContract'
+    LearnerResponseContract:
+      type: object
+      additionalProperties: false
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          enum: [TEXT, SINGLE_SELECTION, MULTI_SELECTION, MEDIA_REFERENCE]
+        options:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/LearnerOption'
+        max_selections:
+          type: integer
+          minimum: 1
+          maximum: 100
+        max_text_characters:
+          type: integer
+          minimum: 1
+          maximum: 200000
+    LearnerOption:
+      type: object
+      additionalProperties: false
+      required: [value, label]
+      properties:
+        value:
+          type: string
+          minLength: 1
+          maxLength: 256
+        label:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    CreateAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [practice_activity_id]
+      properties:
+        practice_activity_id:
+          $ref: '#/components/schemas/ResourceId'
+    AttemptStatus:
+      type: string
+      enum: [draft, submitted, evaluating, evaluated, invalid]
+    AttemptResponse:
+      type: object
+      additionalProperties: false
+      required: [parts]
+      properties:
+        parts:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/AttemptResponsePart'
+    AttemptResponsePart:
+      type: object
+      additionalProperties: false
+      required: [task_id]
+      properties:
+        task_id:
+          $ref: '#/components/schemas/ResourceId'
+        text:
+          type: string
+          maxLength: 200000
+        selected_values:
+          type: array
+          maxItems: 100
+          uniqueItems: true
+          items:
+            type: string
+            maxLength: 256
+        media_reference:
+          $ref: '#/components/schemas/ResourceId'
+      oneOf:
+        - required: [task_id, text]
+          not:
+            anyOf:
+              - required: [selected_values]
+              - required: [media_reference]
+        - required: [task_id, selected_values]
+          not:
+            anyOf:
+              - required: [text]
+              - required: [media_reference]
+        - required: [task_id, media_reference]
+          not:
+            anyOf:
+              - required: [text]
+              - required: [selected_values]
+    Attempt:
+      type: object
+      additionalProperties: false
+      required:
+        - attempt_id
+        - practice_activity_id
+        - content_revision_id
+        - status
+        - resource_revision
+        - evaluation_ids
+        - started_at
+      properties:
+        attempt_id:
+          $ref: '#/components/schemas/ResourceId'
+        practice_activity_id:
+          $ref: '#/components/schemas/ResourceId'
+        content_revision_id:
+          $ref: '#/components/schemas/ContentRevisionId'
+        status:
+          $ref: '#/components/schemas/AttemptStatus'
+        resource_revision:
+          type: integer
+          format: int64
+          minimum: 1
+        response:
+          $ref: '#/components/schemas/AttemptResponse'
+        actual_conditions:
+          $ref: '#/components/schemas/ActualAttemptConditions'
+        evaluation_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ResourceId'
+        started_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+        submitted_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+        evaluated_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    PatchAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [response]
+      properties:
+        response:
+          $ref: '#/components/schemas/AttemptResponse'
+    SubmitAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [response, actual_conditions]
+      properties:
+        response:
+          $ref: '#/components/schemas/AttemptResponse'
+        actual_conditions:
+          $ref: '#/components/schemas/ActualAttemptConditions'
+    AttemptSubmissionResult:
+      type: object
+      additionalProperties: false
+      required: [attempt, evaluation_state]
+      properties:
+        attempt:
+          $ref: '#/components/schemas/Attempt'
+        evaluation_state:
+          type: object
+          additionalProperties: false
+          required: [state]
+          properties:
+            state:
+              type: string
+              enum: [NOT_REQUIRED, PENDING, AVAILABLE]
+            evaluation_id:
+              $ref: '#/components/schemas/ResourceId'
+          oneOf:
+            - properties:
+                state:
+                  enum: [NOT_REQUIRED]
+              required: [state]
+              not:
+                required: [evaluation_id]
+            - properties:
+                state:
+                  enum: [PENDING, AVAILABLE]
+              required: [state, evaluation_id]
+    EvaluationStatus:
+      type: string
+      enum: [pending, running, completed, unavailable, invalid]
+    Evaluation:
+      type: object
+      additionalProperties: false
+      required:
+        - evaluation_id
+        - attempt_id
+        - status
+        - learner_observations
+        - learner_feedback
+        - quality_flags
+        - updated_at
+      properties:
+        evaluation_id:
+          $ref: '#/components/schemas/ResourceId'
+        attempt_id:
+          $ref: '#/components/schemas/ResourceId'
+        status:
+          $ref: '#/components/schemas/EvaluationStatus'
+        learner_observations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearnerObservation'
+        learner_feedback:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearnerFeedback'
+        quality_flags:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+        updated_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    LearnerObservation:
+      type: object
+      additionalProperties: false
+      required: [canonical_target_ids, summary]
+      properties:
+        canonical_target_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        uncertainty_note:
+          type: string
+          maxLength: 2000
+    LearnerFeedback:
+      type: object
+      additionalProperties: false
+      required: [message]
+      properties:
+        canonical_target_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        message:
+          type: string
+          minLength: 1
+          maxLength: 8000
+    ReadinessEvaluationStatus:
+      type: string
+      enum:
+        - INSUFFICIENT_EVIDENCE
+        - CONFLICTING_EVIDENCE
+        - STALE_EVIDENCE
+        - NOT_YET_SUPPORTED
+        - SUPPORTED
+    BandCertificationStatus:
+      type: string
+      enum: [not_started, in_progress, certified]
+    ClaimProgress:
+      type: object
+      additionalProperties: false
+      required: [claim_id, canonical_target_ids, readiness_status, blocking_conditions, required_next_evidence]
+      properties:
+        claim_id:
+          $ref: '#/components/schemas/ResourceId'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        target_band:
+          $ref: '#/components/schemas/Band'
+        readiness_status:
+          $ref: '#/components/schemas/ReadinessEvaluationStatus'
+        blocking_conditions:
+          type: array
+          items:
+            type: string
+            maxLength: 1000
+        required_next_evidence:
+          type: array
+          items:
+            type: string
+            maxLength: 1000
+      description: Claim-scoped Assessment result; it does not stand in for non-evidential TargetProfile conditions.
+    SkillProgress:
+      type: object
+      additionalProperties: false
+      required: [skill, certifications]
+      properties:
+        skill:
+          $ref: '#/components/schemas/Skill'
+        certifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/BandCertification'
+    BandCertification:
+      type: object
+      additionalProperties: false
+      required: [band, status]
+      properties:
+        band:
+          $ref: '#/components/schemas/Band'
+        status:
+          $ref: '#/components/schemas/BandCertificationStatus'
+        claim_evaluation_ref:
+          $ref: '#/components/schemas/ResourceId'
+        certified_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    CertificationHistoryEntry:
+      type: object
+      additionalProperties: false
+      required: [history_id, skill, band, recorded_at, source_kind]
+      properties:
+        history_id:
+          $ref: '#/components/schemas/ResourceId'
+        skill:
+          $ref: '#/components/schemas/Skill'
+        band:
+          $ref: '#/components/schemas/IELTSBand'
+        recorded_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+        source_kind:
+          type: string
+          enum: [internal_certification, external_result]
+        provenance_summary:
+          type: string
+          maxLength: 1000
+      oneOf:
+        - properties:
+            source_kind:
+              enum: [internal_certification]
+            band:
+              $ref: '#/components/schemas/Band'
+          required: [source_kind, band]
+        - properties:
+            source_kind:
+              enum: [external_result]
+            band:
+              $ref: '#/components/schemas/IELTSBand'
+          required: [source_kind, band]
+    CursorPageMeta:
+      type: object
+      additionalProperties: false
+      required: [has_more]
+      properties:
+        has_more:
+          type: boolean
+        next_cursor:
+          type: string
+          minLength: 1
+          maxLength: 1024
+    CertificationHistoryPage:
+      type: object
+      additionalProperties: false
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificationHistoryEntry'
+        page:
+          $ref: '#/components/schemas/CursorPageMeta'
+    Progress:
+      type: object
+      additionalProperties: false
+      required:
+        - target_context
+        - unresolved_target_conditions
+        - claim_progress
+        - skills
+        - coverage_gaps
+        - certification_history
+        - computed_at
+      properties:
+        target_context:
+          $ref: '#/components/schemas/TargetProfileReadResult'
+        unresolved_target_conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TargetUnresolvedCondition'
+        claim_progress:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimProgress'
+        skills:
+          type: array
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/SkillProgress'
+        coverage_gaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoverageGap'
+        certification_history:
+          $ref: '#/components/schemas/CertificationHistoryPage'
+        computed_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    GapClass:
+      type: string
+      enum:
+        - ABILITY_GAP
+        - PREREQUISITE_GAP
+        - EVIDENCE_GAP
+        - CONFLICTING_EVIDENCE
+        - STALE_EVIDENCE
+        - SCAFFOLD_DEPENDENCE
+        - TRANSFER_GAP
+        - FLUENCY_GAP
+        - EXAM_CONDITION_GAP
+    ActionIntent:
+      type: string
+      enum:
+        - ACQUIRE_PREREQUISITE
+        - REMEDIATE
+        - COLLECT_EVIDENCE
+        - RESOLVE_CONFLICT
+        - REASSESS
+        - FADE_SCAFFOLD
+        - EXPAND_CONTEXT
+        - BUILD_FLUENCY
+        - EXAM_PREPARE
+        - CONSOLIDATE
+        - ADVANCE
+    GapEvaluationItem:
+      type: object
+      additionalProperties: false
+      required: [gap_evaluation_id, gap_class, action_intent, canonical_target_ids, explanation]
+      properties:
+        gap_evaluation_id:
+          $ref: '#/components/schemas/ResourceId'
+        gap_class:
+          $ref: '#/components/schemas/GapClass'
+        action_intent:
+          $ref: '#/components/schemas/ActionIntent'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        explanation:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    GapList:
+      type: object
+      additionalProperties: false
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GapEvaluationItem'
+        page:
+          $ref: '#/components/schemas/CursorPageMeta'
+    ReviewQueueKind:
+      type: string
+      enum: [knowledge_retrieval, error_remediation, re_evidence]
+    ReviewQueueItem:
+      type: object
+      additionalProperties: false
+      required: [review_item_id, queue_kind, canonical_target_ids, action_intent, due_at]
+      properties:
+        review_item_id:
+          $ref: '#/components/schemas/ResourceId'
+        queue_kind:
+          $ref: '#/components/schemas/ReviewQueueKind'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        action_intent:
+          $ref: '#/components/schemas/ActionIntent'
+        due_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+        explanation:
+          type: string
+          maxLength: 2000
+    ReviewQueue:
+      type: object
+      additionalProperties: false
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewQueueItem'
+        page:
+          $ref: '#/components/schemas/CursorPageMeta'
+    ResourceChangedEvent:
+      type: object
+      additionalProperties: false
+      required: [event_id, occurred_at, resource_type]
+      properties:
+        event_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+        occurred_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+        resource_type:
+          type: string
+          enum:
+            - target_profile
+            - daily_plan
+            - practice_activity
+            - attempt
+            - evaluation
+            - progress
+            - gaps
+            - review_queue
+        resource_id:
+          $ref: '#/components/schemas/ResourceId'
+        resource_revision:
+          type: integer
+          format: int64
+          minimum: 1
+        logical_work_id:
+          $ref: '#/components/schemas/ResourceId'
+      description: >-
+        Minimal access-scoped update hint. Its identity/revision/correlation fields help a
+        client decide what to refresh; the event does not contain authoritative learner
+        state or prove semantic completion.
+    FailureClass:
+      type: string
+      enum: [OPERATION_REJECTED, INFRASTRUCTURE_FAILURE, AMBIGUOUS_FAILURE]
+    RetryAdvice:
+      type: string
+      enum: [DO_NOT_RETRY, RETRY_SAME_IDEMPOTENCY_KEY, RETRY_AFTER]
+    ErrorCode:
+      type: string
+      enum:
+        - INVALID_REQUEST
+        - UNAUTHENTICATED
+        - FORBIDDEN
+        - NOT_FOUND_OR_NOT_VISIBLE
+        - IDEMPOTENCY_CONFLICT
+        - STATE_CONFLICT
+        - STALE_RESOURCE_REVISION
+        - SEMANTIC_PRECONDITION_FAILED
+        - RATE_LIMITED
+        - DEPENDENCY_UNAVAILABLE
+        - OUTCOME_AMBIGUOUS
+        - EVENT_RESUME_UNAVAILABLE
+        - INTERNAL_FAILURE
+    ErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [failure_class, code, message, request_id, retry_advice]
+          properties:
+            failure_class:
+              $ref: '#/components/schemas/FailureClass'
+            code:
+              $ref: '#/components/schemas/ErrorCode'
+            message:
+              type: string
+              minLength: 1
+              maxLength: 2000
+              description: Client-safe message with no protected-existence or runtime-secret leakage.
+            request_id:
+              type: string
+              minLength: 1
+              maxLength: 128
+            retry_advice:
+              $ref: '#/components/schemas/RetryAdvice'
+            details:
+              type: array
+              maxItems: 50
+              items:
+                type: object
+                additionalProperties: false
+                required: [field, reason]
+                properties:
+                  field:
+                    type: string
+                    maxLength: 256
+                  reason:
+                    type: string
+                    maxLength: 1000

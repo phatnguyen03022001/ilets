@@ -9,18 +9,20 @@ import (
 )
 
 type Attempt struct {
-	AttemptID          string
-	LearnerID          string
-	PracticeActivityID string
-	ContentRevisionID  string
-	Status             string
-	ResourceRevision   int64
-	SubmittedAnswers   []byte
-	RawScore           *int32
-	MaxScore           *int32
-	SubmittedAt        pgtype.Timestamptz
-	EvaluatedAt        pgtype.Timestamptz
-	CreatedAt          pgtype.Timestamptz
+	AttemptID               string
+	LearnerID               string
+	PracticeActivityID      string
+	ContentRevisionID       string
+	Status                  string
+	ResourceRevision        int64
+	SubmittedAnswers        []byte
+	RawScore                *int32
+	MaxScore                *int32
+	SubmittedAt             pgtype.Timestamptz
+	EvaluatedAt             pgtype.Timestamptz
+	CreatedAt               pgtype.Timestamptz
+	ResponsePayload         []byte
+	ActualConditionsPayload []byte
 }
 
 type Content struct {
@@ -45,6 +47,29 @@ type ContentUseState struct {
 	UpdatedAt                   pgtype.Timestamptz
 }
 
+type DailyPlan struct {
+	DailyPlanID                       string
+	LearnerID                         string
+	TargetProfileRevision             *int64
+	TargetContextPayload              []byte
+	UnresolvedTargetConditionsPayload []byte
+	CoverageGapsPayload               []byte
+	GeneratedAt                       pgtype.Timestamptz
+}
+
+type DailyPlanItem struct {
+	PlanItemID                string
+	DailyPlanID               string
+	ContentRevisionID         string
+	ValidationDecisionID      string
+	ValidationPolicyVersion   string
+	ValidationIntendedUse     string
+	PlannedOperationalState   string
+	PlannedAssignmentEligible bool
+	ReasonCode                string
+	CreatedAt                 pgtype.Timestamptz
+}
+
 type EvidenceFact struct {
 	EvidenceFactID    string
 	ObservationID     string
@@ -57,6 +82,15 @@ type EvidenceFact struct {
 	AdmittedAt        pgtype.Timestamptz
 }
 
+type ExternalPrincipal struct {
+	Provider        string
+	ExternalIssuer  string
+	ExternalSubject string
+	ActorID         string
+	LearnerID       string
+	CreatedAt       pgtype.Timestamptz
+}
+
 type IdempotencyOperation struct {
 	LearnerID         string
 	Operation         string
@@ -64,6 +98,7 @@ type IdempotencyOperation struct {
 	PayloadHash       []byte
 	OutcomeResourceID *string
 	CreatedAt         pgtype.Timestamptz
+	OutcomePayload    []byte
 }
 
 type Learner struct {
@@ -92,6 +127,7 @@ type PracticeActivity struct {
 	TestVariant            string
 	AssignedAt             pgtype.Timestamptz
 	AssessmentTypeID       *string
+	DailyPlanItemID        *string
 }
 
 type Session struct {
@@ -104,15 +140,19 @@ type Session struct {
 }
 
 type TargetProfile struct {
-	LearnerID            string
-	TestVariant          string
-	TargetOverallBand    *float64
-	MinimumListeningBand *float64
-	MinimumReadingBand   *float64
-	MinimumWritingBand   *float64
-	MinimumSpeakingBand  *float64
-	ResourceRevision     int64
-	UpdatedAt            pgtype.Timestamptz
+	LearnerID              string
+	TestVariant            *string
+	TargetOverallBand      *float64
+	MinimumListeningBand   *float64
+	MinimumReadingBand     *float64
+	MinimumWritingBand     *float64
+	MinimumSpeakingBand    *float64
+	ResourceRevision       int64
+	UpdatedAt              pgtype.Timestamptz
+	DeliveryMode           *string
+	PurposeOrReceivingRule *string
+	TestDate               pgtype.Date
+	SelectedSkillRetake    *string
 }
 
 type ValidationDecision struct {

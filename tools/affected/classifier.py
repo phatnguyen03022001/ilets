@@ -54,8 +54,6 @@ _ROOT_CRITICAL_EXACT = {
     "CONSTITUTION.md",
     "OBJECTIVE.md",
     "tools/check-affected",
-    "tools/test_verify_lenbands_founder_closure.py",
-    "tools/verify-lenbands-founder-closure.py",
     "tools/verify-local",
     "verify",
 }
@@ -64,7 +62,6 @@ _CRITICAL_PREFIXES = (
     ".github/workflows/",
     "contracts/",
     "design/",
-    "research/lenbands-founder-decisions/",
     "services/core-api/cmd/seed/",
     "services/core-api/internal/bootstrap/",
     "services/core-api/internal/db/",

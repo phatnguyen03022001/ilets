@@ -1,7 +1,7 @@
 {
   "artifact": "DERIVED_IMPLEMENTATION_TRACE",
-  "canonical_registry_sha256": "10e1ac0c5c1bd3b4fb7349a7450afa0e0de2ef5e0ad325539c69e92b5078b3e8",
-  "canonical_source_revision": "canonical-source-revision/v1:62ee747f2aca19fc346c6ac96cb57ead8ff08a1bb13dd8c83d090927506c49f6",
+  "canonical_registry_sha256": "691f0644d15b2f827e8899ead630fda8d389058ae1334fd1f74a85e1762b12a9",
+  "canonical_source_revision": "canonical-source-revision/v1:c0a39e94dc74dc4fb64e92dfb4f46d90847f8e98d255db864eb9c0cc86950302",
   "schema_version": 1,
   "slice": {
     "content_context_id": "CTX-READING-ACADEMIC",

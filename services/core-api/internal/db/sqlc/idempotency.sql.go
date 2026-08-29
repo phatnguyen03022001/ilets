@@ -36,7 +36,7 @@ func (q *Queries) ClaimIdempotency(ctx context.Context, arg ClaimIdempotencyPara
 }
 
 const lockIdempotency = `-- name: LockIdempotency :one
-SELECT payload_hash, outcome_resource_id
+SELECT payload_hash, outcome_resource_id, outcome_payload
 FROM idempotency_operations
 WHERE learner_id = $1
   AND operation = $2
@@ -53,12 +53,13 @@ type LockIdempotencyParams struct {
 type LockIdempotencyRow struct {
 	PayloadHash       []byte
 	OutcomeResourceID *string
+	OutcomePayload    []byte
 }
 
 func (q *Queries) LockIdempotency(ctx context.Context, arg LockIdempotencyParams) (LockIdempotencyRow, error) {
 	row := q.db.QueryRow(ctx, lockIdempotency, arg.LearnerID, arg.Operation, arg.IdempotencyKey)
 	var i LockIdempotencyRow
-	err := row.Scan(&i.PayloadHash, &i.OutcomeResourceID)
+	err := row.Scan(&i.PayloadHash, &i.OutcomeResourceID, &i.OutcomePayload)
 	return i, err
 }
 
@@ -83,6 +84,34 @@ func (q *Queries) SetIdempotencyOutcome(ctx context.Context, arg SetIdempotencyO
 		arg.Operation,
 		arg.IdempotencyKey,
 		arg.OutcomeResourceID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const setIdempotencyPayload = `-- name: SetIdempotencyPayload :execrows
+UPDATE idempotency_operations
+SET outcome_payload = $4
+WHERE learner_id = $1
+  AND operation = $2
+  AND idempotency_key = $3
+`
+
+type SetIdempotencyPayloadParams struct {
+	LearnerID      string
+	Operation      string
+	IdempotencyKey string
+	OutcomePayload []byte
+}
+
+func (q *Queries) SetIdempotencyPayload(ctx context.Context, arg SetIdempotencyPayloadParams) (int64, error) {
+	result, err := q.db.Exec(ctx, setIdempotencyPayload,
+		arg.LearnerID,
+		arg.Operation,
+		arg.IdempotencyKey,
+		arg.OutcomePayload,
 	)
 	if err != nil {
 		return 0, err

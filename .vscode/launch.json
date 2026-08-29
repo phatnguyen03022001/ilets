@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Core API: Debug",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/services/core-api/cmd/core-api",
+      "cwd": "${workspaceFolder}/services/core-api",
+      "envFile": "${workspaceFolder}/.env.development",
+      "env": {
+        "GOTOOLCHAIN": "auto"
+      }
+    }
+  ]
+}

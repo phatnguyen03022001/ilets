@@ -13,28 +13,28 @@ import (
 
 const evaluateAttempt = `-- name: EvaluateAttempt :execrows
 UPDATE attempts
-SET
-  status = 'EVALUATED',
-  resource_revision = resource_revision + 1,
-  submitted_answers = $3,
-  raw_score = $4,
-  max_score = $5,
-  submitted_at = $6,
-  evaluated_at = $6
-WHERE attempt_id = $1
-  AND learner_id = $2
-  AND status = 'DRAFT'
-  AND resource_revision = $7
+SET status = 'EVALUATED',
+    resource_revision = resource_revision + 1,
+    submitted_answers = $3,
+    response_payload = $4,
+    actual_conditions_payload = $5,
+    raw_score = $6,
+    max_score = $7,
+    submitted_at = $8,
+    evaluated_at = $8
+WHERE attempt_id = $1 AND learner_id = $2 AND status = 'DRAFT' AND resource_revision = $9
 `
 
 type EvaluateAttemptParams struct {
-	AttemptID        string
-	LearnerID        string
-	SubmittedAnswers []byte
-	RawScore         *int32
-	MaxScore         *int32
-	SubmittedAt      pgtype.Timestamptz
-	ResourceRevision int64
+	AttemptID               string
+	LearnerID               string
+	SubmittedAnswers        []byte
+	ResponsePayload         []byte
+	ActualConditionsPayload []byte
+	RawScore                *int32
+	MaxScore                *int32
+	SubmittedAt             pgtype.Timestamptz
+	ResourceRevision        int64
 }
 
 func (q *Queries) EvaluateAttempt(ctx context.Context, arg EvaluateAttemptParams) (int64, error) {
@@ -42,6 +42,8 @@ func (q *Queries) EvaluateAttempt(ctx context.Context, arg EvaluateAttemptParams
 		arg.AttemptID,
 		arg.LearnerID,
 		arg.SubmittedAnswers,
+		arg.ResponsePayload,
+		arg.ActualConditionsPayload,
 		arg.RawScore,
 		arg.MaxScore,
 		arg.SubmittedAt,
@@ -54,10 +56,16 @@ func (q *Queries) EvaluateAttempt(ctx context.Context, arg EvaluateAttemptParams
 }
 
 const getActivityForAttempt = `-- name: GetActivityForAttempt :one
-SELECT content_revision_id, primary_activity_purpose
-FROM practice_activities
-WHERE practice_activity_id = $1
-  AND learner_id = $2
+SELECT
+  pa.content_revision_id,
+  pa.primary_activity_purpose,
+  pa.evidence_candidacy,
+  pa.assessment_type_id,
+  pa.daily_plan_item_id,
+  cr.semantic_payload
+FROM practice_activities pa
+JOIN content_revisions cr ON cr.revision_id = pa.content_revision_id
+WHERE pa.practice_activity_id = $1 AND pa.learner_id = $2
 `
 
 type GetActivityForAttemptParams struct {
@@ -68,40 +76,30 @@ type GetActivityForAttemptParams struct {
 type GetActivityForAttemptRow struct {
 	ContentRevisionID      string
 	PrimaryActivityPurpose string
+	EvidenceCandidacy      string
+	AssessmentTypeID       *string
+	DailyPlanItemID        *string
+	SemanticPayload        []byte
 }
 
 func (q *Queries) GetActivityForAttempt(ctx context.Context, arg GetActivityForAttemptParams) (GetActivityForAttemptRow, error) {
 	row := q.db.QueryRow(ctx, getActivityForAttempt, arg.PracticeActivityID, arg.LearnerID)
 	var i GetActivityForAttemptRow
-	err := row.Scan(&i.ContentRevisionID, &i.PrimaryActivityPurpose)
+	err := row.Scan(
+		&i.ContentRevisionID,
+		&i.PrimaryActivityPurpose,
+		&i.EvidenceCandidacy,
+		&i.AssessmentTypeID,
+		&i.DailyPlanItemID,
+		&i.SemanticPayload,
+	)
 	return i, err
 }
 
 const getAttempt = `-- name: GetAttempt :one
-SELECT
-  a.practice_activity_id,
-  pa.primary_activity_purpose,
-  a.content_revision_id,
-  a.status,
-  a.resource_revision,
-  a.created_at,
-  a.evaluated_at,
-  o.observation_id,
-  o.result_payload,
-  o.conditions_payload,
-  ef.evidence_fact_id,
-  ef.claim_scope,
-  ef.eligibility_status,
-  ef.eligibility_reason,
-  ef.inference_scope,
-  ef.policy_version,
-  ef.admitted_at
-FROM attempts a
-JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
-LEFT JOIN observations o ON o.attempt_id = a.attempt_id
-LEFT JOIN evidence_facts ef ON ef.observation_id = o.observation_id
-WHERE a.attempt_id = $1
-  AND a.learner_id = $2
+SELECT practice_activity_id, content_revision_id, status, resource_revision, created_at, submitted_at, evaluated_at, response_payload, actual_conditions_payload
+FROM attempts
+WHERE attempt_id = $1 AND learner_id = $2
 `
 
 type GetAttemptParams struct {
@@ -110,23 +108,15 @@ type GetAttemptParams struct {
 }
 
 type GetAttemptRow struct {
-	PracticeActivityID     string
-	PrimaryActivityPurpose string
-	ContentRevisionID      string
-	Status                 string
-	ResourceRevision       int64
-	CreatedAt              pgtype.Timestamptz
-	EvaluatedAt            pgtype.Timestamptz
-	ObservationID          *string
-	ResultPayload          []byte
-	ConditionsPayload      []byte
-	EvidenceFactID         *string
-	ClaimScope             []byte
-	EligibilityStatus      *string
-	EligibilityReason      *string
-	InferenceScope         *string
-	PolicyVersion          *string
-	AdmittedAt             pgtype.Timestamptz
+	PracticeActivityID      string
+	ContentRevisionID       string
+	Status                  string
+	ResourceRevision        int64
+	CreatedAt               pgtype.Timestamptz
+	SubmittedAt             pgtype.Timestamptz
+	EvaluatedAt             pgtype.Timestamptz
+	ResponsePayload         []byte
+	ActualConditionsPayload []byte
 }
 
 func (q *Queries) GetAttempt(ctx context.Context, arg GetAttemptParams) (GetAttemptRow, error) {
@@ -134,35 +124,20 @@ func (q *Queries) GetAttempt(ctx context.Context, arg GetAttemptParams) (GetAtte
 	var i GetAttemptRow
 	err := row.Scan(
 		&i.PracticeActivityID,
-		&i.PrimaryActivityPurpose,
 		&i.ContentRevisionID,
 		&i.Status,
 		&i.ResourceRevision,
 		&i.CreatedAt,
+		&i.SubmittedAt,
 		&i.EvaluatedAt,
-		&i.ObservationID,
-		&i.ResultPayload,
-		&i.ConditionsPayload,
-		&i.EvidenceFactID,
-		&i.ClaimScope,
-		&i.EligibilityStatus,
-		&i.EligibilityReason,
-		&i.InferenceScope,
-		&i.PolicyVersion,
-		&i.AdmittedAt,
+		&i.ResponsePayload,
+		&i.ActualConditionsPayload,
 	)
 	return i, err
 }
 
 const insertAttempt = `-- name: InsertAttempt :exec
-INSERT INTO attempts (
-  attempt_id,
-  learner_id,
-  practice_activity_id,
-  content_revision_id,
-  status,
-  resource_revision
-)
+INSERT INTO attempts (attempt_id, learner_id, practice_activity_id, content_revision_id, status, resource_revision)
 VALUES ($1, $2, $3, $4, 'DRAFT', 1)
 `
 
@@ -185,9 +160,17 @@ func (q *Queries) InsertAttempt(ctx context.Context, arg InsertAttemptParams) er
 
 const insertEvidenceFact = `-- name: InsertEvidenceFact :exec
 INSERT INTO evidence_facts (
-  evidence_fact_id, observation_id, learner_id, claim_scope, eligibility_status,
-  eligibility_reason, inference_scope, policy_version, admitted_at
-) VALUES ($1,$2,$3,$4,'ADMITTED',$5,$6,$7,$8)
+  evidence_fact_id,
+  observation_id,
+  learner_id,
+  claim_scope,
+  eligibility_status,
+  eligibility_reason,
+  inference_scope,
+  policy_version,
+  admitted_at
+)
+VALUES ($1, $2, $3, $4, 'ADMITTED', $5, $6, $7, $8)
 `
 
 type InsertEvidenceFactParams struct {
@@ -216,15 +199,7 @@ func (q *Queries) InsertEvidenceFact(ctx context.Context, arg InsertEvidenceFact
 }
 
 const insertObservation = `-- name: InsertObservation :exec
-INSERT INTO observations (
-  observation_id,
-  attempt_id,
-  learner_id,
-  content_revision_id,
-  result_payload,
-  conditions_payload,
-  created_at
-)
+INSERT INTO observations (observation_id, attempt_id, learner_id, content_revision_id, result_payload, conditions_payload, created_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7)
 `
 
@@ -256,14 +231,16 @@ SELECT
   a.status,
   a.resource_revision,
   a.content_revision_id,
+  a.practice_activity_id,
   pa.primary_activity_purpose,
+  pa.evidence_candidacy,
   pa.assessment_type_id,
+  pa.daily_plan_item_id,
   cr.semantic_payload
 FROM attempts a
 JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 JOIN content_revisions cr ON cr.revision_id = a.content_revision_id
-WHERE a.attempt_id = $1
-  AND a.learner_id = $2
+WHERE a.attempt_id = $1 AND a.learner_id = $2
 FOR UPDATE OF a
 `
 
@@ -276,8 +253,11 @@ type LockAttemptForSubmissionRow struct {
 	Status                 string
 	ResourceRevision       int64
 	ContentRevisionID      string
+	PracticeActivityID     string
 	PrimaryActivityPurpose string
+	EvidenceCandidacy      string
 	AssessmentTypeID       *string
+	DailyPlanItemID        *string
 	SemanticPayload        []byte
 }
 
@@ -288,8 +268,11 @@ func (q *Queries) LockAttemptForSubmission(ctx context.Context, arg LockAttemptF
 		&i.Status,
 		&i.ResourceRevision,
 		&i.ContentRevisionID,
+		&i.PracticeActivityID,
 		&i.PrimaryActivityPurpose,
+		&i.EvidenceCandidacy,
 		&i.AssessmentTypeID,
+		&i.DailyPlanItemID,
 		&i.SemanticPayload,
 	)
 	return i, err

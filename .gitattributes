@@ -1,0 +1,8 @@
+* text=auto eol=lf
+
+apps/web/src/generated/** linguist-generated=true
+services/core-api/internal/generated/openapi/public/** linguist-generated=true
+services/core-api/internal/generated/openapi/evaluator/** linguist-generated=true
+services/core-api/internal/db/sqlc/** linguist-generated=true
+tools/canonical/generated/** linguist-generated=true
+tools/slice/generated/** linguist-generated=true

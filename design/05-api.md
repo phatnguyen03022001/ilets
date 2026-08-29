@@ -71,23 +71,49 @@ These states may use different exact wire representations later; they may not be
 
 Changing the meaning or mapping among absence, null, `NOT_APPLICABLE`, unresolved, invalid, and present values can be a breaking semantic contract change even when the JSON still validates. Generated TypeScript, Go, and Python consumers must preserve the distinction wherever material.
 
-# Auth/session transport pre-contract gate
+# Auth/session transport selection
 
-Architecture remains provider-neutral, but the initial public OpenAPI security scheme and auth-sensitive browser behavior must not be guessed from framework defaults.
+The initial external identity route is **Clerk**, selected for implementation under `07-third-party-services.md`. The authority split is:
 
-Before the first public contract freezes security-sensitive transport, implementation explicitly chooses the initial credential/session transport well enough to determine:
+```text
+Clerk
+  = credential custody
+  + authentication
+  + session issuance / revocation mechanics
 
-- credential custody and which unit may read/verify it;
-- browser cookie/header/storage behavior;
-- CSRF applicability;
-- CORS-with-credentials behavior;
-- session/logout revocation and invalidation;
-- guest→account transition/association behavior;
-- learner/admin/service credential separation;
-- service-to-service authentication where the actual deployment requires it;
-- secret/key/token rotation appropriate to the selected mechanism.
+Core
+  = stable internal actor / learner identity
+  + external-principal association
+  + RBAC / capabilities
+  + entitlements
+  + learner/product state
+  + all product authorization
+```
 
-OAuth, JWT, a hosted identity provider, opaque sessions, or another mechanism are not selected by this document. This is a required pre-contract implementation decision when exact security-scheme encoding depends on it, not permission for OpenAPI/code generation to invent the mechanism.
+Clerk roles, permissions, organizations, or metadata never become canonical `ADMIN` / `OWNER` / `REVIEWER` / `COLLABORATOR` authorization authority. The external Clerk subject/principal is associated with a stable Core-owned actor; Core applies the capability model in `04-application-flows.md` after authentication.
+
+Initial public authenticated transport is:
+
+```text
+Browser / eligible Next.js presentation execution
+        ↓ supported Clerk session API
+short-lived Clerk-issued token
+        ↓
+Authorization: Bearer <token>
+        ↓
+Go Core API verifies authenticity + configured issuer/audience/authorized-party/expiry
+and every other security condition required by the selected Clerk integration
+        ↓
+external principal → stable Core actor association
+        ↓
+normal Core product authorization
+```
+
+Auth tokens are not persisted in `localStorage`. The Core public API therefore has enough selected transport semantics for the future OpenAPI contract to encode an HTTP Bearer/JWT security scheme; exact scheme names, scopes, error/status mapping, and schema syntax remain for contract materialization.
+
+Public/demo behavior may remain anonymous only where explicitly allowed. Durable learner state—including `TargetProfile`, Attempt history, Progression/history, and entitlement—requires authenticated durable identity. Guest→account transfer remains future evidence-driven work rather than a bootstrap identity-merging requirement.
+
+Do not build password hashing/reset, OAuth-provider plumbing, passkey machinery, custom session rotation, a custom identity provider/session framework, or durable anonymous learner identity. Service-to-service authentication is separate from learner/admin transport and follows `06-implementation-stack.md`.
 
 # Request/access ordering
 

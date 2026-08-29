@@ -6,7 +6,7 @@ AUTHORITY: NONE
 
 This ledger explains why active choices exist. It is not canonical authority.
 
-If this file conflicts with a canonical owner, the canonical owner wins and this ledger must be corrected. Historical wording and superseded process decisions remain in Git history or `archive/`.
+If this file conflicts with a canonical owner, the canonical owner wins and this ledger must be corrected. Historical wording and superseded process decisions remain in Git history.
 
 | ID | Decision | Canonical owner | Rationale / provenance |
 |---|---|---|---|
@@ -75,4 +75,4 @@ If this file conflicts with a canonical owner, the canonical owner wins and this
 
 ## Retired process decisions
 
-Vendor-specific operating rules, branch/worktree workflow guidance, staged legacy Blueprint conventions, and other process artifacts are historical only. Git history/`archive/` may preserve them; they are not active implementation authority.
+Vendor-specific operating rules, branch/worktree workflow guidance, staged legacy Blueprint conventions, and other process artifacts are historical only. Git history preserves them; they are not active implementation authority.

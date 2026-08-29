@@ -218,6 +218,28 @@ These concerns reduce through the existing TargetCoverageSpecification condition
 
 Coverage is technology-independent: absence of a particular framework, broker, cache, proxy, orchestration system, deployment platform, auth mechanism, or observability product is not itself a CoverageGap. If an owner-defined invariant and demonstrated trigger require a capability that the selected implementation lacks, the missing capability can block coverage; technology selection remains owned by `06-implementation-stack.md` and `07-third-party-services.md`.
 
+# Learner evidence, interaction availability, entitlement, and authorization separation
+
+A future product/support check must preserve these different failure classes rather than reducing them to one “not available” state:
+
+| Condition | Owning interpretation | Coverage consequence |
+|---|---|---|
+| learner evidence missing/stale/conflicting/below requirement | Assessment/Progression | learner evidence/gap state; not a CoverageGap by itself |
+| supported capture route failed for this attempt/device/session | Speaking/capture runtime semantics | attempt may be unusable/partial and require retry/alternative; not learner weakness; not automatically a product gap |
+| scoped release cannot support a required accessible/capture interaction | product support | `accessibility_capture_quality` / `feature_experience` CoverageGap |
+| productive/acoustic evaluator exists but is not calibrated for the consequence | product support | `evaluator_scoring = CALIBRATION_REQUIRED` |
+| evaluator/provider temporarily unavailable on an otherwise supported route | runtime/provider availability | delayed/degraded/unavailable operation; support may be revoked if release gates no longer hold, but no fake learner conclusion |
+| realtime AI capability absent/disabled | product availability | no gap for the ordinary record→submit Speaking route; a gap only for a scoped product promise/route that explicitly requires realtime interaction |
+| learner lacks paid entitlement | commercial access | gated capability unavailable to that learner; not CoverageGap, evidence state, or authorization role |
+| privileged actor lacks capability | authorization/access | operation denied; not learner weakness, content invalidity, or CoverageGap unless the product itself lacks the required operational capability for support |
+| product cannot serve/measure a required resolved target condition | product support | explicit applicable CoverageGap |
+
+A scoped target cannot be declared unsupported merely because one learner is not commercially entitled to an optional capability when a supported ordinary route exists. Conversely, paid entitlement cannot make an uncovered/evaluator-uncalibrated route supported.
+
+For the product's ordinary baseline, support evidence must demonstrate a genuinely usable ungated route for truthful TargetProfile/evidence/gap/progress visibility plus ordinary eligible learning/practice/review. A paid-only expensive capability may have its own scoped support condition, but paid entitlement is not allowed to be the only path to knowing the learner's current truth or receiving an ordinary target-relevant next action. Commercial quotas may reduce optional capacity without redefining the target/evidence standard.
+
+For Speaking product support, the ordinary asynchronous capture/submit/feedback route and any optional realtime route are evaluated separately where their interaction requirements differ. Realtime degradation must not break the ordinary route unless the scoped learner activity genuinely requires realtime semantics.
+
 # Derived reachability invariant
 
 Coverage must be derivable from canonical identities and declared applicability rather than a manually maintained completeness matrix.
@@ -317,10 +339,40 @@ A uniform implementation shape cannot fabricate identity or hide required identi
 
 Content closure has four concerns through applicable existing conditions:
 
-1. **Supply sufficiency** — enough executable eligible content exists for target/family/context/presentation/difficulty/diversity demand; authored/imported/deterministic/pre-generated/runtime-generated routes are eligible.
+1. **Supply sufficiency** — the scoped target's complete `ContentDemand` set can be satisfied by executable eligible revisions for every applicable target/family/context/presentation/curriculum/practice/assessment/readiness/diversity condition; authored/imported/deterministic/pre-generated/runtime-generated/learner-provided/media-backed routes are eligible when their use permits it.
 2. **Semantic/quality validity** — every assigned revision passes applicable content contract/universal hard/consequence-specific checks; global quality percentage cannot substitute for a failed requirement.
 3. **Assignment novelty/independence where applicable** — learner-specific exposure/similarity is checked before transfer/readiness/evidence assignment when required.
 4. **Operations/recovery viability** — revisions are auditable; problematic content can stop new assignment, be revalidated/replaced/retired without rewriting historical learner Attempts/evidence, and coverage-critical inventory can recover.
+
+## Supply-sufficiency reduction
+
+Coverage expands each scoped target into applicable content demand dimensions rather than comparing against one inventory count. At minimum the reduction can distinguish:
+
+```text
+canonical Skill/Knowledge/curriculum demand
+official family demand
+material Presentation Class demand
+Academic/GT Content Context demand
+learning/practice/remediation/review/transfer demand
+diagnostic/focused-assessment demand
+section/task/full-readiness demand
+productive prompt/part/rubric/evaluator demand
+delivery interaction demand where material
+rights/media-source demand where applicable
+diversity / independence / fresh-opportunity demand where the owning policy requires it
+```
+
+A demand is satisfied only when enough **eligible opportunities** exist for its intended consequence and target population/use. “Enough” is semantic and policy-scoped: if quantity/diversity/independence needs empirical calibration, that condition remains `CALIBRATION_REQUIRED`, `DEFINED`, or `PARTIAL` rather than receiving an invented universal item quota.
+
+Rules:
+
+- one revision may satisfy multiple demand cells only when reuse is semantically valid for each;
+- many exact/near duplicates cannot satisfy a diversity/transfer/independence requirement by volume;
+- a single family-capable feature cannot hide missing family/subformat assets;
+- Academic assets cannot satisfy GT-specific context/readiness demand and vice versa where context/scoring differs;
+- training supply does not establish assessment/readiness supply unless the same revisions remain eligible under the stronger consequence;
+- optional generation capacity is not substitute inventory until generated revisions exist, validate, and are assignable;
+- missing eligible content is a `CONTENT_OR_ASSET` CoverageGap, never learner weakness or evidence of inability.
 
 Generation is only an applicable sub-demand when scoped release relies on it. Absence of runtime AI generation is not a gap when sufficient eligible supply exists. A generator/template cannot satisfy `content_assets` until output demonstrates applicable quality/coverage/operations.
 
@@ -332,7 +384,11 @@ A `CONTENT_OR_ASSET` condition becomes `SATISFIED` only from executable/verified
 
 Principles in `08-ASSESSMENT.md` alone are not production policy.
 
-Before product support, each high-consequence claim resolves to a versioned executable EvidenceRequirement. Hidden heuristics, unversioned cutoffs, mechanical attempt-count rules, or pre-attempt “certification contributing” labels are blockers.
+Before product support, every consequential claim class used by the scoped target resolves to a versioned executable EvidenceRequirement, including per-skill Band and any task/section/delivery/full-readiness claim the product presents as supported. Hidden heuristics, unversioned cutoffs, mechanical attempt-count rules, unsupported weighted averaging, or pre-attempt “certification contributing” labels are blockers.
+
+The executable requirement must expose satisfied, missing, stale, conflicting, below-threshold, calibration-required, and non-applicable conditions without collapsing them into one percentage. A lower-scope implemented EvidenceFact cannot satisfy a broader claim merely because no broader evaluator/content path exists.
+
+For the intended ordinary AI-first product, `evaluator_scoring` for Writing/Speaking cannot be marked `SATISFIED` by making optional human verification a hidden mandatory dependency. The release needs an eligible deterministic/automated evaluator path calibrated for the claimed consequence. Until then the learner claim remains unresolved and the scoped product condition remains `CALIBRATION_REQUIRED`/`BLOCKED` as applicable. Optional/imported human evidence may still be admitted under normal Assessment rules.
 
 Official-family product coverage does not imply learner certification mechanically tests every family in every portfolio. Learner claim sufficiency remains Assessment-owned.
 
@@ -347,7 +403,8 @@ This coverage owner adds no parallel contract checklist. A contract or generated
 # Delivery closure
 
 When TargetProfile names a material delivery mode, exam-readiness coverage exposes that interaction honestly. Delivery preparation changes conditions, not Skill/Band truth.
-# Current design-state declaration — 2026-08-22
+
+# Current design-state declaration — 2026-08-29
 
 This is a documentation/design declaration, not production support.
 
@@ -386,12 +443,13 @@ Runtime engineering concern closure             MODELLED
 Boundary/evolution semantics                    MODELLED
 Academic product execution                      NOT YET COVERED
 General Training product execution              NOT YET COVERED
-Bounded Academic Reading TRAINING runtime        IMPLEMENTED (executable evidence only)
+Bounded Academic Reading TRAINING runtime        IMPLEMENTED (non-evidence training only)
+Bounded Academic Reading sampled AT-02 path      IMPLEMENTED (R-QT-02/03 sampled EvidenceFact only; no Band/readiness claim)
 Broader runtime/product execution                NOT YET COVERED
 Validated target-band outcome                   NOT ESTABLISHED
 ```
 
-The current bounded Academic Reading `TRAINING` + `NOT_EVIDENCE_CANDIDATE` bootstrap is executable implementation evidence only. It does not promote Academic Reading above `MODELLED`, establish full Academic/GT execution coverage, or establish product validation.
+The current bounded Academic Reading implementation provides `TRAINING + NOT_EVIDENCE_CANDIDATE` practice plus a separate sampled `AT-02` Assessment path whose admitted EvidenceFact is limited to `R-QT-02`/`R-QT-03` sampled classification performance. Neither path promotes Academic Reading above `MODELLED`, establishes Reading Band/readiness support, establishes full Academic/GT execution coverage, or establishes product validation.
 
 `Runtime engineering concern closure MODELLED` and `Boundary/evolution semantics MODELLED` mean the required design semantics/dispositions are defined; they do not mean runtime/security/contracts/operations implementation or executable verification is complete across the product scope.
 

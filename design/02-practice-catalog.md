@@ -9,7 +9,7 @@ DOES_NOT_OWN: live IELTS facts, Learning Mechanism definitions, Practice Type se
 
 Define the concrete practice choices the learner sees. Canonical Practice Types/Mechanisms remain learning truth; this file packages them into understandable product modes.
 
-The initial catalog contains **28 modes**:
+The current design catalog contains **28 modes**:
 
 ```text
 Listening   6
@@ -21,7 +21,7 @@ Shared      4
 Total      28
 ```
 
-Variant/delivery differences resolve inside an existing mode when the learner interaction remains materially the same.
+Variant/delivery differences resolve inside an existing mode when the learner interaction remains materially the same. The count is descriptive, not a completeness target.
 
 # Listening — 6
 
@@ -96,7 +96,7 @@ Delivery packaging changes interaction conditions, not Writing criteria or Band 
 
 | ID | Mode | Default duration | Learning role | Typical canonical backing |
 |---|---|---:|---|---|
-| `PM-X01` | Vocabulary / Grammar Review | 5–10 min | spaced retrieval for suitable Knowledge Objects | `PT-17`, `PT-18`, `PT-19` |
+| `PM-X01` | Knowledge Learn & Review | 5–15 min | vocabulary/grammar/phonology acquisition, controlled application, and spaced retrieval | `PT-17`, `PT-18`, `PT-19`; `PT-07` when phonological production is targeted |
 | `PM-X02` | Error Remediation | 5–15 min | classified error → fresh corrective action | `PT-04` + RemediationPattern |
 | `PM-X03` | Adaptive Mixed Set | 10–20 min | interleave eligible targets from current learner state | `PT-20`, `PT-21` |
 | `PM-X04` | Full IELTS Mock | about 150 min for Listening+Reading+Writing; Speaking follows the applicable separate/scheduled test configuration | variant/delivery-aware whole-test readiness | `PT-23`; primary purpose `READINESS`; evidence candidacy is configured separately |

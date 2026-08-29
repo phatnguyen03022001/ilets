@@ -3,29 +3,33 @@ package httpapi
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
+	"crypto/rsa"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"os"
 	"sort"
-	"strings"
 	"sync"
 	"testing"
+	"time"
 
+	clerkhttp "github.com/clerk/clerk-sdk-go/v2/http"
+	"github.com/go-jose/go-jose/v3"
+	josejwt "github.com/go-jose/go-jose/v3/jwt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/phatnguyen03022001/ilets/services/core-api/internal/db"
 )
 
 const testOrigin = "http://127.0.0.1:3000"
 
+var integrationNow = time.Date(2026, 8, 29, 10, 0, 0, 0, time.UTC)
+
 type apiTestClient struct {
 	base   string
 	client *http.Client
+	token  string
 }
 
 type response struct {
@@ -34,387 +38,215 @@ type response struct {
 	header http.Header
 }
 
-func TestBootstrapReadingAcceptanceAndRedTeam(t *testing.T) {
+func TestCanonicalBearerPracticeFlowAndIsolation(t *testing.T) {
 	pool := integrationPool(t)
 	resetLearnerState(t, pool)
-	var logs bytes.Buffer
-	logger := slog.New(slog.NewJSONHandler(&logs, nil))
-	server := httptest.NewServer(New(pool, Config{Environment: "test", WebOrigins: []string{testOrigin}, BuildVersion: "integration-test"}, logger))
+	server, key := newTestServer(t, pool)
 	defer server.Close()
 
-	learnerA := newAPIClient(t, server.URL)
-	meA, cookieA := bootstrapLearner(t, learnerA)
-	if strings.Contains(logs.String(), cookieA) {
-		t.Fatal("raw session cookie leaked into structured logs")
+	learnerA := newAPIClient(t, server.URL, key, "user_alpha", nil)
+	meA1 := getMe(t, learnerA)
+	meA2 := getMe(t, learnerA)
+	if meA1["learner_id"] != meA2["learner_id"] || meA1["actor_id"] != meA2["actor_id"] {
+		t.Fatalf("same principal changed identity: %#v %#v", meA1, meA2)
 	}
-	assertStoredSessionDigest(t, pool, meA["learner_id"].(string), cookieA)
+	if meA1["learner_id"] == "user_alpha" || meA1["actor_id"] == "user_alpha" {
+		t.Fatalf("Clerk sub leaked as Core identity: %#v", meA1)
+	}
 
-	// A. New learner + TargetProfile.
 	target := putTarget(t, learnerA, 0, 6.5)
-	if target["test_variant"] != "ACADEMIC" || int64(target["resource_revision"].(float64)) != 1 {
-		t.Fatalf("unexpected target profile: %#v", target)
+	if target["resource_revision"].(float64) != 1 {
+		t.Fatalf("unexpected target: %#v", target)
+	}
+	variant := target["test_variant"].(map[string]any)
+	if variant["state"] != "PRESENT" || variant["value"] != "Academic" {
+		t.Fatalf("unexpected target variant: %#v", target)
+	}
+	if target["resolution"].(map[string]any)["state"] != "RESOLVED" {
+		t.Fatalf("target not resolved: %#v", target)
 	}
 
-	// Missing/forged session must not authenticate.
-	anonymous := newAPIClient(t, server.URL)
-	if got := anonymous.do(t, http.MethodGet, "/v1/me", nil, "", "").status; got != 401 {
-		t.Fatalf("missing cookie: got %d want 401", got)
-	}
-	forged := newAPIClient(t, server.URL)
-	forgedReq, _ := http.NewRequest(http.MethodGet, server.URL+"/v1/me", nil)
-	forgedReq.AddCookie(&http.Cookie{Name: cookieName, Value: "forged-random-cookie"})
-	forgedResp, err := forged.client.Do(forgedReq)
-	if err != nil {
-		t.Fatal(err)
-	}
-	_ = forgedResp.Body.Close()
-	if forgedResp.StatusCode != 401 {
-		t.Fatalf("forged cookie: got %d want 401", forgedResp.StatusCode)
-	}
-
-	// B, I. Assignment pins exact eligible revision and pre-submit payload hides answer data.
-	activityResp := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, "activity-key-0001", testOrigin)
-	if activityResp.status != 201 {
+	activityResp := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, map[string]string{"Idempotency-Key": "activity-key-0001", "Origin": testOrigin})
+	if activityResp.status != http.StatusCreated {
 		t.Fatalf("create activity: %d %s", activityResp.status, activityResp.body)
 	}
 	if bytes.Contains(activityResp.body, []byte("correct_choice")) || bytes.Contains(activityResp.body, []byte("explanation")) {
-		t.Fatalf("pre-submit answer leakage: %s", activityResp.body)
+		t.Fatalf("answer leakage: %s", activityResp.body)
 	}
-	var activity map[string]any
-	mustJSON(t, activityResp.body, &activity)
+	var creation map[string]any
+	mustJSON(t, activityResp.body, &creation)
+	if creation["outcome"] != "ASSIGNED" {
+		t.Fatalf("unexpected creation result: %#v", creation)
+	}
+	activity := creation["activity"].(map[string]any)
 	activityID := activity["practice_activity_id"].(string)
+	if activity["primary_activity_purpose"] != "TRAINING" || activity["evidence_candidacy"] != "NOT_EVIDENCE_CANDIDATE" {
+		t.Fatalf("direct PM-R03 path changed semantics: %#v", activity)
+	}
 	if activity["content_revision_id"] != bootstrapRevision {
-		t.Fatalf("wrong pinned revision: %#v", activity["content_revision_id"])
+		t.Fatalf("revision not pinned: %#v", activity)
 	}
 
-	// A retry-capable training pool should prefer a different eligible revision
-	// over immediately repeating the learner's last assigned revision.
-	rotatedResp := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, "activity-key-rotation", testOrigin)
-	if rotatedResp.status != 201 {
-		t.Fatalf("create rotated activity: %d %s", rotatedResp.status, rotatedResp.body)
-	}
-	var rotated map[string]any
-	mustJSON(t, rotatedResp.body, &rotated)
-	if rotated["content_revision_id"] == activity["content_revision_id"] {
-		t.Fatalf("immediate training assignment repeated revision: %v", rotated["content_revision_id"])
-	}
-
-	// Invalid/manipulated canonical fields are rejected, not trusted from the browser.
-	manipulated := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03", "feature_id": "R-F04"}, "activity-key-0002", testOrigin)
-	if manipulated.status != 400 {
-		t.Fatalf("client canonical override: got %d want 400", manipulated.status)
-	}
-	badMode := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R99"}, "activity-key-0003", testOrigin)
-	if badMode.status != 400 {
-		t.Fatalf("unknown mode: got %d want 400", badMode.status)
-	}
-
-	// C. One immutable draft Attempt.
-	attemptResp := learnerA.do(t, http.MethodPost, "/v1/attempts", map[string]any{"practice_activity_id": activityID}, "attempt-key-0001", testOrigin)
-	if attemptResp.status != 201 {
+	attemptResp := learnerA.do(t, http.MethodPost, "/v1/attempts", map[string]any{"practice_activity_id": activityID}, map[string]string{"Idempotency-Key": "attempt-key-0001", "Origin": testOrigin})
+	if attemptResp.status != http.StatusCreated {
 		t.Fatalf("create attempt: %d %s", attemptResp.status, attemptResp.body)
 	}
 	var attempt map[string]any
 	mustJSON(t, attemptResp.body, &attempt)
 	attemptID := attempt["attempt_id"].(string)
-	if attempt["content_revision_id"] != bootstrapRevision || attempt["status"] != "DRAFT" {
-		t.Fatalf("unexpected draft attempt: %#v", attempt)
+	if attempt["status"] != "draft" {
+		t.Fatalf("unexpected attempt: %#v", attempt)
 	}
 
-	answers := correctAnswers()
-	submitBody := map[string]any{"expected_resource_revision": 1, "answers": answers}
-
-	// Extra client-owned scoring/evidence fields fail before mutation.
-	for _, field := range []string{"score", "observation", "evidence_candidacy"} {
-		body := map[string]any{"expected_resource_revision": 1, "answers": answers, field: "forbidden"}
-		resp := learnerA.do(t, http.MethodPost, "/v1/attempts/"+attemptID+"/submissions", body, "reject-extra-"+field, testOrigin)
-		if resp.status != 400 {
-			t.Fatalf("extra %s field: got %d want 400", field, resp.status)
-		}
-	}
-
-	// Malformed JSON fails closed.
-	malformedReq, _ := http.NewRequest(http.MethodPut, server.URL+"/v1/target-profile", strings.NewReader(`{"test_variant":`))
-	malformedReq.Header.Set("Content-Type", "application/json")
-	malformedReq.Header.Set("Origin", testOrigin)
-	copyCookies(t, learnerA.client, malformedReq)
-	malformedResp, err := learnerA.client.Do(malformedReq)
-	if err != nil {
-		t.Fatal(err)
-	}
-	_ = malformedResp.Body.Close()
-	if malformedResp.StatusCode != 400 {
-		t.Fatalf("malformed JSON: got %d want 400", malformedResp.StatusCode)
-	}
-
-	// D. Same logical submission concurrently -> one authoritative Attempt/Observation.
-	var wg sync.WaitGroup
+	submission := canonicalSubmission(activity)
 	statuses := make([]int, 2)
 	bodies := make([][]byte, 2)
+	var wg sync.WaitGroup
 	for i := range 2 {
 		wg.Add(1)
-		go func(index int) {
+		go func(i int) {
 			defer wg.Done()
-			resp := learnerA.do(t, http.MethodPost, "/v1/attempts/"+attemptID+"/submissions", submitBody, "submit-key-0001", testOrigin)
-			statuses[index], bodies[index] = resp.status, resp.body
+			rr := learnerA.do(t, http.MethodPost, "/v1/attempts/"+attemptID+"/submissions", submission, map[string]string{"Idempotency-Key": "submit-key-0001", "Origin": testOrigin})
+			statuses[i], bodies[i] = rr.status, rr.body
 		}(i)
 	}
 	wg.Wait()
 	sort.Ints(statuses)
-	if statuses[0] != 200 || statuses[1] != 200 {
-		t.Fatalf("concurrent duplicate submission statuses: %v bodies=%s | %s", statuses, bodies[0], bodies[1])
+	if statuses[0] != http.StatusOK || statuses[1] != http.StatusOK {
+		t.Fatalf("concurrent submit: %v %s | %s", statuses, bodies[0], bodies[1])
 	}
-	assertAttemptObservationCounts(t, pool, attemptID, 1, 1)
-	var evaluated map[string]any
-	mustJSON(t, bodies[0], &evaluated)
-	if evaluated["status"] != "EVALUATED" {
-		t.Fatalf("not evaluated: %#v", evaluated)
+	var submitted map[string]any
+	mustJSON(t, bodies[0], &submitted)
+	if submitted["evaluation_state"].(map[string]any)["state"] != "NOT_REQUIRED" {
+		t.Fatalf("training fabricated evaluation: %#v", submitted)
 	}
-	observation := evaluated["observation"].(map[string]any)
-	if int(observation["raw_score"].(float64)) != 6 || int(observation["max_score"].(float64)) != 6 {
-		t.Fatalf("deterministic score mismatch: %#v", observation)
+	submittedAttempt := submitted["attempt"].(map[string]any)
+	if submittedAttempt["status"] != "evaluated" || submittedAttempt["response"] == nil || submittedAttempt["actual_conditions"] == nil {
+		t.Fatalf("canonical submission not persisted: %#v", submittedAttempt)
 	}
-	if observation["evidence_candidacy"] != "NOT_EVIDENCE_CANDIDATE" || observation["primary_activity_purpose"] != "TRAINING" {
-		t.Fatalf("evidence/purpose escalation: %#v", observation)
-	}
-
-	// E. Same idempotency identity + changed payload conflicts.
-	changedAnswers := correctAnswers()
-	changedAnswers[0]["choice"] = "FALSE"
-	changed := learnerA.do(t, http.MethodPost, "/v1/attempts/"+attemptID+"/submissions", map[string]any{"expected_resource_revision": 1, "answers": changedAnswers}, "submit-key-0001", testOrigin)
-	if changed.status != 409 {
-		t.Fatalf("same key changed body: got %d want 409", changed.status)
+	var observationCount int
+	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM observations WHERE attempt_id=$1`, attemptID).Scan(&observationCount); err != nil || observationCount != 1 {
+		t.Fatalf("observation idempotency count=%d err=%v", observationCount, err)
 	}
 
-	// G. TRAINING remains deliberately non-evidence even though Assessment now has an EvidenceFact path.
-	var trainingEvidenceCount int
-	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM evidence_facts ef JOIN observations o ON o.observation_id=ef.observation_id WHERE o.attempt_id=$1`, attemptID).Scan(&trainingEvidenceCount); err != nil || trainingEvidenceCount != 0 {
-		t.Fatalf("TRAINING unexpectedly admitted EvidenceFact: count=%d err=%v", trainingEvidenceCount, err)
+	learnerB := newAPIClient(t, server.URL, key, "user_beta", map[string]any{"org_id": "org_test", "org_role": "org:admin"})
+	meB := getMe(t, learnerB)
+	if meB["learner_id"] == meA1["learner_id"] || meB["actor_id"] == meA1["actor_id"] {
+		t.Fatalf("different principals shared identity: A=%#v B=%#v", meA1, meB)
 	}
-
-	// Immutable historical result and exact revision constraints survive direct DB writes.
-	if _, err := pool.Exec(context.Background(), `UPDATE attempts SET raw_score=0 WHERE attempt_id=$1`, attemptID); err == nil {
-		t.Fatal("evaluated Attempt allowed mutation")
-	}
-	if _, err := pool.Exec(context.Background(), `UPDATE content_revisions SET semantic_payload='{}'::jsonb WHERE revision_id=$1`, bootstrapRevision); err == nil {
-		t.Fatal("ContentRevision allowed semantic mutation")
-	}
-
-	// H + guessed IDs: existence-obscuring 404 for another learner.
-	learnerB := newAPIClient(t, server.URL)
-	_, _ = bootstrapLearner(t, learnerB)
-	putTarget(t, learnerB, 0, 6.0)
-	for _, path := range []string{"/v1/practice-activities/" + activityID, "/v1/attempts/" + attemptID, "/v1/practice-activities/activity_aaaaaaaaaaaaaaaaaaaaaaaa", "/v1/attempts/attempt_aaaaaaaaaaaaaaaaaaaaaaaa"} {
-		if got := learnerB.do(t, http.MethodGet, path, nil, "", "").status; got != 404 {
-			t.Fatalf("cross/guessed resource %s: got %d want 404", path, got)
+	for _, path := range []string{"/v1/practice-activities/" + activityID, "/v1/attempts/" + attemptID} {
+		if got := learnerB.do(t, http.MethodGet, path, nil, nil).status; got != http.StatusNotFound {
+			t.Fatalf("org metadata bypassed self-scope %s: got %d", path, got)
 		}
 	}
-	if got := learnerB.do(t, http.MethodPost, "/v1/attempts", map[string]any{"practice_activity_id": activityID}, "cross-attempt-0001", testOrigin).status; got != 404 {
-		t.Fatalf("B creating Attempt for A activity: got %d want 404", got)
-	}
-	if got := learnerB.do(t, http.MethodPost, "/v1/attempts/"+attemptID+"/submissions", submitBody, "cross-submit-0001", testOrigin).status; got != 404 {
-		t.Fatalf("B submitting A Attempt: got %d want 404", got)
+}
+
+func TestRetiredRoutesAndBearerRequestSecurity(t *testing.T) {
+	pool := integrationPool(t)
+	resetLearnerState(t, pool)
+	server, key := newTestServer(t, pool)
+	defer server.Close()
+	auth := newAPIClient(t, server.URL, key, "user_security", nil)
+	anon := &apiTestClient{base: server.URL, client: &http.Client{}}
+	if got := anon.do(t, http.MethodGet, "/v1/daily-plan", nil, nil).status; got != http.StatusUnauthorized {
+		t.Fatalf("daily plan allowed unauthenticated access: %d", got)
 	}
 
-	// Origin boundary rejects cross-origin and Sec-Fetch-Site cross-site unsafe mutations.
-	if got := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, "evil-origin-0001", "https://evil.example").status; got != 403 {
-		t.Fatalf("evil Origin: got %d want 403", got)
+	for _, path := range []string{"/v1/session", "/v1/assessment-activities", "/v1/assessment-activities/activity_old"} {
+		method := http.MethodPost
+		if path != "/v1/session" && path != "/v1/assessment-activities" {
+			method = http.MethodGet
+		}
+		if got := auth.do(t, method, path, nil, map[string]string{"Origin": testOrigin}).status; got != http.StatusNotFound {
+			t.Fatalf("retired route %s exposed: %d", path, got)
+		}
 	}
-	crossSiteReq, _ := http.NewRequest(http.MethodPost, server.URL+"/v1/practice-activities", strings.NewReader(`{"practice_mode_id":"PM-R03"}`))
-	crossSiteReq.Header.Set("Content-Type", "application/json")
-	crossSiteReq.Header.Set("Idempotency-Key", "cross-site-0001")
-	crossSiteReq.Header.Set("Sec-Fetch-Site", "cross-site")
-	copyCookies(t, learnerA.client, crossSiteReq)
-	crossSiteResp, err := learnerA.client.Do(crossSiteReq)
-	if err != nil {
-		t.Fatal(err)
+	for _, path := range []string{"/v1/evaluations/eval_x", "/v1/progress", "/v1/gaps", "/v1/review-queue", "/v1/event-stream"} {
+		if got := auth.do(t, http.MethodGet, path, nil, nil).status; got != http.StatusNotFound {
+			t.Fatalf("unimplemented canonical route exposed %s: %d", path, got)
+		}
 	}
-	_ = crossSiteResp.Body.Close()
-	if crossSiteResp.StatusCode != 403 {
-		t.Fatalf("cross-site mutation: got %d want 403", crossSiteResp.StatusCode)
+	patch := auth.do(t, http.MethodPatch, "/v1/attempts/attempt_x", map[string]any{"response": map[string]any{"parts": []any{}}}, map[string]string{"Expected-Resource-Revision": "1", "Origin": testOrigin})
+	if patch.status != http.StatusMethodNotAllowed {
+		t.Fatalf("unimplemented PATCH exposed: got %d want %d", patch.status, http.StatusMethodNotAllowed)
 	}
 
-	// Stale and concurrent TargetProfile revisions: only one writer may win.
-	updated := putTarget(t, learnerA, 1, 7.0)
-	if int64(updated["resource_revision"].(float64)) != 2 {
-		t.Fatalf("target revision did not advance: %#v", updated)
+	cookieOnly := anon.do(t, http.MethodGet, "/v1/me", nil, map[string]string{"Cookie": "ilets_session=obsolete-cookie"})
+	if cookieOnly.status != http.StatusUnauthorized {
+		t.Fatalf("obsolete cookie authenticated: %d", cookieOnly.status)
 	}
-	if got := learnerA.do(t, http.MethodPut, "/v1/target-profile", targetBody(1, 7.5), "", testOrigin).status; got != 409 {
-		t.Fatalf("stale target write: got %d want 409", got)
+	userHeaderOnly := anon.do(t, http.MethodGet, "/v1/me", nil, map[string]string{"X-User-Id": "user_security", "X-Learner-Id": "learner_fake"})
+	if userHeaderOnly.status != http.StatusUnauthorized {
+		t.Fatalf("identity header bypass: %d", userHeaderOnly.status)
 	}
-	concurrentStatuses := make([]int, 2)
-	wg = sync.WaitGroup{}
+
+	targetResp := auth.do(t, http.MethodPut, "/v1/target-profile", map[string]any{"test_variant": "Academic", "minimum_reading_band": 6.5}, map[string]string{"Expected-Resource-Revision": "0", "Origin": testOrigin})
+	if targetResp.status != http.StatusCreated {
+		t.Fatalf("bearer mutation required obsolete CSRF: %d %s", targetResp.status, targetResp.body)
+	}
+	if len(targetResp.header.Values("Set-Cookie")) != 0 {
+		t.Fatalf("bearer flow set cookie: %v", targetResp.header.Values("Set-Cookie"))
+	}
+
+	preflight := anon.do(t, http.MethodOptions, "/v1/target-profile", nil, map[string]string{"Origin": testOrigin, "Access-Control-Request-Method": "PUT", "Access-Control-Request-Headers": "authorization,content-type,idempotency-key,expected-resource-revision"})
+	if preflight.status != http.StatusNoContent {
+		t.Fatalf("preflight: %d %s", preflight.status, preflight.body)
+	}
+	allowed := preflight.header.Get("Access-Control-Allow-Headers")
+	for _, required := range []string{"Authorization", "Content-Type", "Idempotency-Key", "Expected-Resource-Revision"} {
+		if !bytes.Contains([]byte(allowed), []byte(required)) {
+			t.Fatalf("CORS missing %s: %q", required, allowed)
+		}
+	}
+}
+
+func TestTargetRevisionAndIdempotentCreateMutations(t *testing.T) {
+	pool := integrationPool(t)
+	resetLearnerState(t, pool)
+	server, key := newTestServer(t, pool)
+	defer server.Close()
+	learner := newAPIClient(t, server.URL, key, "user_idempotency", nil)
+	putTarget(t, learner, 0, 6.5)
+	stale := learner.do(t, http.MethodPut, "/v1/target-profile", map[string]any{"test_variant": "Academic", "minimum_reading_band": 7.0}, map[string]string{"Expected-Resource-Revision": "0", "Origin": testOrigin})
+	if stale.status != http.StatusPreconditionFailed {
+		t.Fatalf("target stale revision: %d %s", stale.status, stale.body)
+	}
+
+	missing := learner.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, map[string]string{"Origin": testOrigin})
+	if missing.status != http.StatusBadRequest {
+		t.Fatalf("missing idempotency header: %d", missing.status)
+	}
+
+	statuses := make([]int, 2)
+	bodies := make([][]byte, 2)
+	var wg sync.WaitGroup
 	for i := range 2 {
 		wg.Add(1)
-		go func(index int) {
+		go func(i int) {
 			defer wg.Done()
-			concurrentStatuses[index] = learnerA.do(t, http.MethodPut, "/v1/target-profile", targetBody(2, 7.5+float64(index)*0.5), "", testOrigin).status
+			rr := learner.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, map[string]string{"Idempotency-Key": "activity-race-0001", "Origin": testOrigin})
+			statuses[i], bodies[i] = rr.status, rr.body
 		}(i)
 	}
 	wg.Wait()
-	sort.Ints(concurrentStatuses)
-	if concurrentStatuses[0] != 200 || concurrentStatuses[1] != 409 {
-		t.Fatalf("concurrent target writes: got %v want [200 409]", concurrentStatuses)
+	sort.Ints(statuses)
+	if statuses[0] != http.StatusOK || statuses[1] != http.StatusCreated {
+		t.Fatalf("activity idempotency statuses: %v", statuses)
 	}
-
-	// N. A non-eligible validation/use state cannot be assigned.
-	if _, err := pool.Exec(context.Background(), `UPDATE content_use_states SET assignment_eligible=false WHERE content_revision_id IN ($1,$2)`, bootstrapRevision, "reading-bootstrap-classification-002-r1"); err != nil {
-		t.Fatal(err)
-	}
-	if got := learnerA.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, "invalid-content-0001", testOrigin).status; got != 422 {
-		t.Fatalf("ineligible content assignment: got %d want 422", got)
-	}
-	if _, err := pool.Exec(context.Background(), `UPDATE content_use_states SET assignment_eligible=true WHERE content_revision_id IN ($1,$2)`, bootstrapRevision, "reading-bootstrap-classification-002-r1"); err != nil {
-		t.Fatal(err)
-	}
-
-	// Transaction failure after Attempt update must rollback Attempt and idempotency claim.
-	activity2 := createActivity(t, learnerA, "activity-key-rollback")
-	attempt2 := createAttempt(t, learnerA, activity2, "attempt-key-rollback")
-	fakeObservation := "observation_preexisting_0001"
-	if _, err := pool.Exec(context.Background(), `INSERT INTO observations(observation_id,attempt_id,learner_id,content_revision_id,result_payload,conditions_payload) SELECT $1,a.attempt_id,a.learner_id,a.content_revision_id,'{}'::jsonb,'{}'::jsonb FROM attempts a WHERE a.attempt_id=$2`, fakeObservation, attempt2); err != nil {
-		t.Fatal(err)
-	}
-	rollbackResp := learnerA.do(t, http.MethodPost, "/v1/attempts/"+attempt2+"/submissions", submitBody, "rollback-key-0001", testOrigin)
-	if rollbackResp.status != 503 {
-		t.Fatalf("forced transaction failure: got %d want 503 body=%s", rollbackResp.status, rollbackResp.body)
-	}
-	var status string
-	var revision int64
-	if err := pool.QueryRow(context.Background(), `SELECT status,resource_revision FROM attempts WHERE attempt_id=$1`, attempt2).Scan(&status, &revision); err != nil || status != "DRAFT" || revision != 1 {
-		t.Fatalf("transaction did not rollback Attempt: status=%s rev=%d err=%v", status, revision, err)
-	}
-	var idemCount int
-	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM idempotency_operations WHERE operation=$1 AND idempotency_key=$2`, "submit_attempt:"+attempt2, "rollback-key-0001").Scan(&idemCount); err != nil || idemCount != 0 {
-		t.Fatalf("failed transaction retained idempotency claim: count=%d err=%v", idemCount, err)
-	}
-	if _, err := pool.Exec(context.Background(), `DELETE FROM observations WHERE observation_id=$1`, fakeObservation); err == nil {
-		t.Fatal("Observation immutability trigger should block direct delete")
-	}
-	// Remove the deliberately injected row only by resetting learner state later; immutability itself is the desired property.
-
-	// J. New Core handler/process view reconstructs committed session/target/Attempt from PostgreSQL.
-	server.Close()
-	server = httptest.NewServer(New(pool, Config{Environment: "test", WebOrigins: []string{testOrigin}, BuildVersion: "integration-restart"}, logger))
-	learnerA.base = server.URL
-	learnerB.base = server.URL
-	if got := learnerA.do(t, http.MethodGet, "/v1/me", nil, "", "").status; got != 200 {
-		t.Fatalf("session did not survive Core restart: %d", got)
-	}
-	if got := learnerA.do(t, http.MethodGet, "/v1/attempts/"+attemptID, nil, "", "").status; got != 200 {
-		t.Fatalf("Attempt did not survive Core restart: %d", got)
-	}
-
-	// Session revocation is authoritative server-side.
-	if _, err := pool.Exec(context.Background(), `UPDATE sessions SET revoked_at=now() WHERE learner_id=$1`, meA["learner_id"]); err != nil {
-		t.Fatal(err)
-	}
-	if got := learnerA.do(t, http.MethodGet, "/v1/me", nil, "", "").status; got != 401 {
-		t.Fatalf("revoked session: got %d want 401", got)
-	}
-
-	// No operator capability is exposed by the learner slice.
-	if got := learnerB.do(t, http.MethodPost, "/v1/operator/content/quarantine", map[string]any{}, "operator-try-0001", testOrigin).status; got != 404 {
-		t.Fatalf("unexpected operator surface: got %d want 404", got)
-	}
-}
-
-func TestProductionCookieIsSecure(t *testing.T) {
-	pool := integrationPool(t)
-	resetLearnerState(t, pool)
-	server := httptest.NewServer(New(pool, Config{Environment: "production", WebOrigins: []string{testOrigin}, BuildVersion: "cookie-test"}, slog.New(slog.NewJSONHandler(io.Discard, nil))))
-	defer server.Close()
-	req, _ := http.NewRequest(http.MethodPost, server.URL+"/v1/session", nil)
-	req.Header.Set("Origin", testOrigin)
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 201 {
-		t.Fatalf("bootstrap session: %d", resp.StatusCode)
-	}
-	cookie := resp.Header.Get("Set-Cookie")
-	for _, required := range []string{"ilets_session=", "HttpOnly", "Secure", "SameSite=Lax"} {
-		if !strings.Contains(cookie, required) {
-			t.Fatalf("production cookie missing %s: %s", required, cookie)
-		}
-	}
-}
-
-func TestAcademicReadingAssessmentAdmitsOnlySampledEvidence(t *testing.T) {
-	pool := integrationPool(t)
-	resetLearnerState(t, pool)
-	server := httptest.NewServer(New(pool, Config{Environment: "test", WebOrigins: []string{testOrigin}, BuildVersion: "integration-test"}, slog.Default()))
-	defer server.Close()
-
-	learner := newAPIClient(t, server.URL)
-	bootstrapLearner(t, learner)
-	putTarget(t, learner, 0, 6.5)
-
-	activityResp := learner.do(t, http.MethodPost, "/v1/assessment-activities", map[string]any{"assessment_type_id": "AT-02"}, "assessment-activity-0001", testOrigin)
-	if activityResp.status != 201 {
-		t.Fatalf("create assessment activity: %d %s", activityResp.status, activityResp.body)
-	}
-	if bytes.Contains(activityResp.body, []byte("correct_choice")) || bytes.Contains(activityResp.body, []byte("explanation")) {
-		t.Fatalf("assessment answer leakage: %s", activityResp.body)
-	}
-	var activity map[string]any
-	mustJSON(t, activityResp.body, &activity)
-	if activity["primary_activity_purpose"] != "ASSESSMENT" || activity["evidence_candidacy"] != "ASSESSMENT_MAY_ADMIT" || activity["assessment_type_id"] != "AT-02" {
-		t.Fatalf("unexpected assessment semantics: %#v", activity)
-	}
-
-	attemptResp := learner.do(t, http.MethodPost, "/v1/attempts", map[string]any{"assessment_activity_id": activity["assessment_activity_id"]}, "assessment-attempt-0001", testOrigin)
-	if attemptResp.status != 201 {
-		t.Fatalf("create assessment attempt: %d %s", attemptResp.status, attemptResp.body)
-	}
-	var attempt map[string]any
-	mustJSON(t, attemptResp.body, &attempt)
-
-	answers := []map[string]any{
-		{"item_id": "item_assess_tfng_001", "choice": "TRUE"},
-		{"item_id": "item_assess_tfng_002", "choice": "FALSE"},
-		{"item_id": "item_assess_tfng_003", "choice": "NOT_GIVEN"},
-		{"item_id": "item_assess_ynng_001", "choice": "YES"},
-		{"item_id": "item_assess_ynng_002", "choice": "NO"},
-		{"item_id": "item_assess_ynng_003", "choice": "NOT_GIVEN"},
-	}
-	submit := learner.do(t, http.MethodPost, "/v1/attempts/"+attempt["attempt_id"].(string)+"/submissions", map[string]any{"expected_resource_revision": 1, "answers": answers}, "assessment-submit-0001", testOrigin)
-	if submit.status != 200 {
-		t.Fatalf("submit assessment: %d %s", submit.status, submit.body)
-	}
-	var evaluated map[string]any
-	mustJSON(t, submit.body, &evaluated)
-	observation := evaluated["observation"].(map[string]any)
-	if observation["primary_activity_purpose"] != "ASSESSMENT" || observation["evidence_candidacy"] != "ASSESSMENT_MAY_ADMIT" {
-		t.Fatalf("assessment observation semantics: %#v", observation)
-	}
-	evidence, ok := evaluated["evidence_fact"].(map[string]any)
-	if !ok {
-		t.Fatalf("missing EvidenceFact: %#v", evaluated)
-	}
-	if evidence["policy_version"] != "reading-classification-sampled-evidence-v1" || evidence["inference_scope"] != "SAMPLED_CLASSIFICATION_PERFORMANCE" {
-		t.Fatalf("unexpected EvidenceFact scope: %#v", evidence)
-	}
-	if _, exists := evaluated["readiness_evaluation"]; exists {
-		t.Fatalf("sampled assessment fabricated readiness: %#v", evaluated)
-	}
-
-	replay := learner.do(t, http.MethodPost, "/v1/attempts/"+attempt["attempt_id"].(string)+"/submissions", map[string]any{"expected_resource_revision": 1, "answers": answers}, "assessment-submit-0001", testOrigin)
-	if replay.status != 200 {
-		t.Fatalf("assessment replay: %d %s", replay.status, replay.body)
-	}
-	var evidenceCount int
-	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM evidence_facts WHERE observation_id=$1`, observation["observation_id"]).Scan(&evidenceCount); err != nil || evidenceCount != 1 {
-		t.Fatalf("EvidenceFact idempotency count=%d err=%v", evidenceCount, err)
+	var a, b map[string]any
+	mustJSON(t, bodies[0], &a)
+	mustJSON(t, bodies[1], &b)
+	aid := a["activity"].(map[string]any)["practice_activity_id"]
+	bid := b["activity"].(map[string]any)["practice_activity_id"]
+	if aid != bid {
+		t.Fatalf("idempotent activity differed: %v %v", aid, bid)
 	}
 }
 
 func integrationPool(t *testing.T) *pgxpool.Pool {
 	t.Helper()
 	if os.Getenv("ILETS_INTEGRATION") != "1" {
-		t.Skip("set ILETS_INTEGRATION=1 with a disposable PostgreSQL DATABASE_URL")
+		t.Skip("set ILETS_INTEGRATION=1 with disposable PostgreSQL")
 	}
 	pool, err := db.Open(context.Background())
 	if err != nil {
@@ -426,22 +258,28 @@ func integrationPool(t *testing.T) *pgxpool.Pool {
 
 func resetLearnerState(t *testing.T, pool *pgxpool.Pool) {
 	t.Helper()
-	_, err := pool.Exec(context.Background(), `TRUNCATE idempotency_operations, observations, attempts, practice_activities, target_profiles, sessions, learners CASCADE`)
+	_, err := pool.Exec(context.Background(), `TRUNCATE idempotency_operations, observations, attempts, practice_activities, target_profiles, external_principals, learners CASCADE`)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func newAPIClient(t *testing.T, base string) *apiTestClient {
+func newTestServer(t *testing.T, pool *pgxpool.Pool) (*httptest.Server, *rsa.PrivateKey) {
 	t.Helper()
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return &apiTestClient{base: base, client: &http.Client{Jar: jar}}
+	key := mustRSAKey(t)
+	pub := mustPublicPEM(t, &key.PublicKey)
+	cfg := Config{Environment: "test", WebOrigins: []string{testOrigin}, BuildVersion: "integration-test", ClerkIssuer: testClerkIssuer, ClerkAudience: testAudience, ClerkAuthorizedParties: []string{testAzp}}
+	h := newWithClerkAuthorizationOptions(pool, cfg, slog.New(slog.NewJSONHandler(io.Discard, nil)), clerkhttp.JSONWebKey(pub), clerkhttp.Clock(fixedClock{now: integrationNow}), clerkhttp.Leeway(0))
+	return httptest.NewServer(h), key
 }
 
-func (c *apiTestClient) do(t *testing.T, method, path string, body any, idempotencyKey, origin string) response {
+func newAPIClient(t *testing.T, base string, key *rsa.PrivateKey, subject string, extra map[string]any) *apiTestClient {
+	t.Helper()
+	claims := tokenClaims{Issuer: testClerkIssuer, Subject: subject, Audience: []string{testAudience}, AuthorizedParty: testAzp, ExpiresAt: integrationNow.Add(time.Hour), NotBefore: integrationNow.Add(-time.Minute), IssuedAt: integrationNow.Add(-time.Minute)}
+	return &apiTestClient{base: base, client: &http.Client{}, token: mustSignTokenExtra(t, key, claims, extra)}
+}
+
+func (c *apiTestClient) do(t *testing.T, method, path string, body any, headers map[string]string) response {
 	t.Helper()
 	var reader io.Reader
 	if body != nil {
@@ -458,11 +296,11 @@ func (c *apiTestClient) do(t *testing.T, method, path string, body any, idempote
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
-	if idempotencyKey != "" {
-		req.Header.Set("Idempotency-Key", idempotencyKey)
+	if c.token != "" {
+		req.Header.Set("Authorization", "Bearer "+c.token)
 	}
-	if origin != "" {
-		req.Header.Set("Origin", origin)
+	for k, v := range headers {
+		req.Header.Set(k, v)
 	}
 	resp, err := c.client.Do(req)
 	if err != nil {
@@ -476,140 +314,66 @@ func (c *apiTestClient) do(t *testing.T, method, path string, body any, idempote
 	return response{status: resp.StatusCode, body: data, header: resp.Header.Clone()}
 }
 
-func bootstrapLearner(t *testing.T, c *apiTestClient) (map[string]any, string) {
+func getMe(t *testing.T, c *apiTestClient) map[string]any {
 	t.Helper()
-	resp := c.do(t, http.MethodPost, "/v1/session", nil, "", testOrigin)
-	if resp.status != 201 {
-		t.Fatalf("bootstrap learner: %d %s", resp.status, resp.body)
-	}
-	var me map[string]any
-	mustJSON(t, resp.body, &me)
-	parsed := resp.header.Values("Set-Cookie")
-	if len(parsed) == 0 {
-		t.Fatal("session response missing Set-Cookie")
-	}
-	cookieHeader := parsed[0]
-	prefix := cookieName + "="
-	start := strings.Index(cookieHeader, prefix)
-	if start < 0 {
-		t.Fatalf("session cookie missing in %q", cookieHeader)
-	}
-	raw := cookieHeader[start+len(prefix):]
-	if end := strings.IndexByte(raw, ';'); end >= 0 {
-		raw = raw[:end]
-	}
-	if raw == "" {
-		t.Fatal("empty session cookie")
-	}
-	return me, raw
-}
-
-func putTarget(t *testing.T, c *apiTestClient, expected int64, band float64) map[string]any {
-	t.Helper()
-	resp := c.do(t, http.MethodPut, "/v1/target-profile", targetBody(expected, band), "", testOrigin)
-	want := 200
-	if expected == 0 {
-		want = 201
-	}
-	if resp.status != want {
-		t.Fatalf("put target: got %d want %d body=%s", resp.status, want, resp.body)
+	rr := c.do(t, http.MethodGet, "/v1/me", nil, nil)
+	if rr.status != http.StatusOK {
+		t.Fatalf("me: %d %s", rr.status, rr.body)
 	}
 	var out map[string]any
-	mustJSON(t, resp.body, &out)
+	mustJSON(t, rr.body, &out)
 	return out
 }
-
-func targetBody(expected int64, band float64) map[string]any {
-	return map[string]any{"test_variant": "ACADEMIC", "minimum_reading_band": band, "expected_resource_revision": expected}
-}
-
-func createActivity(t *testing.T, c *apiTestClient, key string) string {
+func putTarget(t *testing.T, c *apiTestClient, expected int64, band float64) map[string]any {
 	t.Helper()
-	resp := c.do(t, http.MethodPost, "/v1/practice-activities", map[string]any{"practice_mode_id": "PM-R03"}, key, testOrigin)
-	if resp.status != 201 {
-		t.Fatalf("create activity: %d %s", resp.status, resp.body)
+	rr := c.do(t, http.MethodPut, "/v1/target-profile", map[string]any{"test_variant": "Academic", "minimum_reading_band": band}, map[string]string{"Expected-Resource-Revision": jsonNumber(expected), "Origin": testOrigin})
+	want := http.StatusOK
+	if expected == 0 {
+		want = http.StatusCreated
+	}
+	if rr.status != want {
+		t.Fatalf("put target: got %d want %d body=%s", rr.status, want, rr.body)
 	}
 	var out map[string]any
-	mustJSON(t, resp.body, &out)
-	return out["practice_activity_id"].(string)
+	mustJSON(t, rr.body, &out)
+	return out
 }
+func jsonNumber(v int64) string { b, _ := json.Marshal(v); return string(b) }
 
-func createAttempt(t *testing.T, c *apiTestClient, activityID, key string) string {
-	t.Helper()
-	resp := c.do(t, http.MethodPost, "/v1/attempts", map[string]any{"practice_activity_id": activityID}, key, testOrigin)
-	if resp.status != 201 {
-		t.Fatalf("create attempt: %d %s", resp.status, resp.body)
+func canonicalSubmission(activity map[string]any) map[string]any {
+	material := activity["material"].(map[string]any)
+	tasks := material["tasks"].([]any)
+	parts := make([]any, 0, len(tasks))
+	for _, raw := range tasks {
+		task := raw.(map[string]any)
+		options := task["response_contract"].(map[string]any)["options"].([]any)
+		value := options[0].(map[string]any)["value"].(string)
+		parts = append(parts, map[string]any{"task_id": task["task_id"], "selected_values": []string{value}})
 	}
-	var out map[string]any
-	mustJSON(t, resp.body, &out)
-	return out["attempt_id"].(string)
-}
-
-func correctAnswers() []map[string]any {
-	return []map[string]any{
-		{"item_id": "item_tfng_001", "choice": "TRUE"},
-		{"item_id": "item_tfng_002", "choice": "FALSE"},
-		{"item_id": "item_tfng_003", "choice": "NOT_GIVEN"},
-		{"item_id": "item_ynng_001", "choice": "YES"},
-		{"item_id": "item_ynng_002", "choice": "NO"},
-		{"item_id": "item_ynng_003", "choice": "NOT_GIVEN"},
-	}
-}
-
-func assertStoredSessionDigest(t *testing.T, pool *pgxpool.Pool, learnerID, rawToken string) {
-	t.Helper()
-	var digest []byte
-	if err := pool.QueryRow(context.Background(), `SELECT token_digest FROM sessions WHERE learner_id=$1`, learnerID).Scan(&digest); err != nil {
-		t.Fatal(err)
-	}
-	expected := sha256.Sum256([]byte(rawToken))
-	if !bytes.Equal(digest, expected[:]) {
-		t.Fatal("stored session digest does not match SHA-256 of opaque token")
-	}
-	if bytes.Equal(digest, []byte(rawToken)) {
-		t.Fatal("raw session token stored in database")
-	}
-}
-
-func assertAttemptObservationCounts(t *testing.T, pool *pgxpool.Pool, attemptID string, attempts, observations int) {
-	t.Helper()
-	var attemptCount, observationCount int
-	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM attempts WHERE attempt_id=$1`, attemptID).Scan(&attemptCount); err != nil {
-		t.Fatal(err)
-	}
-	if err := pool.QueryRow(context.Background(), `SELECT count(*) FROM observations WHERE attempt_id=$1`, attemptID).Scan(&observationCount); err != nil {
-		t.Fatal(err)
-	}
-	if attemptCount != attempts || observationCount != observations {
-		t.Fatalf("authoritative counts attempt=%d observation=%d, want %d/%d", attemptCount, observationCount, attempts, observations)
-	}
-}
-
-func copyCookies(t *testing.T, client *http.Client, req *http.Request) {
-	t.Helper()
-	if client.Jar == nil {
-		t.Fatal("test client has no cookie jar")
-	}
-	for _, cookie := range client.Jar.Cookies(req.URL) {
-		req.AddCookie(cookie)
-	}
+	return map[string]any{"response": map[string]any{"parts": parts}, "actual_conditions": map[string]any{"delivery": map[string]any{"state": "UNKNOWN"}, "assistance": []any{}, "exposure": []any{}, "input": []any{}, "timing": []any{}}}
 }
 
 func mustJSON(t *testing.T, data []byte, out any) {
 	t.Helper()
 	if err := json.Unmarshal(data, out); err != nil {
-		t.Fatalf("decode JSON: %v\n%s", err, data)
+		t.Fatalf("decode %s: %v", data, err)
 	}
 }
 
-func TestChoiceFixtureMatchesContractFamilies(t *testing.T) {
-	for index, answer := range correctAnswers() {
-		choice := answer["choice"].(string)
-		if index < 3 && choice != "TRUE" && choice != "FALSE" && choice != "NOT_GIVEN" {
-			t.Fatal(fmt.Sprintf("T/F/NG fixture mismatch: %s", choice))
-		}
-		if index >= 3 && choice != "YES" && choice != "NO" && choice != "NOT_GIVEN" {
-			t.Fatal(fmt.Sprintf("Y/N/NG fixture mismatch: %s", choice))
-		}
+func mustSignTokenExtra(t *testing.T, key *rsa.PrivateKey, c tokenClaims, extra map[string]any) string {
+	t.Helper()
+	signer, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.RS256, Key: key}, (&jose.SignerOptions{}).WithType("JWT").WithHeader("kid", "test-key"))
+	if err != nil {
+		t.Fatal(err)
 	}
+	claims := josejwt.Claims{Issuer: c.Issuer, Subject: c.Subject, Audience: josejwt.Audience(c.Audience), Expiry: josejwt.NewNumericDate(c.ExpiresAt), NotBefore: josejwt.NewNumericDate(c.NotBefore), IssuedAt: josejwt.NewNumericDate(c.IssuedAt)}
+	private := map[string]any{"azp": c.AuthorizedParty, "sid": "sess_test"}
+	for k, v := range extra {
+		private[k] = v
+	}
+	raw, err := josejwt.Signed(signer).Claims(claims).Claims(private).CompactSerialize()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return raw
 }

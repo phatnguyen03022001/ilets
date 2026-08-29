@@ -94,7 +94,7 @@ class ClassificationTests(unittest.TestCase):
         self.assertEqual(self.classify("services/core-api/migrations/0002_more.sql").mode, "full")
 
     def test_contract_change_forces_full(self) -> None:
-        self.assertEqual(self.classify("contracts/http/public-v1.json").mode, "full")
+        self.assertEqual(self.classify("contracts/http/public.openapi.yaml").mode, "full")
 
     def test_unknown_path_forces_full(self) -> None:
         self.assertEqual(self.classify("evidence/new-note.md").mode, "full")

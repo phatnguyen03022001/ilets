@@ -1,5 +1,5 @@
 STATUS: CANONICAL
-OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, content identity/revision and lineage semantics, reference contracts between concrete content and canonical objects/external task families, ValidationDecision and similarity-fact representation/history, minimum content-validation semantic obligations, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
+OWNS: conceptual content-instance model, stable content-context identity, stable material presentation identity, content identity/revision and lineage semantics, reference contracts between concrete content and canonical objects/external task families, content serving-role composition, ValidationDecision and similarity-fact representation/history, minimum content-validation semantic obligations, productive/mock content composition, Learning Unit, Stimulus, Practice/Assessment Item, ScaffoldingProfile, ExposureContext, Error/Remediation Pattern, Feedback Artifact, Attempt, Observation, EvidenceFact representation, and content-coverage identity semantics
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md
 DOES_NOT_OWN: external IELTS task-family definitions, Skill/Knowledge/Band truth, curriculum sequence, learning-mechanism policy, Assessment sufficiency, learner-state transitions, content generation/runtime lifecycle or admin workflow, exact wire/storage schema, product activity-purpose/evidence-candidacy policy, or product coverage status
 
@@ -79,6 +79,40 @@ Rules:
 
 Origin may be authored, imported, deterministic/generated, AI-generated, or another eligible mechanism. Origin does not change the semantic or quality obligations applicable to the intended use.
 
+# Content serving roles are composition, not another ontology
+
+The product needs content for acquisition/teaching, guided practice, remediation, retrieval/review, transfer, diagnostic sampling, focused assessment, section/task readiness, full mocks, media-backed learning, and learner-created/saved study material. These are **uses of content**, not mutually exclusive canonical Content classes.
+
+A concrete revision is characterized by its existing semantic composition:
+
+```text
+Stimulus / PracticeItem / AssessmentItem / LearningUnit
++ canonical target/context/family/presentation references where applicable
++ Practice Type or Assessment Type
++ product primary purpose + evidence candidacy downstream
++ scaffold/assistance + difficulty/transfer conditions
++ applicable validation/use eligibility
++ learner ExposureContext at assignment time
+```
+
+Therefore one semantically unchanged ContentRevision may legally serve several uses only when each use independently satisfies its applicable packaging, validation, rights, scaffold, exposure, and evidence conditions. Reusing a revision for teaching does not preserve eligibility for later unseen assessment merely because the revision itself did not change.
+
+Learner-created/saved material and media-backed material enter the same reference/revision model when persisted as product content; source/origin does not create another learning taxonomy.
+
+# Source and origin provenance
+
+Content supply may originate from:
+
+- directly authored material;
+- licensed/imported material;
+- deterministic/template-produced material;
+- pre-generated AI-assisted material;
+- runtime-generated candidate material when a real demand justifies it;
+- learner-provided material where the intended use permits it;
+- external/media-backed source references under the applicable media/rights design.
+
+Origin is provenance, not validation status. Every candidate reaches assignment only after the same applicable canonical-reference, semantic-quality, rights/provenance, scoring/rubric, consequence-specific, and release/use gates. Generated output is not privileged; authored output is not exempt.
+
 # Validation decision semantics
 
 Validation is evidence/decision about a ContentRevision under a named validation policy, not part of the immutable revision identity.
@@ -153,12 +187,14 @@ structural/template similarity
 
 Rules:
 
-1. exact duplication, near duplication, shared stimulus, and semantic similarity are distinct facts;
-2. one Stimulus may intentionally support multiple legitimate PracticeItems or AssessmentItems; shared source alone is not a duplicate error;
-3. similarity thresholds, embeddings/algorithms, and numerical cutoffs are versioned implementation/calibration policy, not canonical constants here;
-4. corpus-level similarity asks whether materially redundant content should coexist in an available pool; learner-specific exposure/novelty asks whether an otherwise valid revision is eligible for this learner/use now;
-5. the same similarity facts may be acceptable for controlled practice or scaffold fading while narrowing or blocking an inference requiring unseen/independent performance;
-6. use/evidence policy consumes similarity plus ExposureContext and decides the consequence. `08-ASSESSMENT.md` owns claim-scoped evidence independence; downstream product assignment owns learner-specific eligibility.
+1. exact duplication, near duplication, shared stimulus, shared template/structure, and semantic prompt/reasoning similarity are distinct facts;
+2. sharing a canonical target, official family, topic, difficulty label, or Content Context does not by itself make two items duplicates; those may be required coverage dimensions;
+3. one Stimulus may intentionally support multiple legitimate PracticeItems or AssessmentItems; shared source alone is not a duplicate error, but prior source exposure may still contaminate an inference that requires unseen stimulus;
+4. a genuinely different transfer opportunity requires variation material to the claim being generalized—not merely a new item ID, cosmetic wording, or topic label;
+5. similarity thresholds, embeddings/algorithms, and numerical cutoffs are versioned implementation/calibration policy, not canonical constants here;
+6. corpus-level similarity asks whether materially redundant content should coexist in available supply; learner-specific exposure/novelty asks whether an otherwise valid revision is eligible for this learner/use now;
+7. the same similarity facts may be useful for controlled repetition/remediation and simultaneously narrow or block transfer, reassessment, or readiness evidence;
+8. use/evidence policy consumes similarity plus ExposureContext and decides the consequence. `08-ASSESSMENT.md` owns claim-scoped evidence independence; downstream product assignment owns learner-specific eligibility.
 
 # Stable Content Context registry
 
@@ -336,6 +372,16 @@ Reservation or assignment for delivery is not by itself proof that the learner a
 
 When an intended use requires proven unseen or sufficiently independent conditions, `UNKNOWN`, missing, or ambiguous material exposure state is not proof of unseen and must not be defaulted to `seen_before = false`. Until the owning downstream policy can establish sufficient exposure/novelty/independence state, that condition remains unresolved/ineligible for that consequence; training that does not require novelty may still remain eligible. `08-ASSESSMENT.md` owns evidence-independence consequences, while downstream product assignment owns learner-specific eligibility.
 
+Exposure consequences are use-scoped:
+
+- exact/similar repeat may remain valid for explanation, guided practice, recovery, scaffold fading, retrieval, or deliberate revision;
+- transfer work requires variation sufficient for the target generalisation;
+- re-evidence/reassessment requires the freshness/independence defined by the applicable EvidenceRequirement;
+- section/full-readiness assembly preserves any unseen/independence condition required by that readiness claim across both item and shared-stimulus exposure;
+- prior model answer, rubric-revealing feedback, transcript/answer reveal, or materially equivalent rehearsed response may contaminate later independent inference even when the next item has a different ID.
+
+No universal cooldown, recency interval, similarity cutoff, or minimum number of fresh items is canonical. Those become evidence-backed policy only where the intended consequence requires them.
+
 # `PracticeItem`
 
 Concrete instance of a Practice Type.
@@ -425,6 +471,43 @@ Invariants:
 - timing, assistance, partial/full-task state, delivery/input mode, capture quality, and other material conditions remain visible;
 - independence/novelty metadata supports correct Assessment inference;
 - the item never decides mastery/certification.
+
+# Productive-skill content composition
+
+Writing/Speaking content preserves enough identity to separate learning support from independent performance. Depending on use, a productive content assembly may include:
+
+- prompt/task/cue/question/follow-up material;
+- required variant, task/part, target Skill Leaves/criteria, and Presentation Class where material;
+- response contract plus timing/preparation/interaction conditions;
+- rubric/criterion/scoring/evaluator reference for measurement uses;
+- worked/model/example material for learning uses, with exposure captured before any later independent claim;
+- pronunciation/shadowing/retell reference material with source/provenance and acoustic/text availability made explicit;
+- conversation/follow-up sets whose adaptive ordering may vary while the target/part/response semantics remain reconstructable.
+
+Rules:
+
+1. model answers/examples are teaching stimuli, not answer authority for open productive tasks and not evidence of learner performance;
+2. exposure to a model, corrected response, cue-specific rehearsal, or substantially equivalent prompt may narrow later independent reassessment;
+3. AI-generated Writing/Speaking prompts or follow-ups are candidates only; generation does not establish construct fit, diversity, independence, rubric compatibility, or evidence safety;
+4. fresh productive reassessment uses another eligible opportunity whose variation/independence satisfies the applicable claim, not merely another revision ID;
+5. Speaking Part 1/2/3 content preserves part identity; a whole-Speaking readiness assembly cannot silently omit a required part;
+6. pronunciation/shadowing material used for training may reuse reference speech freely when pedagogically valid, but exposed reference audio/transcript cannot be ignored when later inference requires independent production/perception.
+
+# Section and full-mock content assembly
+
+A readiness assembly is a composition of exact eligible ContentRevisions, not a new immutable mega-item ontology. The assembly records enough references/provenance to reconstruct what was delivered and to evaluate exposure/independence across its components.
+
+A valid section/task/full-mock assembly preserves:
+
+- one coherent applicable IELTS variant for variant-sensitive Reading/Writing content;
+- the external section/task/part composition owned by `02-IELTS-MODEL.md`;
+- every required official family/presentation/context condition made material by the scoped readiness policy;
+- exact component revision identities plus scoring/rubric/evaluator paths;
+- intended delivery overlay when material;
+- component and shared-stimulus exposure/independence eligibility required by the readiness EvidenceRequirement;
+- no accidental prompt/stimulus/model reuse that invalidates the intended inference.
+
+A mock may intentionally reuse known material for familiarisation only when packaged as such; it must not simultaneously claim unseen/integrated readiness that the exposure invalidates. Partial valid section results preserve their narrower scope.
 
 # `ErrorPattern`
 

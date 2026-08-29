@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/v2.8.0/configuration-schema.json
+package: evaluatoropenapi
+generate:
+  models: true
+  client: true
+  embedded-spec: true
+output: internal/generated/openapi/evaluator/evaluator.gen.go
+compatibility:
+  preserve-original-operation-id-casing-in-embedded-spec: true
+output-options:
+  skip-prune: true
