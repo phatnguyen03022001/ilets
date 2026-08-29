@@ -31,3 +31,9 @@ SET
   target_overall_band = $5, minimum_listening_band = $6, minimum_reading_band = $7, minimum_writing_band = $8, minimum_speaking_band = $9,
   test_date = $10, selected_skill_retake = $11, resource_revision = resource_revision + 1, updated_at = now()
 WHERE learner_id = $1 AND resource_revision = $12;
+
+-- name: LockLearner :one
+SELECT learner_id
+FROM learners
+WHERE learner_id = $1
+FOR UPDATE;

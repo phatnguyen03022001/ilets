@@ -58,6 +58,10 @@ func (s *Server) putTargetProfile(w http.ResponseWriter, r *http.Request, params
 	}
 	defer tx.Rollback(r.Context())
 	queries := sqlcdb.New(tx)
+	if _, lockErr := queries.LockLearner(r.Context(), learner); lockErr != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot update target profile")
+		return
+	}
 	created := false
 	if expected == 0 {
 		rows, execErr := queries.InsertTargetProfile(r.Context(), storage)
@@ -141,6 +145,10 @@ func (s *Server) loadTarget(ctx context.Context, learner string) (public.TargetP
 	if err != nil {
 		return public.TargetProfile{}, err
 	}
+	return targetProfileFromRow(row), nil
+}
+
+func targetProfileFromRow(row sqlcdb.GetTargetProfileRow) public.TargetProfile {
 	result := public.TargetProfile{
 		ResourceRevision:       row.ResourceRevision,
 		TestVariant:            targetVariantState(row.TestVariant),
@@ -159,7 +167,7 @@ func (s *Server) loadTarget(ctx context.Context, learner string) (public.TargetP
 		d := openapi_types.Date{Time: row.TestDate.Time}
 		result.TestDate = &d
 	}
-	return result, nil
+	return result
 }
 
 func targetResolution(row sqlcdb.GetTargetProfileRow) public.TargetResolution {

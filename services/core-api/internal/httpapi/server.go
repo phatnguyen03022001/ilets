@@ -109,6 +109,7 @@ func newWithClerkAuthorizationOptions(pool *pgxpool.Pool, cfg Config, logger *sl
 		r.Get("/v1/me", wrapper.GetMe)
 		r.Get("/v1/target-profile", wrapper.GetTargetProfile)
 		r.Put("/v1/target-profile", wrapper.PutTargetProfile)
+		r.Get("/v1/daily-plan", wrapper.GetDailyPlan)
 		r.Get("/v1/practice-modes", wrapper.ListPracticeModes)
 		r.Post("/v1/practice-activities", wrapper.CreatePracticeActivity)
 		r.Get("/v1/practice-activities/{practice_activity_id}", wrapper.GetPracticeActivity)
@@ -145,6 +146,9 @@ func (g *generatedServer) GetTargetProfile(w http.ResponseWriter, r *http.Reques
 }
 func (g *generatedServer) PutTargetProfile(w http.ResponseWriter, r *http.Request, params public.PutTargetProfileParams) {
 	g.server.putTargetProfile(w, r, params)
+}
+func (g *generatedServer) GetDailyPlan(w http.ResponseWriter, r *http.Request) {
+	g.server.getDailyPlan(w, r)
 }
 func (g *generatedServer) ListPracticeModes(w http.ResponseWriter, r *http.Request) {
 	g.server.listPracticeModes(w, r)
@@ -263,6 +267,32 @@ func (s *Server) getMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, public.Me{ActorId: identity.ActorID, LearnerId: identity.LearnerID})
+}
+
+func claimIdempotencyPayload(ctx context.Context, tx pgx.Tx, learner, operation, key string, payloadHash []byte) ([]byte, bool, error) {
+	queries := sqlcdb.New(tx)
+	_, err := queries.ClaimIdempotency(ctx, sqlcdb.ClaimIdempotencyParams{
+		LearnerID: learner, Operation: operation, IdempotencyKey: key, PayloadHash: payloadHash,
+	})
+	if err == nil {
+		return nil, true, nil
+	}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return nil, false, err
+	}
+	row, err := queries.LockIdempotency(ctx, sqlcdb.LockIdempotencyParams{
+		LearnerID: learner, Operation: operation, IdempotencyKey: key,
+	})
+	if err != nil {
+		return nil, false, err
+	}
+	if !bytes.Equal(row.PayloadHash, payloadHash) {
+		return nil, false, fmt.Errorf("payload conflict")
+	}
+	if len(row.OutcomePayload) == 0 {
+		return nil, false, fmt.Errorf("idempotency outcome missing")
+	}
+	return row.OutcomePayload, false, nil
 }
 
 func claimIdempotency(ctx context.Context, tx pgx.Tx, learner, operation, key string, payloadHash []byte) (string, bool, error) {

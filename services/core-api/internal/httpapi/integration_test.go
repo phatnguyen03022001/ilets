@@ -80,6 +80,9 @@ func TestCanonicalBearerPracticeFlowAndIsolation(t *testing.T) {
 	}
 	activity := creation["activity"].(map[string]any)
 	activityID := activity["practice_activity_id"].(string)
+	if activity["primary_activity_purpose"] != "TRAINING" || activity["evidence_candidacy"] != "NOT_EVIDENCE_CANDIDATE" {
+		t.Fatalf("direct PM-R03 path changed semantics: %#v", activity)
+	}
 	if activity["content_revision_id"] != bootstrapRevision {
 		t.Fatalf("revision not pinned: %#v", activity)
 	}
@@ -145,6 +148,9 @@ func TestRetiredRoutesAndBearerRequestSecurity(t *testing.T) {
 	defer server.Close()
 	auth := newAPIClient(t, server.URL, key, "user_security", nil)
 	anon := &apiTestClient{base: server.URL, client: &http.Client{}}
+	if got := anon.do(t, http.MethodGet, "/v1/daily-plan", nil, nil).status; got != http.StatusUnauthorized {
+		t.Fatalf("daily plan allowed unauthenticated access: %d", got)
+	}
 
 	for _, path := range []string{"/v1/session", "/v1/assessment-activities", "/v1/assessment-activities/activity_old"} {
 		method := http.MethodPost
@@ -155,7 +161,7 @@ func TestRetiredRoutesAndBearerRequestSecurity(t *testing.T) {
 			t.Fatalf("retired route %s exposed: %d", path, got)
 		}
 	}
-	for _, path := range []string{"/v1/daily-plan", "/v1/evaluations/eval_x", "/v1/progress", "/v1/gaps", "/v1/review-queue", "/v1/event-stream"} {
+	for _, path := range []string{"/v1/evaluations/eval_x", "/v1/progress", "/v1/gaps", "/v1/review-queue", "/v1/event-stream"} {
 		if got := auth.do(t, http.MethodGet, path, nil, nil).status; got != http.StatusNotFound {
 			t.Fatalf("unimplemented canonical route exposed %s: %d", path, got)
 		}

@@ -108,6 +108,20 @@ func (q *Queries) InsertTargetProfile(ctx context.Context, arg InsertTargetProfi
 	return result.RowsAffected(), nil
 }
 
+const lockLearner = `-- name: LockLearner :one
+SELECT learner_id
+FROM learners
+WHERE learner_id = $1
+FOR UPDATE
+`
+
+func (q *Queries) LockLearner(ctx context.Context, learnerID string) (string, error) {
+	row := q.db.QueryRow(ctx, lockLearner, learnerID)
+	var learner_id string
+	err := row.Scan(&learner_id)
+	return learner_id, err
+}
+
 const updateTargetProfile = `-- name: UpdateTargetProfile :execrows
 UPDATE target_profiles
 SET

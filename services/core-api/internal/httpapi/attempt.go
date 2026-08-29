@@ -11,8 +11,10 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	assessmentcore "github.com/phatnguyen03022001/ilets/services/core-api/internal/assessment"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
+	plannercore "github.com/phatnguyen03022001/ilets/services/core-api/internal/planner"
 )
 
 func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request, params public.CreateAttemptParams) {
@@ -40,13 +42,21 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request, params pu
 	defer tx.Rollback(r.Context())
 	queries := sqlcdb.New(tx)
 	activity, err := queries.GetActivityForAttempt(r.Context(), sqlcdb.GetActivityForAttemptParams{PracticeActivityID: activityID, LearnerID: learner})
-	if errors.Is(err, pgx.ErrNoRows) || (err == nil && activity.PrimaryActivityPurpose != "TRAINING") {
+	if errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}
 	if err != nil {
 		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot create attempt")
 		return
+	}
+	if activity.PrimaryActivityPurpose != "TRAINING" {
+		var content map[string]any
+		validAssessment := activity.PrimaryActivityPurpose == "ASSESSMENT" && activity.EvidenceCandidacy == "ASSESSMENT_MAY_ADMIT" && activity.AssessmentTypeID != nil && *activity.AssessmentTypeID == "AT-02" && activity.DailyPlanItemID != nil && activity.ContentRevisionID == plannercore.SampledAssessmentRevision && json.Unmarshal(activity.SemanticPayload, &content) == nil && validAssessmentBootstrapContent(content)
+		if !validAssessment {
+			writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
+			return
+		}
 	}
 	replay, claimed, err := claimIdempotency(r.Context(), tx, learner, "create_attempt", key, payloadHash)
 	if err != nil {
@@ -168,12 +178,22 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID
 		writeError(w, r, http.StatusConflict, "STATE_CONFLICT", "attempt already submitted")
 		return
 	}
-	if locked.PrimaryActivityPurpose != "TRAINING" {
+	isTraining := locked.PrimaryActivityPurpose == "TRAINING"
+	isSampledAssessment := locked.PrimaryActivityPurpose == "ASSESSMENT" &&
+		locked.EvidenceCandidacy == "ASSESSMENT_MAY_ADMIT" && locked.AssessmentTypeID != nil && *locked.AssessmentTypeID == "AT-02" &&
+		locked.DailyPlanItemID != nil && locked.ContentRevisionID == plannercore.SampledAssessmentRevision
+	if !isTraining && !isSampledAssessment {
 		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}
 	var content map[string]any
-	if json.Unmarshal(locked.SemanticPayload, &content) != nil || !validBootstrapContent(content) {
+	contentValid := json.Unmarshal(locked.SemanticPayload, &content) == nil
+	if isTraining {
+		contentValid = contentValid && validBootstrapContent(content)
+	} else {
+		contentValid = contentValid && validAssessmentBootstrapContent(content)
+	}
+	if !contentValid {
 		writeError(w, r, http.StatusConflict, "STATE_CONFLICT", "assigned revision cannot be scored safely")
 		return
 	}
@@ -198,15 +218,33 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID
 	}
 	observationID := newID("observation_")
 	result, _ := json.Marshal(map[string]any{"raw_score": rawScore, "max_score": maxScore, "feedback": feedback})
-	conditions, _ := json.Marshal(map[string]any{
+	conditionsPayload := map[string]any{
 		"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"},
 		"official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED",
-		"primary_activity_purpose": "TRAINING", "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE", "actual_conditions": body.ActualConditions,
-	})
+		"primary_activity_purpose": locked.PrimaryActivityPurpose, "evidence_candidacy": locked.EvidenceCandidacy, "actual_conditions": body.ActualConditions,
+	}
+	if isSampledAssessment {
+		conditionsPayload["assessment_type_id"] = "AT-02"
+	}
+	conditions, _ := json.Marshal(conditionsPayload)
 	if err = queries.InsertObservation(r.Context(), sqlcdb.InsertObservationParams{
 		ObservationID: observationID, AttemptID: id, LearnerID: learner, ContentRevisionID: locked.ContentRevisionID,
 		ResultPayload: result, ConditionsPayload: conditions, CreatedAt: pgtype.Timestamptz{Time: now, Valid: true},
-	}); err == nil {
+	}); err == nil && isSampledAssessment && sampledReadingEvidenceEligible(body.ActualConditions) {
+		claimScope, _ := json.Marshal(map[string]any{
+			"assessment_type_id": "AT-02", "content_revision_id": plannercore.SampledAssessmentRevision, "test_variant": "Academic",
+			"canonical_target_ids": []string{"R-QT-02", "R-QT-03"}, "content_context_ids": []string{"CTX-READING-ACADEMIC"},
+			"official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED",
+			"actual_conditions": body.ActualConditions,
+		})
+		err = queries.InsertEvidenceFact(r.Context(), sqlcdb.InsertEvidenceFactParams{
+			EvidenceFactID: newID("evidence_"), ObservationID: observationID, LearnerID: learner, ClaimScope: claimScope,
+			EligibilityReason: "bounded AT-02 sampled classification eligibility conditions satisfied",
+			InferenceScope:    "R-QT-02/R-QT-03 sampled classification performance under the recorded conditions only",
+			PolicyVersion:     assessmentcore.SampledReadingEvidencePolicyVersion, AdmittedAt: pgtype.Timestamptz{Time: now, Valid: true},
+		})
+	}
+	if err == nil {
 		outcome := id
 		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{LearnerID: learner, Operation: "submit_attempt:" + id, IdempotencyKey: key, OutcomeResourceID: &outcome})
 	}
@@ -224,6 +262,50 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID
 		return
 	}
 	writeJSON(w, http.StatusOK, submissionResult(attempt))
+}
+
+func sampledReadingEvidenceEligible(actual public.ActualAttemptConditions) bool {
+	conditions := assessmentcore.SampledReadingConditions{
+		DeliveryNotApplicable: actual.Delivery.State == public.ApplicabilityState("NOT_APPLICABLE"),
+		InputConditionCount:   len(actual.Input), TimingConditionCount: len(actual.Timing),
+		UnknownAssistance: len(actual.Assistance) != 1, UnknownExposure: len(actual.Exposure) != 3,
+	}
+	for _, fact := range actual.Assistance {
+		if fact.ConditionId != "scaffolding_profile" || fact.State != public.ApplicabilityState("PRESENT") || fact.Value == nil {
+			conditions.UnknownAssistance = true
+			continue
+		}
+		value, err := fact.Value.AsConditionFactValue0()
+		if err != nil || value != "NONE" {
+			conditions.UnknownAssistance = true
+			continue
+		}
+		conditions.NoScaffolding = true
+	}
+	seenExposure := map[string]bool{}
+	for _, fact := range actual.Exposure {
+		if seenExposure[fact.ConditionId] || fact.State != public.ApplicabilityState("PRESENT") || fact.Value == nil {
+			conditions.UnknownExposure = true
+			continue
+		}
+		seenExposure[fact.ConditionId] = true
+		value, err := fact.Value.AsConditionFactValue1()
+		if err != nil || value {
+			conditions.UnknownExposure = true
+			continue
+		}
+		switch fact.ConditionId {
+		case "item_revision_seen_before":
+			conditions.ItemRevisionUnseen = true
+		case "stimulus_revision_seen_before":
+			conditions.StimulusRevisionUnseen = true
+		case "prior_feedback_exposure":
+			conditions.NoPriorFeedback = true
+		default:
+			conditions.UnknownExposure = true
+		}
+	}
+	return assessmentcore.AdmitSampledReadingAT02(conditions)
 }
 
 func submissionResult(attempt public.Attempt) public.AttemptSubmissionResult {

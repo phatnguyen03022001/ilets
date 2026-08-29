@@ -47,6 +47,29 @@ type ContentUseState struct {
 	UpdatedAt                   pgtype.Timestamptz
 }
 
+type DailyPlan struct {
+	DailyPlanID                       string
+	LearnerID                         string
+	TargetProfileRevision             *int64
+	TargetContextPayload              []byte
+	UnresolvedTargetConditionsPayload []byte
+	CoverageGapsPayload               []byte
+	GeneratedAt                       pgtype.Timestamptz
+}
+
+type DailyPlanItem struct {
+	PlanItemID                string
+	DailyPlanID               string
+	ContentRevisionID         string
+	ValidationDecisionID      string
+	ValidationPolicyVersion   string
+	ValidationIntendedUse     string
+	PlannedOperationalState   string
+	PlannedAssignmentEligible bool
+	ReasonCode                string
+	CreatedAt                 pgtype.Timestamptz
+}
+
 type EvidenceFact struct {
 	EvidenceFactID    string
 	ObservationID     string
@@ -75,6 +98,7 @@ type IdempotencyOperation struct {
 	PayloadHash       []byte
 	OutcomeResourceID *string
 	CreatedAt         pgtype.Timestamptz
+	OutcomePayload    []byte
 }
 
 type Learner struct {
@@ -103,6 +127,7 @@ type PracticeActivity struct {
 	TestVariant            string
 	AssignedAt             pgtype.Timestamptz
 	AssessmentTypeID       *string
+	DailyPlanItemID        *string
 }
 
 type Session struct {

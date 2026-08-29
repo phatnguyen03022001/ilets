@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
+	plannercore "github.com/phatnguyen03022001/ilets/services/core-api/internal/planner"
 )
 
 func (s *Server) listPracticeModes(w http.ResponseWriter, r *http.Request) {
@@ -44,10 +45,22 @@ func (s *Server) createPracticeActivity(w http.ResponseWriter, r *http.Request, 
 		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "invalid practice activity request")
 		return
 	}
-	if body.PracticeModeId == nil || body.DailyPlanItemId != nil || string(*body.PracticeModeId) != "PM-R03" {
+	if (body.PracticeModeId == nil) == (body.DailyPlanItemId == nil) {
+		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "exactly one assignment source is required")
+		return
+	}
+	if body.DailyPlanItemId != nil {
+		s.createPlannedAssessmentActivity(w, r, learner, key, body)
+		return
+	}
+	if string(*body.PracticeModeId) != "PM-R03" {
 		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "this bounded runtime currently assigns only PM-R03 directly")
 		return
 	}
+	s.createDirectTrainingActivity(w, r, learner, key, body)
+}
+
+func (s *Server) createDirectTrainingActivity(w http.ResponseWriter, r *http.Request, learner, key string, body public.CreatePracticeActivityRequest) {
 	profile, err := s.loadTarget(r.Context(), learner)
 	if errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "Academic TargetProfile context is required for this bounded Reading activity")
@@ -128,6 +141,163 @@ func (s *Server) createPracticeActivity(w http.ResponseWriter, r *http.Request, 
 	writeJSON(w, http.StatusCreated, assignedActivityResult(activity))
 }
 
+func (s *Server) createPlannedAssessmentActivity(w http.ResponseWriter, r *http.Request, learner, key string, body public.CreatePracticeActivityRequest) {
+	payloadHash := hashJSON(body)
+	tx, err := s.db.Begin(r.Context())
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot assign activity")
+		return
+	}
+	defer tx.Rollback(r.Context())
+
+	replay, claimed, err := claimIdempotencyPayload(r.Context(), tx, learner, "create_practice_activity", key, payloadHash)
+	if err != nil {
+		writeError(w, r, http.StatusConflict, "IDEMPOTENCY_CONFLICT", "idempotency key reused with different payload")
+		return
+	}
+	if !claimed {
+		var result public.PracticeActivityCreationResult
+		if err := json.Unmarshal(replay, &result); err != nil {
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot replay assignment")
+			return
+		}
+		if err := tx.Commit(r.Context()); err != nil {
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot replay assignment")
+			return
+		}
+		writeJSON(w, http.StatusOK, result)
+		return
+	}
+
+	queries := sqlcdb.New(tx)
+	if _, err = queries.LockLearner(r.Context(), learner); err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck assignment eligibility")
+		return
+	}
+	planItemID := string(*body.DailyPlanItemId)
+	item, err := queries.GetDailyPlanItemForAssignment(r.Context(), sqlcdb.GetDailyPlanItemForAssignmentParams{PlanItemID: planItemID, LearnerID: learner})
+	if errors.Is(err, pgx.ErrNoRows) {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "The plan item is not currently eligible for this learner.")
+		return
+	}
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck plan item")
+		return
+	}
+
+	targetRow, err := queries.GetTargetProfile(r.Context(), learner)
+	if errors.Is(err, pgx.ErrNoRows) {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("TARGET_UNRESOLVED"), nil, "The current target no longer supports this planned assessment.")
+		return
+	}
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck current target")
+		return
+	}
+	profile := targetProfileFromRow(targetRow)
+	if profile.Resolution.State != public.TargetResolutionState("RESOLVED") {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("TARGET_UNRESOLVED"), profile.Resolution.UnresolvedConditions, "The current target is unresolved for this Academic assessment.")
+		return
+	}
+	if item.TargetProfileRevision == nil || *item.TargetProfileRevision != profile.ResourceRevision || !isResolvedAcademicReadingTarget(profile) {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "The current target no longer matches the plan snapshot.")
+		return
+	}
+	if item.ContentRevisionID != plannercore.SampledAssessmentRevision || item.ValidationPolicyVersion != "bootstrap-reading-assessment-v1" || item.ValidationIntendedUse != "ASSESSMENT_SAMPLED_CLASSIFICATION" || item.PlannedOperationalState != "ACTIVE" || !item.PlannedAssignmentEligible {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "The stored plan item no longer satisfies the bounded assessment invariants.")
+		return
+	}
+
+	current, err := queries.GetSampledReadingAssessmentForPlanning(r.Context())
+	if errors.Is(err, pgx.ErrNoRows) {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CONTENT_UNAVAILABLE"), nil, "The sampled assessment content is not currently assignable.")
+		return
+	}
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck current content eligibility")
+		return
+	}
+	if current.RevisionID != item.ContentRevisionID || current.CurrentValidationDecisionID != item.ValidationDecisionID || current.ValidationPolicyVersion != item.ValidationPolicyVersion || current.IntendedUse != item.ValidationIntendedUse {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CONTENT_UNAVAILABLE"), nil, "The current validation decision no longer matches the planned assessment use.")
+		return
+	}
+	var content map[string]any
+	if json.Unmarshal(current.SemanticPayload, &content) != nil || !validAssessmentBootstrapContent(content) {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CONTENT_UNAVAILABLE"), nil, "The sampled assessment content failed current assignment invariants.")
+		return
+	}
+	exposed, err := queries.HasSampledReadingAssessmentExposure(r.Context(), learner)
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck assessment exposure")
+		return
+	}
+	if exposed {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample has already been materially exposed.")
+		return
+	}
+
+	activityID := newID("activity_")
+	assignedAt, err := queries.InsertAssessmentPracticeActivity(r.Context(), sqlcdb.InsertAssessmentPracticeActivityParams{
+		PracticeActivityID: activityID, LearnerID: learner, ContentRevisionID: current.RevisionID, DailyPlanItemID: &planItemID,
+	})
+	if errors.Is(err, pgx.ErrNoRows) {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample is no longer available as fresh evidence.")
+		return
+	}
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot assign sampled assessment")
+		return
+	}
+	result := assignedActivityResult(safeActivity(activityID, current.RevisionID, assignedAt.Time, content))
+	if err := persistPlannedAssignmentResult(r.Context(), queries, learner, key, result); err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot persist assignment outcome")
+		return
+	}
+	if err := tx.Commit(r.Context()); err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot commit assignment")
+		return
+	}
+	writeJSON(w, http.StatusCreated, result)
+}
+
+func (s *Server) finishPlannedUnavailability(w http.ResponseWriter, r *http.Request, tx pgx.Tx, queries *sqlcdb.Queries, learner, key string, reason public.PracticeActivityUnavailabilityReason, unresolved []public.TargetUnresolvedCondition, explanation string) {
+	if unresolved == nil {
+		unresolved = []public.TargetUnresolvedCondition{}
+	}
+	result := public.PracticeActivityCreationResult{
+		Outcome: public.PracticeActivityCreationResultOutcome("UNAVAILABLE"),
+		Unavailability: &public.PracticeActivityUnavailability{
+			Reason: reason, UnresolvedTargetConditions: unresolved, CoverageGaps: []public.CoverageGap{}, Explanation: &explanation,
+		},
+	}
+	if err := persistPlannedAssignmentResult(r.Context(), queries, learner, key, result); err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot persist assignment outcome")
+		return
+	}
+	if err := tx.Commit(r.Context()); err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot commit assignment outcome")
+		return
+	}
+	writeJSON(w, http.StatusOK, result)
+}
+
+func persistPlannedAssignmentResult(ctx context.Context, queries *sqlcdb.Queries, learner, key string, result public.PracticeActivityCreationResult) error {
+	payload, err := json.Marshal(result)
+	if err != nil {
+		return err
+	}
+	rows, err := queries.SetIdempotencyPayload(ctx, sqlcdb.SetIdempotencyPayloadParams{
+		LearnerID: learner, Operation: "create_practice_activity", IdempotencyKey: key, OutcomePayload: payload,
+	})
+	if err != nil {
+		return err
+	}
+	if rows != 1 {
+		return fmt.Errorf("idempotency outcome row missing")
+	}
+	return nil
+}
+
 func assignedActivityResult(activity public.PracticeActivity) public.PracticeActivityCreationResult {
 	return public.PracticeActivityCreationResult{Outcome: public.PracticeActivityCreationResultOutcome("ASSIGNED"), Activity: &activity}
 }
@@ -155,7 +325,7 @@ func (s *Server) loadActivity(ctx context.Context, learner, id string) (public.P
 		return public.PracticeActivity{}, err
 	}
 	var content map[string]any
-	if err = json.Unmarshal(row.SemanticPayload, &content); err != nil || !validBootstrapContent(content) {
+	if err = json.Unmarshal(row.SemanticPayload, &content); err != nil || (!validBootstrapContent(content) && !validAssessmentBootstrapContent(content)) {
 		if err == nil {
 			err = fmt.Errorf("invalid stored bootstrap content")
 		}
@@ -186,7 +356,20 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 	familyValues := []public.CanonicalId{"IELTS-R-QF-02", "IELTS-R-QF-03"}
 	academic := public.TestVariant("Academic")
 	presentationReason := "No additional material presentation class is defined for this bounded Reading classification content."
+	purpose := public.ActivityPurpose(content["primary_activity_purpose"].(string))
+	candidacy := public.EvidenceCandidacy(content["evidence_candidacy"].(string))
 	deliveryReason := "This bounded Reading training activity has no delivery-mode-specific interaction."
+	assistance := []public.ConditionFact{}
+	exposure := []public.ConditionFact{}
+	if purpose == public.ActivityPurpose("ASSESSMENT") {
+		deliveryReason = "This bounded sampled Reading classification assessment has no delivery-mode-specific interaction."
+		assistance = []public.ConditionFact{stringConditionFact("scaffolding_profile", "NONE")}
+		exposure = []public.ConditionFact{
+			boolConditionFact("item_revision_seen_before", false),
+			boolConditionFact("stimulus_revision_seen_before", false),
+			boolConditionFact("prior_feedback_exposure", false),
+		}
+	}
 	return public.PracticeActivity{
 		PracticeActivityId:     id,
 		ContentRevisionId:      revision,
@@ -198,10 +381,10 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 		OfficialFamilyIds:      public.ScopedCanonicalIds{State: public.ApplicabilityState("PRESENT"), Values: &familyValues},
 		PresentationClassIds:   public.ScopedCanonicalIds{State: public.ApplicabilityState("NOT_APPLICABLE"), Reason: &presentationReason},
 		DeliveryMode:           public.ScopedDeliveryMode{State: public.ApplicabilityState("NOT_APPLICABLE"), Reason: &deliveryReason},
-		PrimaryActivityPurpose: public.ActivityPurpose("TRAINING"),
-		EvidenceCandidacy:      public.EvidenceCandidacy("NOT_EVIDENCE_CANDIDATE"),
-		AssistanceConditions:   []public.ConditionFact{},
-		ExposureConditions:     []public.ConditionFact{},
+		PrimaryActivityPurpose: purpose,
+		EvidenceCandidacy:      candidacy,
+		AssistanceConditions:   assistance,
+		ExposureConditions:     exposure,
 		Material: public.LearnerActivityMaterial{
 			Stimuli: []public.LearnerStimulusBlock{{StimulusId: revision + ":stimulus:1", Kind: public.LearnerStimulusBlockKind("TEXT"), Title: stringValuePointer(stimulus["title"].(string)), Text: stringValuePointer(stimulus["text"].(string))}},
 			Tasks:   tasks,
@@ -210,12 +393,35 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 	}
 }
 
+func stringConditionFact(id, value string) public.ConditionFact {
+	var union public.ConditionFact_Value
+	_ = union.FromConditionFactValue0(value)
+	return public.ConditionFact{ConditionId: id, State: public.ApplicabilityState("PRESENT"), Value: &union}
+}
+
+func boolConditionFact(id string, value bool) public.ConditionFact {
+	var union public.ConditionFact_Value
+	_ = union.FromConditionFactValue1(value)
+	return public.ConditionFact{ConditionId: id, State: public.ApplicabilityState("PRESENT"), Value: &union}
+}
+
+func isResolvedAcademicReadingTarget(profile public.TargetProfile) bool {
+	return profile.Resolution.State == public.TargetResolutionState("RESOLVED") &&
+		profile.TestVariant.State == public.TargetVariantStateState("PRESENT") && profile.TestVariant.Value != nil &&
+		*profile.TestVariant.Value == public.TestVariant("Academic") &&
+		(profile.TargetOverallBand != nil || profile.MinimumReadingBand != nil)
+}
+
 func stringValuePointer[T ~string](value T) *T { return &value }
 
 func validBootstrapContent(content map[string]any) bool {
 	if content["feature_id"] != "R-F04" || content["practice_mode_id"] != "PM-R03" || content["content_context_id"] != "CTX-READING-ACADEMIC" || content["primary_activity_purpose"] != "TRAINING" || content["evidence_candidacy"] != "NOT_EVIDENCE_CANDIDATE" || content["test_variant"] != "ACADEMIC" {
 		return false
 	}
+	return validBootstrapItems(content)
+}
+
+func validBootstrapItems(content map[string]any) bool {
 	stimulus, ok := content["stimulus"].(map[string]any)
 	if !ok || stimulus["title"] == nil || stimulus["text"] == nil {
 		return false

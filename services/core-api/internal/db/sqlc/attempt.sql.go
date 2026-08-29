@@ -56,9 +56,16 @@ func (q *Queries) EvaluateAttempt(ctx context.Context, arg EvaluateAttemptParams
 }
 
 const getActivityForAttempt = `-- name: GetActivityForAttempt :one
-SELECT content_revision_id, primary_activity_purpose
-FROM practice_activities
-WHERE practice_activity_id = $1 AND learner_id = $2
+SELECT
+  pa.content_revision_id,
+  pa.primary_activity_purpose,
+  pa.evidence_candidacy,
+  pa.assessment_type_id,
+  pa.daily_plan_item_id,
+  cr.semantic_payload
+FROM practice_activities pa
+JOIN content_revisions cr ON cr.revision_id = pa.content_revision_id
+WHERE pa.practice_activity_id = $1 AND pa.learner_id = $2
 `
 
 type GetActivityForAttemptParams struct {
@@ -69,12 +76,23 @@ type GetActivityForAttemptParams struct {
 type GetActivityForAttemptRow struct {
 	ContentRevisionID      string
 	PrimaryActivityPurpose string
+	EvidenceCandidacy      string
+	AssessmentTypeID       *string
+	DailyPlanItemID        *string
+	SemanticPayload        []byte
 }
 
 func (q *Queries) GetActivityForAttempt(ctx context.Context, arg GetActivityForAttemptParams) (GetActivityForAttemptRow, error) {
 	row := q.db.QueryRow(ctx, getActivityForAttempt, arg.PracticeActivityID, arg.LearnerID)
 	var i GetActivityForAttemptRow
-	err := row.Scan(&i.ContentRevisionID, &i.PrimaryActivityPurpose)
+	err := row.Scan(
+		&i.ContentRevisionID,
+		&i.PrimaryActivityPurpose,
+		&i.EvidenceCandidacy,
+		&i.AssessmentTypeID,
+		&i.DailyPlanItemID,
+		&i.SemanticPayload,
+	)
 	return i, err
 }
 
@@ -140,6 +158,46 @@ func (q *Queries) InsertAttempt(ctx context.Context, arg InsertAttemptParams) er
 	return err
 }
 
+const insertEvidenceFact = `-- name: InsertEvidenceFact :exec
+INSERT INTO evidence_facts (
+  evidence_fact_id,
+  observation_id,
+  learner_id,
+  claim_scope,
+  eligibility_status,
+  eligibility_reason,
+  inference_scope,
+  policy_version,
+  admitted_at
+)
+VALUES ($1, $2, $3, $4, 'ADMITTED', $5, $6, $7, $8)
+`
+
+type InsertEvidenceFactParams struct {
+	EvidenceFactID    string
+	ObservationID     string
+	LearnerID         string
+	ClaimScope        []byte
+	EligibilityReason string
+	InferenceScope    string
+	PolicyVersion     string
+	AdmittedAt        pgtype.Timestamptz
+}
+
+func (q *Queries) InsertEvidenceFact(ctx context.Context, arg InsertEvidenceFactParams) error {
+	_, err := q.db.Exec(ctx, insertEvidenceFact,
+		arg.EvidenceFactID,
+		arg.ObservationID,
+		arg.LearnerID,
+		arg.ClaimScope,
+		arg.EligibilityReason,
+		arg.InferenceScope,
+		arg.PolicyVersion,
+		arg.AdmittedAt,
+	)
+	return err
+}
+
 const insertObservation = `-- name: InsertObservation :exec
 INSERT INTO observations (observation_id, attempt_id, learner_id, content_revision_id, result_payload, conditions_payload, created_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -169,7 +227,16 @@ func (q *Queries) InsertObservation(ctx context.Context, arg InsertObservationPa
 }
 
 const lockAttemptForSubmission = `-- name: LockAttemptForSubmission :one
-SELECT a.status, a.resource_revision, a.content_revision_id, pa.primary_activity_purpose, cr.semantic_payload
+SELECT
+  a.status,
+  a.resource_revision,
+  a.content_revision_id,
+  a.practice_activity_id,
+  pa.primary_activity_purpose,
+  pa.evidence_candidacy,
+  pa.assessment_type_id,
+  pa.daily_plan_item_id,
+  cr.semantic_payload
 FROM attempts a
 JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 JOIN content_revisions cr ON cr.revision_id = a.content_revision_id
@@ -186,7 +253,11 @@ type LockAttemptForSubmissionRow struct {
 	Status                 string
 	ResourceRevision       int64
 	ContentRevisionID      string
+	PracticeActivityID     string
 	PrimaryActivityPurpose string
+	EvidenceCandidacy      string
+	AssessmentTypeID       *string
+	DailyPlanItemID        *string
 	SemanticPayload        []byte
 }
 
@@ -197,7 +268,11 @@ func (q *Queries) LockAttemptForSubmission(ctx context.Context, arg LockAttemptF
 		&i.Status,
 		&i.ResourceRevision,
 		&i.ContentRevisionID,
+		&i.PracticeActivityID,
 		&i.PrimaryActivityPurpose,
+		&i.EvidenceCandidacy,
+		&i.AssessmentTypeID,
+		&i.DailyPlanItemID,
 		&i.SemanticPayload,
 	)
 	return i, err

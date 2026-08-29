@@ -1,14 +1,30 @@
 -- name: GetActivityForAttempt :one
-SELECT content_revision_id, primary_activity_purpose
-FROM practice_activities
-WHERE practice_activity_id = $1 AND learner_id = $2;
+SELECT
+  pa.content_revision_id,
+  pa.primary_activity_purpose,
+  pa.evidence_candidacy,
+  pa.assessment_type_id,
+  pa.daily_plan_item_id,
+  cr.semantic_payload
+FROM practice_activities pa
+JOIN content_revisions cr ON cr.revision_id = pa.content_revision_id
+WHERE pa.practice_activity_id = $1 AND pa.learner_id = $2;
 
 -- name: InsertAttempt :exec
 INSERT INTO attempts (attempt_id, learner_id, practice_activity_id, content_revision_id, status, resource_revision)
 VALUES ($1, $2, $3, $4, 'DRAFT', 1);
 
 -- name: LockAttemptForSubmission :one
-SELECT a.status, a.resource_revision, a.content_revision_id, pa.primary_activity_purpose, cr.semantic_payload
+SELECT
+  a.status,
+  a.resource_revision,
+  a.content_revision_id,
+  a.practice_activity_id,
+  pa.primary_activity_purpose,
+  pa.evidence_candidacy,
+  pa.assessment_type_id,
+  pa.daily_plan_item_id,
+  cr.semantic_payload
 FROM attempts a
 JOIN practice_activities pa ON pa.practice_activity_id = a.practice_activity_id
 JOIN content_revisions cr ON cr.revision_id = a.content_revision_id
@@ -36,3 +52,17 @@ VALUES ($1, $2, $3, $4, $5, $6, $7);
 SELECT practice_activity_id, content_revision_id, status, resource_revision, created_at, submitted_at, evaluated_at, response_payload, actual_conditions_payload
 FROM attempts
 WHERE attempt_id = $1 AND learner_id = $2;
+
+-- name: InsertEvidenceFact :exec
+INSERT INTO evidence_facts (
+  evidence_fact_id,
+  observation_id,
+  learner_id,
+  claim_scope,
+  eligibility_status,
+  eligibility_reason,
+  inference_scope,
+  policy_version,
+  admitted_at
+)
+VALUES ($1, $2, $3, $4, 'ADMITTED', $5, $6, $7, $8);
