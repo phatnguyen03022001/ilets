@@ -24,6 +24,7 @@ python3 "$ROOT/tools/affected/test_classifier.py"
 python3 "$ROOT/tools/canonical/test_materialize.py"
 python3 "$ROOT/tools/canonical/materialize.py" --check
 
+./tools/contracts/validate.sh
 required_node="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["engines"]["node"])' "$ROOT/apps/web/package.json")"
 actual_node="$(node --version 2>/dev/null || true)"
 if [[ "$actual_node" != "v${required_node}" ]]; then
@@ -34,6 +35,18 @@ fi
 cd "$ROOT/apps/web"
 corepack enable
 pnpm install --frozen-lockfile
+
+cd "$ROOT"
+./tools/contracts/generate.sh
+python3 tools/contracts/test_generate.py
+if ! git diff --exit-code -- \
+  apps/web/src/generated/public/ \
+  services/core-api/internal/generated/openapi/; then
+  echo "generated OpenAPI bindings drift from canonical contracts" >&2
+  exit 1
+fi
+
+cd "$ROOT/apps/web"
 pnpm format:check
 pnpm lint
 pnpm typecheck
@@ -41,7 +54,6 @@ pnpm test
 pnpm build
 
 cd "$ROOT"
-./tools/contracts/validate.sh
 ./tools/db/generate.sh
 ./tools/db/generate.sh
 if ! git diff --exit-code -- \

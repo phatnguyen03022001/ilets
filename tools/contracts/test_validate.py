@@ -113,12 +113,16 @@ class ContractValidatorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("duplicate operationId", result.stderr)
 
-    def test_bootstrap_authority_and_old_generator_are_retired(self) -> None:
+    def test_bootstrap_authority_is_retired_from_generation(self) -> None:
         self.assertFalse((ROOT / "contracts" / "http" / "public-v1.json").exists())
-        self.assertFalse((ROOT / "tools" / "contracts" / "generate.sh").exists())
+        generator = (ROOT / "tools" / "contracts" / "generate.sh").read_text(encoding="utf-8")
+        self.assertIn("contracts/http/public.openapi.yaml", generator)
+        self.assertIn("contracts/http/evaluator.openapi.yaml", generator)
+        self.assertNotIn("public-v1", generator)
         package = (ROOT / "apps" / "web" / "package.json").read_text(encoding="utf-8")
         self.assertNotIn("contract:generate", package)
         self.assertNotIn('"openapi-typescript"', package)
+        self.assertIn('"@hey-api/openapi-ts": "0.99.0"', package)
 
 
 if __name__ == "__main__":
