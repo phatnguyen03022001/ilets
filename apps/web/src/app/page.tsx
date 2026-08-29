@@ -1,5 +1,5 @@
-import ReadingPractice from "@/features/reading-practice/reading-practice";
+import Today from "@/features/today/today";
 
 export default function Page() {
-  return <ReadingPractice />;
+  return <Today />;
 }
