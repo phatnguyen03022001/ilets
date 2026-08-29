@@ -8,9 +8,11 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	assessmentcore "github.com/phatnguyen03022001/ilets/services/core-api/internal/assessment"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
 	plannercore "github.com/phatnguyen03022001/ilets/services/core-api/internal/planner"
+	progressioncore "github.com/phatnguyen03022001/ilets/services/core-api/internal/progression"
 )
 
 func (s *Server) getDailyPlan(w http.ResponseWriter, r *http.Request) {
@@ -40,8 +42,9 @@ func (s *Server) getDailyPlan(w http.ResponseWriter, r *http.Request) {
 
 	queries := sqlcdb.New(s.db)
 	evidence := plannercore.EvidenceState{}
+	admittedSample := false
 	if target.Configured && target.Resolved && target.ReadingRelevant && target.Variant == "ACADEMIC" {
-		evidence.AdmittedSample, err = queries.HasAdmittedSampledReadingEvidence(r.Context(), learner)
+		admittedSample, err = queries.HasAdmittedSampledReadingEvidence(r.Context(), learner)
 		if err == nil {
 			evidence.PriorSampledAssignment, err = queries.HasPriorSampledReadingAssignment(r.Context(), learner)
 		}
@@ -61,7 +64,9 @@ func (s *Server) getDailyPlan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	decision := plannercore.Decide(target, evidence)
+	assessmentInterpretation := assessmentcore.InterpretSampledReadingAT02(admittedSample)
+	progressionConsequence := progressioncore.InterpretSampledReadingAT02(assessmentInterpretation)
+	decision := plannercore.Decide(target, evidence, progressionConsequence)
 	coverageGaps := plannerCoverageGaps(decision, evidence.PriorSampledAssignment)
 	items := []public.DailyPlanItem{}
 	planID := newID("plan_")
@@ -173,8 +178,8 @@ func plannerCoverageGaps(decision plannercore.Decision, priorAssignment bool) []
 		return []public.CoverageGap{{
 			GapClass: public.CoverageGapClass("TRANSITION"), ScopedTargetIds: targets,
 			ConditionId: "progression_transition", ConditionStatus: public.CoverageConditionStatus("BLOCKED"),
-			BlockingConsequence: "The sampled EvidenceFact exists, but the current runtime has no authorized Progression/ActionIntent transition for this bounded scope.",
-			Dependencies:        []string{"sampled AT-02 EvidenceFact for R-QT-02/R-QT-03"}, DemandClass: "learner flow/transition",
+			BlockingConsequence: "Assessment records only the bounded sampled EvidenceFact; no broader learner claim is authorized, so Progression emits no learner GapEvaluation or ActionIntent and the product has no authorized next transition for this scope.",
+			Dependencies:        []string{"authorized scoped Assessment consequence and Progression ActionIntent beyond sampled AT-02 evidence"}, DemandClass: "learner flow/transition",
 			ProvenanceVersion: plannercore.CoverageProvenanceVersion,
 		}}
 	default:
