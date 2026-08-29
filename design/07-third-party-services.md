@@ -362,7 +362,7 @@ Fallback is valid only when a pre-approved route independently meets the same ap
 
 # Database, queue, analytics, and observability provider boundaries
 
-Managed DB/provider recovery must preserve the Core commit boundary, tested restore, migration discipline, and credible provider exit before support. Cache, broker, analytics, search/vector stores never become learner/product authority.
+Managed DB/provider recovery must preserve the Core commit boundary, tested restore, migration discipline, and credible provider exit before support. Where provider-account/control-plane loss or suspension is within the supported recovery envelope, that restore/exit evidence cannot depend exclusively on continued access to the failed/suspended provider control plane; the implementation may use the smallest sufficient PostgreSQL-native export/backup/restore path. This does not require a second live database, multi-cloud replication, or automatic cross-provider failover. Cache, broker, analytics, search/vector stores never become learner/product authority.
 
 Async evaluation/generation/validation alone does not justify a broker. Dedicated dispatch infrastructure appears only after measured need; it never becomes business-state authority.
 

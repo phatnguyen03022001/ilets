@@ -287,6 +287,8 @@ Current deletion/tombstone/retention eligibility also participates in live async
 
 Derived stores cannot silently resurrect deleted data into active product use. Restore procedures reconcile restored data against current deletion/tombstone state before normal active use. Historical semantic records needed for integrity may be retained only under an explicit applicable product/security/data policy rather than accidental persistence.
 
+An authoritative restore also creates a reconciliation boundary for external work that may have been dispatched before the restored snapshot. A pre-restore evaluator/provider execution or callback cannot mutate restored authoritative state merely because its resource/logical IDs still match. Implementation provides an equivalent fencing/reconciliation mechanism sufficient to reject, quarantine, or safely reconcile stale pre-restore external work against the restored current authority before mutation, while preserving retained historical/audit/provenance integrity. The exact fence representation is implementation-owned.
+
 Deletion is therefore a reconciliation fence where consequential, not merely eventual background cleanup. This architecture does not invent retention durations or legal obligations.
 
 Raw learner audio is ephemeral by default under `07-third-party-services.md`. When product purpose explicitly retains audio—for example learner replay/history or evidence/audit needs—the authoritative product state must identify that retained artifact/lifecycle sufficiently for access, export where applicable, deletion, provider cleanup, backup/restore reconciliation, and late-result fencing. Temporary capture/upload/processor copies are not silently promoted into permanent learner history.
@@ -345,7 +347,13 @@ reconcile reservation against observed/estimated actual usage
 release / adjust reservation
 ```
 
-Exact tables/counters/algorithms remain implementation choices. A reservation ledger, transactional counter, or equivalent mechanism is sufficient only if it proves the same concurrency invariant. Cost authority belongs to the logical operation: retry, repair, fallback, escalation, or replacement execution cannot obtain fresh independent allowance that bypasses the original operation's quota/admission policy.
+Exact tables/counters/algorithms remain implementation choices. A reservation ledger, transactional counter, or equivalent mechanism is sufficient only if it proves the same concurrency invariant. Cost authority belongs to the logical operation: retry, repair, fallback, escalation, replacement execution, or continuation cannot obtain fresh independent allowance that bypasses the original operation's quota/admission policy.
+
+If the next eligible paid attempt can conservatively cost more than the logical operation's currently reserved amount, the **same logical-operation reservation** is atomically/serializably extended before the next paid dispatch/execution. Successful extension permits dispatch; failed extension permits no new paid dispatch and the work remains delayed/pending/unavailable under its owning semantics. An ambiguous potentially billable execution retains enough conservative liability/reservation until reconciled or otherwise safely settled under explicit policy. Timeout, cancellation, or client disconnect does not prove zero provider cost.
+
+A financial-period boundary does not erase unresolved prior-period liability, release ambiguous potentially billable reservations, authorize stale optional backlog, or turn a calendar reset into fresh execution eligibility. Before delayed optional paid work executes in a later period, admission revalidates where material its current usefulness/freshness, product eligibility, provider-route status, quota, financial policy, applicable price basis, and unresolved existing liability. A reservation spanning a period boundary remains one logical financial obligation and is reconciled once under its owning model; it is not duplicated merely because the calendar changed.
+
+Where conservative cost estimation is material, the admission decision is reconstructable enough to identify as applicable the provider, capability/model/route identity, price/rate revision or equivalent policy identity, effective/verified time, budget currency, and estimation basis. Live provider-price scraping is not required and provider dashboards remain observations. If the applicable price basis is materially stale, unavailable, or uncertain, new discretionary paid work uses conservative admission or fails closed according to policy; unknown pricing never means unlimited execution. Refunds, credits, or late adjustments may reconcile later without rewriting original usage/execution history. Repeated/duplicated provider usage is reconciled idempotently, and absence of provider-reported usage does not prove zero cost.
 
 Where material, operator cost state considers settled/observed spend, estimated unsettled spend, reserved in-flight spend, short-window burn rate, and projected month-end spend. If current cost-policy state cannot be established safely, deterministic zero/near-zero-cost core paths plus durable learner history/state, payment reconciliation, and integrity paths remain available where their own dependencies are healthy; **new discretionary paid external work fails closed, remains pending/delayed, or is truthfully unavailable according to product semantics**. Uncertainty never means unlimited paid execution.
 
@@ -699,7 +707,7 @@ old Go + new Python
 
 Therefore public/internal compatibility is verified for the actually allowed skew. A breaking boundary change cannot assume atomic simultaneous deployment unless that guarantee is explicit in the deployment contract. Generated bindings do not eliminate runtime skew.
 
-Database migrations likewise support the application/schema compatibility window required by the rollout. This architecture does not select blue-green, canary, rolling, Kubernetes, or another rollout technology.
+Database migrations likewise support the application/schema compatibility window required by the rollout. Capacity verification for rollout/recovery also accounts for applicable overlapping downstream consumers, including old and new revisions, worker/evaluator instances, migrations/admin operations, and recovery/maintenance headroom. Steady-state configuration alone is insufficient when overlap can temporarily create greater DB/queue/provider pressure. Exact formulas and rollout technology remain deployment/verification policy; this architecture does not select blue-green, canary, rolling, Kubernetes, or another rollout technology.
 
 # Async/process correctness
 
@@ -747,6 +755,7 @@ Before product support, incident handling can detect, contain/degrade safely, pr
 Before applicable support promotion:
 
 - backup/restore is verified for authoritative/retained consequential data;
+- where provider-account/control-plane loss or suspension is inside the supported recovery envelope, credible PostgreSQL restore/exit evidence does not depend exclusively on continued access to that failed/suspended provider control plane; the smallest sufficient PostgreSQL-native export/backup/restore mechanism may satisfy this, while exact storage target/schedule remain operations policy;
 - migration/deploy failure has rollback or forward-recovery procedure;
 - network/provider ambiguity stays pending/unresolved until safely reconciled;
 - execution claiming prevents accidental duplicate dispatch when exclusive execution is required and claimant failure remains recoverable without unsafe blind redrive;
@@ -759,6 +768,25 @@ Before applicable support promotion:
 - rollout/recovery preserves the compatibility windows above.
 
 Scale changes capacity/policy, not semantic ownership. Web, Go, and Python are stateless where their owned semantics permit and may horizontally autoscale on Cloud Run, but each deployable has bounded instance capacity and request/work concurrency sized to measured downstream capacity. Autoscaling never means unbounded DB, queue, AI, or provider concurrency; exact max-instance/concurrency numbers remain deployment/load-test policy.
+
+Under capacity exhaustion, the system sacrifices latency and optional capability before correctness, evidence integrity, privacy, security, or durable learner/product state. The conceptual degradation priority is: shed/defer decorative or nonessential work; delay optional generation/transformation; throttle optional realtime; throttle expensive productive evaluation; queue eligible async work only within bounded backlog policy; deny new optional paid work when admission cannot be established; and preserve healthy critical paths such as authentication/authorization, payment reconciliation, learner history, authoritative learner/product state, accepted-work integrity, and truthful reads where their required dependencies remain healthy. This is priority under pressure, not a claim that a critical path survives a failed dependency it requires.
+
+Upstream capacity is bounded by narrower downstream capacity rather than allowed to overwhelm it. Relational invariants are equivalent to:
+
+```text
+Web admitted request load    <= sustainable Core capacity
+Core admitted concurrency    <= safe PostgreSQL + queue/dispatch + provider downstream capacity
+Evaluator execution          <= provider quota/concurrency + financial admission + evaluator compute capacity
+Cloud Tasks dispatch         <= sustainable evaluator/provider execution rate
+```
+
+These relations are canonical; instance counts, pool sizes, concurrency, RPS, quotas, and dispatch numbers remain deployment/load-test/runtime policy.
+
+Scale decisions follow measured evidence: **observe → identify the measured bottleneck → remove obvious query/code/contention inefficiency → tune bounded concurrency/pooling/admission → increase vertical capacity where appropriate → increase horizontal capacity inside downstream bounds → change topology only when measured evidence shows existing capacity knobs are insufficient**. Connection-pool growth is not a default performance strategy.
+
+For PostgreSQL specifically: observe actual query/lock/connection/compute pressure → improve query/index/schema behavior → increase compute when justified → adjust the connection budget only when justified → add read replicas only for proven stale-tolerant read pressure → partition/shard only when materially demonstrated later.
+
+Operators treat likely bottleneck classes as monitoring hypotheses, not guaranteed first-failure points. Economic classes include realtime AI/audio, productive evaluation volume, database active duty cycle, Redis command density, and later ordinary HTTP volume. Technical classes include PostgreSQL connection/compute pressure, provider/AI concurrency, async backlog age, media/upload bursts, and runtime CPU/memory/request capacity. Observable triggers, not speculative numeric bottlenecks, drive scaling.
 
 PostgreSQL remains authoritative durable product truth with bounded pooled application access and a bounded global connection capacity across autoscaled compute. Pool size is not a generic performance knob: observe/query/index/schema tuning precedes or accompanies justified vertical compute increase. Prefer vertical scaling before partitioning/sharding. Read replicas are not selected initially; if later justified, only explicitly stale-tolerant reads may use them where replica lag cannot violate product semantics.
 

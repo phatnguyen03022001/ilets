@@ -136,6 +136,14 @@ Every ordinary surface applies the same quality bar to non-happy paths and contr
 
 Micro-quality must remain consistent across long sessions; visual polish may not introduce avoidable fatigue, content jumping, ambiguous controls, or inaccessible interaction.
 
+## Consequential learner-state explanation contract
+
+When a learner-visible state materially changes what the learner can trust or do, the surface provides enough information to answer three questions: **what happened, why it matters, and what to do next**. This is an information requirement, not a mandatory three-heading layout or frozen copy.
+
+The default surface normally exposes one clear current state and one dominant next/recovery action when a valid action exists, with deeper explanation available on demand. It does not expose provider names, queues, retry machinery, internal taxonomies, or other architecture vocabulary by default unless that detail is itself needed for informed use/support. It does not invent certainty and does not blame the learner for product, infrastructure, capture, evaluator, content, or provider inability.
+
+This applies wherever material, including pending/delayed/degraded/unavailable work, upload/capture failure, unusable audio, conflicting/insufficient/stale evidence, unresolved targets, `CoverageGap`, plan or strategy changes, exhausted paid quota, evaluator unavailability, retry/recovery requirements, and accepted submissions that are still processing. The explanation preserves the owning semantic distinction: infrastructure/provider/product inability never becomes learner weakness, low ability, or fabricated evidence.
+
 ## Beginner and L1 scaffold compatibility
 
 The same visual language supports beginner scaffolding; there is no separate beginner design system. When L1 support materially improves understanding, the product may present a simple L1-first explanation while preserving important canonical English/IELTS terminology and allowing deeper detail on demand.
@@ -150,6 +158,22 @@ Task Response  [info]
 ```
 
 The information control is functional and accessible rather than decorative. As learner independence grows, L1 explanation may become less prominent or user-invoked without changing the underlying canonical target. L1 support remains the localization/explanation overlay defined by `../spec/00-PRODUCT.md`; it never creates a different IELTS standard.
+
+## Minor-safe learner experience boundary
+
+The product uses the same IELTS/product truth and the same calm, non-childish interaction language for all learners. Where a learner is a minor under applicable policy, the product may adapt scaffold/explanation density and apply required safety, privacy, consent, or autonomy constraints without creating Kids/Teen/Adult modes, a separate youth product, or age-derived Band/evidence/learning standards.
+
+Where applicable, the system can distinguish the **learner**, a **guardian/legal representative**, and the **payer** without assuming they are the same actor. Guardian or payer status does not by itself grant unrestricted access to learner history, recordings, AI conversations, evidence, weakness/gap data, or other protected learner information; access and representative actions remain purpose-scoped and governed by the applicable authorization/privacy policy.
+
+Stable product constraints are:
+
+- collect only the minimum age/minor-status information needed to apply the relevant safety/legal/product policy, and use privacy-protective defaults appropriate to that policy;
+- keep learner audio purpose-bounded and minimized; learning history is not commercial behavioural-targeting material, and analytics remains minimized/non-authoritative;
+- notifications do not use manipulative pressure or dark-pattern mechanics;
+- AI interaction remains clearly machine-mediated where disclosure is materially required and is not presented as a pretend-human companion;
+- consent, export, and deletion handling can account for lawful representative rights while preserving appropriate learner transparency and avoiding unnecessary disclosure.
+
+Jurisdiction-specific ages, consent rules, representative rights, and other legal requirements remain external/mutable policy plus release/compliance evidence; they are not frozen into IELTS learning semantics. This boundary is a product-design constraint, not legal advice.
 
 ## Simple surface / deep system invariant
 
@@ -656,6 +680,10 @@ These conditions remain unresolved.
 This is the highest-value eligible next action.
 Your current evidence supports / does not yet support the scoped claim.
 ```
+
+# Validation-hypothesis boundary
+
+Market positioning, age-segment willingness-to-pay/attention/acquisition assumptions, paid-conversion timing, specific learner-loop effectiveness claims, and superiority/outcome comparisons against general AI tools, IELTS providers, flashcard/language apps, or human tutors remain research/empirical validation hypotheses. Canonical design may preserve the capability to test such experiences, but it does not claim those hypotheses are validated or use them to redefine IELTS/evidence/product truth.
 
 # Product-default boundary
 
