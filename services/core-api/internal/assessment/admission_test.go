@@ -23,3 +23,24 @@ func TestAdmitSampledReadingAT02RequiresAllBoundedIndependentConditions(t *testi
 		})
 	}
 }
+
+func TestInterpretSampledReadingAT02PreservesInferenceCeiling(t *testing.T) {
+	before := InterpretSampledReadingAT02(false)
+	if before.State != SampledReadingEvidenceMissing {
+		t.Fatalf("pre-evidence assessment state=%q", before.State)
+	}
+
+	after := InterpretSampledReadingAT02(true)
+	if after.State != SampledReadingEvidenceRecorded {
+		t.Fatalf("post-evidence assessment state=%q", after.State)
+	}
+	if after.Scope.AssessmentTypeID != "AT-02" || after.Scope.TestVariant != "Academic" {
+		t.Fatalf("assessment scope broadened: %#v", after.Scope)
+	}
+	if len(after.Scope.CanonicalTargetIDs) != 2 || after.Scope.CanonicalTargetIDs[0] != "R-QT-02" || after.Scope.CanonicalTargetIDs[1] != "R-QT-03" {
+		t.Fatalf("assessment target scope broadened: %#v", after.Scope.CanonicalTargetIDs)
+	}
+	if after.BroaderClaimEvaluated {
+		t.Fatalf("sampled EvidenceFact was promoted into a broader learner claim: %#v", after)
+	}
+}
