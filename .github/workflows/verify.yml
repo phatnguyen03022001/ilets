@@ -6,7 +6,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-    types: [ready_for_review]
+    types: [labeled]
 
 permissions:
   contents: read
@@ -20,6 +20,7 @@ jobs:
     if: >-
       github.event_name != 'pull_request' ||
       (
+        github.event.label.name == 'ci-candidate' &&
         github.event.pull_request.base.ref == 'main' &&
         github.event.pull_request.head.ref == 'dev' &&
         github.event.pull_request.head.repo.full_name == github.repository &&
