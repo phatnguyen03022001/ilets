@@ -1,5 +1,7 @@
 package planner
 
+import "github.com/phatnguyen03022001/ilets/services/core-api/internal/progression"
+
 const (
 	SampledAssessmentRevision = "reading-bootstrap-assessment-001-r1"
 	CoverageProvenanceVersion = "design/08-coverage-and-support.md@da6ba7c949d8e5288ae0c36beba10b5919d24ee8"
@@ -13,7 +15,6 @@ type Target struct {
 }
 
 type EvidenceState struct {
-	AdmittedSample         bool
 	PriorSampledAssignment bool
 	ContentEligible        bool
 }
@@ -28,7 +29,7 @@ const (
 	ProgressionTransitionGap
 )
 
-func Decide(target Target, evidence EvidenceState) Decision {
+func Decide(target Target, evidence EvidenceState, consequence progression.SampledReadingConsequence) Decision {
 	if !target.Configured || !target.Resolved || !target.ReadingRelevant {
 		return NoBoundedAction
 	}
@@ -38,11 +39,14 @@ func Decide(target Target, evidence EvidenceState) Decision {
 	if target.Variant != "ACADEMIC" {
 		return NoBoundedAction
 	}
-	if evidence.AdmittedSample {
+	if consequence.State == progression.SampledReadingNoAuthorizedNextConsequence {
 		return ProgressionTransitionGap
 	}
 	if evidence.PriorSampledAssignment || !evidence.ContentEligible {
 		return FreshSampleContentGap
 	}
-	return CollectSampledEvidence
+	if consequence.GapEvaluation == progression.EvidenceGap && consequence.ActionIntent == progression.CollectEvidence {
+		return CollectSampledEvidence
+	}
+	return NoBoundedAction
 }
