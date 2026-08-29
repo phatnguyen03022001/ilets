@@ -9,344 +9,344 @@ import (
 	"sort"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
+	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
 )
 
-func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request) {
+func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request, params public.CreateAttemptParams) {
 	learner, ok := s.requireLearner(w, r)
 	if !ok {
 		return
 	}
-	key, ok := requireIdempotency(w, r)
-	if !ok {
+	key := string(params.IdempotencyKey)
+	if !idempotencyPattern.MatchString(key) {
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "valid Idempotency-Key required")
 		return
 	}
-	obj, err := decodeObject(r, []string{"practice_activity_id", "assessment_activity_id"}, []string{})
-	if err != nil {
-		writeError(w, r, 400, "INVALID_REQUEST", err.Error())
+	var body public.CreateAttemptRequest
+	if err := decodeCanonicalJSON(r, &body); err != nil || body.PracticeActivityId == "" {
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "valid practice_activity_id required")
 		return
 	}
-	practiceRaw, hasPractice := obj["practice_activity_id"]
-	assessmentRaw, hasAssessment := obj["assessment_activity_id"]
-	if hasPractice == hasAssessment {
-		writeError(w, r, 400, "INVALID_REQUEST", "exactly one activity identity is required")
-		return
-	}
-	activityField := "practice_activity_id"
-	activityID, err := rawString(map[string]json.RawMessage{"practice_activity_id": practiceRaw}, "practice_activity_id")
-	expectedPurpose := "TRAINING"
-	if hasAssessment {
-		activityField = "assessment_activity_id"
-		activityID, err = rawString(map[string]json.RawMessage{"assessment_activity_id": assessmentRaw}, "assessment_activity_id")
-		expectedPurpose = "ASSESSMENT"
-	}
-	if err != nil {
-		writeError(w, r, 400, "INVALID_REQUEST", "invalid activity identity")
-		return
-	}
-	payloadHash := hashJSON(map[string]any{activityField: activityID})
+	activityID := string(body.PracticeActivityId)
+	payloadHash := hashJSON(body)
 	tx, err := s.db.Begin(r.Context())
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot create attempt")
 		return
 	}
 	defer tx.Rollback(r.Context())
 	queries := sqlcdb.New(tx)
-	activity, err := queries.GetActivityForAttempt(r.Context(), sqlcdb.GetActivityForAttemptParams{
-		PracticeActivityID: activityID,
-		LearnerID:          learner,
-	})
-	if errors.Is(err, pgx.ErrNoRows) {
-		writeError(w, r, 404, "NOT_FOUND", "resource not found")
-		return
-	} else if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
+	activity, err := queries.GetActivityForAttempt(r.Context(), sqlcdb.GetActivityForAttemptParams{PracticeActivityID: activityID, LearnerID: learner})
+	if errors.Is(err, pgx.ErrNoRows) || (err == nil && activity.PrimaryActivityPurpose != "TRAINING") {
+		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}
-	if activity.PrimaryActivityPurpose != expectedPurpose {
-		writeError(w, r, 404, "NOT_FOUND", "resource not found")
+	if err != nil {
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot create attempt")
 		return
 	}
 	replay, claimed, err := claimIdempotency(r.Context(), tx, learner, "create_attempt", key, payloadHash)
 	if err != nil {
-		writeError(w, r, 409, "IDEMPOTENCY_CONFLICT", "idempotency key reused with different payload")
+		writeError(w, r, http.StatusConflict, "IDEMPOTENCY_CONFLICT", "idempotency key reused with different payload")
 		return
 	}
 	if !claimed {
 		if err = tx.Commit(r.Context()); err != nil {
-			writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot replay attempt")
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot replay attempt")
 			return
 		}
 		attempt, loadErr := s.loadAttempt(r.Context(), learner, replay)
 		if loadErr != nil {
-			writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot replay attempt")
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot replay attempt")
 			return
 		}
-		writeJSON(w, 200, attempt)
+		writeJSON(w, http.StatusOK, attempt)
 		return
 	}
 	id := newID("attempt_")
-	if err = queries.InsertAttempt(r.Context(), sqlcdb.InsertAttemptParams{
-		AttemptID:          id,
-		LearnerID:          learner,
-		PracticeActivityID: activityID,
-		ContentRevisionID:  activity.ContentRevisionID,
-	}); err == nil {
+	if err = queries.InsertAttempt(r.Context(), sqlcdb.InsertAttemptParams{AttemptID: id, LearnerID: learner, PracticeActivityID: activityID, ContentRevisionID: activity.ContentRevisionID}); err == nil {
 		outcome := id
-		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
-			LearnerID:         learner,
-			Operation:         "create_attempt",
-			IdempotencyKey:    key,
-			OutcomeResourceID: &outcome,
-		})
+		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{LearnerID: learner, Operation: "create_attempt", IdempotencyKey: key, OutcomeResourceID: &outcome})
 	}
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot create attempt")
 		return
 	}
 	if err = tx.Commit(r.Context()); err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot create attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot create attempt")
 		return
 	}
 	attempt, err := s.loadAttempt(r.Context(), learner, id)
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot read attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot read attempt")
 		return
 	}
-	writeJSON(w, 201, attempt)
+	writeJSON(w, http.StatusCreated, attempt)
 }
 
-func (s *Server) getAttempt(w http.ResponseWriter, r *http.Request) {
+func (s *Server) getAttempt(w http.ResponseWriter, r *http.Request, id public.AttemptId) {
 	learner, ok := s.requireLearner(w, r)
 	if !ok {
 		return
 	}
-	attempt, err := s.loadAttempt(r.Context(), learner, chi.URLParam(r, "attempt_id"))
+	attempt, err := s.loadAttempt(r.Context(), learner, string(id))
 	if errors.Is(err, pgx.ErrNoRows) {
-		writeError(w, r, 404, "NOT_FOUND", "resource not found")
+		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot read attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot read attempt")
 		return
 	}
-	writeJSON(w, 200, attempt)
+	writeJSON(w, http.StatusOK, attempt)
 }
 
-func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request) {
+func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID public.AttemptId, params public.SubmitAttemptParams) {
 	learner, ok := s.requireLearner(w, r)
 	if !ok {
 		return
 	}
-	key, ok := requireIdempotency(w, r)
-	if !ok {
+	key := string(params.IdempotencyKey)
+	if !idempotencyPattern.MatchString(key) {
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "valid Idempotency-Key required")
 		return
 	}
-	obj, err := decodeObject(r, []string{"expected_resource_revision", "answers"}, []string{"expected_resource_revision", "answers"})
+	var body public.SubmitAttemptRequest
+	if err := decodeCanonicalJSON(r, &body); err != nil {
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", "invalid attempt submission")
+		return
+	}
+	answers, err := canonicalAnswers(body.Response)
 	if err != nil {
-		writeError(w, r, 400, "INVALID_REQUEST", err.Error())
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", err.Error())
 		return
 	}
-	expected, err := rawInt64(obj, "expected_resource_revision")
-	if err != nil || expected < 1 {
-		writeError(w, r, 400, "INVALID_REQUEST", "invalid expected_resource_revision")
+	if err := validateActualConditions(body.ActualConditions); err != nil {
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", err.Error())
 		return
 	}
-	var answers []map[string]string
-	if err = parseAnswers(obj["answers"], &answers); err != nil {
-		writeError(w, r, 400, "INVALID_REQUEST", err.Error())
-		return
-	}
-	attemptID := chi.URLParam(r, "attempt_id")
-	payloadHash := hashJSON(map[string]any{"attempt_id": attemptID, "expected_resource_revision": expected, "answers": answers})
+	id := string(attemptID)
+	payloadHash := hashJSON(map[string]any{"attempt_id": id, "submission": body})
 	tx, err := s.db.Begin(r.Context())
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot submit attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot submit attempt")
 		return
 	}
 	defer tx.Rollback(r.Context())
 	queries := sqlcdb.New(tx)
-	locked, err := queries.LockAttemptForSubmission(r.Context(), sqlcdb.LockAttemptForSubmissionParams{
-		AttemptID: attemptID,
-		LearnerID: learner,
-	})
+	locked, err := queries.LockAttemptForSubmission(r.Context(), sqlcdb.LockAttemptForSubmissionParams{AttemptID: id, LearnerID: learner})
 	if errors.Is(err, pgx.ErrNoRows) {
-		writeError(w, r, 404, "NOT_FOUND", "resource not found")
+		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot submit attempt")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot submit attempt")
 		return
 	}
-	replay, claimed, err := claimIdempotency(r.Context(), tx, learner, "submit_attempt:"+attemptID, key, payloadHash)
+	replay, claimed, err := claimIdempotency(r.Context(), tx, learner, "submit_attempt:"+id, key, payloadHash)
 	if err != nil {
-		writeError(w, r, 409, "IDEMPOTENCY_CONFLICT", "idempotency key reused with different payload")
+		writeError(w, r, http.StatusConflict, "IDEMPOTENCY_CONFLICT", "idempotency key reused with different payload")
 		return
 	}
 	if !claimed {
 		if err = tx.Commit(r.Context()); err != nil {
-			writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot replay submission")
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot replay submission")
 			return
 		}
 		attempt, loadErr := s.loadAttempt(r.Context(), learner, replay)
 		if loadErr != nil {
-			writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot replay submission")
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot replay submission")
 			return
 		}
-		writeJSON(w, 200, attempt)
+		writeJSON(w, http.StatusOK, submissionResult(attempt))
 		return
 	}
 	if locked.Status != "DRAFT" {
-		writeError(w, r, 409, "ILLEGAL_LIFECYCLE", "attempt already submitted")
+		writeError(w, r, http.StatusConflict, "STATE_CONFLICT", "attempt already submitted")
 		return
 	}
-	if locked.ResourceRevision != expected {
-		writeError(w, r, 409, "STALE_RESOURCE_REVISION", "attempt revision conflict")
+	if locked.PrimaryActivityPurpose != "TRAINING" {
+		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}
 	var content map[string]any
-	if json.Unmarshal(locked.SemanticPayload, &content) != nil {
-		writeError(w, r, 409, "CONTENT_INVALID", "assigned revision cannot be scored safely")
-		return
-	}
-	validContent := locked.PrimaryActivityPurpose == "TRAINING" && validBootstrapContent(content)
-	if locked.PrimaryActivityPurpose == "ASSESSMENT" {
-		validContent = validAssessmentContent(content)
-	}
-	if !validContent {
-		writeError(w, r, 409, "CONTENT_INVALID", "assigned revision cannot be scored safely")
+	if json.Unmarshal(locked.SemanticPayload, &content) != nil || !validBootstrapContent(content) {
+		writeError(w, r, http.StatusConflict, "STATE_CONFLICT", "assigned revision cannot be scored safely")
 		return
 	}
 	feedback, rawScore, maxScore, scoreErr := score(content, answers)
 	if scoreErr != nil {
-		writeError(w, r, 400, "INVALID_REQUEST", scoreErr.Error())
+		writeError(w, r, http.StatusBadRequest, "INVALID_REQUEST", scoreErr.Error())
 		return
 	}
 	answersJSON, _ := json.Marshal(answers)
+	responseJSON, _ := json.Marshal(body.Response)
+	actualConditionsJSON, _ := json.Marshal(body.ActualConditions)
 	now := time.Now().UTC()
 	rawScore32, maxScore32 := int32(rawScore), int32(maxScore)
 	rows, err := queries.EvaluateAttempt(r.Context(), sqlcdb.EvaluateAttemptParams{
-		AttemptID:        attemptID,
-		LearnerID:        learner,
-		SubmittedAnswers: answersJSON,
-		RawScore:         &rawScore32,
-		MaxScore:         &maxScore32,
-		SubmittedAt:      pgtype.Timestamptz{Time: now, Valid: true},
-		ResourceRevision: expected,
+		AttemptID: id, LearnerID: learner, SubmittedAnswers: answersJSON, ResponsePayload: responseJSON,
+		ActualConditionsPayload: actualConditionsJSON, RawScore: &rawScore32, MaxScore: &maxScore32,
+		SubmittedAt: pgtype.Timestamptz{Time: now, Valid: true}, ResourceRevision: locked.ResourceRevision,
 	})
 	if err != nil || rows != 1 {
-		writeError(w, r, 409, "STALE_RESOURCE_REVISION", "attempt changed concurrently")
+		writeError(w, r, http.StatusConflict, "STATE_CONFLICT", "attempt changed concurrently")
 		return
 	}
 	observationID := newID("observation_")
 	result, _ := json.Marshal(map[string]any{"raw_score": rawScore, "max_score": maxScore, "feedback": feedback})
-	purpose := locked.PrimaryActivityPurpose
-	candidacy := "NOT_EVIDENCE_CANDIDATE"
-	if purpose == "ASSESSMENT" {
-		candidacy = "ASSESSMENT_MAY_ADMIT"
-	}
-	conditions, _ := json.Marshal(map[string]any{"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"}, "official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED", "primary_activity_purpose": purpose, "evidence_candidacy": candidacy, "assessment_type_id": locked.AssessmentTypeID})
+	conditions, _ := json.Marshal(map[string]any{
+		"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"},
+		"official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED",
+		"primary_activity_purpose": "TRAINING", "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE", "actual_conditions": body.ActualConditions,
+	})
 	if err = queries.InsertObservation(r.Context(), sqlcdb.InsertObservationParams{
-		ObservationID:     observationID,
-		AttemptID:         attemptID,
-		LearnerID:         learner,
-		ContentRevisionID: locked.ContentRevisionID,
-		ResultPayload:     result,
-		ConditionsPayload: conditions,
-		CreatedAt:         pgtype.Timestamptz{Time: now, Valid: true},
-	}); err == nil && purpose == "ASSESSMENT" {
-		claimScope, _ := json.Marshal(map[string]any{"assessment_type_id": "AT-02", "test_variant": "ACADEMIC", "content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"}})
-		err = queries.InsertEvidenceFact(r.Context(), sqlcdb.InsertEvidenceFactParams{
-			EvidenceFactID: newID("evidence_"), ObservationID: observationID, LearnerID: learner, ClaimScope: claimScope,
-			EligibilityReason: "OBJECTIVE_KEYED_SAMPLED_ASSESSMENT", InferenceScope: "SAMPLED_CLASSIFICATION_PERFORMANCE",
-			PolicyVersion: "reading-classification-sampled-evidence-v1", AdmittedAt: pgtype.Timestamptz{Time: now, Valid: true},
-		})
-	}
-	if err == nil {
-		outcome := attemptID
-		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{
-			LearnerID:         learner,
-			Operation:         "submit_attempt:" + attemptID,
-			IdempotencyKey:    key,
-			OutcomeResourceID: &outcome,
-		})
+		ObservationID: observationID, AttemptID: id, LearnerID: learner, ContentRevisionID: locked.ContentRevisionID,
+		ResultPayload: result, ConditionsPayload: conditions, CreatedAt: pgtype.Timestamptz{Time: now, Valid: true},
+	}); err == nil {
+		outcome := id
+		_, err = queries.SetIdempotencyOutcome(r.Context(), sqlcdb.SetIdempotencyOutcomeParams{LearnerID: learner, Operation: "submit_attempt:" + id, IdempotencyKey: key, OutcomeResourceID: &outcome})
 	}
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot commit submission")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot commit submission")
 		return
 	}
 	if err = tx.Commit(r.Context()); err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot commit submission")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot commit submission")
 		return
 	}
-	attempt, err := s.loadAttempt(r.Context(), learner, attemptID)
+	attempt, err := s.loadAttempt(r.Context(), learner, id)
 	if err != nil {
-		writeError(w, r, 503, "DATABASE_UNAVAILABLE", "cannot read result")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot read result")
 		return
 	}
-	writeJSON(w, 200, attempt)
+	writeJSON(w, http.StatusOK, submissionResult(attempt))
 }
 
-func (s *Server) loadAttempt(ctx context.Context, learner, id string) (map[string]any, error) {
+func submissionResult(attempt public.Attempt) public.AttemptSubmissionResult {
+	return public.AttemptSubmissionResult{
+		Attempt:         attempt,
+		EvaluationState: public.AttemptSubmissionResult_EvaluationState{State: public.AttemptSubmissionResultEvaluationStateState("NOT_REQUIRED")},
+	}
+}
+
+func (s *Server) loadAttempt(ctx context.Context, learner, id string) (public.Attempt, error) {
 	row, err := sqlcdb.New(s.db).GetAttempt(ctx, sqlcdb.GetAttemptParams{AttemptID: id, LearnerID: learner})
 	if err != nil {
-		return nil, err
+		return public.Attempt{}, err
 	}
-	out := map[string]any{
-		"attempt_id":          id,
-		"content_revision_id": row.ContentRevisionID,
-		"status":              row.Status,
-		"resource_revision":   row.ResourceRevision,
-		"created_at":          row.CreatedAt.Time.UTC().Format(time.RFC3339Nano),
+	attempt := public.Attempt{
+		AttemptId: id, PracticeActivityId: row.PracticeActivityID, ContentRevisionId: row.ContentRevisionID,
+		Status: canonicalAttemptStatus(row.Status), ResourceRevision: row.ResourceRevision, EvaluationIds: []public.ResourceId{},
+		StartedAt: row.CreatedAt.Time.UTC(),
 	}
-	if row.PrimaryActivityPurpose == "ASSESSMENT" {
-		out["assessment_activity_id"] = row.PracticeActivityID
-	} else {
-		out["practice_activity_id"] = row.PracticeActivityID
+	if row.SubmittedAt.Valid {
+		t := row.SubmittedAt.Time.UTC()
+		attempt.SubmittedAt = &t
 	}
-	if row.Status != "EVALUATED" || row.ObservationID == nil || !row.EvaluatedAt.Valid {
-		return out, nil
+	if row.EvaluatedAt.Valid {
+		t := row.EvaluatedAt.Time.UTC()
+		attempt.EvaluatedAt = &t
 	}
-	var resultPayload, conditionsPayload map[string]any
-	if err = json.Unmarshal(row.ResultPayload, &resultPayload); err != nil {
-		return nil, err
-	}
-	if err = json.Unmarshal(row.ConditionsPayload, &conditionsPayload); err != nil {
-		return nil, err
-	}
-	evaluated := row.EvaluatedAt.Time.UTC()
-	out["evaluated_at"] = evaluated.Format(time.RFC3339Nano)
-	out["feedback"] = resultPayload["feedback"]
-	out["observation"] = map[string]any{
-		"observation_id":           *row.ObservationID,
-		"attempt_id":               id,
-		"content_revision_id":      row.ContentRevisionID,
-		"content_context_id":       conditionsPayload["content_context_id"],
-		"skill_target_ids":         conditionsPayload["skill_target_ids"],
-		"official_family_ids":      conditionsPayload["official_family_ids"],
-		"scoring_method":           conditionsPayload["scoring_method"],
-		"raw_score":                resultPayload["raw_score"],
-		"max_score":                resultPayload["max_score"],
-		"primary_activity_purpose": conditionsPayload["primary_activity_purpose"],
-		"evidence_candidacy":       conditionsPayload["evidence_candidacy"],
-		"created_at":               evaluated.Format(time.RFC3339Nano),
-	}
-	if row.EvidenceFactID != nil && row.AdmittedAt.Valid {
-		var claimScope map[string]any
-		if err = json.Unmarshal(row.ClaimScope, &claimScope); err != nil {
-			return nil, err
+	if len(row.ResponsePayload) > 0 {
+		var response public.AttemptResponse
+		if err := json.Unmarshal(row.ResponsePayload, &response); err != nil {
+			return public.Attempt{}, err
 		}
-		out["evidence_fact"] = map[string]any{
-			"evidence_fact_id": *row.EvidenceFactID, "observation_ref": *row.ObservationID, "claim_scope": claimScope,
-			"eligibility_status": *row.EligibilityStatus, "eligibility_reason": *row.EligibilityReason,
-			"inference_scope": *row.InferenceScope, "policy_version": *row.PolicyVersion,
-			"admitted_at": row.AdmittedAt.Time.UTC().Format(time.RFC3339Nano),
+		attempt.Response = &response
+	}
+	if len(row.ActualConditionsPayload) > 0 {
+		var conditions public.ActualAttemptConditions
+		if err := json.Unmarshal(row.ActualConditionsPayload, &conditions); err != nil {
+			return public.Attempt{}, err
+		}
+		attempt.ActualConditions = &conditions
+	}
+	return attempt, nil
+}
+
+func canonicalAttemptStatus(status string) public.AttemptStatus {
+	switch status {
+	case "DRAFT":
+		return public.AttemptStatus("draft")
+	case "EVALUATED":
+		return public.AttemptStatus("evaluated")
+	default:
+		return public.AttemptStatus("invalid")
+	}
+}
+
+func canonicalAnswers(response public.AttemptResponse) ([]map[string]string, error) {
+	if len(response.Parts) == 0 {
+		return nil, fmt.Errorf("response.parts must not be empty")
+	}
+	answers := make([]map[string]string, 0, len(response.Parts))
+	seen := map[string]struct{}{}
+	for _, part := range response.Parts {
+		if part.TaskId == "" || part.SelectedValues == nil || part.Text != nil || part.MediaReference != nil || len(*part.SelectedValues) != 1 {
+			return nil, fmt.Errorf("this bounded activity requires one selected value for each task")
+		}
+		if _, exists := seen[part.TaskId]; exists {
+			return nil, fmt.Errorf("duplicate response for %s", part.TaskId)
+		}
+		seen[part.TaskId] = struct{}{}
+		answers = append(answers, map[string]string{"item_id": part.TaskId, "choice": (*part.SelectedValues)[0]})
+	}
+	return answers, nil
+}
+
+func validateActualConditions(c public.ActualAttemptConditions) error {
+	if err := validateScopedDelivery(c.Delivery); err != nil {
+		return err
+	}
+	groups := [][]public.ConditionFact{c.Assistance, c.Exposure, c.Input, c.Timing}
+	for _, group := range groups {
+		for _, fact := range group {
+			if fact.ConditionId == "" {
+				return fmt.Errorf("condition_id is required")
+			}
+			switch fact.State {
+			case public.ApplicabilityState("PRESENT"):
+				if fact.Value == nil {
+					return fmt.Errorf("present condition requires value")
+				}
+			case public.ApplicabilityState("NOT_APPLICABLE"):
+				if fact.Reason == nil || fact.Value != nil {
+					return fmt.Errorf("not-applicable condition requires reason and no value")
+				}
+			case public.ApplicabilityState("UNKNOWN"):
+				if fact.Value != nil {
+					return fmt.Errorf("unknown condition cannot carry value")
+				}
+			default:
+				return fmt.Errorf("invalid condition state")
+			}
 		}
 	}
-	return out, nil
+	return nil
+}
+
+func validateScopedDelivery(v public.ScopedDeliveryMode) error {
+	switch v.State {
+	case public.ApplicabilityState("PRESENT"):
+		if v.Value == nil || !validDeliveryMode(*v.Value) {
+			return fmt.Errorf("present delivery requires valid value")
+		}
+	case public.ApplicabilityState("NOT_APPLICABLE"):
+		if v.Reason == nil || v.Value != nil {
+			return fmt.Errorf("not-applicable delivery requires reason and no value")
+		}
+	case public.ApplicabilityState("UNKNOWN"):
+		if v.Value != nil {
+			return fmt.Errorf("unknown delivery cannot carry value")
+		}
+	default:
+		return fmt.Errorf("invalid delivery state")
+	}
+	return nil
 }
 
 func score(content map[string]any, answers []map[string]string) ([]any, int, int, error) {

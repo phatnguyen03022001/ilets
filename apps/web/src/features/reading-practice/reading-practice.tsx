@@ -1,10 +1,23 @@
 "use client";
 
+import { SignInButton, useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import type { components } from "@/generated/public-v1";
+import {
+  createAttempt,
+  createPracticeActivity,
+  getTargetProfile,
+  putTargetProfile,
+  submitAttempt,
+  type Attempt,
+  type AttemptSubmissionResult,
+  type PracticeActivity,
+  type TargetProfile,
+  type TargetProfileReadResult,
+  type TestVariant,
+} from "@/generated/public";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,15 +30,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { api } from "@/lib/api";
+import { createPublicApi } from "@/lib/api";
 import { newIdempotencyKey } from "@/lib/idempotency";
-
-type TargetProfile = components["schemas"]["TargetProfile"];
-type TestVariant = components["schemas"]["TestVariant"];
-type PracticeActivity = components["schemas"]["PracticeActivity"];
-type AssessmentActivity = components["schemas"]["AssessmentActivity"];
-type Attempt = components["schemas"]["Attempt"];
-type Choice = components["schemas"]["Choice"];
 
 type TargetForm = {
   testVariant: "" | TestVariant;
@@ -36,15 +42,34 @@ type TargetForm = {
   minimumSpeakingBand: string;
 };
 
-type AnswerForm = {
-  answers: Record<string, Choice>;
-};
+type AnswerForm = { answers: Record<string, string> };
 
 const targetQueryKey = ["target-profile"] as const;
+
+function apiError(error: unknown, fallback: string) {
+  if (
+    error &&
+    typeof error === "object" &&
+    "error" in error &&
+    error.error &&
+    typeof error.error === "object" &&
+    "message" in error.error &&
+    typeof error.error.message === "string"
+  ) {
+    return error.error.message;
+  }
+  return fallback;
+}
+
+function configuredProfile(result: TargetProfileReadResult | undefined) {
+  return result?.state === "CONFIGURED" ? result.profile : undefined;
+}
 
 export default function ReadingPractice() {
   const t = useTranslations("Reading");
   const queryClient = useQueryClient();
+  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const api = useMemo(() => createPublicApi(getToken), [getToken]);
   const targetForm = useForm<TargetForm>({
     defaultValues: {
       testVariant: "",
@@ -55,204 +80,92 @@ export default function ReadingPractice() {
       minimumSpeakingBand: "",
     },
   });
-  const answerForm = useForm<AnswerForm>({
-    defaultValues: { answers: {} },
-  });
+  const answerForm = useForm<AnswerForm>({ defaultValues: { answers: {} } });
 
-  const sessionQuery = useQuery({
-    queryKey: ["learner-session"],
-    staleTime: Infinity,
-    queryFn: async () => {
-      const response = await api.POST("/v1/session");
-      if (response.error)
-        throw new Error(response.error.error.message || t("errors.session"));
-      return response.data;
-    },
-  });
-
-  const targetQuery = useQuery<TargetProfile | null>({
+  const targetQuery = useQuery({
     queryKey: targetQueryKey,
-    enabled: sessionQuery.isSuccess,
+    enabled: isLoaded && isSignedIn,
     queryFn: async () => {
-      const response = await api.GET("/v1/target-profile");
-      if (response.response.status === 404) return null;
+      const response = await getTargetProfile({ client: api });
       if (response.error)
-        throw new Error(response.error.error.message || t("errors.targetRead"));
-      return response.data ?? null;
+        throw new Error(apiError(response.error, t("errors.targetRead")));
+      if (!response.data) throw new Error(t("errors.targetRead"));
+      return response.data;
     },
   });
 
   const targetMutation = useMutation({
-    mutationFn: async ({
-      testVariant,
-      targetOverallBand,
-      minimumListeningBand,
-      minimumReadingBand,
-      minimumWritingBand,
-      minimumSpeakingBand,
-    }: TargetForm) => {
-      if (!testVariant) throw new Error(t("errors.targetVariant"));
-
-      const overallBand = targetOverallBand
-        ? Number(targetOverallBand)
-        : undefined;
-      const listeningBand = minimumListeningBand
-        ? Number(minimumListeningBand)
-        : undefined;
-      const readingBand = minimumReadingBand
-        ? Number(minimumReadingBand)
-        : undefined;
-      const writingBand = minimumWritingBand
-        ? Number(minimumWritingBand)
-        : undefined;
-      const speakingBand = minimumSpeakingBand
-        ? Number(minimumSpeakingBand)
-        : undefined;
-      const hasAnyBand = Boolean(
-        overallBand ??
-        listeningBand ??
-        readingBand ??
-        writingBand ??
-        speakingBand,
-      );
-      if (!hasAnyBand) throw new Error(t("errors.targetBand"));
-
-      const response = await api.PUT("/v1/target-profile", {
-        body: {
-          test_variant: testVariant,
-          target_overall_band: overallBand,
-          minimum_listening_band: listeningBand,
-          minimum_reading_band: readingBand,
-          minimum_writing_band: writingBand,
-          minimum_speaking_band: speakingBand,
-          expected_resource_revision: targetQuery.data?.resource_revision ?? 0,
+    mutationFn: async (values: TargetForm) => {
+      if (!values.testVariant) throw new Error(t("errors.targetVariant"));
+      const request = {
+        test_variant: values.testVariant,
+        target_overall_band: optionalBand(values.targetOverallBand),
+        minimum_listening_band: optionalBand(values.minimumListeningBand),
+        minimum_reading_band: optionalBand(values.minimumReadingBand),
+        minimum_writing_band: optionalBand(values.minimumWritingBand),
+        minimum_speaking_band: optionalBand(values.minimumSpeakingBand),
+      };
+      if (
+        !Object.values(request).some(
+          (value, index) => index > 0 && value !== undefined,
+        )
+      ) {
+        throw new Error(t("errors.targetBand"));
+      }
+      const current = configuredProfile(targetQuery.data);
+      const response = await putTargetProfile({
+        client: api,
+        body: request,
+        headers: {
+          "Expected-Resource-Revision": current?.resource_revision ?? 0,
         },
       });
-      if (response.error || !response.data) {
-        throw new Error(
-          response.error?.error.message ?? t("errors.targetSave"),
-        );
-      }
+      if (response.error)
+        throw new Error(apiError(response.error, t("errors.targetSave")));
+      if (!response.data) throw new Error(t("errors.targetSave"));
       return response.data;
     },
-    onSuccess: (target) => {
-      queryClient.setQueryData(targetQueryKey, target);
-      targetForm.reset({
-        testVariant: target.test_variant,
-        targetOverallBand:
-          target.target_overall_band === undefined
-            ? ""
-            : String(target.target_overall_band),
-        minimumListeningBand:
-          target.minimum_listening_band === undefined
-            ? ""
-            : String(target.minimum_listening_band),
-        minimumReadingBand:
-          target.minimum_reading_band === undefined
-            ? ""
-            : String(target.minimum_reading_band),
-        minimumWritingBand:
-          target.minimum_writing_band === undefined
-            ? ""
-            : String(target.minimum_writing_band),
-        minimumSpeakingBand:
-          target.minimum_speaking_band === undefined
-            ? ""
-            : String(target.minimum_speaking_band),
-      });
+    onSuccess: (profile) => {
+      const result: TargetProfileReadResult = { state: "CONFIGURED", profile };
+      queryClient.setQueryData(targetQueryKey, result);
+      resetTargetForm(targetForm, profile);
     },
   });
 
   useEffect(() => {
+    const profile = configuredProfile(targetQuery.data);
     if (!targetQuery.isSuccess || targetForm.formState.isDirty) return;
-
-    targetForm.reset({
-      testVariant: targetQuery.data?.test_variant ?? "",
-      targetOverallBand:
-        targetQuery.data?.target_overall_band === undefined
-          ? ""
-          : String(targetQuery.data.target_overall_band),
-      minimumListeningBand:
-        targetQuery.data?.minimum_listening_band === undefined
-          ? ""
-          : String(targetQuery.data.minimum_listening_band),
-      minimumReadingBand:
-        targetQuery.data?.minimum_reading_band === undefined
-          ? ""
-          : String(targetQuery.data.minimum_reading_band),
-      minimumWritingBand:
-        targetQuery.data?.minimum_writing_band === undefined
-          ? ""
-          : String(targetQuery.data.minimum_writing_band),
-      minimumSpeakingBand:
-        targetQuery.data?.minimum_speaking_band === undefined
-          ? ""
-          : String(targetQuery.data.minimum_speaking_band),
-    });
+    resetTargetForm(targetForm, profile);
   }, [targetForm, targetQuery.data, targetQuery.isSuccess]);
 
   const activityMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.POST("/v1/practice-activities", {
-        params: {
-          header: { "Idempotency-Key": newIdempotencyKey("activity") },
-        },
+      const response = await createPracticeActivity({
+        client: api,
+        headers: { "Idempotency-Key": newIdempotencyKey("activity") },
         body: { practice_mode_id: "PM-R03" },
       });
-      if (response.error || !response.data) {
-        throw new Error(response.error?.error.message ?? t("errors.activity"));
-      }
-      return response.data;
-    },
-  });
-
-  const assessmentActivityMutation = useMutation({
-    mutationFn: async () => {
-      const response = await api.POST("/v1/assessment-activities", {
-        params: {
-          header: {
-            "Idempotency-Key": newIdempotencyKey("assessment-activity"),
-          },
-        },
-        body: { assessment_type_id: "AT-02" },
-      });
-      if (response.error || !response.data) {
+      if (response.error)
+        throw new Error(apiError(response.error, t("errors.activity")));
+      if (!response.data?.activity || response.data.outcome !== "ASSIGNED") {
         throw new Error(
-          response.error?.error.message ?? t("errors.assessmentActivity"),
+          response.data?.unavailability?.explanation ?? t("errors.activity"),
         );
       }
-      return response.data;
+      return response.data.activity;
     },
   });
 
   const attemptMutation = useMutation({
     mutationFn: async (activity: PracticeActivity) => {
-      const response = await api.POST("/v1/attempts", {
-        params: {
-          header: { "Idempotency-Key": newIdempotencyKey("attempt") },
-        },
+      const response = await createAttempt({
+        client: api,
+        headers: { "Idempotency-Key": newIdempotencyKey("attempt") },
         body: { practice_activity_id: activity.practice_activity_id },
       });
-      if (response.error || !response.data) {
-        throw new Error(response.error?.error.message ?? t("errors.attempt"));
-      }
-      return response.data;
-    },
-  });
-
-  const assessmentAttemptMutation = useMutation({
-    mutationFn: async (activity: AssessmentActivity) => {
-      const response = await api.POST("/v1/attempts", {
-        params: {
-          header: {
-            "Idempotency-Key": newIdempotencyKey("assessment-attempt"),
-          },
-        },
-        body: { assessment_activity_id: activity.assessment_activity_id },
-      });
-      if (response.error || !response.data) {
-        throw new Error(response.error?.error.message ?? t("errors.attempt"));
-      }
+      if (response.error)
+        throw new Error(apiError(response.error, t("errors.attempt")));
+      if (!response.data) throw new Error(t("errors.attempt"));
       return response.data;
     },
   });
@@ -264,144 +177,73 @@ export default function ReadingPractice() {
       answers,
     }: {
       attempt: Attempt;
-      activity: PracticeActivity | AssessmentActivity;
-      answers: Record<string, Choice>;
+      activity: PracticeActivity;
+      answers: Record<string, string>;
     }) => {
-      const response = await api.POST("/v1/attempts/{attempt_id}/submissions", {
-        params: {
-          path: { attempt_id: attempt.attempt_id },
-          header: { "Idempotency-Key": newIdempotencyKey("submit") },
-        },
+      const response = await submitAttempt({
+        client: api,
+        path: { attempt_id: attempt.attempt_id },
+        headers: { "Idempotency-Key": newIdempotencyKey("submit") },
         body: {
-          expected_resource_revision: attempt.resource_revision,
-          answers: activity.items.map((item) => ({
-            item_id: item.item_id,
-            choice: answers[item.item_id],
-          })),
-        },
-      });
-      if (response.error || !response.data) {
-        throw new Error(
-          response.error?.error.message ?? t("errors.submission"),
-        );
-      }
-      return response.data;
-    },
-  });
-
-  const assessmentSubmissionMutation = useMutation({
-    mutationFn: async ({
-      attempt,
-      activity,
-      answers,
-    }: {
-      attempt: Attempt;
-      activity: AssessmentActivity;
-      answers: Record<string, Choice>;
-    }) => {
-      const response = await api.POST("/v1/attempts/{attempt_id}/submissions", {
-        params: {
-          path: { attempt_id: attempt.attempt_id },
-          header: {
-            "Idempotency-Key": newIdempotencyKey("assessment-submit"),
+          response: {
+            parts: activity.material.tasks.map((task) => ({
+              task_id: task.task_id,
+              selected_values: [answers[task.task_id]],
+            })),
+          },
+          actual_conditions: {
+            delivery: { state: "UNKNOWN" },
+            assistance: [],
+            exposure: [],
+            input: [],
+            timing: [],
           },
         },
-        body: {
-          expected_resource_revision: attempt.resource_revision,
-          answers: activity.items.map((item) => ({
-            item_id: item.item_id,
-            choice: answers[item.item_id],
-          })),
-        },
       });
-      if (response.error || !response.data) {
-        throw new Error(
-          response.error?.error.message ?? t("errors.submission"),
-        );
-      }
+      if (response.error)
+        throw new Error(apiError(response.error, t("errors.submission")));
+      if (!response.data) throw new Error(t("errors.submission"));
       return response.data;
     },
   });
 
-  const assessmentActivity = assessmentActivityMutation.data;
-  const activity = assessmentActivity ?? activityMutation.data;
-  const attempt =
-    assessmentSubmissionMutation.data ??
-    submissionMutation.data ??
-    assessmentAttemptMutation.data ??
-    attemptMutation.data;
+  const activity = activityMutation.data;
+  const attempt: Attempt | undefined =
+    submissionMutation.data?.attempt ?? attemptMutation.data;
+  const submission: AttemptSubmissionResult | undefined =
+    submissionMutation.data;
   const answers = answerForm.watch("answers");
-  const allAnswered =
-    Boolean(activity) &&
-    activity!.items.every((item) => Boolean(answers[item.item_id]));
-  const ready = sessionQuery.isSuccess && !targetQuery.isPending;
+  const allAnswered = activity
+    ? activity.material.tasks.every((task) => Boolean(answers[task.task_id]))
+    : false;
+  const profile = configuredProfile(targetQuery.data);
   const academicPracticeAvailable =
-    targetQuery.data?.test_variant === "ACADEMIC";
+    profile?.test_variant.state === "PRESENT" &&
+    profile.test_variant.value === "Academic";
 
-  const errors = [
-    sessionQuery.error,
+  const currentError = [
     targetQuery.error,
     targetMutation.error,
     activityMutation.error,
-    assessmentActivityMutation.error,
     attemptMutation.error,
-    assessmentAttemptMutation.error,
     submissionMutation.error,
-    assessmentSubmissionMutation.error,
-  ];
-  const currentError = errors.find(
-    (error): error is Error => error instanceof Error,
-  );
+  ].find((error): error is Error => error instanceof Error);
 
   function startActivity() {
     answerForm.reset({ answers: {} });
-    assessmentActivityMutation.reset();
-    assessmentAttemptMutation.reset();
-    assessmentSubmissionMutation.reset();
     attemptMutation.reset();
     submissionMutation.reset();
     activityMutation.mutate();
   }
 
-  function startAssessment() {
-    answerForm.reset({ answers: {} });
-    activityMutation.reset();
-    attemptMutation.reset();
-    submissionMutation.reset();
-    assessmentAttemptMutation.reset();
-    assessmentSubmissionMutation.reset();
-    assessmentActivityMutation.mutate();
-  }
-
   async function submitAnswers(values: AnswerForm) {
-    if (
-      !activity ||
-      !allAnswered ||
-      submissionMutation.isPending ||
-      assessmentSubmissionMutation.isPending
-    )
-      return;
-
+    if (!activity || !allAnswered || submissionMutation.isPending) return;
     try {
-      if (assessmentActivity) {
-        const currentAttempt =
-          assessmentAttemptMutation.data ??
-          (await assessmentAttemptMutation.mutateAsync(assessmentActivity));
-        await assessmentSubmissionMutation.mutateAsync({
-          attempt: currentAttempt,
-          activity: assessmentActivity,
-          answers: values.answers,
-        });
-        return;
-      }
-
-      const practiceActivity = activity as PracticeActivity;
       const currentAttempt =
-        attemptMutation.data ??
-        (await attemptMutation.mutateAsync(practiceActivity));
+        attemptMutation.data ?? (await attemptMutation.mutateAsync(activity));
       await submissionMutation.mutateAsync({
         attempt: currentAttempt,
-        activity: practiceActivity,
+        activity,
         answers: values.answers,
       });
     } catch {
@@ -409,8 +251,20 @@ export default function ReadingPractice() {
     }
   }
 
-  function choiceLabel(choice: Choice) {
-    return t(`choices.${choice}`);
+  if (!isLoaded) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-10">{t("authLoading")}</main>
+    );
+  }
+  if (!isSignedIn) {
+    return (
+      <main className="mx-auto grid max-w-3xl gap-4 px-4 py-10">
+        <Alert>{t("signInRequired")}</Alert>
+        <SignInButton mode="modal">
+          <Button>{t("signIn")}</Button>
+        </SignInButton>
+      </main>
+    );
   }
 
   return (
@@ -445,91 +299,47 @@ export default function ReadingPractice() {
                 {...targetForm.register("testVariant", { required: true })}
               >
                 <option value="">{t("selectVariant")}</option>
-                <option value="ACADEMIC">{t("academic")}</option>
-                <option value="GENERAL_TRAINING">{t("generalTraining")}</option>
+                <option value="Academic">{t("academic")}</option>
+                <option value="General Training">{t("generalTraining")}</option>
               </select>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="target-overall-band">
-                {t("targetOverallBand")}
-              </Label>
-              <Input
-                id="target-overall-band"
-                aria-label={t("targetOverallBand")}
-                type="number"
-                min="3"
-                max="9"
-                step="0.5"
-                {...targetForm.register("targetOverallBand")}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="minimum-listening-band">
-                {t("minimumListeningBand")}
-              </Label>
-              <Input
-                id="minimum-listening-band"
-                aria-label={t("minimumListeningBand")}
-                type="number"
-                min="3"
-                max="9"
-                step="0.5"
-                {...targetForm.register("minimumListeningBand")}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="minimum-reading-band">
-                {t("minimumReadingBand")}
-              </Label>
-              <Input
-                id="minimum-reading-band"
-                aria-label={t("minimumReadingBand")}
-                type="number"
-                min="3"
-                max="9"
-                step="0.5"
-                {...targetForm.register("minimumReadingBand")}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="minimum-writing-band">
-                {t("minimumWritingBand")}
-              </Label>
-              <Input
-                id="minimum-writing-band"
-                aria-label={t("minimumWritingBand")}
-                type="number"
-                min="3"
-                max="9"
-                step="0.5"
-                {...targetForm.register("minimumWritingBand")}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="minimum-speaking-band">
-                {t("minimumSpeakingBand")}
-              </Label>
-              <Input
-                id="minimum-speaking-band"
-                aria-label={t("minimumSpeakingBand")}
-                type="number"
-                min="3"
-                max="9"
-                step="0.5"
-                {...targetForm.register("minimumSpeakingBand")}
-              />
-            </div>
-            <Button type="submit" disabled={!ready || targetMutation.isPending}>
+            <BandInput
+              id="target-overall-band"
+              label={t("targetOverallBand")}
+              registration={targetForm.register("targetOverallBand")}
+            />
+            <BandInput
+              id="minimum-listening-band"
+              label={t("minimumListeningBand")}
+              registration={targetForm.register("minimumListeningBand")}
+            />
+            <BandInput
+              id="minimum-reading-band"
+              label={t("minimumReadingBand")}
+              registration={targetForm.register("minimumReadingBand")}
+            />
+            <BandInput
+              id="minimum-writing-band"
+              label={t("minimumWritingBand")}
+              registration={targetForm.register("minimumWritingBand")}
+            />
+            <BandInput
+              id="minimum-speaking-band"
+              label={t("minimumSpeakingBand")}
+              registration={targetForm.register("minimumSpeakingBand")}
+            />
+            <Button
+              type="submit"
+              disabled={targetQuery.isPending || targetMutation.isPending}
+            >
               {t("saveTarget")}
             </Button>
-            {targetQuery.data && (
+            {profile && (
               <p
                 className="text-sm text-muted-foreground"
                 data-testid="target-saved"
               >
-                {t("targetSaved", {
-                  revision: targetQuery.data.resource_revision,
-                })}
+                {t("targetSaved", { revision: profile.resource_revision })}
               </p>
             )}
           </form>
@@ -548,33 +358,9 @@ export default function ReadingPractice() {
           >
             {t("startActivity")}
           </Button>
-          {targetQuery.data?.test_variant === "GENERAL_TRAINING" && (
+          {profile?.test_variant.value === "General Training" && (
             <p className="mt-3 text-sm text-muted-foreground">
               {t("academicPracticeOnly")}
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card aria-labelledby="assessment-heading">
-        <CardHeader>
-          <CardTitle id="assessment-heading">
-            {t("assessmentHeading")}
-          </CardTitle>
-          <CardDescription>{t("assessmentDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            onClick={startAssessment}
-            disabled={
-              !academicPracticeAvailable || assessmentActivityMutation.isPending
-            }
-          >
-            {t("startAssessment")}
-          </Button>
-          {targetQuery.data?.test_variant === "GENERAL_TRAINING" && (
-            <p className="mt-3 text-sm text-muted-foreground">
-              {t("academicAssessmentOnly")}
             </p>
           )}
         </CardContent>
@@ -584,10 +370,10 @@ export default function ReadingPractice() {
         <Card aria-labelledby="activity-heading">
           <CardHeader>
             <CardTitle id="activity-heading">
-              {activity.stimulus.title}
+              {activity.material.stimuli[0]?.title ?? t("practiceHeading")}
             </CardTitle>
             <CardDescription className="text-base leading-7 text-foreground">
-              {activity.stimulus.text}
+              {activity.material.stimuli[0]?.text}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -595,42 +381,40 @@ export default function ReadingPractice() {
               className="grid gap-6"
               onSubmit={answerForm.handleSubmit(submitAnswers)}
             >
-              {activity.items.map((item) => (
+              {activity.material.tasks.map((task) => (
                 <fieldset
                   className="grid gap-3 rounded-lg border p-4"
-                  key={item.item_id}
-                  data-testid={`item-${item.item_id}`}
+                  key={task.task_id}
+                  data-testid={`item-${task.task_id}`}
                 >
-                  <legend className="px-1 font-medium">{item.statement}</legend>
+                  <legend className="px-1 font-medium">{task.prompt}</legend>
                   <Controller
                     control={answerForm.control}
-                    name={`answers.${item.item_id}`}
+                    name={`answers.${task.task_id}`}
                     render={({ field }) => (
                       <RadioGroup
                         value={field.value}
                         disabled={
                           attemptMutation.isPending ||
-                          assessmentAttemptMutation.isPending ||
                           submissionMutation.isPending ||
-                          assessmentSubmissionMutation.isPending ||
-                          attempt?.status === "EVALUATED"
+                          attempt?.status === "evaluated"
                         }
-                        onValueChange={(value) =>
-                          field.onChange(value as Choice)
-                        }
+                        onValueChange={field.onChange}
                       >
-                        {item.choices.map((choice) => {
-                          const id = `${item.item_id}-${choice}`;
-                          return (
-                            <div
-                              className="flex items-center gap-2"
-                              key={choice}
-                            >
-                              <RadioGroupItem id={id} value={choice} />
-                              <Label htmlFor={id}>{choiceLabel(choice)}</Label>
-                            </div>
-                          );
-                        })}
+                        {(task.response_contract.options ?? []).map(
+                          (option) => {
+                            const id = `${task.task_id}-${option.value}`;
+                            return (
+                              <div
+                                className="flex items-center gap-2"
+                                key={option.value}
+                              >
+                                <RadioGroupItem id={id} value={option.value} />
+                                <Label htmlFor={id}>{option.label}</Label>
+                              </div>
+                            );
+                          },
+                        )}
                       </RadioGroup>
                     )}
                   />
@@ -641,8 +425,7 @@ export default function ReadingPractice() {
                 disabled={
                   !allAnswered ||
                   submissionMutation.isPending ||
-                  assessmentSubmissionMutation.isPending ||
-                  attempt?.status === "EVALUATED"
+                  attempt?.status === "evaluated"
                 }
               >
                 {t("submitAnswers")}
@@ -652,55 +435,84 @@ export default function ReadingPractice() {
         </Card>
       )}
 
-      {attempt?.status === "EVALUATED" && attempt.observation && (
+      {attempt?.status === "evaluated" && submission && (
         <Card aria-labelledby="result-heading" data-testid="result">
           <CardHeader>
             <CardTitle id="result-heading">{t("result")}</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <p className="text-lg font-semibold" data-testid="score">
-              {t("score", {
-                raw: attempt.observation.raw_score,
-                max: attempt.observation.max_score,
-              })}
-            </p>
             <p className="text-sm text-muted-foreground">
-              {attempt.evidence_fact
-                ? t("assessmentEvidenceOnly")
-                : t("trainingOnly")}
+              {t("trainingCompleted")}
             </p>
-            {attempt.feedback?.map((feedback) => (
-              <div className="rounded-lg border p-4" key={feedback.item_id}>
-                <p>
-                  <strong>
-                    {feedback.correct ? t("correct") : t("review")}
-                  </strong>
-                  : {feedback.explanation}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {t("learnerAnswer", {
-                    answer: choiceLabel(feedback.learner_choice),
-                  })}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {t("correctAnswer", {
-                    answer: choiceLabel(feedback.correct_choice),
-                  })}
-                </p>
-              </div>
-            ))}
-            {!attempt.evidence_fact && (
-              <Button
-                type="button"
-                onClick={startActivity}
-                disabled={activityMutation.isPending}
-              >
-                {t("practiceAgain")}
-              </Button>
-            )}
+            <Button
+              type="button"
+              onClick={startActivity}
+              disabled={activityMutation.isPending}
+            >
+              {t("practiceAgain")}
+            </Button>
           </CardContent>
         </Card>
       )}
     </main>
+  );
+}
+
+function optionalBand(value: string) {
+  return value === "" ? undefined : Number(value);
+}
+
+function resetTargetForm(
+  form: ReturnType<typeof useForm<TargetForm>>,
+  profile: TargetProfile | undefined,
+) {
+  form.reset({
+    testVariant:
+      profile?.test_variant.state === "PRESENT"
+        ? (profile.test_variant.value ?? "")
+        : "",
+    targetOverallBand:
+      profile?.target_overall_band === undefined
+        ? ""
+        : String(profile.target_overall_band),
+    minimumListeningBand:
+      profile?.minimum_listening_band === undefined
+        ? ""
+        : String(profile.minimum_listening_band),
+    minimumReadingBand:
+      profile?.minimum_reading_band === undefined
+        ? ""
+        : String(profile.minimum_reading_band),
+    minimumWritingBand:
+      profile?.minimum_writing_band === undefined
+        ? ""
+        : String(profile.minimum_writing_band),
+    minimumSpeakingBand:
+      profile?.minimum_speaking_band === undefined
+        ? ""
+        : String(profile.minimum_speaking_band),
+  });
+}
+
+type BandInputProps = {
+  id: string;
+  label: string;
+  registration: ReturnType<ReturnType<typeof useForm<TargetForm>>["register"]>;
+};
+
+function BandInput({ id, label, registration }: BandInputProps) {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Input
+        id={id}
+        aria-label={label}
+        type="number"
+        min="3"
+        max="9"
+        step="0.5"
+        {...registration}
+      />
+    </div>
   );
 }

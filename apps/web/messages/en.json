@@ -20,36 +20,19 @@
     "startActivity": "Start activity",
     "submitAnswers": "Submit answers",
     "result": "Result",
-    "score": "{raw} / {max} correct",
-    "trainingOnly": "Training observation only — NOT_EVIDENCE_CANDIDATE.",
-    "correct": "Correct",
-    "review": "Review",
-    "learnerAnswer": "Your answer: {answer}",
-    "correctAnswer": "Correct answer: {answer}",
     "practiceAgain": "Practice again",
-    "loading": "Preparing learner session…",
     "errors": {
-      "session": "Could not establish learner session.",
       "targetRead": "Could not read target profile.",
       "targetSave": "Could not save target profile.",
       "targetVariant": "Choose Academic or General Training before saving the target.",
       "targetBand": "Enter at least one overall or skill Band constraint before saving the target.",
       "activity": "Could not start activity.",
       "attempt": "Attempt creation failed.",
-      "submission": "Could not submit answers.",
-      "assessmentActivity": "Could not start the Reading assessment."
+      "submission": "Could not submit answers."
     },
-    "choices": {
-      "TRUE": "True",
-      "FALSE": "False",
-      "NOT_GIVEN": "Not given",
-      "YES": "Yes",
-      "NO": "No"
-    },
-    "assessmentHeading": "Sampled Reading assessment",
-    "assessmentDescription": "Keyed Academic Reading classification sample. Evidence is limited to the sampled classification scope.",
-    "startAssessment": "Start assessment",
-    "assessmentEvidenceOnly": "Evidence admitted only for this sampled Reading classification performance. This does not establish a Reading Band, readiness, mastery, or certification.",
-    "academicAssessmentOnly": "This bounded assessment currently materializes Academic Reading only."
+    "authLoading": "Loading authentication…",
+    "signInRequired": "Sign in with Clerk to continue.",
+    "signIn": "Sign in",
+    "trainingCompleted": "Training attempt submitted. This activity remains NOT_EVIDENCE_CANDIDATE."
   }
 }

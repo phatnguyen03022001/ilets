@@ -12,7 +12,7 @@ GENERATOR = ROOT / "tools/contracts/generate.sh"
 PUBLIC_SPEC = "contracts/http/public.openapi.yaml"
 EVALUATOR_SPEC = "contracts/http/evaluator.openapi.yaml"
 LEGACY_INPUT_MARKERS = ("public-v1.json", "public-v1.yaml", "public_v1")
-LEGACY_CONSUMERS = (
+RETIRED_CONSUMERS = (
     ROOT / "apps/web/src/generated/public-v1.ts",
     ROOT / "services/core-api/internal/httpapi/generated/public_v1.gen.go",
 )
@@ -85,11 +85,14 @@ def main() -> None:
         if marker in generator_text:
             raise AssertionError(f"legacy contract marker cannot be generator input: {marker}")
 
-    before_legacy = {path: sha256(path) for path in LEGACY_CONSUMERS}
+    for path in RETIRED_CONSUMERS:
+        if path.exists():
+            raise AssertionError(f"retired generated consumer still exists: {path.relative_to(ROOT)}")
+
     subprocess.run([str(GENERATOR)], cwd=ROOT, check=True)
-    after_first_legacy = {path: sha256(path) for path in LEGACY_CONSUMERS}
-    if before_legacy != after_first_legacy:
-        raise AssertionError("generation modified frozen legacy runtime consumers")
+    for path in RETIRED_CONSUMERS:
+        if path.exists():
+            raise AssertionError(f"generation recreated retired consumer: {path.relative_to(ROOT)}")
 
     if not PUBLIC_GO.is_file() or not EVALUATOR_GO.is_file() or not PUBLIC_TS.is_dir():
         raise AssertionError("generation did not materialize all expected output surfaces")
@@ -149,9 +152,9 @@ def main() -> None:
     if first_digest != second_digest:
         raise AssertionError("repeated generation is not deterministic")
 
-    after_second_legacy = {path: sha256(path) for path in LEGACY_CONSUMERS}
-    if before_legacy != after_second_legacy:
-        raise AssertionError("repeated generation modified frozen legacy runtime consumers")
+    for path in RETIRED_CONSUMERS:
+        if path.exists():
+            raise AssertionError(f"repeated generation recreated retired consumer: {path.relative_to(ROOT)}")
 
     print("generated binding checks passed")
 

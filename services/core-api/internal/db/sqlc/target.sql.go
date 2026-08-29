@@ -14,11 +14,15 @@ import (
 const getTargetProfile = `-- name: GetTargetProfile :one
 SELECT
   test_variant,
+  delivery_mode,
+  purpose_or_receiving_rule,
   target_overall_band,
   minimum_listening_band,
   minimum_reading_band,
   minimum_writing_band,
   minimum_speaking_band,
+  test_date,
+  selected_skill_retake,
   resource_revision,
   updated_at
 FROM target_profiles
@@ -26,14 +30,18 @@ WHERE learner_id = $1
 `
 
 type GetTargetProfileRow struct {
-	TestVariant          string
-	TargetOverallBand    *float64
-	MinimumListeningBand *float64
-	MinimumReadingBand   *float64
-	MinimumWritingBand   *float64
-	MinimumSpeakingBand  *float64
-	ResourceRevision     int64
-	UpdatedAt            pgtype.Timestamptz
+	TestVariant            *string
+	DeliveryMode           *string
+	PurposeOrReceivingRule *string
+	TargetOverallBand      *float64
+	MinimumListeningBand   *float64
+	MinimumReadingBand     *float64
+	MinimumWritingBand     *float64
+	MinimumSpeakingBand    *float64
+	TestDate               pgtype.Date
+	SelectedSkillRetake    *string
+	ResourceRevision       int64
+	UpdatedAt              pgtype.Timestamptz
 }
 
 func (q *Queries) GetTargetProfile(ctx context.Context, learnerID string) (GetTargetProfileRow, error) {
@@ -41,11 +49,15 @@ func (q *Queries) GetTargetProfile(ctx context.Context, learnerID string) (GetTa
 	var i GetTargetProfileRow
 	err := row.Scan(
 		&i.TestVariant,
+		&i.DeliveryMode,
+		&i.PurposeOrReceivingRule,
 		&i.TargetOverallBand,
 		&i.MinimumListeningBand,
 		&i.MinimumReadingBand,
 		&i.MinimumWritingBand,
 		&i.MinimumSpeakingBand,
+		&i.TestDate,
+		&i.SelectedSkillRetake,
 		&i.ResourceRevision,
 		&i.UpdatedAt,
 	)
@@ -54,38 +66,41 @@ func (q *Queries) GetTargetProfile(ctx context.Context, learnerID string) (GetTa
 
 const insertTargetProfile = `-- name: InsertTargetProfile :execrows
 INSERT INTO target_profiles (
-  learner_id,
-  test_variant,
-  target_overall_band,
-  minimum_listening_band,
-  minimum_reading_band,
-  minimum_writing_band,
-  minimum_speaking_band,
-  resource_revision
+  learner_id, test_variant, delivery_mode, purpose_or_receiving_rule,
+  target_overall_band, minimum_listening_band, minimum_reading_band, minimum_writing_band, minimum_speaking_band,
+  test_date, selected_skill_retake, resource_revision
 )
-VALUES ($1, $2, $3, $4, $5, $6, $7, 1)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 1)
 ON CONFLICT DO NOTHING
 `
 
 type InsertTargetProfileParams struct {
-	LearnerID            string
-	TestVariant          string
-	TargetOverallBand    *float64
-	MinimumListeningBand *float64
-	MinimumReadingBand   *float64
-	MinimumWritingBand   *float64
-	MinimumSpeakingBand  *float64
+	LearnerID              string
+	TestVariant            *string
+	DeliveryMode           *string
+	PurposeOrReceivingRule *string
+	TargetOverallBand      *float64
+	MinimumListeningBand   *float64
+	MinimumReadingBand     *float64
+	MinimumWritingBand     *float64
+	MinimumSpeakingBand    *float64
+	TestDate               pgtype.Date
+	SelectedSkillRetake    *string
 }
 
 func (q *Queries) InsertTargetProfile(ctx context.Context, arg InsertTargetProfileParams) (int64, error) {
 	result, err := q.db.Exec(ctx, insertTargetProfile,
 		arg.LearnerID,
 		arg.TestVariant,
+		arg.DeliveryMode,
+		arg.PurposeOrReceivingRule,
 		arg.TargetOverallBand,
 		arg.MinimumListeningBand,
 		arg.MinimumReadingBand,
 		arg.MinimumWritingBand,
 		arg.MinimumSpeakingBand,
+		arg.TestDate,
+		arg.SelectedSkillRetake,
 	)
 	if err != nil {
 		return 0, err
@@ -96,38 +111,40 @@ func (q *Queries) InsertTargetProfile(ctx context.Context, arg InsertTargetProfi
 const updateTargetProfile = `-- name: UpdateTargetProfile :execrows
 UPDATE target_profiles
 SET
-  test_variant = $2,
-  target_overall_band = $3,
-  minimum_listening_band = $4,
-  minimum_reading_band = $5,
-  minimum_writing_band = $6,
-  minimum_speaking_band = $7,
-  resource_revision = resource_revision + 1,
-  updated_at = now()
-WHERE learner_id = $1
-  AND resource_revision = $8
+  test_variant = $2, delivery_mode = $3, purpose_or_receiving_rule = $4,
+  target_overall_band = $5, minimum_listening_band = $6, minimum_reading_band = $7, minimum_writing_band = $8, minimum_speaking_band = $9,
+  test_date = $10, selected_skill_retake = $11, resource_revision = resource_revision + 1, updated_at = now()
+WHERE learner_id = $1 AND resource_revision = $12
 `
 
 type UpdateTargetProfileParams struct {
-	LearnerID            string
-	TestVariant          string
-	TargetOverallBand    *float64
-	MinimumListeningBand *float64
-	MinimumReadingBand   *float64
-	MinimumWritingBand   *float64
-	MinimumSpeakingBand  *float64
-	ResourceRevision     int64
+	LearnerID              string
+	TestVariant            *string
+	DeliveryMode           *string
+	PurposeOrReceivingRule *string
+	TargetOverallBand      *float64
+	MinimumListeningBand   *float64
+	MinimumReadingBand     *float64
+	MinimumWritingBand     *float64
+	MinimumSpeakingBand    *float64
+	TestDate               pgtype.Date
+	SelectedSkillRetake    *string
+	ResourceRevision       int64
 }
 
 func (q *Queries) UpdateTargetProfile(ctx context.Context, arg UpdateTargetProfileParams) (int64, error) {
 	result, err := q.db.Exec(ctx, updateTargetProfile,
 		arg.LearnerID,
 		arg.TestVariant,
+		arg.DeliveryMode,
+		arg.PurposeOrReceivingRule,
 		arg.TargetOverallBand,
 		arg.MinimumListeningBand,
 		arg.MinimumReadingBand,
 		arg.MinimumWritingBand,
 		arg.MinimumSpeakingBand,
+		arg.TestDate,
+		arg.SelectedSkillRetake,
 		arg.ResourceRevision,
 	)
 	if err != nil {

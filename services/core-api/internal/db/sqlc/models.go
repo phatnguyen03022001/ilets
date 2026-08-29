@@ -9,18 +9,20 @@ import (
 )
 
 type Attempt struct {
-	AttemptID          string
-	LearnerID          string
-	PracticeActivityID string
-	ContentRevisionID  string
-	Status             string
-	ResourceRevision   int64
-	SubmittedAnswers   []byte
-	RawScore           *int32
-	MaxScore           *int32
-	SubmittedAt        pgtype.Timestamptz
-	EvaluatedAt        pgtype.Timestamptz
-	CreatedAt          pgtype.Timestamptz
+	AttemptID               string
+	LearnerID               string
+	PracticeActivityID      string
+	ContentRevisionID       string
+	Status                  string
+	ResourceRevision        int64
+	SubmittedAnswers        []byte
+	RawScore                *int32
+	MaxScore                *int32
+	SubmittedAt             pgtype.Timestamptz
+	EvaluatedAt             pgtype.Timestamptz
+	CreatedAt               pgtype.Timestamptz
+	ResponsePayload         []byte
+	ActualConditionsPayload []byte
 }
 
 type Content struct {
@@ -55,6 +57,15 @@ type EvidenceFact struct {
 	InferenceScope    string
 	PolicyVersion     string
 	AdmittedAt        pgtype.Timestamptz
+}
+
+type ExternalPrincipal struct {
+	Provider        string
+	ExternalIssuer  string
+	ExternalSubject string
+	ActorID         string
+	LearnerID       string
+	CreatedAt       pgtype.Timestamptz
 }
 
 type IdempotencyOperation struct {
@@ -104,15 +115,19 @@ type Session struct {
 }
 
 type TargetProfile struct {
-	LearnerID            string
-	TestVariant          string
-	TargetOverallBand    *float64
-	MinimumListeningBand *float64
-	MinimumReadingBand   *float64
-	MinimumWritingBand   *float64
-	MinimumSpeakingBand  *float64
-	ResourceRevision     int64
-	UpdatedAt            pgtype.Timestamptz
+	LearnerID              string
+	TestVariant            *string
+	TargetOverallBand      *float64
+	MinimumListeningBand   *float64
+	MinimumReadingBand     *float64
+	MinimumWritingBand     *float64
+	MinimumSpeakingBand    *float64
+	ResourceRevision       int64
+	UpdatedAt              pgtype.Timestamptz
+	DeliveryMode           *string
+	PurposeOrReceivingRule *string
+	TestDate               pgtype.Date
+	SelectedSkillRetake    *string
 }
 
 type ValidationDecision struct {

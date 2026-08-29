@@ -272,6 +272,8 @@ These USER-approved initial routes are also `SELECTED_FOR_IMPLEMENTATION`, not `
 | Operational logs / metrics | Google Cloud Logging / Monitoring | operational telemetry only; non-authoritative and privacy-minimized under the existing observability boundary |
 | Vietnam payments / subscription billing | payOS | payment/subscription observations only; effective entitlement changes only through authenticated/associated Core reconciliation and authoritative commit |
 
+For the selected public bearer integration, the Clerk Session token configuration must include a custom `aud` claim equal to the Core `CLERK_AUDIENCE` value. Core fails closed when that audience claim is missing or mismatched; this deployment wiring does not transfer product authorization to Clerk.
+
 Provider callbacks/webhooks are selected initially only because the payOS route requires payment-event ingress. Callback receipt, signature validity, provider charge/subscription status, or dashboard state remains external observed state until Core associates and reconciles it under the existing payment/entitlement rules.
 
 The authority split remains:
