@@ -1,42 +1,62 @@
 name: verify
 
 on:
-  workflow_dispatch:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-    types: [labeled]
+    branches:
+      - dev
+    paths:
+      - '.github/verification-boundary/candidate'
 
 permissions:
   contents: read
 
 concurrency:
-  group: verify-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: verify-candidate-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   verify:
-    if: >-
-      github.event_name != 'pull_request' ||
-      (
-        github.event.label.name == 'ci-candidate' &&
-        github.event.pull_request.base.ref == 'main' &&
-        github.event.pull_request.head.ref == 'dev' &&
-        github.event.pull_request.head.repo.full_name == github.repository &&
-        github.event.sender.login == github.repository_owner
-      )
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout boundary
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
           persist-credentials: false
-      - name: Bind verification target
+
+      - name: Bind candidate to boundary parent
+        id: candidate
+        shell: bash
         env:
-          EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          BOUNDARY_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          sentinel=.github/verification-boundary/candidate
+          test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
+          candidate="$(cat "$sentinel")"
+          if [[ ! "$candidate" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "invalid candidate SHA" >&2
+            exit 1
+          fi
+          printf '%s\n' "$candidate" | cmp -s - "$sentinel"
+          git cat-file -e "${candidate}^{commit}"
+          parent="$(git rev-parse "${BOUNDARY_SHA}^")"
+          test "$candidate" = "$parent"
+          echo "sha=$candidate" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout declared candidate
+        shell: bash
+        env:
+          CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
+        run: git checkout --detach "$CANDIDATE_SHA"
+
+      - name: Assert exact candidate HEAD
+        shell: bash
+        env:
+          CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
+        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+
       - uses: actions/setup-go@v5
         with:
           go-version: '1.27.0'
