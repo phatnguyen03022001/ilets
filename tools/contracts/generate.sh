@@ -16,4 +16,4 @@ go tool oapi-codegen -config ../../tools/contracts/oapi-public.yaml "$PUBLIC"
 go tool oapi-codegen -config ../../tools/contracts/oapi-evaluator.yaml "$EVALUATOR"
 
 cd "$ROOT/apps/web"
-pnpm exec openapi-ts   --input "$PUBLIC"   --output "$PUBLIC_TS_DIR"   --client @hey-api/client-fetch   --no-log-file   --silent
+corepack pnpm exec openapi-ts   --input "$PUBLIC"   --output "$PUBLIC_TS_DIR"   --client @hey-api/client-fetch   --no-log-file   --silent

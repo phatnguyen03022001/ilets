@@ -10,6 +10,7 @@ export ILETS_E2E_CORE_PORT="${ILETS_E2E_CORE_PORT:-18080}"
 export ILETS_E2E_WEB_PORT="${ILETS_E2E_WEB_PORT:-13000}"
 export ILETS_POSTGRES_PORT="$VERIFY_POSTGRES_PORT"
 export PYTHONDONTWRITEBYTECODE=1
+export GOTOOLCHAIN=auto
 export DATABASE_URL="postgres://ilets:ilets@127.0.0.1:${VERIFY_POSTGRES_PORT}/ilets?sslmode=disable"
 COMPOSE=(docker compose --project-name "$VERIFY_COMPOSE_PROJECT" -f "$ROOT/compose.dev.yml")
 VERIFY_TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ilets-verify.XXXXXX")"
@@ -25,16 +26,46 @@ python3 "$ROOT/tools/canonical/test_materialize.py"
 python3 "$ROOT/tools/canonical/materialize.py" --check
 
 ./tools/contracts/validate.sh
-required_node="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["engines"]["node"])' "$ROOT/apps/web/package.json")"
+required_node="$(tr -d '[:space:]' < "$ROOT/.node-version")"
+package_node="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["engines"]["node"])' "$ROOT/apps/web/package.json")"
+if [[ "$package_node" != "$required_node" ]]; then
+  echo "Node version authority mismatch: .node-version=$required_node, apps/web engines.node=$package_node" >&2
+  exit 1
+fi
 actual_node="$(node --version 2>/dev/null || true)"
 if [[ "$actual_node" != "v${required_node}" ]]; then
   echo "Node version mismatch: required v${required_node}, got ${actual_node:-missing}" >&2
   exit 1
 fi
+if ! command -v corepack >/dev/null 2>&1; then
+  echo "Corepack is required to resolve the project package manager" >&2
+  exit 1
+fi
+required_go="$(tr -d '[:space:]' < "$ROOT/.go-version")"
+module_go="$(awk '$1 == "go" { print $2; exit }' "$ROOT/services/core-api/go.mod")"
+if [[ "$module_go" != "$required_go" ]]; then
+  echo "Go version authority mismatch: .go-version=$required_go, go.mod=$module_go" >&2
+  exit 1
+fi
+actual_go="$(cd "$ROOT/services/core-api" && GOTOOLCHAIN=auto go env GOVERSION 2>/dev/null || true)"
+if [[ "$actual_go" != "go${required_go}" ]]; then
+  echo "Go toolchain mismatch: required go${required_go}, got ${actual_go:-missing}" >&2
+  exit 1
+fi
 
 cd "$ROOT/apps/web"
-corepack enable
-pnpm install --frozen-lockfile
+package_manager="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["packageManager"])' package.json)"
+if [[ "$package_manager" != pnpm@* ]]; then
+  echo "Unsupported packageManager authority: $package_manager" >&2
+  exit 1
+fi
+required_pnpm="${package_manager#pnpm@}"
+actual_pnpm="$(corepack pnpm --version 2>/dev/null || true)"
+if [[ "$actual_pnpm" != "$required_pnpm" ]]; then
+  echo "pnpm version mismatch: required ${required_pnpm}, got ${actual_pnpm:-missing}" >&2
+  exit 1
+fi
+corepack pnpm install --frozen-lockfile
 
 cd "$ROOT"
 ./tools/contracts/generate.sh
@@ -47,11 +78,11 @@ if ! git diff --exit-code -- \
 fi
 
 cd "$ROOT/apps/web"
-pnpm format:check
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
+corepack pnpm format:check
+corepack pnpm lint
+corepack pnpm typecheck
+corepack pnpm test
+corepack pnpm build
 
 cd "$ROOT"
 ./tools/db/generate.sh
@@ -109,12 +140,12 @@ cd "$ROOT/services/core-api"
 ILETS_INTEGRATION=1 go test ./...
 
 cd "$ROOT/apps/web"
-pnpm exec playwright install chromium
-pnpm e2e
+corepack pnpm exec playwright install chromium
+corepack pnpm e2e
 
 # next dev uses development type paths in next-env.d.ts. Rebuild once after
 # E2E so the committed production-build declaration remains deterministic.
-pnpm build
+corepack pnpm build
 
 cd "$ROOT"
 dirty="$(git status --porcelain --untracked-files=normal)"

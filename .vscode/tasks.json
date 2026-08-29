@@ -1,0 +1,101 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Infrastructure: Up",
+      "type": "shell",
+      "command": "docker compose --env-file .env.development -f compose.dev.yml up -d --wait",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Infrastructure: Down",
+      "type": "shell",
+      "command": "docker compose --env-file .env.development -f compose.dev.yml down",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Web: Dev",
+      "type": "shell",
+      "command": "required_node=\"$(tr -d '\\r\\n' < ../../.node-version)\"; actual_node=\"$(node --version 2>/dev/null || true)\"; if [ \"$actual_node\" != \"v$required_node\" ]; then echo \"Node version mismatch: required v$required_node, got ${actual_node:-missing}\" >&2; exit 1; fi; required_pnpm=\"$(node -p \"require('./package.json').packageManager.replace(/^pnpm@/, '')\")\"; actual_pnpm=\"$(corepack pnpm --version 2>/dev/null || true)\"; if [ \"$actual_pnpm\" != \"$required_pnpm\" ]; then echo \"pnpm version mismatch: required $required_pnpm, got ${actual_pnpm:-missing}\" >&2; exit 1; fi; set -a; . ../../.env.development; set +a; exec corepack pnpm dev",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/web"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Core: Dev",
+      "type": "shell",
+      "command": "set -a; . ../../.env.development; set +a; GOTOOLCHAIN=auto exec go run ./cmd/core-api",
+      "options": {
+        "cwd": "${workspaceFolder}/services/core-api",
+        "env": {
+          "GOTOOLCHAIN": "auto"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Verify: Full",
+      "type": "shell",
+      "command": "./verify",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Contracts: Validate",
+      "type": "shell",
+      "command": "./tools/contracts/validate.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Contracts: Generate",
+      "type": "shell",
+      "command": "./tools/contracts/generate.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: Generate",
+      "type": "shell",
+      "command": "./tools/db/generate.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: Migrate",
+      "type": "shell",
+      "command": "set -a; . ./.env.development; set +a; exec ./tools/db/migrate.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: Seed",
+      "type": "shell",
+      "command": "set -a; . ../../.env.development; set +a; GOTOOLCHAIN=auto exec go run ./cmd/seed",
+      "options": {
+        "cwd": "${workspaceFolder}/services/core-api",
+        "env": {
+          "GOTOOLCHAIN": "auto"
+        }
+      },
+      "problemMatcher": []
+    }
+  ]
+}

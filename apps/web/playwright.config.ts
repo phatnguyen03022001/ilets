@@ -65,7 +65,7 @@ export default defineConfig({
       timeout: 120_000,
     },
     {
-      command: `pnpm dev --hostname ${host} --port ${webPort}`,
+      command: `corepack pnpm dev --hostname ${host} --port ${webPort}`,
       env: {
         ...process.env,
         ILETS_E2E: "1",
