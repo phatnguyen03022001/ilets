@@ -3,3 +3,5 @@ apps/web/.next/
 apps/web/test-results/
 apps/web/playwright-report/
 apps/web/tsconfig.tsbuildinfo
+.env.development
+.env.production
