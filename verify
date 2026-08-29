@@ -41,13 +41,10 @@ pnpm test
 pnpm build
 
 cd "$ROOT"
-./tools/contracts/generate.sh
+./tools/contracts/validate.sh
 ./tools/db/generate.sh
-./tools/contracts/generate.sh
 ./tools/db/generate.sh
 if ! git diff --exit-code -- \
-  apps/web/src/generated/public-v1.ts \
-  services/core-api/internal/httpapi/generated/public_v1.gen.go \
   services/core-api/internal/db/sqlc/ \
   tools/canonical/generated/ \
   tools/slice/generated/; then

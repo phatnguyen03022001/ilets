@@ -15,8 +15,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "e2e": "playwright test",
-    "contract:generate": "openapi-typescript ../../contracts/http/public-v1.json -o src/generated/public-v1.ts"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@radix-ui/react-label": "2.1.15",
@@ -48,7 +47,6 @@
     "eslint": "10.8.1",
     "eslint-config-next": "16.3.2",
     "jsdom": "30.0.1",
-    "openapi-typescript": "7.13.0",
     "prettier": "3.9.6",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",

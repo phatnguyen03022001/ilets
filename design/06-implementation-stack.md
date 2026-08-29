@@ -615,7 +615,7 @@ internal evaluator OpenAPI
   → Python Pydantic v2 models via datamodel-code-generator
 ```
 
-Exact generator flags remain implementation verification. This closure does not create `contracts/http/public.openapi.yaml` or `contracts/http/evaluator.openapi.yaml`; those exact contract authorities are the next bounded phase. The repository's existing bounded bootstrap `contracts/http/public-v1.json` and its generated artifacts are not regenerated or promoted into a second authority by this documentation pass.
+Exact generator flags remain implementation verification. The exact active machine-contract authorities are now `contracts/http/public.openapi.yaml` and `contracts/http/evaluator.openapi.yaml`. The former bounded bootstrap JSON authority is retired. Existing Go/TypeScript artifacts generated from that bootstrap may remain temporarily as frozen implementation consumers until the explicitly authorized generated-binding migration; contract validation does not regenerate them, and they do not constitute machine-contract authority. The next consumer-migration boundary is the selected `oapi-codegen`/Hey API public path plus `oapi-codegen`/`datamodel-code-generator` evaluator path above.
 
 # Canonical registry materialization
 

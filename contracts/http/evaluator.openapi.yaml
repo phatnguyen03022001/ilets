@@ -1,0 +1,840 @@
+openapi: 3.0.3
+info:
+  title: IELTS Learning System Internal Evaluator API
+  version: 1.0.0
+  description: >-
+    Canonical internal HTTP machine contract between Go Core and the Python evaluator
+    boundary. The evaluator returns bounded measurements/observation candidates and
+    execution provenance; Go Core remains authoritative for reconciliation, evidence
+    admission, readiness, certification, Progression, content activation, entitlement,
+    and final planning.
+security:
+  - GoogleOidcBearer: []
+paths:
+  /internal/v1/evaluations:
+    post:
+      operationId: executeEvaluation
+      summary: Execute one identified evaluator execution attempt
+      description: >-
+        Normal caller is Go Core. Idempotency-Key protects duplicate HTTP delivery of the
+        same identified execution request; the request also carries the logical Evaluation
+        identity plus execution-attempt/fencing identity so Core can reject stale or
+        superseded completion. An evaluator response never directly mutates learner truth.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluationExecutionRequest'
+      responses:
+        '200':
+          description: >-
+            Bounded execution result for Core reconciliation. COMPLETED, UNAVAILABLE, and
+            INVALID are execution-result states, not learner certification/readiness state.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationExecutionResult'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '422':
+          $ref: '#/components/responses/SemanticPreconditionFailed'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+        '504':
+          $ref: '#/components/responses/AmbiguousOutcome'
+
+  /internal/v1/health:
+    get:
+      operationId: getEvaluatorHealth
+      summary: Read evaluator deployment health
+      description: >-
+        Deployment-oriented evaluator process/readiness health only. A ready result does
+        not assert that a particular learner consequence is calibrated or supported.
+      responses:
+        '200':
+          description: Evaluator is ready for its bounded internal HTTP role.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
+components:
+  securitySchemes:
+    GoogleOidcBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: Google-signed OIDC identity token
+      description: >-
+        Google-signed OIDC identity token used with Cloud Run IAM authenticated service
+        invocation. OpenAPI describes only the HTTP bearer transport; workload identity,
+        IAM grants, token audience minting, and deployment policy are configured outside
+        this contract.
+
+  headers:
+    RequestId:
+      description: Privacy-safe request correlation identifier.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: >-
+        Logical HTTP operation key for this Core-to-evaluator execution request. Compatible
+        replay resolves to the same authoritative evaluator HTTP outcome for this execution
+        identity; incompatible reuse fails closed. Core logical-work and execution fencing
+        identities remain explicit in the request body and are not replaced by this key.
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 128
+        pattern: '^[A-Za-z0-9._:-]+$'
+
+  responses:
+    InvalidRequest:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: INVALID_REQUEST
+      description: Request framing or machine-contract validation failed.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    Unauthenticated:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: UNAUTHENTICATED
+      description: Authenticated service identity could not be established at the HTTP boundary.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    Forbidden:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: FORBIDDEN
+      description: Authenticated caller is not permitted to invoke the evaluator boundary.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    IdempotencyConflict:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: IDEMPOTENCY_CONFLICT
+      description: Same Idempotency-Key was reused with an incompatible execution request.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    SemanticPreconditionFailed:
+      x-failure-class: OPERATION_REJECTED
+      x-error-code: SEMANTIC_PRECONDITION_FAILED
+      description: Already-resolved evaluator-input preconditions make the request non-executable.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    DependencyUnavailable:
+      x-failure-class: INFRASTRUCTURE_FAILURE
+      x-error-code: DEPENDENCY_UNAVAILABLE
+      description: >-
+        Evaluator infrastructure cannot currently establish a bounded response. Core must
+        preserve learner work and may keep/recover logical Evaluation state without
+        converting this failure into learner performance.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    InternalFailure:
+      x-failure-class: INFRASTRUCTURE_FAILURE
+      x-error-code: INTERNAL_FAILURE
+      description: >-
+        Evaluator encountered an internal infrastructure/runtime failure. Core retains
+        authority over logical work recovery and learner/product consequences.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+    AmbiguousOutcome:
+      x-failure-class: AMBIGUOUS_FAILURE
+      x-error-code: OUTCOME_AMBIGUOUS
+      x-retry-requirement: RETRY_SAME_IDEMPOTENCY_KEY
+      description: >-
+        The HTTP execution outcome is ambiguous. Core must retain the same logical work and
+        execution/fencing semantics rather than assuming remote non-execution.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalErrorEnvelope'
+
+  schemas:
+    ResourceId:
+      type: string
+      minLength: 1
+      maxLength: 160
+      pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'
+    CanonicalId:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Existing canonical ID serialized unchanged; canonical registries remain upstream authority.
+    ContentRevisionId:
+      type: string
+      minLength: 1
+      maxLength: 160
+      description: Exact immutable semantic ContentRevision identity being evaluated.
+    AbsoluteInstant:
+      type: string
+      format: date-time
+    TestVariant:
+      type: string
+      enum:
+        - Academic
+        - General Training
+    DeliveryMode:
+      type: string
+      enum:
+        - Test-centre computer
+        - Test-centre computer with Writing on Paper
+        - IELTS Online Academic
+    ApplicabilityState:
+      type: string
+      enum: [PRESENT, NOT_APPLICABLE, UNKNOWN]
+    ScopedTestVariant:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          $ref: '#/components/schemas/TestVariant'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedDeliveryMode:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          $ref: '#/components/schemas/DeliveryMode'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [value]
+    ScopedCanonicalIds:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        values:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        reason:
+          type: string
+          maxLength: 500
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [state, values]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [state, reason]
+          not:
+            required: [values]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [state]
+          not:
+            required: [values]
+    ConditionValue:
+      oneOf:
+        - type: string
+          maxLength: 10000
+        - type: boolean
+        - type: integer
+          format: int64
+        - type: number
+          format: double
+        - type: array
+          maxItems: 200
+          items:
+            type: string
+            maxLength: 1000
+    ConditionFact:
+      type: object
+      additionalProperties: false
+      required: [condition_id, state]
+      properties:
+        condition_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        state:
+          $ref: '#/components/schemas/ApplicabilityState'
+        value:
+          $ref: '#/components/schemas/ConditionValue'
+        reason:
+          type: string
+          maxLength: 1000
+      oneOf:
+        - properties:
+            state:
+              enum: [PRESENT]
+          required: [condition_id, state, value]
+        - properties:
+            state:
+              enum: [NOT_APPLICABLE]
+          required: [condition_id, state, reason]
+          not:
+            required: [value]
+        - properties:
+            state:
+              enum: [UNKNOWN]
+          required: [condition_id, state]
+          not:
+            required: [value]
+    ActualAttemptConditions:
+      type: object
+      additionalProperties: false
+      required: [delivery, assistance, exposure, input, timing]
+      properties:
+        delivery:
+          $ref: '#/components/schemas/ScopedDeliveryMode'
+        assistance:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        exposure:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        input:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        timing:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+      description: >-
+        Facts about the actual learner attempt. UNKNOWN remains unresolved and cannot be
+        silently rewritten as absent support, unseen exposure, or successful capture.
+    EvaluationExecutionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - evaluation_id
+        - logical_work_id
+        - execution_attempt_id
+        - execution_fence_id
+        - attempt_id
+        - content_revision_id
+        - canonical_target_ids
+        - test_variant
+        - content_context_ids
+        - official_family_ids
+        - presentation_class_ids
+        - delivery_mode
+        - actual_conditions
+        - evaluator_config_id
+        - requested_observation_scope
+        - inputs
+      properties:
+        evaluation_id:
+          $ref: '#/components/schemas/ResourceId'
+        logical_work_id:
+          $ref: '#/components/schemas/ResourceId'
+        execution_attempt_id:
+          $ref: '#/components/schemas/ResourceId'
+        execution_fence_id:
+          $ref: '#/components/schemas/ResourceId'
+        attempt_id:
+          $ref: '#/components/schemas/ResourceId'
+        content_revision_id:
+          $ref: '#/components/schemas/ContentRevisionId'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        test_variant:
+          $ref: '#/components/schemas/ScopedTestVariant'
+        content_context_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        official_family_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        presentation_class_ids:
+          $ref: '#/components/schemas/ScopedCanonicalIds'
+        delivery_mode:
+          $ref: '#/components/schemas/ScopedDeliveryMode'
+        actual_conditions:
+          $ref: '#/components/schemas/ActualAttemptConditions'
+        evaluator_config_id:
+          $ref: '#/components/schemas/ResourceId'
+        requested_observation_scope:
+          $ref: '#/components/schemas/RequestedObservationScope'
+        inputs:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/EvaluationInput'
+    RequestedObservationScope:
+      type: object
+      additionalProperties: false
+      required:
+        - assessment_type_id
+        - claim_candidate_ids
+        - canonical_target_ids
+        - criterion_ids
+        - measurement_ids
+      properties:
+        assessment_type_id:
+          $ref: '#/components/schemas/CanonicalId'
+        claim_candidate_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ResourceId'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        criterion_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        measurement_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+      description: >-
+        Measurement request only. It does not grant EvidenceFact admission, Band support,
+        readiness, certification, or progression authority.
+    EvaluationInput:
+      type: object
+      additionalProperties: false
+      required: [input_id, role, kind]
+      properties:
+        input_id:
+          $ref: '#/components/schemas/ResourceId'
+        role:
+          type: string
+          enum: [STIMULUS, TASK_INSTRUCTION, LEARNER_RESPONSE, EVALUATION_REFERENCE]
+        kind:
+          type: string
+          enum: [TEXT, MEDIA_REFERENCE]
+        text:
+          type: string
+          maxLength: 250000
+        media:
+          $ref: '#/components/schemas/InternalMediaReference'
+      oneOf:
+        - properties:
+            kind:
+              enum: [TEXT]
+          required: [input_id, role, kind, text]
+          not:
+            required: [media]
+        - properties:
+            kind:
+              enum: [MEDIA_REFERENCE]
+          required: [input_id, role, kind, media]
+          not:
+            required: [text]
+    InternalMediaReference:
+      type: object
+      additionalProperties: false
+      required: [media_reference, media_kind, access_uri]
+      properties:
+        media_reference:
+          $ref: '#/components/schemas/ResourceId'
+        media_kind:
+          type: string
+          enum: [AUDIO, IMAGE]
+        access_uri:
+          type: string
+          format: uri
+          maxLength: 4000
+          description: >-
+            Short-lived evaluator-readable URI scoped to this bounded work. It is not a
+            durable service credential and must not become product identity.
+        content_sha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        expires_at:
+          $ref: '#/components/schemas/AbsoluteInstant'
+    EvaluationExecutionStatus:
+      type: string
+      enum: [COMPLETED, UNAVAILABLE, INVALID]
+    EvaluationExecutionResult:
+      type: object
+      additionalProperties: false
+      required:
+        - evaluation_id
+        - logical_work_id
+        - execution_attempt_id
+        - execution_fence_id
+        - status
+        - observation_candidates
+        - permitted_analysis_references
+        - uncertainty
+        - provenance
+        - diagnostics
+      properties:
+        evaluation_id:
+          $ref: '#/components/schemas/ResourceId'
+        logical_work_id:
+          $ref: '#/components/schemas/ResourceId'
+        execution_attempt_id:
+          $ref: '#/components/schemas/ResourceId'
+        execution_fence_id:
+          $ref: '#/components/schemas/ResourceId'
+        status:
+          $ref: '#/components/schemas/EvaluationExecutionStatus'
+        observation_candidates:
+          type: array
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/ObservationCandidate'
+        permitted_analysis_references:
+          type: array
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/AnalysisReference'
+        uncertainty:
+          $ref: '#/components/schemas/UncertaintyQuality'
+        provenance:
+          $ref: '#/components/schemas/EvaluatorProvenance'
+        diagnostics:
+          type: array
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/EvaluatorDiagnostic'
+      description: >-
+        Candidate measurements only. Core validates execution association/fence/current
+        eligibility and owns whether any candidate becomes Observation, EvidenceFact, a
+        ReadinessEvaluation input, or a learner-facing consequence.
+    ObservationCandidate:
+      type: object
+      additionalProperties: false
+      required:
+        - candidate_id
+        - assessment_type_id
+        - claim_candidate_ids
+        - canonical_target_ids
+        - criterion_measurements
+        - uncertainty
+      properties:
+        candidate_id:
+          $ref: '#/components/schemas/ResourceId'
+        assessment_type_id:
+          $ref: '#/components/schemas/CanonicalId'
+        claim_candidate_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ResourceId'
+        canonical_target_ids:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/CanonicalId'
+        criterion_measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CriterionMeasurement'
+        raw_result:
+          $ref: '#/components/schemas/MeasurementValue'
+        uncertainty:
+          $ref: '#/components/schemas/UncertaintyQuality'
+        analysis_reference_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ResourceId'
+    CriterionMeasurement:
+      type: object
+      additionalProperties: false
+      required: [criterion_id, measurement_id, value, uncertainty]
+      properties:
+        criterion_id:
+          $ref: '#/components/schemas/CanonicalId'
+        measurement_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        value:
+          $ref: '#/components/schemas/MeasurementValue'
+        uncertainty:
+          $ref: '#/components/schemas/UncertaintyQuality'
+        analysis_reference_ids:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ResourceId'
+    MeasurementValue:
+      oneOf:
+        - type: string
+          maxLength: 10000
+        - type: boolean
+        - type: integer
+          format: int64
+        - type: number
+          format: double
+        - type: array
+          maxItems: 200
+          items:
+            type: string
+            maxLength: 1000
+      description: >-
+        Bounded evaluator measurement payload. Its interpretation is defined by the
+        requested measurement/criterion identity, not by this generic transport union.
+    UncertaintyQuality:
+      type: object
+      additionalProperties: false
+      required: [quality_flags]
+      properties:
+        quality_flags:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+        calibrated_confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: >-
+            Present only when the configured evaluator/use has a meaningful calibrated
+            confidence quantity. Omission is not zero confidence.
+        explanation:
+          type: string
+          maxLength: 4000
+    AnalysisReference:
+      type: object
+      additionalProperties: false
+      required: [analysis_reference_id, kind, payload]
+      properties:
+        analysis_reference_id:
+          $ref: '#/components/schemas/ResourceId'
+        kind:
+          type: string
+          minLength: 1
+          maxLength: 128
+        payload:
+          type: string
+          maxLength: 50000
+      description: >-
+        Bounded reconstructable analysis artifact permitted for Core reconciliation/audit.
+        It must not contain hidden free-form reasoning traces that the product does not
+        need to persist or expose.
+    EvaluatorProvenance:
+      type: object
+      additionalProperties: false
+      required: [evaluator_config_id, evaluator_version]
+      properties:
+        evaluator_config_id:
+          $ref: '#/components/schemas/ResourceId'
+        evaluator_version:
+          type: string
+          minLength: 1
+          maxLength: 256
+        provider_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+        model_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+        model_version:
+          type: string
+          minLength: 1
+          maxLength: 256
+        rubric_or_policy_version:
+          type: string
+          minLength: 1
+          maxLength: 256
+    EvaluatorDiagnostic:
+      type: object
+      additionalProperties: false
+      required: [code, severity, message]
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 128
+        severity:
+          type: string
+          enum: [INFO, WARNING, ERROR]
+        message:
+          type: string
+          minLength: 1
+          maxLength: 4000
+      description: >-
+        Reconciliation/operations diagnostic only. Diagnostics cannot certify learners,
+        admit evidence, activate content, or advance Progression.
+    Health:
+      type: object
+      additionalProperties: false
+      required: [service, status, contract_version, build_version]
+      properties:
+        service:
+          type: string
+          enum: [evaluator]
+        status:
+          type: string
+          enum: [ready]
+        contract_version:
+          type: string
+          minLength: 1
+        build_version:
+          type: string
+          minLength: 1
+    InternalFailureClass:
+      type: string
+      enum: [OPERATION_REJECTED, INFRASTRUCTURE_FAILURE, AMBIGUOUS_FAILURE]
+    InternalRetryAdvice:
+      type: string
+      enum: [DO_NOT_RETRY, RETRY_SAME_IDEMPOTENCY_KEY, RETRY_AFTER]
+    InternalErrorCode:
+      type: string
+      enum:
+        - INVALID_REQUEST
+        - UNAUTHENTICATED
+        - FORBIDDEN
+        - IDEMPOTENCY_CONFLICT
+        - SEMANTIC_PRECONDITION_FAILED
+        - DEPENDENCY_UNAVAILABLE
+        - OUTCOME_AMBIGUOUS
+        - INTERNAL_FAILURE
+    InternalErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [failure_class, code, message, request_id, retry_advice]
+          properties:
+            failure_class:
+              $ref: '#/components/schemas/InternalFailureClass'
+            code:
+              $ref: '#/components/schemas/InternalErrorCode'
+            message:
+              type: string
+              minLength: 1
+              maxLength: 4000
+            request_id:
+              type: string
+              minLength: 1
+              maxLength: 128
+            retry_advice:
+              $ref: '#/components/schemas/InternalRetryAdvice'
