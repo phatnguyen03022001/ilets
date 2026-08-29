@@ -213,7 +213,8 @@ Portability does not require a generic multi-provider framework. Minimum shape i
 
 | Capability | Runtime owner | External-provider status | Required boundary/invariant |
 |---|---|---|---|
-| Identity / credential custody | Core API integration | `DEFERRED` | stable internal learner identity; external route not preselected; selected route supports appropriate revocation/export/security |
+| Identity / credential custody | Core API integration | `SELECTED_FOR_IMPLEMENTATION` | Clerk owns credential/auth/session mechanics only; stable internal actor/learner identity, RBAC/capabilities, entitlement, and product authorization remain Core-owned |
+| Secret storage | runtime/deployment integration | `SELECTED_FOR_IMPLEMENTATION` | Google Secret Manager stores provider/API credentials and other secrets; Core typed runtime policy remains separate and no routine Admin plaintext-secret read/export is implied |
 | PostgreSQL-compatible persistence hosting | Core API | `SELECTED_FOR_IMPLEMENTATION` | authoritative product truth remains PostgreSQL/Core-owned; provider hosting cannot change DB semantics or application access ownership |
 | Derived cache / rate-limit / short-lived coordination | Core API / applicable edge-safe callers | `SELECTED_FOR_IMPLEMENTATION` | non-authoritative derived acceleration/coordination only; correctness survives cache loss/staleness under owning policies |
 | Bounded asynchronous task dispatch | Core dispatch | `SELECTED_FOR_IMPLEMENTATION` | delivers durable Core-owned logical work; dispatch receipt/queue state never becomes business-state or evidence authority |
@@ -258,6 +259,8 @@ These USER-approved initial routes are also `SELECTED_FOR_IMPLEMENTATION`, not `
 
 | Capability / use | Initial selected route | Selection boundary |
 |---|---|---|
+| External identity / session | Clerk | credential custody, authentication, and session issuance/revocation mechanics only; external principal maps to a stable Core actor and never owns RBAC/entitlement/product authorization |
+| Secret storage | Google Secret Manager | provider/API credentials and other secrets only; typed runtime operating policy remains Core-owned and deployment environment holds references/bootstrap wiring rather than policy authority |
 | PostgreSQL-compatible hosting | Neon Launch | hosts the authoritative PostgreSQL-compatible product store; only Core has application-runtime DB authority |
 | Derived cache / rate-limit / short-lived coordination | Upstash Redis PAYG | non-authoritative acceleration/protection/short coordination only; Redis loss/staleness cannot redefine product/evidence/entitlement truth |
 | Bounded asynchronous task dispatch | Google Cloud Tasks | delivery/execution infrastructure for durable Core-owned work; task state/receipt is never business-state authority |
@@ -274,54 +277,50 @@ Provider callbacks/webhooks are selected initially only because the payOS route 
 The authority split remains:
 
 ```text
+Clerk        = credential/auth/session mechanics, not product authorization authority
+Secret Manager= secret custody, not runtime-policy authority
 PostgreSQL   = authoritative durable product truth
 Redis        = derived acceleration / bounded coordination
 Cloud Tasks  = dispatch / execution delivery
 R2           = bytes behind Core-owned object state
 providers    = external capabilities / observations
-Core         = product mutation + payment/entitlement reconciliation authority
+Core         = product mutation + identity association + RBAC/entitlement/payment reconciliation authority
 ```
 
 No Kubernetes, Kafka, service mesh, multi-region active-active, second queue, second cache, second initial payment provider, or generic infrastructure abstraction is selected by this pass.
 
 ## Initial production planning envelope
 
-Initial provider/infrastructure selection is constrained by this operating objective:
+The selected provider set starts with operator-adjustable runtime defaults owned by `06-implementation-stack.md`:
 
 ```text
-public API planning volume     ≈ up to 1.5 million requests / month
-total infrastructure + AI     ≈ target <= USD 40 / month initially
+public API planning volume    ≈ up to 1.5 million requests / month
+operating target              = USD 10 / month
+variable-spend safety ceiling = USD 20 / month
 ```
 
-This is a planning/selection envelope, not a provider-price, free-tier, quota, capacity, performance, or availability guarantee. Mutable prices, promotions, free-tier allowances, model tariffs, and benchmark figures remain research/operational evidence rather than canonical constants.
+The request volume remains a planning input, not a capacity/performance guarantee or autoscaling constant. The operating target guides forecasting/alerts/quota and optional-capability optimization. The safety ceiling is application-level admission control for **new discretionary variable-cost work**; it is not a provider invoice guarantee. Fixed infrastructure, metering/reporting delay, already admitted/in-flight work, estimation error, and provider billing behavior can produce a final invoice above the configured ceiling. Cloud/provider budget alerts and dashboards are observations/warnings, not concurrency-safe enforcement guarantees.
 
-Selection and implementation should make the envelope plausible through:
+Selection and implementation should make the target plausible through usage-based/scale-to-zero services where appropriate, bounded autoscaling, application-level cost/quota admission, semantically valid reuse/caching/batching/pre-generation, and explicit capacity/cost/latency/reliability upgrade triggers. Public API traffic remains distinct from provider invocation volume—one request does not imply one model call.
 
-1. scale-to-zero or usage-based services where appropriate rather than pre-paying for idle capacity;
-2. horizontal scaling of stateless/eligible runtime work without changing semantic ownership, DB authority, or provider-neutral capability boundaries;
-3. hard application-level quotas/admission for expensive AI, productive evaluation, realtime, media, and other metered capabilities;
-4. provider budget/spend controls and operational alerts where the selected provider offers them, without treating those controls as product truth;
-5. semantically valid reuse, caching, batching, and pre-generation before duplicating expensive provider work;
-6. public API request volume remaining distinct from AI/provider invocation volume—one request does not imply one model call;
-7. graceful quota/cost degradation that delays, limits, disables optional work, or preserves unresolved state before lowering privacy, evidence, evaluator, or content-quality standards;
-8. explicit capacity/cost/latency/reliability upgrade triggers before moving to a higher-cost tier or additional infrastructure, rather than provisioning hypothetical scale in advance.
+Concurrency-safe reservation/admission/reconciliation and budget-state degradation are implementation invariants owned by `06-implementation-stack.md`. Provider routes may expose billing observations, quotas, alerts, or hard provider controls, but those signals do not replace Core's logical-operation cost authority. Cost pressure may delay/deny optional work or preserve unresolved state; it never lowers privacy, evidence, evaluator, or content-quality standards.
 
-This envelope does not override the normal activation gate. A route whose privacy, rights, security, reliability, deletion, calibration, or support requirements fail remains blocked even if it would be cheaper.
+This operating policy does not override the normal activation gate. A route whose privacy, rights, security, reliability, deletion, calibration, or support requirements fail remains blocked even if it would be cheaper.
 
 Selected-route invariants:
 
-1. For routes with `primary`, `fallback`, `escalation`, or `higher-quality route` roles, those labels describe intended routing only; they do not establish semantic interchangeability. A secondary route is usable for a consequence only when it independently satisfies that consequence's privacy/security/rights/quality/reliability and, where applicable, calibration requirements.
-2. A provider/model/configuration change preserves exact provenance. Calibration for one productive/acoustic evaluator route does not transfer automatically to another provider, model, mode, prompt/rubric configuration, or materially different version.
+1. For routes with `primary`, `fallback`, `escalation`, or `higher-quality route` roles, those labels describe intended routing only; they do not establish semantic interchangeability. A secondary route is usable for a consequence only when it independently satisfies that consequence's privacy/security/rights/quality/reliability and, where applicable, calibration requirements. Retry/fallback/escalation remains under the original logical operation's quota/cost admission rather than obtaining fresh allowance.
+2. A provider/model/configuration change preserves exact provider/model/configuration/prompt/rubric/evaluator provenance where consequential. Calibration for one productive/acoustic evaluator route does not transfer automatically to another provider, model, mode, prompt/rubric configuration, or materially different version; cheaper or newer alone is insufficient for consequential promotion, and promotion evidence is consequence-proportional.
 3. STT is transcription. A transcript, even from a selected realtime route, cannot substitute for acoustic evidence required for pronunciation/prosody/intelligibility inference.
 4. Realtime tutor output is interaction content. It gains Assessment consequence only through the normal separately eligible Attempt/Observation/evaluator path; provider conversation quality does not make the route an examiner.
 5. Provider failure, timeout, degraded service, or fallback exhaustion remains product/runtime state and never becomes learner weakness, a fake score, or fabricated evidence.
 6. No selected route becomes `ACTIVE` until the normal activation gate passes for its exact use. Selection alone does not approve data egress, learner-content reuse, release support, or production traffic.
 7. The initial route keeps only the approved primary and secondary provider where one is named. A third provider is not retained merely for hypothetical redundancy; adding one requires demonstrated quality/reliability/cost/exit value under the normal lifecycle.
-8. Pricing, latency, benchmark, quota, and quality figures remain mutable research/operational evidence. They are not canonical constants or guarantees in this owner.
+8. Mandatory shadow/canary pipelines are not required for every low-consequence provider change; verification and promotion evidence remain consequence-proportional.
+9. Pricing, latency, benchmark, quota, and quality figures remain mutable research/operational evidence. They are not canonical constants or guarantees in this owner.
 
 ## Deferred / unresolved initial routes
 
-- external identity provider — `DEFERRED`; Core-owned learner identity remains unchanged;
 - Paddle — `DEFERRED` future candidate for international Merchant-of-Record / tax-compliance expansion; it is not a second initial payment route and has no activation authority;
 - external feature-flag provider — `DEFERRED`; bounded first-party flags remain sufficient initially;
 - pronunciation / acoustic evaluator — `TBD`; applicable higher-consequence acoustic evaluation remains calibration-required until an eligible provider/evaluator path is selected and calibrated;
