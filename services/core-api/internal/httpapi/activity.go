@@ -226,13 +226,13 @@ func (s *Server) createPlannedAssessmentActivity(w http.ResponseWriter, r *http.
 		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CONTENT_UNAVAILABLE"), nil, "The sampled assessment content failed current assignment invariants.")
 		return
 	}
-	exposed, err := queries.HasSampledReadingAssessmentExposure(r.Context(), learner)
+	priorAssignment, err := queries.HasPriorSampledReadingAssignment(r.Context(), learner)
 	if err != nil {
-		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck assessment exposure")
+		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck prior sampled assignment")
 		return
 	}
-	if exposed {
-		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample has already been materially exposed.")
+	if priorAssignment {
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample was already assigned; actual learner exposure is not established, so fresh/unseen eligibility cannot be proven for another independent opportunity.")
 		return
 	}
 
@@ -241,7 +241,7 @@ func (s *Server) createPlannedAssessmentActivity(w http.ResponseWriter, r *http.
 		PracticeActivityID: activityID, LearnerID: learner, ContentRevisionID: current.RevisionID, DailyPlanItemID: &planItemID,
 	})
 	if errors.Is(err, pgx.ErrNoRows) {
-		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample is no longer available as fresh evidence.")
+		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample has already been assigned; fresh/unseen eligibility can no longer be proven for another independent opportunity.")
 		return
 	}
 	if err != nil {

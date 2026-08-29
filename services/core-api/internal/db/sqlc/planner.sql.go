@@ -123,7 +123,7 @@ func (q *Queries) HasAdmittedSampledReadingEvidence(ctx context.Context, learner
 	return exists, err
 }
 
-const hasSampledReadingAssessmentExposure = `-- name: HasSampledReadingAssessmentExposure :one
+const hasPriorSampledReadingAssignment = `-- name: HasPriorSampledReadingAssignment :one
 SELECT EXISTS (
   SELECT 1
   FROM practice_activities
@@ -133,8 +133,8 @@ SELECT EXISTS (
 )
 `
 
-func (q *Queries) HasSampledReadingAssessmentExposure(ctx context.Context, learnerID string) (bool, error) {
-	row := q.db.QueryRow(ctx, hasSampledReadingAssessmentExposure, learnerID)
+func (q *Queries) HasPriorSampledReadingAssignment(ctx context.Context, learnerID string) (bool, error) {
+	row := q.db.QueryRow(ctx, hasPriorSampledReadingAssignment, learnerID)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"net/http"
 	"sort"
+	"strings"
 	"sync"
 	"testing"
 )
@@ -190,7 +191,7 @@ func equalStrings(raw []any, want []string) bool {
 	return true
 }
 
-func TestPlanItemAssignmentRechecksOwnershipTargetContentAndExposure(t *testing.T) {
+func TestPlanItemAssignmentRechecksOwnershipTargetContentAndFreshness(t *testing.T) {
 	pool := integrationPool(t)
 	resetLearnerState(t, pool)
 	server, key := newTestServer(t, pool)
@@ -237,36 +238,117 @@ func TestPlanItemAssignmentRechecksOwnershipTargetContentAndExposure(t *testing.
 		}
 	})
 
-	t.Run("first exposure wins and replay does not duplicate", func(t *testing.T) {
-		learner := newAPIClient(t, server.URL, key, "user_plan_exposure", nil)
+	t.Run("assignment consumes fresh opportunity without proving learner exposure", func(t *testing.T) {
+		learner := newAPIClient(t, server.URL, key, "user_plan_freshness", nil)
 		putTarget(t, learner, 0, 6.5)
 		firstItem := singlePlanItemID(t, readDailyPlan(t, learner))
 		secondItem := singlePlanItemID(t, readDailyPlan(t, learner))
-		first, status := assignPlanItem(t, learner, firstItem, "exposure-plan-key-0001")
+		first, status := assignPlanItem(t, learner, firstItem, "freshness-plan-key-0001")
 		if status != http.StatusCreated || first["outcome"] != "ASSIGNED" {
 			t.Fatalf("first assessment assignment failed: status=%d result=%#v", status, first)
 		}
-		replay, replayStatus := assignPlanItem(t, learner, firstItem, "exposure-plan-key-0001")
+		replay, replayStatus := assignPlanItem(t, learner, firstItem, "freshness-plan-key-0001")
 		if replayStatus != http.StatusOK || replay["activity"].(map[string]any)["practice_activity_id"] != first["activity"].(map[string]any)["practice_activity_id"] {
 			t.Fatalf("assignment replay changed resource: status=%d result=%#v", replayStatus, replay)
 		}
-		second, secondStatus := assignPlanItem(t, learner, secondItem, "exposure-plan-key-0002")
+
+		var activityCount, attemptCount int
+		if err := pool.QueryRow(t.Context(), `SELECT count(*) FROM practice_activities WHERE learner_id=(SELECT learner_id FROM external_principals WHERE external_subject='user_plan_freshness') AND content_revision_id=$1 AND primary_activity_purpose='ASSESSMENT'`, sampledAssessmentRevision).Scan(&activityCount); err != nil {
+			t.Fatal(err)
+		}
+		if err := pool.QueryRow(t.Context(), `SELECT count(*) FROM attempts WHERE learner_id=(SELECT learner_id FROM external_principals WHERE external_subject='user_plan_freshness')`).Scan(&attemptCount); err != nil {
+			t.Fatal(err)
+		}
+		if activityCount != 1 || attemptCount != 0 {
+			t.Fatalf("assignment-only causal setup violated: activities=%d attempts=%d", activityCount, attemptCount)
+		}
+
+		second, secondStatus := assignPlanItem(t, learner, secondItem, "freshness-plan-key-0002")
 		if secondStatus != http.StatusOK || second["outcome"] != "UNAVAILABLE" || second["unavailability"].(map[string]any)["reason"] != "CURRENT_ELIGIBILITY_BLOCKED" {
-			t.Fatalf("second plan bypassed exposure gate: status=%d result=%#v", secondStatus, second)
+			t.Fatalf("second plan bypassed freshness gate: status=%d result=%#v", secondStatus, second)
 		}
-		postExposure := readDailyPlan(t, learner)
-		if len(postExposure["items"].([]any)) != 0 {
-			t.Fatalf("exposed sample was re-recommended: %#v", postExposure)
+		secondExplanation := second["unavailability"].(map[string]any)["explanation"]
+		wantSecondExplanation := "This exact assessment sample was already assigned; actual learner exposure is not established, so fresh/unseen eligibility cannot be proven for another independent opportunity."
+		if secondExplanation != wantSecondExplanation {
+			t.Fatalf("assignment was misrepresented as exposure: got=%#v want=%q", secondExplanation, wantSecondExplanation)
 		}
-		gaps := postExposure["coverage_gaps"].([]any)
+
+		postAssignment := readDailyPlan(t, learner)
+		if len(postAssignment["items"].([]any)) != 0 {
+			t.Fatalf("assigned sample was re-recommended as fresh: %#v", postAssignment)
+		}
+		gaps := postAssignment["coverage_gaps"].([]any)
 		if len(gaps) != 1 || gaps[0].(map[string]any)["condition_id"] != "content_assets" {
-			t.Fatalf("fresh-sample inability not represented: %#v", postExposure)
+			t.Fatalf("fresh-sample inability not represented: %#v", postAssignment)
 		}
-		var count int
-		if err := pool.QueryRow(t.Context(), `SELECT count(*) FROM practice_activities WHERE learner_id=(SELECT learner_id FROM external_principals WHERE external_subject='user_plan_exposure') AND content_revision_id=$1 AND primary_activity_purpose='ASSESSMENT'`, sampledAssessmentRevision).Scan(&count); err != nil || count != 1 {
-			t.Fatalf("assessment exposure count=%d err=%v", count, err)
+		wantConsequence := "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued."
+		if got := gaps[0].(map[string]any)["blocking_consequence"]; got != wantConsequence {
+			t.Fatalf("daily plan claimed exposure instead of unresolved freshness: got=%#v want=%q", got, wantConsequence)
 		}
 	})
+}
+
+func TestSampledAssessmentAssignmentConcurrencyPreserved(t *testing.T) {
+	pool := integrationPool(t)
+	resetLearnerState(t, pool)
+	server, key := newTestServer(t, pool)
+	defer server.Close()
+
+	learner := newAPIClient(t, server.URL, key, "user_plan_concurrent_freshness", nil)
+	putTarget(t, learner, 0, 6.5)
+	items := []string{
+		singlePlanItemID(t, readDailyPlan(t, learner)),
+		singlePlanItemID(t, readDailyPlan(t, learner)),
+	}
+	keys := []string{"concurrent-freshness-key-0001", "concurrent-freshness-key-0002"}
+	statuses := make([]int, 2)
+	outcomes := make([]string, 2)
+	var wg sync.WaitGroup
+	for i := range 2 {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			result, status := assignPlanItem(t, learner, items[i], keys[i])
+			statuses[i] = status
+			outcomes[i], _ = result["outcome"].(string)
+		}(i)
+	}
+	wg.Wait()
+	sort.Ints(statuses)
+	sort.Strings(outcomes)
+	if statuses[0] != http.StatusOK || statuses[1] != http.StatusCreated {
+		t.Fatalf("concurrent fresh assignment statuses=%v outcomes=%v", statuses, outcomes)
+	}
+	if outcomes[0] != "ASSIGNED" || outcomes[1] != "UNAVAILABLE" {
+		t.Fatalf("concurrent fresh assignment outcomes=%v statuses=%v", outcomes, statuses)
+	}
+
+	var count int
+	if err := pool.QueryRow(t.Context(), `SELECT count(*) FROM practice_activities WHERE learner_id=(SELECT learner_id FROM external_principals WHERE external_subject='user_plan_concurrent_freshness') AND content_revision_id=$1 AND primary_activity_purpose='ASSESSMENT'`, sampledAssessmentRevision).Scan(&count); err != nil {
+		t.Fatal(err)
+	}
+	if count != 1 {
+		t.Fatalf("concurrent assignments consumed sampled opportunity %d times", count)
+	}
+}
+
+func TestSampledAssessmentUniquenessIndexIsRevisionBounded(t *testing.T) {
+	pool := integrationPool(t)
+	var predicate string
+	if err := pool.QueryRow(t.Context(), `
+		SELECT pg_get_expr(i.indpred, i.indrelid)
+		FROM pg_class idx
+		JOIN pg_index i ON i.indexrelid = idx.oid
+		WHERE idx.relname = 'practice_activities_sampled_assessment_once_idx'
+	`).Scan(&predicate); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(predicate, sampledAssessmentRevision) {
+		t.Fatalf("sampled assessment uniqueness predicate is broader than bounded revision: %s", predicate)
+	}
+	if !strings.Contains(predicate, "primary_activity_purpose") || !strings.Contains(predicate, "ASSESSMENT") {
+		t.Fatalf("sampled assessment uniqueness predicate lost purpose scope: %s", predicate)
+	}
 }
 
 func assignPlanItem(t *testing.T, c *apiTestClient, planItemID, key string) (map[string]any, int) {

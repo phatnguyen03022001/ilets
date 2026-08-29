@@ -7,8 +7,8 @@ func TestDecideBoundedSampledReadingPath(t *testing.T) {
 	if got := Decide(academic, EvidenceState{ContentEligible: true}); got != CollectSampledEvidence {
 		t.Fatalf("academic pre-evidence decision=%v", got)
 	}
-	if got := Decide(academic, EvidenceState{ContentEligible: true, MateriallyExposed: true}); got != FreshSampleContentGap {
-		t.Fatalf("exposed sample decision=%v", got)
+	if got := Decide(academic, EvidenceState{ContentEligible: true, PriorSampledAssignment: true}); got != FreshSampleContentGap {
+		t.Fatalf("prior-assignment freshness decision=%v", got)
 	}
 	if got := Decide(academic, EvidenceState{ContentEligible: true, AdmittedSample: true}); got != ProgressionTransitionGap {
 		t.Fatalf("post-evidence decision=%v", got)

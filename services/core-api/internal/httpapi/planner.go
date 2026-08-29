@@ -43,7 +43,7 @@ func (s *Server) getDailyPlan(w http.ResponseWriter, r *http.Request) {
 	if target.Configured && target.Resolved && target.ReadingRelevant && target.Variant == "ACADEMIC" {
 		evidence.AdmittedSample, err = queries.HasAdmittedSampledReadingEvidence(r.Context(), learner)
 		if err == nil {
-			evidence.MateriallyExposed, err = queries.HasSampledReadingAssessmentExposure(r.Context(), learner)
+			evidence.PriorSampledAssignment, err = queries.HasPriorSampledReadingAssignment(r.Context(), learner)
 		}
 		if err != nil {
 			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve sampled evidence state")
@@ -62,7 +62,7 @@ func (s *Server) getDailyPlan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decision := plannercore.Decide(target, evidence)
-	coverageGaps := plannerCoverageGaps(decision, evidence.MateriallyExposed)
+	coverageGaps := plannerCoverageGaps(decision, evidence.PriorSampledAssignment)
 	items := []public.DailyPlanItem{}
 	planID := newID("plan_")
 	generatedAt := time.Now().UTC()
@@ -147,7 +147,7 @@ func sampledReadingPlanItem(id string) public.DailyPlanItem {
 	}
 }
 
-func plannerCoverageGaps(decision plannercore.Decision, exposed bool) []public.CoverageGap {
+func plannerCoverageGaps(decision plannercore.Decision, priorAssignment bool) []public.CoverageGap {
 	targets := []public.CanonicalId{"R-QT-02", "R-QT-03"}
 	switch decision {
 	case plannercore.GeneralTrainingContentGap:
@@ -160,8 +160,8 @@ func plannerCoverageGaps(decision plannercore.Decision, exposed bool) []public.C
 		}}
 	case plannercore.FreshSampleContentGap:
 		consequence := "The bounded sampled Reading assessment content is not currently eligible for assignment."
-		if exposed {
-			consequence = "The only bounded Reading assessment sample has already been materially exposed and cannot be reused as fresh independent evidence."
+		if priorAssignment {
+			consequence = "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued."
 		}
 		return []public.CoverageGap{{
 			GapClass: public.CoverageGapClass("CONTENT_OR_ASSET"), ScopedTargetIds: targets,

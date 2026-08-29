@@ -13,9 +13,9 @@ type Target struct {
 }
 
 type EvidenceState struct {
-	AdmittedSample    bool
-	MateriallyExposed bool
-	ContentEligible   bool
+	AdmittedSample         bool
+	PriorSampledAssignment bool
+	ContentEligible        bool
 }
 
 type Decision int
@@ -41,7 +41,7 @@ func Decide(target Target, evidence EvidenceState) Decision {
 	if evidence.AdmittedSample {
 		return ProgressionTransitionGap
 	}
-	if evidence.MateriallyExposed || !evidence.ContentEligible {
+	if evidence.PriorSampledAssignment || !evidence.ContentEligible {
 		return FreshSampleContentGap
 	}
 	return CollectSampledEvidence

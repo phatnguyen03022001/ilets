@@ -17,7 +17,7 @@ WHERE cr.revision_id = 'reading-bootstrap-assessment-001-r1'
   AND vd.validation_policy_version = 'bootstrap-reading-assessment-v1'
   AND vd.intended_use = 'ASSESSMENT_SAMPLED_CLASSIFICATION';
 
--- name: HasSampledReadingAssessmentExposure :one
+-- name: HasPriorSampledReadingAssignment :one
 SELECT EXISTS (
   SELECT 1
   FROM practice_activities
