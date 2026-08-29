@@ -80,6 +80,10 @@ func productionClerkAuthorizationOptions(cfg Config) ([]clerkhttp.AuthorizationO
 	if cfg.ClerkSecretKey == "" {
 		return nil, fmt.Errorf("CLERK_SECRET_KEY is required")
 	}
-	clientConfig := &clerk.ClientConfig{Key: clerk.String(cfg.ClerkSecretKey)}
+	clientConfig := &clerk.ClientConfig{
+		BackendConfig: clerk.BackendConfig{
+			Key: clerk.String(cfg.ClerkSecretKey),
+		},
+	}
 	return []clerkhttp.AuthorizationOption{clerkhttp.JWKSClient(jwks.NewClient(clientConfig))}, nil
 }
