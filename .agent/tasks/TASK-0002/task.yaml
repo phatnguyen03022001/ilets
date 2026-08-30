@@ -1,0 +1,209 @@
+protocol_version: 3
+
+task_id: TASK-0002
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0001
+  gap_id: "BEHAVIOR_CATALOG_MIGRATION_FOUNDATION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+architect_analysis_skills:
+  - architect
+  - executor
+  - simplicity
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@a7ad255ba2a1000f2f3a3b9ef8cabf87c02d574a"
+    role: "Exact current target truth after accepted TASK-0001. Legacy CONSTITUTION.md/OBJECTIVE.md/spec/**/design/** remain canonical; docs/PRODUCT.md and docs/DECISIONS.md remain migration drafts with authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@e6728594b0371e2e941c1457fc8efdc14a90deee"
+    role: "Exact unreleased V1 candidate adopted for this target migration. BEHAVIOR requires FTR/FLW/ACC identities while docs/catalog/project.json owns identities and relations, so behavior and its initial catalog identity layer must materialize atomically."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Exact frozen V1 engineering claim/evidence semantics already adopted by TASK-0001; this slice must not fabricate assurance status or maturity."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Exact protocol-v3 task/governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents V1 BEHAVIOR template + project schema at e6728594b0371e2e941c1457fc8efdc14a90deee, combined with exact current IELTS canonical behavior owners."
+  rationale: "The BEHAVIOR template requires FTR-*, FLW-*, and ACC-* headings while those identities are catalog-owned. Creating BEHAVIOR without the catalog would force invented or ownerless identities; creating the catalog without BEHAVIOR would leave required behavior references unresolved. The smallest coherent slice is one atomic BEHAVIOR + initial catalog migration foundation."
+
+objective: "Materialize the first structurally coherent agent-documents behavior migration for IELTS: create a non-authoritative BEHAVIOR migration draft and an initial schema-conformant migration catalog that assigns stable target-owned ACT/ROL/FTR/ACC/FLW identities and relations for the behavior represented in this slice, while preserving all existing canonical target semantics and keeping current legacy owners authoritative until a later explicit cutover."
+
+scope:
+  required_changes:
+    - "Create docs/BEHAVIOR.md as MIGRATION DRAFT / AUTHORITY NONE. Map existing observable product behavior only; do not invent product behavior, implementation architecture, data/storage design, API shape, or quality claims."
+    - "Read the exact current canonical behavior sources needed for this domain, including relevant sections of OBJECTIVE.md, spec/**, and design/00-learning-experience.md through design/04-application-flows.md plus other current canonical owners only when materially required. Preserve upstream learning truth and downstream behavior exactly."
+    - "Represent the behavior domain using stable FTR-* feature headings, FLW-* critical/user/system/failure flow headings, and ACC-* acceptance headings as required by agent-documents. Every identity must be created in docs/catalog/project.json in the same implementation commit; Markdown must not become the identity owner."
+    - "Create docs/catalog/project.json using model_version 1 and the exact V1 schema shape. Set milestone.scope_state to OPEN and scope_ref to docs/PRODUCT.md#Scope. The catalog is a migration artifact under the current IELTS hierarchy and has authority NONE until explicit cutover; its canonical path does not override the still-canonical CONSTITUTION/legacy owners during migration."
+    - "Populate the catalog only to the extent directly supported by migrated truth in this slice: actors/roles that are already represented by docs/PRODUCT.md; behavior features, acceptance criteria, and flows represented by docs/BEHAVIOR.md; relations that can be established from current canonical truth. Do not create SYS/DAT/IFC/EXT/CAP identities merely to satisfy completeness before their domains are migrated. Use the schema's explicit relation na form only when current canonical truth supports true non-applicability; otherwise record a bounded migration unknown rather than guessing."
+    - "For feature relations to not-yet-migrated domains, do not falsely declare N/A merely because migration is incomplete. If the V1 feature shape requires a relation whose target identities are not yet materialized and current truth shows the relation may exist, record an explicit UNK-* migration unknown and choose a schema-valid representation that does not misstate product semantics. If no truthful schema-valid representation exists without prematurely materializing another domain, stop BLOCKED and report the model dependency instead of weakening semantics."
+    - "Set coverage entries conservatively. Product concerns may be marked actual_depth L1 only where current docs/PRODUCT.md structurally supports them. Behavior concerns may be marked actual_depth L1 only if this slice fully establishes the required L1 behavior treatment for the represented migration milestone. All not-yet-migrated concerns remain actual_depth NONE unless target evidence directly justifies otherwise. Never use coverage depth as maturity."
+    - "Update docs/DECISIONS.md only as needed to record that docs/catalog/project.json now exists as a migration artifact with authority NONE until explicit cutover, and that filename/location does not itself grant canonical target authority. Preserve TASK-0001 adoption identities and candidate/frozen status statements."
+    - "Do not edit docs/PRODUCT.md unless an exact reference token defect makes catalog references impossible. If such a purely structural token correction is required, it must preserve all semantics, stay inside docs/PRODUCT.md, and be reported explicitly; otherwise leave PRODUCT unchanged."
+    - "Do not change CONSTITUTION.md, OBJECTIVE.md, README.md, spec/**, design/**, contracts/**, product code, runtime behavior, workflows, verification scripts, research/**, evidence/**, or current main."
+    - "Do not claim DOCS_READY, documentation lock, implementation readiness, standards PASS, maturity level, N/A assurance status, exception, generated PROGRAM, or release readiness."
+    - "Publish one implementation commit non-force to dev, then create .agent/tasks/TASK-0002/report.yaml as a separate report-only direct child and stop at Governing Architect review."
+
+  allowed_existing_files_or_components:
+    - docs/PRODUCT.md
+    - docs/DECISIONS.md
+    - .agent/tasks/TASK-0002/task.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Existing CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** remain canonical throughout this slice."
+  - "docs/PRODUCT.md, docs/DECISIONS.md, docs/BEHAVIOR.md, and docs/catalog/project.json remain migration artifacts with target authority NONE until a later explicit cutover."
+  - "Catalog owns migration identities/relations; BEHAVIOR owns migrated behavior explanation only."
+  - "No FTR/ACC/FLW identity may exist only in Markdown without the same catalog identity."
+  - "No current product behavior or learning truth changes."
+  - "No absent migration-domain identity is converted into false N/A."
+  - "agent-documents remains an unreleased candidate; target adoption does not globally stabilize it."
+  - "agent-standards remains pinned to exact frozen V1; no assurance result is fabricated."
+  - "Branches remain exactly {dev, main}; main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+
+forbidden_changes:
+  - "Do not modify README.md, CONSTITUTION.md, OBJECTIVE.md, spec/**, design/**, contracts/**, apps/**, services/**, tools/**, .github/**, verify, compose files, research/**, evidence/**, or main."
+  - "Do not create docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, generated program artifacts, assurance registries, migration databases, provider registries, or orchestration state."
+  - "Do not delete, rename, or demote legacy canonical documents."
+  - "Do not copy the full agent-documents model/schema or agent-standards requirement catalog into IELTS."
+  - "Do not force schema validity by inventing systems/data/interfaces/dependencies/capabilities, declaring false N/A, or silently dropping known relationships."
+  - "Do not trigger GitHub Actions merely for this documentation migration; no authoritative runtime verifier is required by this task."
+  - "Do not create a branch, PR, tag, release, or repository metadata mutation."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files:
+    - docs/BEHAVIOR.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0002/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: ""
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "BEHAVIOR migration preserves one canonical target authority during migration."
+    evidence_required: "docs/BEHAVIOR.md is prominently MIGRATION DRAFT / AUTHORITY NONE; legacy canonical owners are unchanged; docs/DECISIONS.md makes the migration-catalog authority boundary explicit."
+  - id: AC-2
+    requirement: "Behavior identities and explanation obey agent-documents ownership."
+    evidence_required: "Every FTR/ACC/FLW used in BEHAVIOR exists exactly once in docs/catalog/project.json with schema-valid type/relationship shape, while behavior text remains in BEHAVIOR rather than the catalog."
+  - id: AC-3
+    requirement: "Migrated behavior is semantically traceable to current IELTS truth."
+    evidence_required: "Material functional behavior, state/transitions, invariants/permissions, errors/edges/failures, critical flows, acceptance text, and safety/human-control behavior in scope are attributable to exact canonical legacy sources; ambiguities are explicit and not guessed."
+  - id: AC-4
+    requirement: "The initial migration catalog is conservative and schema-shaped without false closure."
+    evidence_required: "model_version=1; milestone OPEN; required top-level keys exist; references/IDs follow V1 patterns; product/behavior coverage claims are no stronger than actual migrated support; not-yet-migrated domains remain unfinished; no false N/A or invented neighboring-domain identity is used to make the catalog look complete."
+  - id: AC-5
+    requirement: "No readiness or assurance overclaim occurs."
+    evidence_required: "No DOCS_READY, documentation lock, implementation-readiness, agent-standards PASS/level/N/A/exception, generated PROGRAM, promotion, or release claim appears."
+  - id: AC-6
+    requirement: "Execution is bounded and lineage-exact."
+    evidence_required: "Implementation is one direct child of exact handoff base; diff contains only docs/BEHAVIOR.md, docs/catalog/project.json, optional bounded docs/DECISIONS.md update, and only if strictly required a semantic-preserving docs/PRODUCT.md reference-token fix; report is a separate report-only child; main unchanged; topology exactly {dev, main}."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh GitHub truth; require dev equals exact handoff base, main equals e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}; resolve TASK-0002 revision 1 and exact external authority revisions; preflight GitHub-only EXECUTION capabilities."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve exact agent-documents BEHAVIOR template and V1 project schema. Inspect current accepted PRODUCT/DECISIONS migration drafts and the exact legacy behavior owners required for semantic mapping."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Design the smallest coherent FTR/ACC/FLW inventory that preserves current material behavior without becoming a feature-count exercise. Assign stable IDs in the catalog first conceptually, then materialize catalog and BEHAVIOR atomically."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Perform static schema-shape and cross-reference review against project.schema.v1.json: required top-level keys, ID patterns, relation shapes, unique identities, document-reference paths/tokens, and coverage-entry forms. If truthful schema validity requires another unmigrated authority domain, stop BLOCKED rather than inventing data."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Semantic review against AC-1..AC-5. Confirm all legacy canonical sources remain byte-identical, migration authority remains NONE, and no readiness/assurance claim or false N/A appears."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Before publication refresh dev/main/topology and require exact expected parent. Publish one implementation commit non-force to dev, then create TASK-0002/report.yaml as a separate report-only child; verify exact parentage/diffs/final refs/topology and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
