@@ -1,0 +1,202 @@
+protocol_version: 3
+
+task_id: TASK-0001
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: maintainer_objective_change
+  task_id: ""
+  gap_id: "TARGET_DOCS_MODEL_ADOPTION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+architect_analysis_skills:
+  - architect
+  - executor
+  - simplicity
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "Explicit operator decision in current Architect context"
+    role: "Adopt agent-documents and agent-standards as support authorities that materially shape target-repository documentation/assurance rather than leaving them disconnected from IELTS."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@db2dade3fc0ae34266ef402e88143350793d271c"
+    role: "Exact current target product/documentation truth before migration. Current CONSTITUTION.md/OBJECTIVE.md/spec/**/design/** remain canonical until a later explicit cutover task."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-documents@e6728594b0371e2e941c1457fc8efdc14a90deee"
+    role: "Exact unreleased V1 candidate documentation model adopted for this migration pilot: eight authority domains, legal one-level sharding, finite coverage/catalog semantics, unknown/build-buy/closure semantics. Candidate status must remain explicit; this task does not promote or freeze agent-documents."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Exact frozen V1 engineering-claim/evidence semantics adopted by IELTS for later target-owned assurance declarations. This task records the adoption decision only and must not fabricate assessment PASS or maturity levels."
+    precedence: 4
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Exact current protocol-v3 task/governance authority."
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents@e6728594b0371e2e941c1457fc8efdc14a90deee plus current IELTS canonical owners at the exact target base."
+  rationale: "This is the first bounded migration slice toward the adopted eight-domain docs model. Creating only docs/PRODUCT.md and docs/DECISIONS.md as explicitly non-authoritative migration drafts avoids a one-Executor whole-repository rewrite and prevents split canonical authority before final cutover."
+
+objective: "Begin the IELTS documentation-model migration without changing product semantics or creating duplicate authority: materialize an exact-semantics PRODUCT-domain migration draft and a compact adoption decision draft, both authority NONE until a later explicit canonical cutover; preserve all existing canonical owners unchanged and record the exact agent-documents candidate and frozen agent-standards revisions that the target is adopting."
+
+scope:
+  required_changes:
+    - "Create docs/PRODUCT.md as an explicitly marked MIGRATION DRAFT with authority NONE until final cutover. It must map only existing current canonical IELTS truth into the agent-documents PRODUCT authority domain: project objective, actors/roles needed to understand product intent, feature/capability inventory at product level, scope/non-goals, and domain/external constraints."
+    - "Derive PRODUCT content only from exact current canonical sources at the authorized base, primarily OBJECTIVE.md, spec/00-PRODUCT.md, and other current canonical spec/design sections only where they own a required PRODUCT-domain fact. Preserve semantics; do not invent, broaden, narrow, modernize, or silently resolve conflicts."
+    - "Where a required PRODUCT-domain fact cannot be mapped without ambiguity or conflicting canonical sources, record the ambiguity in the migration draft as an explicit bounded migration unknown and report it; do not guess. This draft does not yet instantiate docs/catalog/project.json or claim DOCS_READY."
+    - "Create docs/DECISIONS.md as an explicitly marked MIGRATION DRAFT with authority NONE until final cutover. For this slice it owns only the migration/adoption rationale: IELTS intends to adopt agent-documents exact candidate e6728594b0371e2e941c1457fc8efdc14a90deee for documentation structure/closure and agent-standards exact frozen V1 3f4950f280a3a35fee81471d4b83715fa72cf9ee for engineering claim/evidence semantics. State clearly that agent-documents remains an unreleased candidate and that target adoption does not make it globally stable."
+    - "Do not copy the whole agent-documents taxonomy or agent-standards requirement catalog into IELTS. The target records exact adoption identity and target truth; the external repositories remain owners of generic model/requirement meaning."
+    - "Do not change canonical authority yet. Existing CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** remain untouched and canonical for this slice. New docs/** files must explicitly say they are non-authoritative migration drafts and cannot override current owners."
+    - "Do not create the remaining six root authority-domain files, docs/catalog/project.json, standards assessment state, generated PROGRAM, or implementation tasks in this slice. Those belong to later bounded migration/adoption work after this slice is reviewed."
+    - "Do not modify product code, contracts, generated artifacts, runtime behavior, database, workflows, verification scripts, README.md, CONSTITUTION.md, OBJECTIVE.md, spec/**, design/**, research/**, or evidence/**."
+    - "Publish the implementation non-force to dev, then create .agent/tasks/TASK-0001/report.yaml as a separate report-only direct child and stop at Governing Architect review."
+
+  allowed_existing_files_or_components:
+    - .agent/tasks/TASK-0001/task.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Current target semantic truth remains canonical until a later explicit cutover; migration drafts have authority NONE."
+  - "No product/design/runtime behavior changes in this task."
+  - "No current canonical source file is edited, deleted, renamed, or demoted."
+  - "agent-documents candidate status remains explicit and does not become globally stable by target adoption."
+  - "agent-standards is pinned to exact frozen revision; no branch/tag/latest is normative."
+  - "No PASS, achieved maturity level, N/A, or exception is fabricated without sufficient target-owned evidence."
+  - "No duplicate generic documentation taxonomy or standards catalog is copied into the target."
+  - "Branches remain exactly {dev, main}; main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+
+forbidden_changes:
+  - "Do not modify README.md, CONSTITUTION.md, OBJECTIVE.md, spec/**, design/**, contracts/**, apps/**, services/**, tools/**, .github/**, verify, compose files, or any existing canonical/history file."
+  - "Do not create docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, docs/catalog/project.json, assurance registries, program.generated.json, migration databases, mapping registries, or orchestration state."
+  - "Do not delete or rewrite legacy canonical docs in this slice."
+  - "Do not claim DOCS_READY, documentation lock, implementation readiness, standards PASS, achieved level, promotion, or release."
+  - "Do not mutate main, create a branch, tag, release, PR, or repository metadata."
+  - "Do not modify agent-documents, agent-standards, agent-skills, architect-profile, or any sibling repository."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files:
+    - docs/PRODUCT.md
+    - docs/DECISIONS.md
+    - .agent/tasks/TASK-0001/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: ""
+  allow_new_top_level_directories: true
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The migration begins with no split canonical authority."
+    evidence_required: "docs/PRODUCT.md and docs/DECISIONS.md explicitly state MIGRATION DRAFT / authority NONE; current CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** are byte-identical to the authorized base."
+  - id: AC-2
+    requirement: "PRODUCT-domain draft preserves current canonical target meaning."
+    evidence_required: "Every material statement is traceable to exact current canonical IELTS sources; objective, product actors/roles, product-level features/capabilities, scope/non-goals, and domain/external constraints are mapped without invented semantics; ambiguities are explicit rather than guessed."
+  - id: AC-3
+    requirement: "External support authorities are adopted by exact immutable identity and correct ownership."
+    evidence_required: "docs/DECISIONS.md records agent-documents@e6728594b0371e2e941c1457fc8efdc14a90deee as an unreleased candidate adopted for this target migration and agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee as frozen V1 claim/evidence semantics, without copying/redefining their generic models."
+  - id: AC-4
+    requirement: "No unsupported readiness or assurance claim is created."
+    evidence_required: "No docs/catalog/project.json, DOCS_READY claim, documentation lock, standards PASS/level assessment, N/A, exception, generated program, or implementation authority is created."
+  - id: AC-5
+    requirement: "Execution is bounded to the first migration slice."
+    evidence_required: "Base-to-implementation diff adds exactly docs/PRODUCT.md and docs/DECISIONS.md; report is a separate report-only child; no existing file changes; main unchanged; topology exactly {dev, main}."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh GitHub truth; require dev equals the exact handoff base, main equals e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}; resolve TASK-0001 revision 1 and exact external authority revisions; preflight GitHub-only EXECUTION capabilities."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Read exact current OBJECTIVE.md, spec/00-PRODUCT.md, and only the additional canonical spec/design sections materially needed to populate PRODUCT-domain facts. Build a source-to-statement mapping while writing; if authority conflicts or required meaning is ambiguous, preserve the uncertainty instead of guessing."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Create only docs/PRODUCT.md and docs/DECISIONS.md, both prominently marked MIGRATION DRAFT / authority NONE. Keep generic model text in the external owners; target docs contain target-specific meaning and exact adoption identities only."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Semantic review against AC-1..AC-4. Prove no current canonical source changed, no readiness/assurance overclaim exists, agent-documents candidate status is explicit, and agent-standards is pinned by exact frozen SHA."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Before publication refresh dev/main/topology and require exact expected parent. Publish one implementation commit non-force to dev whose diff adds exactly docs/PRODUCT.md and docs/DECISIONS.md."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Create TASK-0001/report.yaml as the separate report-only direct child, then verify exact implementation/report parentage, final dev, unchanged main, exact {dev, main}, and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
