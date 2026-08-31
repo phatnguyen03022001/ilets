@@ -1,0 +1,144 @@
+protocol_version: 3
+
+task_id: TASK-0009
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0009/task.yaml
+  commit: "dc025aba921607d9ec8b31fb986f379d72c99198"
+  blob_sha: "b48904d50a609c460f211145f5ad16cfbb6b00f9"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "dc025aba921607d9ec8b31fb986f379d72c99198"
+  pre_execution_head: "dc025aba921607d9ec8b31fb986f379d72c99198"
+  final_execution_head: "e1b7e3e110f919bc5a36c2f575c61ec6bb885ee9"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub reads proved dev=dc025aba921607d9ec8b31fb986f379d72c99198, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0009 revision 1 APPROVED, and the exact pinned agent-skills/agent-documents authorities. Git Data blob/tree/commit plus non-force ref-update primitives were available for one atomic implementation commit and one report-only child."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0009 designates no authoritative verifier. The exact published candidate blobs were audited against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 dependency record shape/kinds, typed references, feature-flow dependency subset semantics, INTERFACES/DECISIONS support-token resolution, resolved-unknown attribution, graph reachability/orphan semantics, and closure accounting. A ChatGPT-native local runner was attempted but unavailable before command execution; it was not a task capability requirement and no weaker authoritative-verification claim is made."
+
+local_hygiene:
+  result: PASS
+  run_root: "/tmp/task0009-ilets"
+  cleanup_performed: true
+  retained: []
+  evidence: "No operator target checkout was mutated. The unavailable native runner executed no command. Run-owned container scratch created while probing optional local verification was bounded under /tmp and removed before publication."
+
+changed_files:
+  - path: docs/INTERFACES.md
+    summary: "Add the authority-NONE bounded EXT inventory and dependency failure/fallback/exit semantics while preserving provider lifecycle, Core/Evaluator authority, and existing interface boundaries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Materialize EXT-001..EXT-004, map FLW dependency_refs, replace all six migrated feature dependency unresolved relations with typed EXT refs, resolve UNK-003, and advance only the two authorized dependency coverage concerns to L1."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Add dedicated docs/DECISIONS.md#UNK-003 resolution evidence required by the pinned V1 unknown-resolution model; no DEC identity or CAP/build-buy state is created."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "e1b7e3e110f919bc5a36c2f575c61ec6bb885ee9"
+    message: "docs(TASK-0009): migrate external dependencies"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Catalog materializes exactly four boundary-sized dependencies justified by the migrated behavior slice: EXT-001 Clerk identity/session, EXT-002 Neon Launch PostgreSQL hosting, EXT-003 Google Cloud Tasks bounded dispatch, and EXT-004 the external Evaluator AI/speech provider boundary. Concrete routes retain canonical SELECTED_FOR_IMPLEMENTATION rather than ACTIVE semantics; canonical TBD sub-capabilities such as pronunciation/acoustic routing remain unresolved rather than fabricated."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "FLW-001 and FLW-003 reference all four dependencies, FLW-002 references EXT-001+EXT-002, and FLW-004 references EXT-002+EXT-003+EXT-004. All six affected features use typed [EXT-001, EXT-002, EXT-003, EXT-004] because each participates in FLW-001; the feature relation is explicitly documented as a related-flow dependency footprint, not a claim that every operation invokes every dependency. UNK-003 is RESOLVED with resolved_by_ref=EXT-001 plus dedicated docs/DECISIONS.md#UNK-003 evidence; no false N/A is used."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Exactly interfaces.external_dependencies and interfaces.dependency_failure_exit advance from NONE to L1. INTERFACES preserves minimum-data egress, provider-output non-authority, bounded retry/idempotency and ambiguous timeout outcomes, equivalent fallback floors, deletion/export reconciliation, activation gates, bounded degradation, and semantic portability/exit. No provider is activated/configured and no code, adapter, contract, CAP, build/buy disposition, DEC material-choice identity, pricing state, deployment change, or UNK-004 closure is created."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Pinned-model deterministic audit of the exact published candidate found zero MODEL_ERROR, REFERENCE_ERROR, TRACEABILITY_GAP, or ORPHAN conditions. model_version remains 1, milestone.scope_state remains OPEN, root_refs remains empty, existing ACT/ROL/FTR/ACC/SYS/DAT/IFC identities remain unchanged, capabilities/decisions remain empty, and UNK-004 plus all six capability unresolved_ref relations remain unchanged. Intentional blockers are SCOPE_OPEN=1, COVERAGE_GAP=3, and UNRESOLVED_RELATION=6, so DOCS_READY remains false."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Implementation e1b7e3e110f919bc5a36c2f575c61ec6bb885ee9 is exactly one direct child of authorized base dc025aba921607d9ec8b31fb986f379d72c99198, tree=0684f9eab5ffa582004bc27db10ce22cf7d0981a. GitHub compare reports ahead_by=1 with exactly docs/INTERFACES.md, docs/catalog/project.json, and docs/DECISIONS.md changed. Publication was a non-force dev fast-forward; main remained e707aeee43411cc8f99448b63220eb8beff552b6 and topology remained exactly {dev, main}. This report is the separate report-only child."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh start and immediate pre-publication GitHub reads confirmed exact dev/main refs, topology exactly {dev, main}, TASK-0009 revision 1 APPROVED at the exact base, agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c, and agent-documents@acb3f02616e700190586681306a86905792e4c07."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Resolved only canonical design/07-third-party-services.md plus the minimum current design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md and migration docs needed to map identity, authoritative persistence, bounded dispatch, Evaluator external-provider, failure/fallback and exit boundaries. Unrelated operational/vendor inventory was deliberately not materialized."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Materialized only EXT-001..EXT-004 and the fully supported FTR/FLW dependency mappings. UNK-003 closes through a typed EXT attribution and dedicated migration evidence while provider lifecycle remains canonical elsewhere. No extra root was used to hide an orphan, and no CAP/DEC/provider activation or neighboring-domain state was introduced."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Exact candidate audit applied the pinned V1 dependency shape/kind rules, global ID typing/uniqueness, INTERFACES and DECISIONS document-token/support resolution, resolved QUESTION fields, typed flow/feature relations, feature-flow dependency subset traceability, material graph reachability/orphan detection, and closure accounting. Result: zero structural/reference/traceability/orphan failures; expected unfinished blockers only 1 SCOPE_OPEN + 3 COVERAGE_GAP + 6 UNRESOLVED_RELATION. Semantic AC-1..AC-4 audit found no authority drift, false ACTIVE/TBD claim, false N/A, CAP/DEC state, or implementation/configuration mutation."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale state was refreshed immediately before publication and still showed dev=dc025aba921607d9ec8b31fb986f379d72c99198 with main/topology pinned. GitHub proves implementation parent=dc025aba921607d9ec8b31fb986f379d72c99198, tree=0684f9eab5ffa582004bc27db10ce22cf7d0981a, ahead_by=1, and exactly three implementation files. Dev then resolved to the implementation SHA by non-force update; this canonical report-only child is the sole remaining authorized mutation before terminal NEEDS_REVIEW."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Published implementation is e1b7e3e110f919bc5a36c2f575c61ec6bb885ee9; run-owned scratch was removed. Only this canonical report-only child remains to finalize Executor evidence."
+
+result: NEEDS_REVIEW
