@@ -37,3 +37,13 @@ Actual IELTS truth remains with the existing canonical legacy documents. `docs/P
 Each affected feature now uses typed `DAT-*` references rather than `unresolved_ref` or false N/A. `DAT-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution itself is the complete typed feature-data mapping plus the DATA sections in `docs/DATA.md`, not a claim that `TargetProfile` alone covers every feature.
 
 This resolution does not assert database tables, API/event payloads, provider identities, exact retention durations, a durable representation for every material ephemeral value, or global DATA closure beyond this migrated slice. `UNK-002`, `UNK-003`, and `UNK-004` remain `OPEN` `DESIGN` questions for their own authority domains.
+
+## UNK-002 INTERFACES relation resolution
+
+`UNK-002` is resolved for the bounded behavior slice migrated by `TASK-0003`/`TASK-0006`. Current canonical flow/API/runtime owners support exactly two material interface identities for this slice: `IFC-001` Core public product API and `IFC-002` Core-to-Evaluator bounded capability API.
+
+Each affected feature now uses typed `IFC-*` references rather than `unresolved_ref` or false N/A. Flow `interface_refs` identify which of those two boundaries each migrated flow actually traverses. `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution is the complete typed feature/flow interface mapping plus the semantic contract sections in `docs/INTERFACES.md`, not a claim that the public API alone covers every runtime boundary.
+
+The async/job/command concern is resolved at L1 through the durable acceptance, logical-work, dispatch-fencing, retry, reconciliation, and recoverable-continuation semantics already owned by the two interfaces. No separate queue/job/provider interface identity is created because current canonical truth does not require an independently owned third boundary.
+
+This resolution does not materialize OpenAPI or exact wire schemas, generated bindings, provider `EXT-*` identities, deployment/provider authentication identities, build/buy `CAP-*` state, or another semantic owner. `interfaces.external_dependencies` and `interfaces.dependency_failure_exit` remain intentionally `NONE`; `UNK-003` and `UNK-004` remain `OPEN` `DESIGN` questions for their own authority domains.
