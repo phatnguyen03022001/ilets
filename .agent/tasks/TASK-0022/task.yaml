@@ -1,0 +1,133 @@
+protocol_version: 3
+
+task_id: TASK-0022
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0021
+  gap_id: DOCUMENTATION_CLOSURE_RETRY
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@cb8c7a47900ef88535a85d92595983b7e062d644"
+    role: "Current target truth after accepted TASK-0021. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE until explicit cutover."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 documentation closure, scope freeze, blocker accounting and DOCS_READY derivation semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 3
+
+structure_authority:
+  status: RESOLVED
+  source: "Accepted TASK-0013..TASK-0021 migration state plus current canonical legacy owners and pinned agent-documents closure semantics."
+  rationale: "All migration unknowns and typed relation domains are resolved. TASK-0019 reconciled stale closure-state prose across PRODUCT/BEHAVIOR/DATA/QUALITY/DELIVERY/DECISIONS; TASK-0021 reconciled the remaining stale ARCHITECTURE interface-state assertion. The milestone remains OPEN solely pending a fresh independent semantic closure audit."
+
+objective: "Re-run the bounded documentation-closure audit after all identified stale migration-state assertions are reconciled and freeze scope only if the complete migration faithfully covers current canonical legacy truth without material blocker."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and independently compare the complete docs/** migration plus catalog against all current canonical CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** material truth."
+    - "Audit for material omission, contradiction, stale assumption, authority drift, false N/A, actor/role/entitlement drift, feature/flow/data/interface/dependency/capability mismatch, unresolved provider/product-support semantics or false closure."
+    - "Treat exact machine-contract materialization as a later implementation boundary, not evidence that the semantic INTERFACES migration remains unresolved."
+    - "Do not expand product design merely because more detail could be written; apply broad-by-default, deep-by-evidence closure semantics."
+    - "If any material gap remains, keep milestone.scope_state OPEN, make no neighboring semantic patch, publish the exact blocker and stop BLOCKED."
+    - "Only if the semantic audit passes, change docs/catalog/project.json milestone.scope_state from OPEN to FROZEN and make no unrelated semantic edit."
+    - "Validate the exact frozen candidate against the pinned agent-documents model. Require zero model/reference/traceability/reachability/orphan/unresolved/blocking defects and derived DOCS_READY=TRUE."
+    - "Do not perform operator DESIGN LOCK, authority cutover, legacy retirement, standards assessment, exact machine-contract materialization, implementation planning/code, provider activation, staging/main mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Publish at most one bounded implementation commit non-force to dev when freeze is justified, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the truthful canonical report and stop BLOCKED."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0022/report.yaml
+  allowed_existing_files:
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0022/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "All ACT/ROL/FTR/ACC/FLW/SYS/DAT/IFC/EXT/CAP/DEC identities and relations remain unchanged."
+  - "UNK-001..UNK-009 remain RESOLVED."
+  - "No design lock, cutover, standards PASS, exact contracts, code, schema, provider activation, staging/main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Independent semantic closure audit finds no material omission, contradiction, stale assumption, authority drift or false closure across the complete migration versus current canonical legacy truth."
+  - id: AC-2
+    requirement: "If and only if AC-1 passes, milestone.scope_state changes OPEN→FROZEN with no unrelated semantic mutation."
+  - id: AC-3
+    requirement: "Pinned-model validation of the frozen candidate has zero model/reference/traceability/reachability/orphan/unresolved/blocking defects and derives DOCS_READY=TRUE."
+  - id: AC-4
+    requirement: "Legacy authority remains unchanged and docs/** remains authority NONE; no design lock or cutover is implied by DOCS_READY."
+  - id: AC-5
+    requirement: "Implementation/report lineage is exact when implementation occurs; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Independently compare complete migrated docs/catalog against all material canonical legacy truth and identify any material closure blocker rather than trusting prior task labels."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Only if closure audit passes, change scope_state OPEN→FROZEN and nothing else semantically."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model closure validation and require derived DOCS_READY=TRUE only for a valid frozen blocker-free candidate."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish bounded implementation if justified plus separate report-only child, verify final refs/topology, stop NEEDS_REVIEW; otherwise report BLOCKED truthfully."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
