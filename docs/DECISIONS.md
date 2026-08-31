@@ -2,7 +2,7 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Created by `TASK-0003` revision 1 and extended through `TASK-0015` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0003` revision 1 and extended through `TASK-0016` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
 > Current CAP/build-buy migration authority snapshot: `phatnguyen03022001/ilets@09504f4d782a5a53f9f8c57e750cc28274525667`; current accepted product-experience authority: `phatnguyen03022001/ilets@b60034a50d9a5ee5f197887ed14e7b917e919660`.
 
@@ -16,7 +16,7 @@ The corrected feature relation state distinguishes typed `refs`, genuine demonst
 
 `docs/catalog/project.json` exists only as a migration artifact with **authority NONE**. Its pathname does not grant canonical target authority. The catalog owns migration identities/typed relations; `docs/BEHAVIOR.md` owns migrated behavior explanation.
 
-The migration includes the previously accepted `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, and `CAP-*` inventories plus the existing material `DEC-*` records. `TASK-0013` adds only the decomposition decision required to resolve the already-approved `DECISION_REQUIRED` feature blocker and bounded relation-domain unknowns for detailed relations that current neighboring inventories do not yet fully support. `TASK-0014` extends only the DATA inventory/relations required to resolve `UNK-006`. `TASK-0015` resolves only the privileged detailed IFC relations and `UNK-007`; it preserves both accepted IFC identities and does not alter EXT/CAP mappings or `UNK-008`/`UNK-009`. These records remain authority-NONE migration state and cannot override canonical legacy owners.
+The migration includes the previously accepted `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, and `CAP-*` inventories plus the existing material `DEC-*` records. `TASK-0013` adds only the decomposition decision required to resolve the already-approved `DECISION_REQUIRED` feature blocker and bounded relation-domain unknowns for detailed relations that current neighboring inventories do not yet fully support. `TASK-0014` extends only the DATA inventory/relations required to resolve `UNK-006`. `TASK-0015` resolves only the privileged detailed IFC relations and `UNK-007`; it preserves both accepted IFC identities and does not alter EXT/CAP mappings. `TASK-0016` resolves only the privileged detailed EXT relations and `UNK-008`, adds the minimum external dependency identities justified by current privileged behavior, and leaves CAP mappings/`UNK-009` untouched. These records remain authority-NONE migration state and cannot override canonical legacy owners.
 
 ## Engineering claim and evidence semantics adoption
 
@@ -60,7 +60,7 @@ All six affected macro features use typed `EXT-*` references because each partic
 
 This resolution preserves provider lifecycle and authority boundaries: `SELECTED_FOR_IMPLEMENTATION` is not `ACTIVE`; provider output remains non-authoritative until Core/Evaluator validation and owning policy interpretation; fallback requires an independently equivalent consequence floor; timeout remains ambiguous; deletion/export and provider-held copies require reconciliation; and exit relies on stable Core identity, PostgreSQL-native portability, durable Core work identity, and provider-neutral Evaluator capability boundaries rather than speculative multi-provider infrastructure.
 
-No provider is activated or configured here. Detailed privileged feature dependency expansion introduced by `TASK-0013` remains a separate explicit DESIGN unknown rather than being fabricated from this older macro mapping.
+No provider is activated or configured here. The detailed privileged dependency relation that `TASK-0013` left open is resolved separately by `TASK-0016` under `UNK-008`; that later mapping does not rewrite this older macro relation footprint.
 
 ## DEC-BUILD-BUY Material build/buy decisions
 
@@ -112,7 +112,7 @@ No provider is activated or configured here. Detailed privileged feature depende
 
 **Context.** Accepted `TASK-0012` reopened the milestone because the migration catalog had only six macro behavior anchors while canonical `design/01-skill-features.md` already defines 40 material learner feature capabilities and `design/04-application-flows.md` defines the material privileged surface/capability families. The pinned V1 model classifies `UNK-005` as `DECISION_REQUIRED`, so a truthful resolution requires a dedicated `DEC-*` attribution rather than pointing at an unrelated build/buy decision.
 
-**Selected outcome.** Treat `FTR-007..FTR-046` as the exact 40 learner detailed feature-completeness units mapped one-for-one to `L-F01..L-F08`, `R-F01..R-F08`, `W-F01..W-F09`, `S-F01..S-F09`, and `X-F01..X-F06`. Treat `FTR-047..FTR-053` as the minimum seven privileged/admin/BOPS feature families: content/review/release, user support, entitlement reconciliation, operations/provider/work visibility, approved policy administration, security/access administration, and consequential audit. Retain `FTR-001..FTR-006` unchanged as historical macro route anchors rather than completeness units.
+**Selected outcome.** Treat `FTR-007..FTR-046` as the exact 40 learner detailed feature-completeness units mapped one-for-one to `L-F01..L-F08`, `R-F01..R-F08`, `W-F01..W-F09`, `S-F01..S-F09`, and `X-F01..X-F06`. Treat `FTR-047..FTR-053` as the minimum seven privileged/admin/BOPS feature families: content/review/release, user support, entitlement reconciliation, operations/provider/work visibility, approved policy administration, security/access administration, and consequential audit. Retain `FTR-001..FTR-006` unchanged as historical/macro route anchors rather than completeness units.
 
 **Alternative rejected.** Continue treating six macro anchors as the complete product feature inventory, or inflate the catalog by converting navigation labels, 28 practice modes, Skill Leaves/micro-skills, Knowledge Objects, media/transcript states, `FREE`/`PRO`, providers/models, individual permissions, or the cross-feature AI tutor overlay into duplicate FTR identities.
 
@@ -122,9 +122,9 @@ No provider is activated or configured here. Detailed privileged feature depende
 
 **Reversibility.** `COSTLY`. The mapping can evolve only when canonical product design materially changes; renumbering or collapsing these stable migration identities later would require explicit traceability migration rather than cosmetic editing.
 
-## UNK-INVENTORY Migration unknown inventory after TASK-0015
+## UNK-INVENTORY Migration unknown inventory after TASK-0016
 
-`UNK-001..UNK-007` are resolved for their authorized migration slices. `UNK-007` resolves only the privileged detailed IFC relation surface; `UNK-008` and `UNK-009` remain the bounded downstream EXT and CAP DESIGN blockers. Therefore milestone closure remains intentionally blocked even though product feature, DATA relation, and privileged IFC relation completeness are no longer ambiguous.
+`UNK-001..UNK-008` are resolved for their authorized migration slices. `UNK-008` resolves only the seven privileged detailed EXT relations. `UNK-009` remains the sole downstream DESIGN relation blocker for the 47 detailed CAP mappings. Milestone closure also remains intentionally blocked by `milestone.scope_state: OPEN`; no `DOCS_READY` claim is made.
 
 ### UNK-004 Capability/build-buy relation resolution
 
@@ -152,9 +152,9 @@ This resolution creates no pure `BUY` capability because the external dependenci
 
 `DEC-004` is the required `resolved_by_ref` attribution because the pinned V1 model requires a `DECISION_REQUIRED` unknown to resolve through a `DEC-*`. This is a decomposition/migration decision only; it does not create new canonical product authority.
 
-Resolving `UNK-005` does **not** imply neighboring relation closure. The CAP mapping for all detailed features plus the EXT mapping for newly decomposed privileged surfaces remain separate OPEN DESIGN relation unknowns below. `milestone.scope_state` therefore stays `OPEN`, and `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain unclaimed.
+Resolving `UNK-005` does **not** imply neighboring relation closure. The CAP mapping for all detailed features remains the separate OPEN DESIGN relation unknown `UNK-009`. `milestone.scope_state` therefore stays `OPEN`, and `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain unclaimed.
 
-## Detailed relation-domain blockers after TASK-0015
+## Detailed relation-domain resolutions after TASK-0016
 
 ### UNK-006 Expanded detailed feature DATA relations
 
@@ -176,14 +176,22 @@ Canonical API/runtime ownership proves that no additional semantic IFC is materi
 
 `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. The resolution is the complete seven-feature mapping plus the affected grouped-flow interface refs, not a claim that every privileged consequence itself crosses Web/Core. `IFC-002` remains exclusively the Core-to-Evaluator bounded capability boundary and is not added to privileged relations without an actual evaluator crossing.
 
-This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` and `UNK-009` remain independently OPEN; milestone scope remains `OPEN`.
+This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` is resolved independently below; `UNK-009` remains OPEN and milestone scope remains `OPEN`.
 
-### UNK-008 Privileged detailed external-dependency relations
+### UNK-008 Privileged detailed external-dependency relation resolution
 
-The accepted `EXT-001..EXT-004` inventory describes identity/session, PostgreSQL hosting, task dispatch, and the evaluator AI/speech boundary for the earlier behavior slice. Privileged content operations, entitlement reconciliation, provider/work visibility, policy/security administration, and audit may have material dependency relations not proven by that slice, including commercial/provider facts that must not be invented here. `FTR-047..FTR-053` therefore remain behind one OPEN DESIGN EXT relation unknown; no provider is selected or activated by this task.
+Canonical privileged behavior plus current third-party/runtime ownership support exactly three additional material dependency identities for the seven privileged surface families: `EXT-005` external object/media storage for content operations that handle governed large/retained artifacts, `EXT-006` external payment/subscription observations for entitlement reconciliation, and `EXT-007` external secret custody for explicitly authorized secret-sensitive security operations. The accepted `EXT-001..EXT-004` identities remain unchanged and are not reused merely because a privileged actor authenticates, work can be asynchronous, Core state is hosted externally, or AI exists elsewhere.
+
+The complete detailed mapping is intentionally sparse. `FTR-047` uses `EXT-005`; `FTR-049` uses `EXT-006`; and `FTR-052` uses `EXT-007`. `FTR-048`, `FTR-050`, `FTR-051`, and `FTR-053` use demonstrated dependency N/A because their current semantic operation remains Core-owned and no material external crossing is required: support mutates Core product/account state; provider/work visibility consumes Core-owned operational state while external telemetry remains optional operational evidence; typed policy administration explicitly excludes raw secret editing; and consequential audit reconciliation is Core-internal.
+
+`FLW-005.dependency_refs` remains empty because it is the grouped capability-gated privileged-operation flow shared by features with different conditional external crossings. Promoting the union of object storage, payment, and secret custody onto that grouped flow would incorrectly force every related privileged feature to depend on every provider boundary under the pinned feature-flow subset rule. `FLW-006.dependency_refs` also remains empty because consequential privileged audit reconciliation is wholly Core-internal; an audited operation's earlier provider use does not turn audit reconciliation itself into an external crossing.
+
+`EXT-005` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. Resolution is the complete seven-feature dependency mapping plus the three structural EXT sections and failure/fallback/exit treatment in `docs/INTERFACES.md`, not a claim that object/media storage alone covers privileged dependencies.
+
+The broader canonical provider inventory is deliberately not promoted: no transactional-email EXT is justified by current support semantics; selected external operational telemetry does not become a product dependency merely because operations can display provider/work state; deferred AI generation/model-assisted validation does not justify `EXT-004` reuse; and neither authentication, persistence hosting nor possible asynchronous dispatch is attached without a material feature-specific dependency crossing. Provider lifecycle remains owned by `design/07-third-party-services.md`; catalog identity does not make any route `ACTIVE`, approve data egress, authorize spend, configure credentials, or materialize webhook/OpenAPI/DTO contracts.
 
 ### UNK-009 Expanded detailed feature capability/build-buy relations
 
 The accepted `CAP-001..CAP-005` mappings were resolved for the six macro anchors. Projecting those capability/build-buy refs across all 47 newly detailed features would require feature-specific boundary proof and could hide missing privileged/commercial/audit capability state. `FTR-007..FTR-053` therefore use one bounded OPEN DESIGN CAP relation unknown until a dedicated migration performs that mapping. Existing CAP dispositions and `DEC-001..DEC-003` remain unchanged.
 
-The remaining two relation-domain blockers are intentionally separate from resolved feature/DATA/privileged-IFC completeness. They keep the reopened milestone truthful without reopening `UNK-005`/`UNK-006`/`UNK-007` or manufacturing neighboring-domain coverage.
+`UNK-009` is now the only unresolved detailed relation-domain blocker. Together with the intentionally `OPEN` milestone scope, it keeps the migration truthful without reopening `UNK-005..UNK-008` or manufacturing neighboring-domain coverage.

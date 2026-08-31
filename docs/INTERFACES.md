@@ -2,9 +2,9 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Created by `TASK-0006` revision 1 and extended only for the bounded external-dependency slice by `TASK-0009` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0006` revision 1, extended for the bounded external-dependency slice by `TASK-0009` revision 1, and extended again only for the privileged external-dependency relation slice by `TASK-0016` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
-> Canonical target snapshot: `phatnguyen03022001/ilets@4891798cc76fbb1317e51d2d231f378f9bf9dc30`.
+> Canonical target snapshot for this extension: `phatnguyen03022001/ilets@c2d0d7c00b325c359b5829c7ecadb41c3968d0cc`.
 >
 > This document migrates semantic interface boundaries plus the smallest material external-dependency inventory and its failure/fallback/exit treatment for the current behavior slice. It does not materialize OpenAPI, wire fields/status codes, generated bindings, provider activation/configuration, deployment topology, database schema, `CAP-*` build/buy state, `DEC-*` closure, or another product authority.
 
@@ -79,9 +79,9 @@ External provider egress/ingress, callbacks, processor retention/reuse, failure/
 
 ## INTERFACES-EXTERNAL-DEPENDENCIES External dependency inventory
 
-The current migrated behavior slice justifies exactly four material `EXT-*` identities. The inventory is deliberately boundary-sized: it does not create one identity per model alias, SDK/library, endpoint, pricing plan, optional candidate, observability tool, CDN/edge service, email route, payment route, or every infrastructure product named by canonical third-party design.
+The accepted migrated behavior surface retains the four material `EXT-*` identities established by `TASK-0009` and adds exactly three boundary-sized identities required by current privileged behavior. The inventory deliberately does not create one identity per model alias, SDK/library, endpoint, webhook, dashboard, log stream, storage bucket, pricing plan, optional candidate, or every infrastructure product named by canonical third-party design.
 
-All concrete routes named below remain at their canonical lifecycle state. `SELECTED_FOR_IMPLEMENTATION` means selected for implementation only; it is not production activation, legal/privacy approval, data-egress approval, calibration evidence, or permission to carry real learner traffic.
+All concrete routes named below remain at their canonical lifecycle state. `SELECTED_FOR_IMPLEMENTATION` means selected for implementation only; it is not production activation, legal/privacy approval, data-egress approval, calibration evidence, spend authorization, or permission to carry real learner traffic.
 
 ### EXT-001 Clerk identity and session service
 
@@ -107,6 +107,26 @@ Core must durably register or recoverably derive required work before learner-vi
 
 Selected productive-evaluation, speech/transcription, realtime and translation routes remain selected-for-implementation only. Any capability whose canonical provider state remains `TBD`—including the unresolved pronunciation/acoustic route—remains unavailable as a resolved provider claim here. A successful provider response is still only bounded external output; Evaluator/Core validation, provenance, quality/uncertainty and owning Assessment/product policy determine whether it may have any downstream consequence.
 
+### EXT-005 External object/media storage boundary
+
+`EXT-005` is the governed external object/media storage boundary used when privileged content work materially handles retained or large binary artifacts that do not belong in repository text/source packages. The currently selected route is Cloudflare R2, but Core-owned object identity, lifecycle, access, retention/deletion, integrity/provenance and product usability remain independent of that provider.
+
+This dependency is not critical to every content operation: text/source candidate and review/release semantics remain valid without a heavy-object crossing. When a privileged content operation does require governed external bytes, however, provider unavailability leaves that bounded operation delayed/unavailable rather than authorizing a public object, fabricated completion, or bypass of Core reconciliation. A storage receipt or transfer success never activates content.
+
+### EXT-006 External payment/subscription observation boundary
+
+`EXT-006` is the external commercial payment/subscription observation boundary required by privileged entitlement reconciliation. The currently selected route is payOS. Charge, renewal, subscription, callback, or provider-dashboard state remains an external observation until Core authenticates/associates it as applicable, reconciles it with current authoritative state, and commits the effective entitlement transition.
+
+This dependency is critical to current provider-backed entitlement reconciliation because Core cannot truthfully manufacture a commercial fact when the provider outcome is unavailable or ambiguous. Provider timeout, callback loss, or contradictory status therefore preserves pending/reconcilable truth; it never guesses entitlement, grants RBAC privilege, rewrites learner history, or turns provider status into product authority.
+
+### EXT-007 External secret custody boundary
+
+`EXT-007` is the external secret-custody platform boundary for explicitly authorized security-sensitive credential creation, rotation, switching, and related secret operations. The currently selected route is Google Secret Manager. Typed Core-owned runtime policy, role/capability grants, deployment bootstrap configuration and ordinary administrative state remain separate from secret custody.
+
+This dependency is critical for the privileged secret operations that require external credential custody: if the custody platform cannot establish the requested protected state safely, the security-sensitive mutation fails closed or remains unresolved. Routine Admin/operations visibility exposes only minimum safe secret metadata and never turns this boundary into a plaintext-secret reader or generic environment editor.
+
+The privileged dependency mapping intentionally does not reuse `EXT-001` merely because a privileged actor authenticated, `EXT-003` merely because post-commit work can exist, or `EXT-004` merely because AI exists elsewhere. It also does not materialize transactional email or external operational-observability identities for the seven privileged feature families: current user-support semantics name no required email crossing, and provider/operational visibility can be satisfied from Core-owned operational state while external telemetry delivery remains optional operational evidence rather than product authority. `EXT-002` remains the accepted persistence-hosting dependency for the earlier migrated behavior slice, but Core-owned privileged data/state alone is not evidence that each privileged feature has a separate semantic dependency on the hosting provider.
+
 ## INTERFACES-DEPENDENCY-FAILURE-EXIT Dependency failure, fallback, and exit
 
 Every external call is bounded by a caller deadline and an explicit retry classification. Transient failures may receive bounded retry/backoff when safe; permanent failures do not become retry storms; timeout, connection loss, or missing acknowledgement is an ambiguous outcome rather than proof that remote work did not execute. Retry/replacement preserves one logical work identity and sufficient execution-attempt/fencing state to prevent duplicate accepted learner work, provider cost, Observation, EvidenceFact, or semantic continuation.
@@ -123,12 +143,15 @@ Exit remains semantic and bounded rather than a speculative multi-provider frame
 - `EXT-002`: portability uses the smallest PostgreSQL-native export/restore/recovery path that preserves canonical state and migration compatibility; no second live database or automatic multi-cloud failover is implied.
 - `EXT-003`: durable Core logical-work/recovery state makes the dispatch service replaceable without treating provider queue state as accepted business state; ambiguous in-flight attempts are reconciled before safe redrive.
 - `EXT-004`: provider-neutral Evaluator capability boundaries, exact consequential provenance and consequence-specific calibration keep provider/model replacement from redefining product/evidence semantics; replacement still requires independent validation before use.
+- `EXT-005`: Core-owned object identity/lifecycle plus integrity/provenance references keep stored bytes portable; provider replacement or recovery must reconcile retained objects, pending transfers and deletion state before bytes re-enter usable product state.
+- `EXT-006`: Core-owned entitlement and payment-reconciliation history remain authoritative while provider commercial identities/events stay attributable external observations; replacement requires explicit association/reconciliation of in-flight or historical provider facts rather than copying provider subscription labels into product truth.
+- `EXT-007`: Core-owned authorization/runtime-policy semantics and opaque secret references remain independent of the custody platform; provider replacement requires a controlled security-authorized credential migration/rotation path without exposing stored plaintext secrets to routine administration.
 
-These exit rules do not select alternates, activate providers, create `CAP-*` build/buy dispositions, create `DEC-*` choices, or close `UNK-004`.
+These exit rules do not select alternates, activate providers, create `CAP-*` build/buy dispositions, create new `DEC-*` material-choice identities, authorize spend, or resolve `UNK-009`.
 
 ## INTERFACES-EVOLUTION Exact contract materialization and evolution
 
-This migration establishes semantic boundaries only. It deliberately does not create `contracts/http/**`, OpenAPI, exact request/response fields, status-code mappings, SDKs, generated bindings, transport DTOs, event envelopes, or implementation adapters.
+This migration establishes semantic boundaries only. It deliberately does not create `contracts/http/**`, OpenAPI, exact request/response fields, status-code mappings, SDKs, generated bindings, transport DTOs, event envelopes, webhook field/signature schemas, or implementation adapters.
 
 After documentation closure and an explicit contract lock/materialization step, each material runtime boundary has one exact machine-contract authority. Generated TypeScript/Go/Python bindings, when useful, are derived from that contract and validated rather than manually becoming parallel truth. Public and internal contracts may be separate, but equivalent DTO/schema truth is not independently authored by multiple runtimes.
 
