@@ -1,0 +1,51 @@
+protocol_version: 3
+
+task_id: TASK-0012
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0012/report.yaml
+  commit: "c2cb40a3d7e6de766ca09cc6c98bc3cc6ff8136d"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition:
+  - gap_id: FULL_FEATURE_DECOMPOSITION
+    classification: BLOCKING
+    owner: target
+    evidence_ref: UNK-005
+    disposition: FOLLOW_UP_REQUIRED
+
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0012 intentionally reopens the documentation milestone and establishes UNK-005 as the blocking DESIGN authority for complete learner/admin feature decomposition."
+
+notes:
+  - "Implementation fadaa0e4a6eb097a43d2d19ddbfabba35cf35666 is exactly one direct child of authorized base 4b6b29e5d3cc9b39d35267211b070d5bff44ca59 and changes only docs/PRODUCT.md, docs/BEHAVIOR.md and docs/catalog/project.json."
+  - "Report c2cb40a3d7e6de766ca09cc6c98bc3cc6ff8136d is exactly one report-only child of the implementation commit."
+  - "Milestone scope is truthfully reopened FROZEN -> OPEN. PRODUCT distinguishes participation, capability-based authorization bundles and commercial entitlement; LEARNER/COLLABORATOR/REVIEWER/ADMIN/OWNER are the ordinary authorization bundles while AI support, optional human support and FREE/PRO are not implicit RBAC privilege."
+  - "Catalog adds only ACT-004 and ROL-004..ROL-007 with explicit roots for reachability; existing FTR-001..FTR-006 and accepted SYS/DAT/IFC/FLW/EXT/CAP/DEC identities remain unchanged."
+  - "BEHAVIOR adds learner IA Today/Skills/Practice/Review/Media/Progress/Mock plus contextual Target/Diagnostic/Vocabulary/Profile, bounded privileged/BOPS surfaces, and truthful browser-mic/realtime Speaking availability without provider, contract or pixel-level overreach."
+  - "UNK-005 is a legal OPEN blocking DESIGN DECISION_REQUIRED record requiring complete learner/admin feature decomposition and traceability before scope may be frozen again."
+  - "Pinned-model evidence reports zero model/reference/traceability/orphan/coverage defects; intentional closure blockers are SCOPE_OPEN plus UNK-005 only."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical; docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
