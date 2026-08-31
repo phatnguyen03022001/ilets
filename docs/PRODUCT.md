@@ -2,11 +2,11 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Originally created for `TASK-0001` revision 1 and extended by `TASK-0012` and `TASK-0013` revision 1. This file remains non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
+> Originally created for `TASK-0001` revision 1 and extended by `TASK-0012`, `TASK-0013`, and `TASK-0025` revision 1. This file remains non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
 >
 > Target source snapshot: `phatnguyen03022001/ilets@23fa05c8586a9f295a3c0fe90774b78b248d61f7`.
 
-This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` established the actor/RBAC/entitlement and learner/admin surface foundation; `TASK-0013` materializes the complete minimal feature-completeness surface already owned by canonical design. `docs/catalog/project.json` owns the migration identities and current mutable milestone scope state. This file does not independently own that state, cut over authority, activate providers, or change canonical product semantics.
+This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` established the actor/RBAC/entitlement and learner/admin surface foundation; `TASK-0013` materializes the complete minimal feature-completeness surface already owned by canonical design; `TASK-0025` restores the canonical guardian/legal-representative/payer participant boundary omitted from the accepted frozen migration. `docs/catalog/project.json` owns the migration identities and current mutable milestone scope state. This file does not independently own that state, cut over authority, activate providers, or change canonical product semantics.
 
 ## Objective
 
@@ -30,13 +30,31 @@ The product keeps three different concepts separate:
 
 `LEARNER`, `COLLABORATOR`, `REVIEWER`, `ADMIN`, and `OWNER` are the ordinary default authorization bundles. The existing AI-support and optional-human-expert participation roles are not authorization bundles by themselves. A service/system identity or human may receive an explicitly granted bundle or narrower capability set only when authorized; participation never implies privilege.
 
-**Sources:** `design/04-application-flows.md` — Actor, capability, and RBAC model; `design/00-learning-experience.md` — Entitlement-visible availability.
+**Sources:** `design/04-application-flows.md` — Actor, capability, and RBAC model; `design/00-learning-experience.md` — Minor-safe learner experience boundary, Entitlement-visible availability.
 
 ### Self-directed IELTS learner
 
 The primary learner has a real IELTS target and uses the ordinary product route without mandatory teacher dependency. The learner declares the target and may later change it. Learner controls such as Swap, Skip, Shorten, or Change-skill may choose among eligible paths, but cannot erase Required prerequisites, unsupported target conditions, or uncovered product conditions. The ordinary default authorization bundle is `LEARNER`; it grants normal learner/account-scoped operations only and does not imply privileged content, support, entitlement, policy, security, or role-administration capability.
 
 **Sources:** `OBJECTIVE.md` — Purpose, Learner route; `spec/00-PRODUCT.md` — Product identity, Human-support boundary.
+
+### Guardian or legal representative
+
+Where applicable, a guardian or legal representative is a human participant identity distinct from the learner and from a payer. The relationship or representative status alone is not an RBAC role bundle, capability grant, commercial entitlement, or learning/evidence authority.
+
+Guardian or representative status alone grants no unrestricted access to learner history, recordings, AI conversations, evidence, gap/weakness information, or other protected learner information. Any protected-data access and any representative consent, export, or deletion action must remain purpose-scoped, policy-governed, and limited to the rights actually applicable to that action. Learner transparency and unnecessary-disclosure minimization remain product constraints.
+
+Age thresholds, minor status, representative eligibility, consent requirements, and representative rights vary by jurisdiction and remain external mutable policy/compliance evidence rather than frozen IELTS semantics. This migration does not make a legal determination.
+
+**Source:** `design/00-learning-experience.md` — Minor-safe learner experience boundary.
+
+### Payer
+
+Where applicable, a payer is a human commercial participant identity distinct from the learner and from a guardian or legal representative. Paying for or funding access does not itself create learner identity, an RBAC role bundle, a capability grant, learning/evidence authority, or rights to protected learner information.
+
+Payer status alone grants no unrestricted access to learner history, recordings, AI conversations, evidence, gap/weakness information, or other protected learner information. Commercial entitlement may change eligible product availability only after authoritative reconciliation; it does not convert payer status into learner-data access or administrative privilege.
+
+**Sources:** `design/00-learning-experience.md` — Minor-safe learner experience boundary, Entitlement-visible availability; `spec/00-PRODUCT.md` — Commercial access boundary.
 
 ### AI support role
 
@@ -180,16 +198,16 @@ No authority conflict was found between the consulted canonical PRODUCT owners f
 
 Documentation closure does not establish design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
 
-**Sources:** `.agent/tasks/TASK-0013/task.yaml@07f409f37243f80695fcb98333f3ddd728960e7b`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 feature/relation/unknown semantics.
+**Sources:** `.agent/tasks/TASK-0013/task.yaml@07f409f37243f80695fcb98333f3ddd728960e7b`; `.agent/tasks/TASK-0025/task.yaml@0f07168ce65424b3411ac07d6b1fb122a97d2037`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 feature/relation/unknown semantics.
 
 ## Traceability summary
 
 | PRODUCT concern | Current canonical source at the authorized base | Draft section |
 | --- | --- | --- |
 | objective | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Objective |
-| actors / roles | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/04-application-flows.md` | Actors and roles |
+| actors / roles | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/00-learning-experience.md`; `design/04-application-flows.md` | Actors and roles |
 | features / capabilities | `design/01-skill-features.md`; `design/04-application-flows.md` | Product-level features and capabilities |
 | scope / non-goals | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Scope; Non-goals |
 | domain / external constraints | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Domain and external constraints |
 
-The original PRODUCT migration references remain traceable to their recorded source snapshot. `TASK-0012` actor/RBAC/entitlement foundation remains derived from canonical `design/00-learning-experience.md` and `design/04-application-flows.md`; `TASK-0013` detailed feature identities are derived from canonical `design/01-skill-features.md` and the privileged surface/capability boundaries in `design/04-application-flows.md` at the accepted target authority `b60034a50d9a5ee5f197887ed14e7b917e919660`. This traceability is migration evidence only and does not change source authority.
+The original PRODUCT migration references remain traceable to their recorded source snapshot. `TASK-0012` actor/RBAC/entitlement foundation remains derived from canonical `design/00-learning-experience.md` and `design/04-application-flows.md`; `TASK-0013` detailed feature identities are derived from canonical `design/01-skill-features.md` and the privileged surface/capability boundaries in `design/04-application-flows.md` at the accepted target authority `b60034a50d9a5ee5f197887ed14e7b917e919660`. `TASK-0025` restores the canonical minor-safe guardian/legal-representative/payer distinction from `design/00-learning-experience.md` without creating a guardian/payer RBAC bundle or implementation subsystem. This traceability is migration evidence only and does not change source authority.
