@@ -1,0 +1,360 @@
+protocol_version: 3
+
+task_id: TASK-0030
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: BLOCKED
+
+task_source:
+  path: .agent/tasks/TASK-0030/task.yaml
+  commit: "add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39"
+  pre_execution_head: "add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39"
+  final_execution_head: "add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39"
+  main_head_observed: "e707aeee43411cc8f99448b63220eb8beff552b6"
+  topology_observed: [dev, main]
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+structure_model:
+  repository: phatnguyen03022001/agent-documents
+  authorized_revision: "acb3f02616e700190586681306a86905792e4c07"
+  observed_revision: "acb3f02616e700190586681306a86905792e4c07"
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  design_lock_confirmed: true
+  accepted_task_0029_review_confirmed: true
+  topology_confirmed: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: >-
+    Fresh GitHub-native state proved dev=add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39,
+    main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main},
+    TASK-0030 revision 1 APPROVED at the exact base, pinned agent-skills and agent-documents
+    revisions resolvable, and the accepted TASK-0029 successor-shard state present.
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: >-
+    The mandatory fresh pre-cutover owner audit reproduced material legacy-only truth.
+    TASK-0030 therefore forbids constructing or validating a cutover candidate; post-cutover
+    pinned agent-documents validation and DOCS_READY derivation are not applicable to this
+    blocked execution.
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: >-
+    No local checkout, Agent Runtime, Mac, tunnel, Codex, or other non-GitHub execution
+    surface was used. All reads and report publication are GitHub-native.
+
+changed_files: []
+commits_created: []
+pushed: true
+promoted_to_main: false
+
+fresh_residual_audit:
+  exact_base: "add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39"
+  active_canonical_owner_count: 21
+  successor_plane:
+    roots:
+      - docs/PRODUCT.md
+      - docs/BEHAVIOR.md
+      - docs/ARCHITECTURE.md
+      - docs/DATA.md
+      - docs/INTERFACES.md
+      - docs/QUALITY.md
+      - docs/DELIVERY.md
+      - docs/DECISIONS.md
+    legal_shards:
+      - docs/product/skill-leaves.md
+      - docs/product/knowledge-objects.md
+      - docs/product/ielts-exam-and-bands.md
+      - docs/product/curriculum-and-coverage.md
+      - docs/behavior/practice-and-media.md
+      - docs/behavior/planner-and-lifecycle.md
+      - docs/data/evidence-progression-content.md
+      - docs/architecture/internal-service-trust.md
+      - docs/interfaces/provider-lifecycle-and-routes.md
+    catalog: docs/catalog/project.json
+  supporting_non_owner:
+    owner: spec/DECISIONS.md
+    disposition: EXCLUDED_AUTHORITY_NONE
+    evidence: Supporting/rationale surface with no independent active canonical ownership.
+  method: >-
+    Read the exact-base bytes for every active STATUS: CANONICAL owner under spec/** and
+    design/**, then compared each owner against the complete successor docs tree and the
+    scoped exact contracts where design/05 exact wire truth is independently preserved.
+    TASK-0028 and TASK-0029 reports were used only as an audit index; no prior report was
+    accepted as proof of semantic preservation.
+  owner_results:
+    - owner: spec/00-PRODUCT.md
+      disposition: PRESERVED
+      evidence: Product identity, route, scope, L1/AI/human/commercial boundaries are represented in successor PRODUCT/BEHAVIOR.
+    - owner: spec/01-LEARNER-MODEL.md
+      disposition: PRESERVED
+      evidence: Target, uneven per-skill state, uncertainty, constraints and evidence-bounded learner semantics are represented in PRODUCT/BEHAVIOR/DATA.
+    - owner: spec/02-IELTS-MODEL.md
+      disposition: BLOCKING_RESIDUAL
+      residual_refs: [FRESH-RES-001]
+    - owner: spec/03-SKILLS.md
+      disposition: PRESERVED
+      evidence: All 67 stable Skill Leaves and dependency/binding semantics are materialized in docs/product/skill-leaves.md.
+    - owner: spec/04-KNOWLEDGE.md
+      disposition: PRESERVED
+      evidence: All 46 stable Knowledge Objects and prerequisite/binding semantics are materialized in docs/product/knowledge-objects.md.
+    - owner: spec/05-BANDS.md
+      disposition: PRESERVED
+      evidence: Bands 3-9 per-skill thresholds, variant bindings, exit boundaries and residual limitations are represented in docs/product/ielts-exam-and-bands.md; evidence-label terminology remains separately blocked under FRESH-RES-002.
+    - owner: spec/06-CURRICULUM.md
+      disposition: PRESERVED
+      evidence: All 44 C-* nodes, dependency classes, selector rules and variant routing are represented in docs/product/curriculum-and-coverage.md.
+    - owner: spec/07-PRACTICE.md
+      disposition: PRESERVED
+      evidence: Learning phases, LM-01..LM-12, PT-01..PT-23, feedback/selection/effectiveness semantics are represented in docs/behavior/practice-and-media.md.
+    - owner: spec/08-ASSESSMENT.md
+      disposition: PRESERVED
+      evidence: Claim classes, EvidenceRequirement, AT-01..AT-07, eligibility, contamination, readiness and calibration semantics are represented in docs/data/evidence-progression-content.md and DATA.
+    - owner: spec/09-PROGRESSION.md
+      disposition: PRESERVED
+      evidence: MasteryEstimate, certification, GapEvaluation, ActionIntent, staleness/conflict/regression/history semantics are represented in docs/data/evidence-progression-content.md and BEHAVIOR.
+    - owner: spec/10-CONTENT-MODEL.md
+      disposition: PRESERVED
+      evidence: Content/revision, validation, similarity, CTX/PRES, exposure, evidence and coverage-manifest semantics are represented in docs/data/evidence-progression-content.md and DATA.
+    - owner: spec/11-GLOSSARY.md
+      disposition: BLOCKING_RESIDUAL
+      residual_refs: [FRESH-RES-002]
+    - owner: design/00-learning-experience.md
+      disposition: BLOCKING_RESIDUAL
+      residual_refs: [FRESH-RES-003]
+    - owner: design/01-skill-features.md
+      disposition: BLOCKING_RESIDUAL
+      residual_refs: [FRESH-RES-004]
+    - owner: design/02-practice-catalog.md
+      disposition: PRESERVED
+      evidence: All 28 PM-* modes, purpose/evidence-candidacy, retry and duration semantics are represented in docs/behavior/practice-and-media.md.
+    - owner: design/03-media-youtube.md
+      disposition: PRESERVED
+      evidence: Media/transcript/player/rights/source-lifecycle semantics are represented in docs/behavior/practice-and-media.md and INTERFACES.
+    - owner: design/04-application-flows.md
+      disposition: PRESERVED
+      evidence: Planner stages, A-L flows, RBAC/runtime/async and legal lifecycle semantics are represented across BEHAVIOR plus docs/behavior/planner-and-lifecycle.md and neighboring roots.
+    - owner: design/05-api.md
+      disposition: PRESERVED
+      evidence: Higher-level interface/trust/evolution semantics are represented in INTERFACES/QUALITY/DELIVERY while contracts/http/public.openapi.yaml and contracts/http/evaluator.openapi.yaml preserve scoped exact machine authority.
+    - owner: design/06-implementation-stack.md
+      disposition: PRESERVED
+      evidence: Runtime ownership, technology families, persistence/async/security/quality/delivery boundaries are represented across ARCHITECTURE/QUALITY/DELIVERY plus docs/architecture/internal-service-trust.md.
+    - owner: design/07-third-party-services.md
+      disposition: PRESERVED
+      evidence: Provider lifecycle, selected/TBD route matrix, external ingress/egress and activation/degradation rules are represented in docs/interfaces/provider-lifecycle-and-routes.md and neighboring roots.
+    - owner: design/08-coverage-and-support.md
+      disposition: PRESERVED
+      evidence: Product support state machine, TargetCoverageSpecification, CoverageGap, support declaration and reachability semantics are represented in docs/product/curriculum-and-coverage.md.
+
+  task_0028_residual_repair_check:
+    result: PASS_FOR_RES_001_THROUGH_RES_013
+    evidence: >-
+      Fresh reads confirmed TASK-0027 ontology shards and TASK-0029 legal shards materially
+      carry the previously enumerated RES-001..RES-013 semantics. The blockers below are
+      additional residuals reproduced by this fresh complete pass rather than a failure to
+      find the TASK-0029 shards.
+
+  material_residual_owner_count: 4
+  material_residual_count: 4
+  material_residuals:
+    - residual_id: FRESH-RES-001
+      legacy_owner: spec/02-IELTS-MODEL.md
+      sections:
+        - Official fact vs learning interpretation
+        - Change rule
+      successor_domain: PRODUCT
+      legacy_truth: >-
+        External IELTS claims are governed by a mandatory epistemic distinction among
+        Official Evidence, Evidence-Based Interpretation and Blueprint Inference, and
+        material external IELTS drift follows an owner-first propagation rule: update the
+        external-truth owner, refresh dated provenance, review affected downstream learning/
+        assessment/content/design owners, preserve stable family IDs only when semantics
+        remain materially the same, and never retain obsolete facts because implementation
+        already encoded them.
+      successor_gap: >-
+        docs/product/ielts-exam-and-bands.md preserves the external fact baseline and says
+        live facts must be rechecked before implementation/release, but it does not preserve
+        the three-class claim/provenance contract or the owner-first downstream change rule.
+        The complete successor roots, legal shards and catalog contain no equivalent owner.
+      exact_evidence: >-
+        The successor shard still uses the term "Blueprint Inference" in its Bands 3-9
+        section while neither that shard nor another successor owner defines the complete
+        Official Evidence / Evidence-Based Interpretation / Blueprint Inference contract.
+      consequence: >-
+        Demoting spec/02 would lose the locked rule distinguishing official IELTS truth from
+        pedagogical inference and the deterministic propagation discipline for future
+        external IELTS change.
+
+    - residual_id: FRESH-RES-002
+      legacy_owner: spec/11-GLOSSARY.md
+      sections:
+        - Assessment roles
+      successor_domain: PRODUCT
+      legacy_truth: >-
+        Canonical term meanings distinguish Official Evidence, Evidence-Based Interpretation
+        and Blueprint Inference; those meanings are consumed by Band/external-truth semantics.
+      successor_gap: >-
+        No successor glossary or domain section defines all three canonical terms. The
+        IELTS/Band shard uses "Blueprint Inference" but leaves the terminology contract
+        implicit after legacy demotion.
+      consequence: >-
+        The post-cutover plane would contain a materially consequential inference label with
+        no canonical definition, making the locked evidence/provenance vocabulary ambiguous.
+
+    - residual_id: FRESH-RES-003
+      legacy_owner: design/00-learning-experience.md
+      sections:
+        - Learner mental model and progressive disclosure
+        - Learner-facing visual and interaction language / Primary visual character
+        - Capability-first learner language
+        - Iconography
+        - Imagery and background depth
+        - Motion and responsiveness
+        - Interaction micro-quality
+        - Simple surface / deep system invariant
+      successor_domain: PRODUCT
+      legacy_truth: >-
+        The locked learner experience requires a calm typography-led/content-first surface,
+        explicit anti-pattern exclusions, capability/action/result-first copy rather than
+        generic AI-branded chrome, restrained functional icon/imagery use, non-spectacle
+        motion with reduced-motion/usability precedence, consistent loading/empty/error/
+        focus/disabled responsive micro-quality, and progressive disclosure that keeps the
+        deep ontology out of default learner navigation.
+      successor_gap: >-
+        Successor PRODUCT/BEHAVIOR preserve feature/navigation identities and consequential
+        failure explanation, but the complete successor plane contains no semantically
+        equivalent canonical visual-language, AI-chrome naming, icon/imagery/motion,
+        progressive-disclosure, or interaction-micro-quality contract. PRODUCT explicitly
+        leaves pixel-perfect visual design/final brand downstream, which does not preserve
+        these non-pixel product-quality constraints.
+      consequence: >-
+        Demoting design/00 would preserve what features exist while losing material locked
+        learner-experience behavior and quality constraints that implementations must obey.
+
+    - residual_id: FRESH-RES-004
+      legacy_owner: design/01-skill-features.md
+      sections:
+        - Beginner L1-to-English speaking scaffold
+      successor_domain: BEHAVIOR
+      legacy_truth: >-
+        For learners unable to respond reliably to English-only prompts, existing Speaking
+        features may use the configured L1 as a temporary acquisition scaffold through a
+        defined L1-meaning-cue -> learner English production -> bounded correction/model ->
+        scaffold reduction -> English-only -> fresh-transfer progression, with explicit
+        rules preventing the L1/model from performing the target English production or
+        masquerading as independent evidence.
+      successor_gap: >-
+        Successor PRODUCT preserves only the general L1-agnostic principle and successor
+        BEHAVIOR preserves Speaking feature/capture/realtime boundaries. Neither materializes
+        this learner-visible staged beginner Speaking scaffold or its feature-level rules;
+        docs/behavior/practice-and-media.md also contains no corresponding L1 behavior.
+      consequence: >-
+        Demoting design/01 would remove an already locked beginner Speaking interaction path
+        rather than merely dropping implementation detail.
+
+cutover:
+  eligible: false
+  performed: false
+  implementation_commit_created: false
+  readme_mutated: false
+  successor_authority_wording_mutated: false
+  legacy_authority_demoted: false
+  docs_or_catalog_semantics_mutated: false
+  reason: >-
+    AC-1 requires zero material legacy-only truth before any cutover mutation. Four material
+    residual owners remain, so TASK-0030 mandates no partial cutover and publication of only
+    this BLOCKED report.
+
+acceptance_criteria:
+  AC-1:
+    result: BLOCKED
+    evidence: Fresh complete 21-owner audit reproduced FRESH-RES-001..FRESH-RES-004.
+  AC-2:
+    result: NOT_RUN
+    evidence: Cutover forbidden because AC-1 did not establish zero residuals.
+  AC-3:
+    result: NOT_RUN
+    evidence: README/read-order and legacy status were deliberately left unchanged.
+  AC-4:
+    result: NOT_RUN
+    evidence: Successor migration/authority-none wording was deliberately left unchanged.
+  AC-5:
+    result: NOT_RUN
+    evidence: No exact cutover candidate legally existed to validate against pinned agent-documents.
+  AC-6:
+    result: PASS
+    evidence: No implementation commit, no main/staging/topology mutation; publication is report-only.
+
+verification_results:
+  CHECK-1:
+    result: PASS
+    evidence: Exact refs, topology, task, pins, DESIGN LOCK and accepted TASK-0029 state were refreshed GitHub-natively.
+  CHECK-2:
+    result: BLOCKED
+    evidence: Complete fresh owner audit found four material residual owners; audit did not stop at the first residual.
+  CHECK-3:
+    result: NOT_RUN
+    evidence: Atomic cutover candidate is forbidden after CHECK-2 blocks.
+  CHECK-4:
+    result: NOT_RUN
+    evidence: No cutover candidate exists; no post-cutover validation or DOCS_READY derivation was claimed.
+  CHECK-5:
+    result: REPORT_ONLY
+    evidence: Publish only this canonical BLOCKED report; main and branch topology must remain unchanged.
+
+final_verdict:
+  result: BLOCKED
+  reason: MATERIAL_LEGACY_ONLY_TRUTH_REMAINS
+  next_boundary: >-
+    Do not retry authority cutover until the four residuals above are deliberately represented
+    in the successor authority plane and reviewed without changing locked product/system semantics.
