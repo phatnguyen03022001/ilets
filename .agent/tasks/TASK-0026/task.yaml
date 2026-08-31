@@ -1,0 +1,165 @@
+protocol_version: 3
+
+task_id: TASK-0026
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: operator_design_lock
+  source: current_chat
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+operator_decision:
+  design_lock:
+    state: GRANTED
+    exact_locked_snapshot: "66628c089611d43dc929fa7b437666a7830588c4"
+    meaning: "The operator accepts the current product/system design as sufficiently complete to stop semantic design expansion and proceed to canonical authority cutover. This does not imply implementation readiness, standards PASS, provider activation, release readiness, or main promotion."
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@66628c089611d43dc929fa7b437666a7830588c4"
+    role: "Exact operator DESIGN LOCK baseline after accepted TASK-0025 and targeted Red Team closure. At this snapshot docs/** is FROZEN and DOCS_READY=TRUE but remains AUTHORITY NONE; legacy CONSTITUTION/OBJECTIVE/spec/design remains canonical."
+    precedence: 1
+  - source: "operator DESIGN LOCK granted for exact snapshot 66628c089611d43dc929fa7b437666a7830588c4"
+    role: "Explicit human authority to stop design expansion and proceed with canonical authority cutover."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted V1 documentation ownership/closure model used to validate the successor documentation set."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0024/TASK-0025 accepted closure plus two targeted Red Team PASS results and explicit operator DESIGN LOCK."
+  rationale: "The next lifecycle transition is authority cutover, not further product redesign. The task must fail closed if the repository cannot make docs/** canonical without losing unique legacy truth or creating contradictory dual authority. Legacy retirement/deletion is intentionally a later task."
+
+objective: "Perform one bounded canonical authority cutover from the locked legacy-owned design state to the FROZEN successor docs/** set, preserving all unique material truth and leaving legacy files present as non-authoritative references for a later retirement audit."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Verify operator DESIGN LOCK is bound to exact snapshot 66628c089611d43dc929fa7b437666a7830588c4 and that no product/design semantic mutation occurred after that snapshot other than this task artifact. If semantic drift exists, stop BLOCKED."
+    - "Independently audit current authority declarations and read-order surfaces before mutation: README.md, CONSTITUTION.md, OBJECTIVE.md, all docs/** authority headers/boundaries, all spec/** STATUS/OWNS headers, all design/** STATUS/OWNS headers, and any catalog fields that materially participate in authority interpretation."
+    - "Prove that promoting docs/** to canonical authority does not discard material unique truth required by the locked design. If any material truth still exists only in legacy and would become non-authoritative or ambiguous after cutover, make no cutover mutation, report the exact gap and stop BLOCKED."
+    - "Only if the audit passes, make the smallest coherent repository-wide authority transition so docs/PRODUCT.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, docs/DECISIONS.md and docs/catalog/project.json become the canonical project documentation authority set."
+    - "Update README/read-order/precedence wording only as required to make the new authority unambiguous."
+    - "Remove or replace MIGRATION DRAFT / AUTHORITY NONE statements from the successor docs only where required by cutover. Preserve their product/system semantics and provenance."
+    - "Demote legacy spec/** and design/** from canonical authority to clearly non-authoritative legacy/reference status only as required to prevent dual authority. Keep the files present; do not delete, archive, rename, relocate, or broadly rewrite them in this task."
+    - "Treat CONSTITUTION.md and OBJECTIVE.md conservatively. Do not delete or demote either unless the cutover audit proves their authority is fully and explicitly superseded without loss. Prefer preserving any still-distinct operator/product constitutional authority above the canonical docs set."
+    - "Do not alter product semantics, actor/role/feature/data/interface/capability/provider meanings, exact contract content, quality requirements, delivery requirements, or decision substance merely to perform cutover."
+    - "After mutation, independently verify there is exactly one coherent canonical authority path and no contradictory statement still claims legacy spec/design and successor docs are simultaneously canonical for the same truth."
+    - "Re-run pinned documentation-model/reference/traceability/reachability/unknown validation where applicable and require the successor set to remain structurally valid and semantically FROZEN."
+    - "Do not perform legacy deletion/retirement cleanup beyond authority demotion, standards applicability/assessment, exact machine-contract materialization, implementation planning/code, provider activation/configuration, spend authorization, staging/main mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Publish at most one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the truthful canonical report and stop BLOCKED."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0026/report.yaml
+  allowed_existing_files:
+    - README.md
+    - CONSTITUTION.md
+    - OBJECTIVE.md
+    - docs/PRODUCT.md
+    - docs/BEHAVIOR.md
+    - docs/ARCHITECTURE.md
+    - docs/DATA.md
+    - docs/INTERFACES.md
+    - docs/QUALITY.md
+    - docs/DELIVERY.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - spec/**
+    - design/**
+    - .agent/tasks/TASK-0026/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "The exact locked product/system design semantics at 66628c089611d43dc929fa7b437666a7830588c4 remain unchanged."
+  - "docs/** remains FROZEN throughout the final cutover candidate; no new design unknown is introduced."
+  - "ACT/ROL/FTR/ACC/FLW/SYS/DAT/IFC/EXT/CAP/DEC identities and typed relations remain unchanged."
+  - "UNK-001..UNK-009 remain RESOLVED."
+  - "Guardian/legal-representative/payer boundary from TASK-0025 remains intact."
+  - "No legacy file is deleted, renamed, relocated or archived in this task."
+  - "No standards PASS, exact contract materialization, implementation readiness, code, schema, provider activation, staging/main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Exact operator DESIGN LOCK baseline is verified and no post-lock product/design semantic drift exists before cutover."
+  - id: AC-2
+    requirement: "Cutover audit proves no material locked truth would be lost or made ambiguous by promoting docs/** and demoting legacy spec/design authority."
+  - id: AC-3
+    requirement: "Repository ends with one unambiguous canonical authority path: any still-distinct CONSTITUTION/OBJECTIVE authority as applicable, then canonical docs/** + catalog; legacy spec/design no longer compete as canonical owners."
+  - id: AC-4
+    requirement: "Authority-only changes preserve all locked product/system semantics, identities, relations, unknown resolutions and provider lifecycle state."
+  - id: AC-5
+    requirement: "Successor docs remain FROZEN/structurally valid and no contradictory MIGRATION DRAFT/AUTHORITY NONE or dual-canonical assertion remains on active authority surfaces."
+  - id: AC-6
+    requirement: "Legacy files remain present for a later retirement audit; no deletion/archival/rename or downstream standards/contracts/code/provider/release work occurs."
+  - id: AC-7
+    requirement: "Implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and verify locked snapshot lineage with no semantic drift after 66628c089611d43dc929fa7b437666a7830588c4."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Audit all repository authority declarations/read-order surfaces and compare unique legacy truth against the successor docs before any mutation."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Only if safe, construct one coherent authority-only candidate that promotes docs/** and demotes conflicting legacy spec/design authority without deleting files or changing semantics."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Verify one canonical authority path, no dual-canonical contradictions, preserved locked semantics, FROZEN successor state and pinned-model structural validity."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Publish one implementation commit and one report-only child, refresh final refs/topology and stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
