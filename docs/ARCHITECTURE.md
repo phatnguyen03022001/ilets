@@ -2,13 +2,13 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> `TASK-0004` revision 1 migration artifact. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0004` revision 1 and extended through `TASK-0010` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
 > Execution base: `phatnguyen03022001/ilets@64d5915a2d31ec5eec025ccaf05b11aef60e9933`.
 >
 > Model pin: `phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07` (unreleased V1 candidate).
 
-This draft migrates only the established logical runtime responsibility layer from canonical `design/04-application-flows.md`, `design/05-api.md`, and `design/06-implementation-stack.md`. `docs/catalog/project.json` owns the `SYS-*` identities and typed `FLW-* → SYS-*` relations; this file explains the migrated architecture only.
+This draft migrates the established logical runtime responsibility layer plus the bounded capability/build-buy consequences supported by canonical `design/06-implementation-stack.md`, `design/07-third-party-services.md`, and the accepted `SYS-*` / `EXT-*` migration state. `docs/catalog/project.json` owns the typed identities and relations; this file explains the migrated architecture only.
 
 ## ARCH-COMPONENTS Components and ownership
 
@@ -94,10 +94,66 @@ The catalog records only participation already implied by the migrated `docs/BEH
 
 This table does not create new behavior, interfaces, data identities, dependencies, or provider relationships.
 
+## ARCH-BUILD-BUY Capability and build/buy boundaries
+
+The migrated behavior slice needs five material capability boundaries. They are deliberately larger than vendors, libraries, model aliases, endpoints, or minor implementation concerns. The dispositions describe who implements the capability boundary; they do not promote any external route from `SELECTED_FOR_IMPLEMENTATION` to `ACTIVE`.
+
+| Capability | Disposition | Project owner | External boundary | Material decision |
+| --- | --- | --- | --- | --- |
+| `CAP-001` Core-owned product policy and orchestration | `BUILD` | `SYS-002` | none | `DEC-001` |
+| `CAP-002` Identity and session with Core-owned authorization | `HYBRID` | `SYS-002` | `EXT-001` | `DEC-002` |
+| `CAP-003` Authoritative PostgreSQL persistence on managed hosting | `HYBRID` | `SYS-002` | `EXT-002` | `DEC-002` |
+| `CAP-004` Recoverable asynchronous dispatch | `HYBRID` | `SYS-002` | `EXT-003` | `DEC-002` |
+| `CAP-005` Bounded evaluator AI and speech execution | `HYBRID` | `SYS-003` | `EXT-004` | `DEC-003` |
+
+There is no pure `BUY` record in this slice because none of the four external dependencies owns the whole product capability it supports. Identity/session, hosted persistence, dispatch, and evaluator-provider execution all remain coupled to project-owned responsibility that cannot be transferred to the provider without changing canonical architecture. There is no feature-referenced `DEFER` record; deferred/TBD provider sub-routes remain lifecycle truth inside the existing external boundary instead of becoming fake resolved feature capabilities.
+
+### CAP-001 Core-owned product policy and orchestration
+
+**Boundary.** The authoritative product capability is built in `SYS-002` Core API: learner/admin product behavior, product authorization, deterministic Assessment/Progression/Planner orchestration, authoritative work identity/state, and final interpretation/reconciliation remain project-owned. Web remains presentation authority and Evaluator/provider output remains bounded input rather than product truth.
+
+**Build/buy consequence.** Frameworks, hosted infrastructure, and external model output may support this capability, but none may become the semantic owner. Moving authoritative learning/evidence/progression/next-action policy into a provider would be an architecture change, not a provider configuration change.
+
+**Exit.** Core implementation technology may be replaced or rewritten only while canonical product semantics, authoritative identity/state, and the Web/Core/Evaluator authority split remain preserved or are explicitly re-architected. No external provider exit is required for the `BUILD` disposition itself.
+
+### CAP-002 Identity and session with Core-owned authorization
+
+**Boundary.** `SYS-002` jointly implements authenticated product access with `EXT-001`: the external service owns credential/session mechanics and external-principal issuance, while Core owns stable internal actor/learner identity, principal association, RBAC/capabilities, entitlement, and product authorization.
+
+**Build/buy consequence.** This is `HYBRID`, not `BUY`, because delegating credential custody does not delegate product identity or authorization truth.
+
+**Exit.** Provider replacement re-associates a new external principal to the same Core-owned actor/learner semantics. Provider roles, organizations, permissions, or metadata must not become migration-critical product authority.
+
+### CAP-003 Authoritative PostgreSQL persistence on managed hosting
+
+**Boundary.** `SYS-002` owns authoritative product persistence semantics and is the sole application runtime permitted to read/write that state; `EXT-002` supplies managed PostgreSQL hosting only. Database schema remains derived implementation detail rather than learner/evidence/progression authority.
+
+**Build/buy consequence.** This is `HYBRID`: Core owns transaction/state semantics while the hosting platform supplies commodity execution/operations. A second live database or provider-specific product-state model is not introduced.
+
+**Exit.** Use the smallest PostgreSQL-native export/restore/recovery path that preserves canonical state and migration compatibility. Provider exit does not move application access away from Core or require automatic multi-cloud failover.
+
+### CAP-004 Recoverable asynchronous dispatch
+
+**Boundary.** `SYS-002` owns acceptance, durable logical work identity/state, dispatch admission/claim/fencing, retry identity, result reconciliation, and semantic completion; `EXT-003` performs bounded external task delivery only.
+
+**Build/buy consequence.** This is `HYBRID`: the external dispatcher cannot become business-work, evidence, cancellation, or completion authority. No second broker, Pub/Sub layer, or generic queue framework is created.
+
+**Exit.** Durable Core work/recovery state permits replacement of the dispatcher without treating provider queue state as accepted truth. Ambiguous in-flight attempts must be reconciled before safe redrive through a replacement route.
+
+### CAP-005 Bounded evaluator AI and speech execution
+
+**Boundary.** `SYS-003` owns the bounded evaluator capability contract and validation/provenance surface; `EXT-004` supplies selected-or-TBD external AI/speech execution behind provider-neutral adapters. Core remains the permitted product caller and retains final product interpretation.
+
+**Build/buy consequence.** This is `HYBRID`: external models/services can execute bounded work but cannot own learner evidence, Band certification, progression, content activation, or final next-action semantics. Provider/model aliases do not become separate `CAP-*` identities.
+
+The canonical pronunciation/acoustic provider route remains `TBD`. `CAP-005` therefore means the evaluator boundary is resolved, not that every provider sub-capability is selected, calibrated, available, or active.
+
+**Exit.** Provider/model replacement occurs behind the same bounded Evaluator contract with consequential provenance retained and consequence-specific validation/calibration performed before use. Dynamic routing, generic multi-provider infrastructure, or a second semantic owner is not implied.
+
 ## Migration boundary
 
 This file and `docs/catalog/project.json` remain **AUTHORITY NONE** migration artifacts. Legacy canonical owners are unchanged.
 
-No `DAT-*`, `IFC-*`, `EXT-*`, `CAP-*`, or `DEC-*` identity is created by this slice. Feature relations for data, interfaces, dependencies, and capabilities remain on `UNK-001..UNK-004`; specifically, capability/build-buy remains unresolved through `UNK-004`. `architecture.build_buy` therefore remains `actual_depth: NONE`.
+`TASK-0010` adds only the five capability identities above and their catalog decision references. Existing `SYS-*` and `EXT-*` identities are reused without changing provider lifecycle, activation, configuration, pricing, or exact contracts. The earlier DATA/INTERFACES/external-dependency migrations remain separate accepted migration state.
 
-This state does not claim `DOCS_READY`, design lock, implementation readiness, assurance status, promotion, or release readiness.
+`milestone.scope_state` remains `OPEN`. This state does not claim `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, promotion, or release readiness.

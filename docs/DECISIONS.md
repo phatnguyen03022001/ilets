@@ -2,9 +2,9 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Maintained through `TASK-0003` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0003` revision 1 and extended through `TASK-0010` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
-> Canonical target snapshot: `phatnguyen03022001/ilets@2f54b7c6003399ccf7abff8cda2277d68d0048e8`.
+> Current CAP/build-buy migration authority snapshot: `phatnguyen03022001/ilets@09504f4d782a5a53f9f8c57e750cc28274525667`.
 
 ## Documentation-model adoption
 
@@ -16,7 +16,7 @@ The corrected feature relation state distinguishes typed `refs`, genuine demonst
 
 `docs/catalog/project.json` now exists only as a migration artifact with **authority NONE**. Its pathname does not grant canonical target authority. The catalog owns migration identities/typed relations; `docs/BEHAVIOR.md` owns migrated behavior explanation.
 
-This slice may assign directly supported `ACT-*`, `ROL-*`, `FTR-*`, `ACC-*`, `FLW-*`, and `UNK-*` identities. It does not prematurely materialize `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, or `CAP-*`.
+The migration now includes the previously accepted `SYS-*`, `DAT-*`, `IFC-*`, and `EXT-*` inventories plus the bounded `CAP-*` / `DEC-*` records added by `TASK-0010`. Those records remain authority-NONE migration state and cannot override the canonical legacy owners.
 
 ## Engineering claim and evidence semantics adoption
 
@@ -61,3 +61,76 @@ All six affected features now use typed `EXT-*` references rather than `unresolv
 This resolution preserves provider lifecycle and authority boundaries: `SELECTED_FOR_IMPLEMENTATION` is not `ACTIVE`; provider output remains non-authoritative until Core/Evaluator validation and owning policy interpretation; fallback requires an independently equivalent consequence floor; timeout remains ambiguous; deletion/export and provider-held copies require reconciliation; and exit relies on stable Core identity, PostgreSQL-native portability, durable Core work identity, and provider-neutral Evaluator capability boundaries rather than speculative multi-provider infrastructure.
 
 No provider is activated or configured here. No `CAP-*`, `DEC-*`, build/buy disposition, alternative-provider selection, pricing state, deployment change, or `UNK-004` closure is created. Earlier statements in this file that `UNK-003` remained open describe the prior migration slices and are superseded only by this dedicated `TASK-0009` resolution.
+
+
+## DEC-BUILD-BUY Material build/buy decisions
+
+`TASK-0010` records only three material decisions because the five capability records reduce to three genuine architectural choices: keep product semantic authority first-party; buy selected commodity infrastructure behind Core-owned authority; and keep the Evaluator project-owned while buying bounded external AI/speech execution. Provider names, prices, quotas, model benchmarks, activation state, and mutable operational research are intentionally not promoted into these decision records.
+
+### DEC-001 Core product authority remains project-owned
+
+**Context.** Canonical runtime design assigns learner/admin product behavior, product authorization, authoritative work state, deterministic Assessment/Progression/Planner policy, and final result interpretation to Core. External AI/provider output is explicitly non-authoritative.
+
+**Selected outcome.** Build the authoritative product policy/orchestration capability in `SYS-002` (`CAP-001`) instead of delegating product semantics to an external platform or model provider.
+
+**Alternative rejected.** Treat a provider/model/backend service as the owner of learner evidence, progression, certification, or next-action policy.
+
+**Rationale.** The project must preserve deterministic product meaning, stable semantic identity, explainable failure behavior, and the Web/Core/Evaluator authority split. Provider convenience or model capability cannot safely substitute for these owners.
+
+**Consequences.** External services may support execution, but Core remains the single authoritative product interpretation boundary. Provider success, confidence, or generated text cannot independently mutate learner/product truth.
+
+**Reversibility.** `COSTLY`. A future architecture may redistribute product responsibility, but doing so requires an explicit semantic migration and architecture change rather than a provider/configuration switch.
+
+### DEC-002 Commodity infrastructure stays behind Core-owned authority
+
+**Context.** The current implementation selects external identity/session service, managed PostgreSQL hosting, and bounded task dispatch, while canonical design separately preserves stable Core identity/authorization, PostgreSQL product-state semantics, and durable Core logical-work/reconciliation state.
+
+**Selected outcome.** Use `EXT-001`, `EXT-002`, and `EXT-003` as bounded external execution/custody inside the `CAP-002`/`CAP-003`/`CAP-004` hybrid capabilities. Core keeps the authority that makes each provider replaceable.
+
+**Alternative rejected.** Promote provider roles/metadata, hosted-database product semantics, or queue/task state into product truth; or introduce duplicate identity/database/queue infrastructure merely to claim portability.
+
+**Rationale.** These concerns are commodity enough to reuse selected external services, but their surrounding product authority is not. One common decision therefore explains all three boundaries without inventing a provider-specific decision per catalog identity.
+
+**Consequences.** `SELECTED_FOR_IMPLEMENTATION` remains distinct from `ACTIVE`. Core must preserve stable internal identity, sole authoritative persistence access, and durable work/reconciliation semantics. No second live database, broker, dynamic failover layer, or generic infrastructure framework is implied.
+
+**Reversibility.** `COSTLY`. Exit is explicitly feasible but may require principal re-association, PostgreSQL-native migration/recovery, or in-flight work reconciliation. Those costs do not justify transferring authority to the provider.
+
+### DEC-003 Evaluator stays project-owned with external execution adapters
+
+**Context.** The Evaluator is the internal bounded capability owner. Canonical third-party design selects some external productive-evaluation/speech routes while leaving pronunciation/acoustic evaluation `TBD`, and requires provider-neutral boundaries, provenance, validation, and consequence-specific calibration.
+
+**Selected outcome.** Implement `CAP-005` as `HYBRID`: keep the bounded evaluator contract/validation surface in `SYS-003`, and use `EXT-004` for selected-or-TBD external AI/speech execution behind adapters.
+
+**Alternative rejected.** Expose provider SDK/model schemas as the internal product contract, make a provider the product/evidence owner, or create one capability identity per provider/model alias.
+
+**Rationale.** The project needs external model/speech execution where deterministic/local execution is insufficient, but external output is still untrusted and provider lifecycle differs by sub-capability. A project-owned Evaluator boundary preserves semantics while permitting bounded substitution.
+
+**Consequences.** Provider/model replacement requires preserved provenance and fresh consequence-specific validation/calibration. The pronunciation/acoustic provider remains `TBD`; this decision does not select, activate, or validate that route.
+
+**Reversibility.** `COSTLY`. The provider is replaceable behind the boundary, but consequential replacement may require adapter work, calibration, migration/reconciliation of in-flight work, and renewed eligibility evidence.
+
+## UNK-INVENTORY Migration unknown inventory after TASK-0010
+
+The four catalog-owned migration questions are now resolved for the bounded behavior slice:
+
+- `UNK-001` → typed `DAT-*` feature relations from the DATA migration;
+- `UNK-002` → typed `IFC-*` feature/flow relations from the INTERFACES migration;
+- `UNK-003` → typed `EXT-*` feature/flow dependency relations from the external-dependency migration; and
+- `UNK-004` → typed `CAP-*` feature capability relations from this CAP/build-buy migration.
+
+Earlier slice-local statements that later unknowns remained `OPEN` describe the state at those earlier tasks and are superseded by the dedicated later resolution sections. This inventory does not assert that the milestone is closed: `milestone.scope_state` remains `OPEN`, so the pinned model is expected to continue reporting `SCOPE_OPEN` and must not be interpreted as `DOCS_READY`.
+
+### UNK-004 Capability/build-buy relation resolution
+
+`UNK-004` is resolved for all six affected features because canonical runtime ownership plus the accepted `EXT-001..EXT-004` inventory supports a complete, typed, non-speculative capability mapping:
+
+- every feature uses `CAP-001` for Core-owned authoritative product policy/orchestration;
+- every feature uses `CAP-002` and `CAP-003` because authenticated durable product state remains a hybrid of Core authority with the selected identity/session and managed PostgreSQL boundaries;
+- `FTR-002` through `FTR-006` use `CAP-004` and `CAP-005` where diagnostic/evaluation/support/replanning behavior materially crosses recoverable async dispatch and the bounded Evaluator provider boundary; and
+- `FTR-001` does not claim those evaluator/dispatch capabilities merely because the broader `FLW-001` dependency footprint contains them.
+
+`CAP-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution is the complete typed feature-capability mapping plus `docs/ARCHITECTURE.md#ARCH-BUILD-BUY`, not a claim that one capability covers every feature consequence.
+
+This resolution creates no pure `BUY` capability because the external dependencies do not own the whole capability boundary, and it creates no feature-referenced `DEFER` capability. Provider lifecycle remains canonical in `design/07-third-party-services.md`: selected routes remain only `SELECTED_FOR_IMPLEMENTATION`, pronunciation/acoustic evaluation remains `TBD`, and no provider/model is activated, calibrated, configured, or made authoritative here.
+
+All coverage/resolution gaps addressed by this migration can reach zero while milestone closure still remains intentionally blocked by `scope_state: OPEN`. No `DOCS_READY`, cutover, design lock, implementation readiness, standards PASS, promotion, or release claim follows from this resolution.
