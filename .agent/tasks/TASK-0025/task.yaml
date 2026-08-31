@@ -1,0 +1,155 @@
+protocol_version: 3
+
+task_id: TASK-0025
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: red_team_follow_up
+  task_id: TASK-0024
+  gap_id: MINOR_GUARDIAN_PAYER_MIGRATION_OMISSION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@402448e40314e6918ce5332904c7dfea029006c2"
+    role: "Current target truth after accepted TASK-0024. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** is FROZEN and DOCS_READY=TRUE but remains AUTHORITY NONE; DESIGN LOCK has not been granted."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@402448e40314e6918ce5332904c7dfea029006c2:design/00-learning-experience.md#Minor-safe-learner-experience-boundary"
+    role: "Canonical minor/guardian/legal-representative/payer product boundary that the FROZEN migration failed to preserve explicitly."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 documentation model, closure, relation, unknown and DOCS_READY semantics."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Independent red-team comparison of canonical design/00 against the accepted TASK-0024 successor migration."
+  rationale: "Canonical design requires the system, where applicable, to distinguish learner, guardian/legal representative and payer, while guardian/payer status alone grants no unrestricted learner-data access and representative consent/export/deletion actions remain purpose-scoped. The FROZEN successor migration currently materializes learner, AI support, optional human expert and privileged human operator only. This is a migration-completeness defect, not a request to redesign the product or create generic family-account machinery."
+
+objective: "Reopen only the documentation scope necessary to preserve the canonical minor/guardian/legal-representative/payer boundary in the successor migration, close any directly required actor/relation semantics, and refreeze only if the repaired migration is again semantically complete and derives DOCS_READY=TRUE."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reproduce the omission by comparing canonical design/00-learning-experience.md minor-safe learner experience semantics with current docs/PRODUCT.md and docs/catalog/project.json before mutation."
+    - "Treat this as an actor/relationship/authorization/privacy migration defect. Do not infer that guardian or payer must be RBAC role bundles. Relationship/participant identity and effective authorization are distinct concepts."
+    - "Materialize the minimum explicit successor semantics required to distinguish learner, guardian/legal representative and payer where applicable. Guardian or payer relationship alone must not grant unrestricted access to learner history, recordings, AI conversations, evidence, gap/weakness data, or other protected learner information."
+    - "Preserve that representative consent/export/deletion actions are purpose-scoped, policy-governed and jurisdiction-dependent; do not freeze jurisdiction-specific ages, consent rules, legal entitlements or provider/legal-policy details into IELTS learning semantics."
+    - "Reopen docs/catalog/project.json milestone.scope_state from FROZEN to OPEN before treating the migration as repaired. Do not claim DOCS_READY while the repair is in progress."
+    - "Audit only the directly affected successor owners and catalog relations needed to preserve this canonical truth. Start from PRODUCT + catalog; touch BEHAVIOR, DATA, INTERFACES, QUALITY or DECISIONS only when current canonical truth and the pinned model require a semantic/traceability relation there. Do not modify ARCHITECTURE or DELIVERY absent a reproduced direct contradiction."
+    - "If the pinned model requires new actor identities, add the minimum stable ACT-* identities. Do not create new ROL-* authorization bundles merely because guardian/payer actors exist. Add or change FTR/ACC/FLW/DAT/IFC/EXT/CAP/DEC relations only where the canonical boundary materially requires them; otherwise preserve existing inventories."
+    - "Do not invent a family-account subsystem, parental dashboard, household model, billing product, legal engine, new runtime, provider, schema, API route, wire field or implementation detail merely to make the migration look complete."
+    - "Independently compare the repaired successor migration against all canonical truth materially affected by this boundary, including design/00-learning-experience.md, design/04-application-flows.md, relevant privacy/data/API owners, and any referenced spec owner."
+    - "If any material unresolved semantic or typed-relation requirement remains, leave milestone.scope_state OPEN, do not claim DOCS_READY, publish the exact blocker and stop BLOCKED."
+    - "Only if the repaired migration fully preserves the canonical boundary with zero material blocker, change milestone.scope_state OPEN->FROZEN in the final implementation candidate, validate against the pinned agent-documents model, and require zero model/reference/traceability/reachability/orphan/unresolved/blocking defects plus derived DOCS_READY=TRUE."
+    - "Documentation closure after this repair still does not imply DESIGN LOCK, authority cutover, implementation readiness, standards PASS, provider activation, promotion or release."
+    - "Do not perform DESIGN LOCK, canonical cutover, legacy retirement, standards assessment, exact machine-contract materialization, implementation planning/code, provider activation/configuration, spend authorization, staging/main mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Publish at most one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the truthful canonical report and stop BLOCKED."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0025/report.yaml
+  allowed_existing_files:
+    - docs/PRODUCT.md
+    - docs/BEHAVIOR.md
+    - docs/DATA.md
+    - docs/INTERFACES.md
+    - docs/QUALITY.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0025/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "No guardian/payer relationship automatically implies LEARNER, COLLABORATOR, REVIEWER, ADMIN or OWNER authorization."
+  - "No guardian/payer relationship automatically grants learner-history, recording, AI-conversation, evidence, gap/weakness or other protected-data access."
+  - "Commercial payment relationship remains distinct from learner identity, RBAC and learning/evidence truth."
+  - "Jurisdiction-specific minor/consent/legal rules remain external mutable policy and release/compliance evidence."
+  - "Existing product/learning/evidence/provider/runtime semantics remain unchanged except the minimum successor migration repair required by this boundary."
+  - "No design lock, cutover, standards PASS, exact contract materialization, code, schema, provider activation, staging/main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The successor migration explicitly preserves the canonical distinction among learner, guardian/legal representative and payer where applicable, without conflating relationship identity with RBAC authorization."
+  - id: AC-2
+    requirement: "Guardian/payer status alone grants no unrestricted protected learner-data access; representative consent/export/deletion semantics remain purpose-scoped and policy-governed without freezing jurisdiction-specific law into product semantics."
+  - id: AC-3
+    requirement: "Only directly required successor docs/catalog identities and typed relations change; no family-account/product/runtime/provider/schema/API-detail expansion is invented."
+  - id: AC-4
+    requirement: "Independent semantic comparison finds no remaining material omission or contradiction for the repaired boundary versus canonical owners."
+  - id: AC-5
+    requirement: "If and only if AC-1..AC-4 pass, milestone.scope_state is FROZEN and pinned-model validation has zero defects/blockers with derived DOCS_READY=TRUE."
+  - id: AC-6
+    requirement: "Legacy authority and docs AUTHORITY NONE remain unchanged; DESIGN LOCK and all downstream lifecycle gates remain unclaimed."
+  - id: AC-7
+    requirement: "Implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Reproduce canonical design/00 minor-safe boundary and compare it against current PRODUCT/catalog actor semantics; inspect directly affected behavior/data/interface/quality/decision owners only as evidence requires."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Construct the smallest actor/relationship/privacy migration repair; verify no automatic RBAC/data-access inference and no speculative family-account architecture."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Audit exact candidate semantics/relations against affected canonical owners and pinned model; fail closed on any unresolved requirement."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Only for a semantically complete repair, require FROZEN + zero pinned-model defects/blockers + DOCS_READY=TRUE; then publish one implementation commit and one report-only child, refresh final refs/topology, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
