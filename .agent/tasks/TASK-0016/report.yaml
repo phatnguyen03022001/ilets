@@ -1,0 +1,144 @@
+protocol_version: 3
+
+task_id: TASK-0016
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0016/task.yaml
+  commit: "6f1c0966aaf6d79a0203fd417ba7e1ef2a1b5f92"
+  blob_sha: "d7afdd78f12a2e45024978de7513b0d3d72d4de3"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "6f1c0966aaf6d79a0203fd417ba7e1ef2a1b5f92"
+  pre_execution_head: "6f1c0966aaf6d79a0203fd417ba7e1ef2a1b5f92"
+  final_execution_head: "1e212296fd14b6db78c9ce9ee8637dee92ee449c"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native reads before candidate construction and immediately before publication proved dev=6f1c0966aaf6d79a0203fd417ba7e1ef2a1b5f92, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}. TASK-0016 revision 1 was APPROVED at the exact base; pinned target/model/skill authorities resolved; Git Data object construction and non-force ref update were available. No Agent Runtime, local Mac, tunnel or Codex surface was probed, and mutation APIs were not used for discovery or validation."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0016 designates no authoritative verifier and explicitly requires GitHub-native execution only. Exact implementation 1e212296fd14b6db78c9ce9ee8637dee92ee449c was audited against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 relation/dependency/unknown/reachability semantics plus canonical privileged behavior and third-party/runtime authority. The audit found zero model/reference/traceability/reachability/orphan defects. Closure intentionally remains false only because milestone.scope_state is OPEN and the 47 detailed feature CAP relations remain unresolved through OPEN blocking UNK-009. No DOCS_READY claim is made."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "No operator-local target checkout, Agent Runtime, tunnel, Mac or Codex surface was used. Candidate construction, semantic/model audit, publication and verification were GitHub-native."
+
+changed_files:
+  - path: docs/INTERFACES.md
+    summary: "Add only EXT-005 external object/media storage, EXT-006 external payment/subscription observations and EXT-007 external secret custody, with bounded failure/fallback/exit semantics; preserve EXT-001..EXT-004 and provider lifecycle authority."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Record dedicated UNK-008 resolution evidence, the sparse privileged dependency mapping and the reason grouped FLW-005/FLW-006 remain dependency-empty; leave UNK-009 and milestone OPEN."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Materialize EXT-005..EXT-007; map FTR-047 to EXT-005, FTR-049 to EXT-006 and FTR-052 to EXT-007; record demonstrated N/A for FTR-048/FTR-050/FTR-051/FTR-053; resolve UNK-008 without CAP changes."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "1e212296fd14b6db78c9ce9ee8637dee92ee449c"
+    message: "docs(TASK-0016): resolve privileged external relations"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "All seven privileged dependency relations are complete: FTR-047=[EXT-005], FTR-049=[EXT-006], FTR-052=[EXT-007], while FTR-048/FTR-050/FTR-051/FTR-053 use demonstrated N/A. No FTR-047..FTR-053 dependency relation retains unresolved_ref UNK-008."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The resulting inventory adds exactly three boundary-sized EXT identities justified by current privileged semantics: governed large/retained object-media custody, external commercial payment/subscription observations, and external secret custody. EXT-001..EXT-004 remain unchanged. Transactional email, operational-observability products, model aliases, endpoints, SDKs, dashboards, buckets, optional/deferred services and the rest of design/07 were not promoted into catalog identities."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "FLW-005.dependency_refs remains empty because the grouped capability-gated flow is shared by privileged features with different conditional external crossings; using the union would falsely attach all three providers to every related feature and violate feature-flow subset semantics. FLW-006.dependency_refs remains empty because consequential audit reconciliation is Core-internal; an audited operation's earlier external crossing does not make audit reconciliation provider-dependent."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "UNK-008 is RESOLVED only after complete seven-feature accounting, with blocking=false, resolved_by_ref=EXT-005 and docs/DECISIONS.md#UNK-008 evidence. UNK-009 remains OPEN blocking DESIGN state and every FTR-007..FTR-053 capability relation still references UNK-009. milestone.scope_state remains OPEN."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Pinned-model audit found zero model/reference/traceability/reachability/orphan defects. Base-to-implementation compare is ahead_by=1 and modifies exactly docs/INTERFACES.md, docs/DECISIONS.md and docs/catalog/project.json. Implementation is a direct child of the exact base. Post-publication GitHub state proved dev=1e212296fd14b6db78c9ce9ee8637dee92ee449c, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}; this report is constructed as a separate report-only child."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub-native state before candidate construction and again immediately before implementation publication confirmed exact base dev=6f1c0966aaf6d79a0203fd417ba7e1ef2a1b5f92, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology {dev, main}, TASK-0016 revision 1 APPROVED, and all pinned authorities resolved."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Canonical privileged flow/runtime and third-party lifecycle owners were audited directly. Material dependency identity was kept distinct from Core-owned data/state, public API, role/capability permission, provider telemetry, SDK/endpoint/dashboard/bucket inventory and incidental infrastructure."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Exactly EXT-005..EXT-007 were added; all seven privileged feature dependency relations were resolved with exact refs or demonstrated N/A; FLW-005/FLW-006 remained dependency-empty for explicit semantic reasons; UNK-008 was resolved only after complete accounting. EXT-001..EXT-004 and all CAP mappings remained unchanged."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Exact candidate audit applied the pinned V1 dependency shape/kind rules, typed/unique IDs, relation-state rules, support-token resolution, resolved QUESTION attribution, feature-flow dependency subset traceability, reachability/orphan detection and closure accounting. Result: zero structural/reference/traceability/reachability/orphan failures; expected unfinished blockers are only SCOPE_OPEN plus 47 UNRESOLVED_RELATION instances backed by OPEN blocking UNK-009."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale refs/topology were refreshed immediately before publication. Implementation 1e212296fd14b6db78c9ce9ee8637dee92ee449c was published by non-force fast-forward of dev only and verified at the exact published SHA; main remained unchanged. This report is the separate report-only child before the second non-force dev fast-forward."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Published implementation is 1e212296fd14b6db78c9ce9ee8637dee92ee449c; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
