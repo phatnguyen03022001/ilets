@@ -1,0 +1,190 @@
+protocol_version: 3
+
+task_id: TASK-0003
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0002
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@2f54b7c6003399ccf7abff8cda2277d68d0048e8"
+    role: "Current target truth. TASK-0002 is durably BLOCKED/reviewed; legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical and existing docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Exact accepted unreleased V1 candidate after TASK-0004. Feature relationState now supports refs, genuine na, or unresolved_ref -> existing OPEN DESIGN UNK; unresolved_ref is structurally valid but always blocks documentation closure."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Exact frozen V1 engineering claim/evidence semantics. This migration slice must not fabricate assurance status or maturity."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Exact protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents V1 BEHAVIOR/project catalog model at acb3f02616e700190586681306a86905792e4c07 plus current canonical IELTS behavior owners."
+  rationale: "TASK-0002 proved the intended BEHAVIOR + catalog slice was correct but blocked only by the missing unresolved feature-relation state. TASK-0004 corrected exactly that model defect, so the same target slice can now continue without false N/A or premature neighboring-domain identities."
+
+objective: "Materialize the first coherent IELTS BEHAVIOR migration draft and initial project catalog using the corrected agent-documents V1 relation model, while preserving legacy canonical authority and explicitly representing not-yet-migrated material relations with OPEN DESIGN UNK records plus unresolved_ref."
+
+scope:
+  required_changes:
+    - "Create docs/BEHAVIOR.md as MIGRATION DRAFT / AUTHORITY NONE. Map only existing observable IELTS behavior from current canonical OBJECTIVE/spec/design sources."
+    - "Create docs/catalog/project.json with model_version 1, milestone.scope_state OPEN, scope_ref docs/PRODUCT.md#Scope, and stable target-owned ACT/ROL/FTR/ACC/FLW identities for this behavior slice."
+    - "Populate only identities directly supported by migrated truth. Do not create SYS/DAT/IFC/EXT/CAP identities merely for completeness."
+    - "For a material feature relation whose typed target domain is not yet migrated, create a bounded OPEN DESIGN UNK record and use exactly {\"unresolved_ref\": \"UNK-...\"}. Use {\"na\": ...} only for genuine demonstrated non-applicability."
+    - "Ensure every FTR/ACC/FLW used in BEHAVIOR exists exactly once in the catalog and every catalog behavior reference resolves to the intended BEHAVIOR heading."
+    - "Set coverage conservatively: only supported product/behavior concerns may exceed NONE; unmigrated concerns remain NONE unless direct target evidence proves otherwise. Coverage depth is not maturity."
+    - "Update docs/DECISIONS.md only if needed to pin the accepted agent-documents revision and preserve the migration authority boundary. Leave docs/PRODUCT.md unchanged unless a purely structural reference-token correction is strictly required."
+    - "Validate the candidate against the exact agent-documents V1 schema/validator semantics at acb3f02616e700190586681306a86905792e4c07 using an actually exposed isolated test surface when available; otherwise perform deterministic schema/cross-reference inspection and report the capability boundary truthfully."
+    - "Do not modify legacy canonical docs, code, workflows, runtime behavior, main, or any external repository."
+    - "Do not claim DOCS_READY, documentation/design lock, implementation readiness, standards PASS/level/N/A/exception, generated PROGRAM, promotion, or release readiness."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+  allowed_existing_files_or_components:
+    - docs/PRODUCT.md
+    - docs/DECISIONS.md
+    - .agent/tasks/TASK-0003/task.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** remain canonical throughout this slice."
+  - "docs/PRODUCT.md, docs/DECISIONS.md, docs/BEHAVIOR.md, and docs/catalog/project.json remain migration artifacts with authority NONE until explicit cutover."
+  - "Catalog owns migration identities/relations; BEHAVIOR owns migrated behavior explanation."
+  - "No false N/A and no premature neighboring-domain identity materialization."
+  - "Every unresolved_ref targets an existing OPEN DESIGN UNK and remains a documentation-closure blocker."
+  - "model_version remains 1; agent-documents remains an unreleased candidate."
+  - "Branches remain exactly {dev, main}; main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+
+forbidden_changes:
+  - "Do not modify README.md, CONSTITUTION.md, OBJECTIVE.md, spec/**, design/**, contracts/**, apps/**, services/**, tools/**, .github/**, verify, compose files, research/**, evidence/**, or main."
+  - "Do not create docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, assurance registries, generated programs, provider registries, or orchestration state."
+  - "Do not delete, rename, or demote legacy canonical documents."
+  - "Do not copy the full agent-documents schema/model or agent-standards catalog into IELTS."
+  - "Do not create branch, PR, tag, release, or repository metadata mutation."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files:
+    - docs/BEHAVIOR.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0003/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Migration preserves one canonical target authority."
+    evidence_required: "BEHAVIOR/catalog are authority NONE and legacy canonical owners remain unchanged."
+  - id: AC-2
+    requirement: "Behavior identity ownership and traceability are coherent."
+    evidence_required: "FTR/ACC/FLW identities are catalog-owned, BEHAVIOR explanations resolve correctly, and current target semantics are preserved without invention."
+  - id: AC-3
+    requirement: "Not-yet-migrated material relations are represented truthfully."
+    evidence_required: "Applicable unresolved relations use unresolved_ref -> existing OPEN DESIGN UNK; genuine na remains distinct; no premature DAT/IFC/EXT/CAP identities are invented."
+  - id: AC-4
+    requirement: "Catalog remains conservative and V1-valid without false closure."
+    evidence_required: "model_version=1, milestone OPEN, required shape/references valid, coverage claims bounded, unresolved relations closure-blocking, and no DOCS_READY claim."
+  - id: AC-5
+    requirement: "Execution remains bounded and lineage-exact."
+    evidence_required: "Implementation is one direct child of exact handoff base with only authorized migration paths; report is a separate report-only child; main unchanged and topology exactly {dev, main}."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task and pinned authorities; require dev equals handoff base and main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only the canonical IELTS behavior sources needed for this slice plus the corrected agent-documents BEHAVIOR/catalog model."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest coherent BEHAVIOR + catalog mapping, using unresolved_ref for not-yet-migrated applicable relations and no false N/A."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Validate schema/reference/relation/coverage semantics against the pinned agent-documents revision and audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create separate report-only child, verify lineage/diff/final refs, and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
