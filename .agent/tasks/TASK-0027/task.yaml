@@ -1,0 +1,157 @@
+protocol_version: 3
+
+task_id: TASK-0027
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0026
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@b14cb8f81b109317f05b5def8adb9a58babba4b5"
+    role: "Current target truth after accepted TASK-0026 blocked review. DESIGN LOCK remains in force; no cutover occurred; legacy spec/design remain canonical and docs/** remains successor authority-none material."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@3c923e44c206ee6a02e8cf5b4e90d8594d9c3c3a:spec/03-SKILLS.md"
+    role: "Canonical owner of the 67 stable Skill Leaves, atomic objectives, membership/variant semantics and Skill-to-Skill prerequisite edges."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@3c923e44c206ee6a02e8cf5b4e90d8594d9c3c3a:spec/04-KNOWLEDGE.md"
+    role: "Canonical owner of the 46 stable Knowledge Objects, definitions, Knowledge-to-Knowledge prerequisite graph and Skill-to-Knowledge resolution."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Pinned V1 documentation model. It permits legal one-level physical shards beneath one of the eight authority domains; shards become canonical only through authorized catalog/coverage references."
+    precedence: 4
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0026 GAP-001 plus pinned agent-documents V1 shard semantics."
+  rationale: "The cutover blocker is not missing product design. The successor authority plane lacks detailed locked learning ontology truth. agent-documents V1 explicitly allows one-level shards within an existing authority domain, so the smallest repair is to preserve the canonical Skill/Knowledge ontology in legal PRODUCT-domain shards rather than inflate root docs, invent a ninth authority domain, or invent unsupported catalog identity classes."
+
+objective: "Preserve the complete locked canonical learning ontology from spec/03-SKILLS.md and spec/04-KNOWLEDGE.md inside the successor agent-documents authority plane using legal one-level PRODUCT shards and authoritative support references, without changing product semantics or performing authority cutover."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reproduce TASK-0026 GAP-001 before mutation: confirm L-COMP-01 and the broader 67 Skill Leaves plus 46 Knowledge Objects are material canonical truth absent from the successor authority plane."
+    - "Use legal one-level PRODUCT authority shards under docs/product/. Do not create a ninth authority domain and do not put the full ontology into docs/PRODUCT.md."
+    - "Materialize the complete semantic content currently owned by spec/03-SKILLS.md: all 67 stable Skill Leaf identities, names, skill/component membership, applicable variant distinctions, atomic objectives, and every Skill-to-Skill prerequisite edge. Preserve the canonical atomicity/ownership boundaries and any materially consequential explanatory constraints."
+    - "Materialize the complete semantic content currently owned by spec/04-KNOWLEDGE.md: all 46 stable Knowledge Object identities, names, domains, concise definitions, all Knowledge-to-Knowledge prerequisite edges, and the complete Skill-to-Knowledge resolution semantics/edges. Preserve the distinction that Knowledge is enabling language content rather than a fifth IELTS skill."
+    - "Prefer two cohesive legal shards: docs/product/skill-leaves.md and docs/product/knowledge-objects.md. Keep each shard directly under docs/product/ with no deeper nesting."
+    - "Make the new shards structurally authoritative within the successor PRODUCT domain using the minimum pinned-model-valid catalog coverage/support references. Do not invent catalog identity classes for Skill Leaves or Knowledge Objects because V1 defines no such ID classes."
+    - "Update docs/PRODUCT.md only as needed to explain ownership/traceability and point readers to the PRODUCT shards without duplicating the full ontology."
+    - "Update docs/catalog/project.json only as needed to authorize/reach the new shards through valid PRODUCT-domain coverage/support references and preserve all existing ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK inventories and relations unless a direct pinned-model requirement proves a minimal reference adjustment is necessary."
+    - "Treat documentation closure as reopened during the repair. Do not use prior FROZEN/DOCS_READY as proof that the candidate is complete. Because publication is bounded to one implementation commit, no intermediate OPEN remote commit is required; the final candidate may be FROZEN only after semantic parity and pinned-model validation pass."
+    - "Perform exact semantic parity checks against both canonical legacy owners. At minimum verify all 67 Skill Leaf IDs, all 46 Knowledge Object IDs, all atomic objectives/definitions, Skill-to-Skill prerequisites, Knowledge-to-Knowledge prerequisites, and Skill-to-Knowledge resolution are preserved with no omission, identity drift or changed learning consequence."
+    - "If the pinned agent-documents model cannot make these shards authoritative without changing V1 or inventing unsupported identity classes, make no implementation mutation, report the exact model blocker and stop BLOCKED. Do not modify agent-documents in this task."
+    - "If semantic parity is complete, validate the exact successor candidate against agent-documents@acb3f02616e700190586681306a86905792e4c07 and require zero model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects plus derived DOCS_READY=TRUE."
+    - "Preserve the existing operator DESIGN LOCK. This task is authority-representation migration only; it must not revise Skill/Knowledge semantics, add/remove ontology entities, change prerequisites, alter feature behavior, or reopen product design."
+    - "Do not perform canonical authority cutover, legacy demotion/deletion/retirement, README precedence change, standards assessment, exact contracts, implementation planning/code, provider activation/configuration, spend authorization, main/staging mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Publish at most one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the truthful canonical report and stop BLOCKED."
+
+structure_policy:
+  expected_new_files:
+    - docs/product/skill-leaves.md
+    - docs/product/knowledge-objects.md
+    - .agent/tasks/TASK-0027/report.yaml
+  allowed_existing_files:
+    - docs/PRODUCT.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0027/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Operator DESIGN LOCK remains in force on the existing product/system semantics."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged during this repair."
+  - "docs/** remains successor/non-cutover authority material until a later separately authorized authority-cutover task."
+  - "Exactly 67 stable Skill Leaves are preserved from spec/03 with identity and learning consequence unchanged."
+  - "Exactly 46 stable Knowledge Objects are preserved from spec/04 with identity and learning consequence unchanged."
+  - "No ninth authority domain and no new catalog identity class is introduced."
+  - "Root docs remain concise; detailed ontology lives in legal one-level PRODUCT shards."
+  - "No feature/runtime/API/data/provider architecture expansion is introduced merely to represent the ontology."
+  - "No authority cutover, legacy retirement, standards PASS, exact contract materialization, code, schema, provider activation, main/staging mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The successor PRODUCT authority plane contains legal one-level shards preserving all 67 Skill Leaves with exact stable identities, atomic objectives and Skill-to-Skill prerequisite semantics from canonical spec/03-SKILLS.md."
+  - id: AC-2
+    requirement: "The successor PRODUCT authority plane contains legal one-level shards preserving all 46 Knowledge Objects with exact stable identities, definitions, Knowledge-to-Knowledge prerequisites and complete Skill-to-Knowledge resolution semantics from canonical spec/04-KNOWLEDGE.md."
+  - id: AC-3
+    requirement: "The new shards are made authoritative within the successor PRODUCT domain through minimum valid catalog/coverage references, without inventing Skill/Knowledge catalog identity classes or a ninth authority domain."
+  - id: AC-4
+    requirement: "PRODUCT root and catalog changes are minimal; existing catalog inventories/relations and locked product semantics remain unchanged except the references required to authorize the new shards."
+  - id: AC-5
+    requirement: "Independent semantic parity finds zero missing, extra, renamed, reinterpreted or consequence-changing Skill/Knowledge ontology items/edges versus the two canonical legacy owners."
+  - id: AC-6
+    requirement: "Pinned agent-documents validation has zero defects/blockers and derives DOCS_READY=TRUE for the final FROZEN successor candidate."
+  - id: AC-7
+    requirement: "No authority cutover or legacy mutation occurs; exact implementation/report lineage is bounded and main/topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and reproduce GAP-001 from the exact base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Enumerate and compare all 67 Skill Leaf IDs/objectives/prerequisite edges from spec/03 against the successor skill shard."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Enumerate and compare all 46 Knowledge Object IDs/definitions/prerequisite edges plus Skill-to-Knowledge resolution from spec/04 against the successor knowledge shard."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Verify legal PRODUCT shard paths and minimum catalog/coverage references make the shards authoritative under pinned agent-documents V1 without new identity classes."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Validate exact final candidate against pinned agent-documents; require FROZEN + zero defects/blockers + DOCS_READY=TRUE before one implementation publication, then one report-only child, final ref/topology refresh, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
