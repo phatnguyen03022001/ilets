@@ -1,0 +1,170 @@
+protocol_version: 3
+
+task_id: TASK-0005
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0004
+  gap_id: DATA_DOMAIN_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@d104634d78a6463092998e4a1311adb837e708bd"
+    role: "Current target truth after accepted TASK-0004. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 DATA/catalog ownership, DAT identity, unknown-resolution, coverage and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; this migration creates no assurance result."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents DATA template/model plus canonical IELTS spec/01-LEARNER-MODEL.md, spec/08-ASSESSMENT.md, spec/09-PROGRESSION.md, relevant content/practice owners, and design/04-application-flows.md + design/06-implementation-stack.md where data lifecycle/consistency boundaries materially apply."
+  rationale: "Current canonical truth already distinguishes target state, attempt history, observation/evidence, learner interpretation/history and other material data concepts while forbidding storage schema from redefining semantics. This slice migrates those material data identities and data-domain treatment only; exact API contracts and external dependency identities remain separate."
+
+objective: "Create the non-authoritative DATA migration draft and the smallest truthful DAT catalog layer for the accepted target-to-evidence-to-next-action slice, resolving feature data relations only where current canonical truth supports exact material identities and preserving unresolved truth otherwise."
+
+scope:
+  required_changes:
+    - "Create docs/DATA.md as MIGRATION DRAFT / AUTHORITY NONE. Describe only material data semantics/ownership and applicable lifecycle, persistence, retention/deletion, consistency/transaction, migration/backfill, and provenance/lineage rules already present in canonical target truth."
+    - "Materialize only material DAT-* identities in docs/catalog/project.json. Do not turn ordinary DTOs, API payloads, transient variables, tables, cache entries, provider responses, or implementation structs into catalog identities merely for completeness."
+    - "Preserve the semantic distinctions among TargetProfile/current target state, Attempt history, Observation, EvidenceFact, current learner/progression interpretation and historical evidence/attainment wherever canonical owners make those distinctions material. Do not collapse evidence layers into one generic learner-state record if that would erase authority or provenance boundaries."
+    - "Assign each DAT owner_system_ref only from the already accepted SYS layer. Respect Core-only authoritative product persistence; Web/Evaluator may participate in capture/processing but must not become owners of authoritative durable learner/product state merely because they produce or display data."
+    - "Replace a feature data unresolved_ref with typed DAT refs only when the migrated identity set truthfully covers that feature's material data relation. Keep unresolved_ref -> UNK-001 for any feature whose material data relation remains unresolved; do not use false N/A."
+    - "Resolve UNK-001 only if every affected migrated feature data relation is truthfully resolved and the bounded DATA-domain question for this migration slice is actually closed. If resolved, follow exact V1 unknown-resolution rules including dedicated docs/DECISIONS.md#UNK-001 evidence and valid resolved_by_ref attribution. Otherwise leave UNK-001 OPEN DESIGN."
+    - "Advance only data.* coverage concerns actually supported by non-empty DATA sections. L1 is documentation depth, not maturity. Keep unsupported data concerns at NONE rather than inventing treatment."
+    - "Keep interfaces/dependencies/capabilities relations on UNK-002..UNK-004; do not create IFC/EXT/CAP/DEC identities except the existing unknown-resolution mechanism permits a non-DEC resolved_by_ref for UNK-001. Do not migrate INTERFACES or providers in this slice."
+    - "Validate exact candidate catalog/reference/reachability/closure semantics against agent-documents@acb3f02616e700190586681306a86905792e4c07. Model/reference/traceability/orphan errors are not acceptable; unfinished migration closure blockers are."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+  allowed_existing_files_or_components:
+    - docs/catalog/project.json
+    - docs/DECISIONS.md
+    - .agent/tasks/TASK-0005/task.yaml
+  expected_files_are_restrictive: true
+
+structure_policy:
+  expected_new_files:
+    - docs/DATA.md
+    - .agent/tasks/TASK-0005/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+invariants:
+  - "CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1 and milestone.scope_state remains OPEN."
+  - "Existing ACT/ROL/FTR/ACC/FLW/SYS identities and behavior/architecture semantics remain unchanged except authorized feature.data relation resolution."
+  - "No IFC/EXT/CAP identity and no neighboring-domain migration is introduced."
+  - "Missing/unknown/stale/conflicting evidence is not collapsed into learner weakness; Attempt is not EvidenceFact; historical evidence/state is not rewritten by current interpretation."
+  - "No database schema/table/ORM shape becomes semantic authority."
+  - "No DOCS_READY, design lock, standards PASS/level, implementation-readiness, promotion or release claim."
+  - "Branches remain exactly {dev, main}; main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+
+forbidden_changes:
+  - "Do not modify legacy canonical docs, docs/PRODUCT.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, code, contracts, workflows, tools, research, evidence, main, or external repositories."
+  - "Do not invent exact database schema, retention duration, migration mechanism, provider product, API payload, event contract, queue/cache authority, or analytics shadow state."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions: [BLOCKED, STALE_STATE, AUTHORITY_REQUIRED, CURRENT_PHASE_CAPABILITY_UNAVAILABLE, REVIEW_REQUIRED, REVERIFY_REQUIRED, USER_STOP]
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "DATA migration preserves canonical semantic and authority boundaries."
+    evidence_required: "DATA/catalog remain authority NONE; legacy owners are unchanged; storage implementation does not redefine learner/evidence/progression meaning."
+  - id: AC-2
+    requirement: "Material data identity/ownership is truthful and minimal."
+    evidence_required: "DAT inventory contains only material entities justified by current canonical truth, with valid Core/System ownership and no DTO/table/cache/provider inventory inflation."
+  - id: AC-3
+    requirement: "Feature data relations and UNK-001 evolve without false closure."
+    evidence_required: "Typed DAT refs replace unresolved_ref only where fully supported; remaining unknown relations stay explicit; UNK-001 resolves only if its bounded question is actually closed under V1 rules."
+  - id: AC-4
+    requirement: "Data coverage advances only where design-sufficient treatment exists."
+    evidence_required: "Supported data concerns reach L1 through DATA refs; unsupported concerns remain NONE; no maturity/readiness claim is inferred."
+  - id: AC-5
+    requirement: "Candidate remains structurally valid and intentionally incomplete."
+    evidence_required: "Zero model/reference/traceability/orphan errors under the pinned validator; remaining closure blockers correspond to unfinished migration truth."
+  - id: AC-6
+    requirement: "Execution is lineage-exact and bounded."
+    evidence_required: "One direct implementation child of exact base changes only docs/DATA.md, docs/catalog/project.json and optional docs/DECISIONS.md UNK-001 resolution evidence; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only current migration docs/catalog and canonical learner/assessment/progression/data-lifecycle owners needed for this slice."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest truthful DATA + DAT layer; resolve feature.data relations and UNK-001 only to the extent directly supported."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/closure validation and semantic audit AC-1..AC-5."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
