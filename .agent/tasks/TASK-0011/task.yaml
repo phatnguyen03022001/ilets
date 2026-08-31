@@ -1,0 +1,137 @@
+protocol_version: 3
+
+task_id: TASK-0011
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0010
+  gap_id: DOCUMENTATION_CLOSURE_CANDIDATE
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, verification]
+  recommended: [simplicity]
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@5f14b5c1bf579bcfc75bacc42c7852814c3eb0f7"
+    role: "Current target truth after accepted TASK-0010. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 closed-world, coverage, reachability, unknown-resolution and deterministic DOCS_READY semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; documentation closure is not standards PASS."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents V1 closure model plus the complete current IELTS migration set and its canonical legacy source owners."
+  rationale: "All 45 coverage concerns are at required depth, all feature relations are typed, all four migration unknowns are resolved, and the only deterministic closure blocker reported after TASK-0010 is scope_state OPEN. Scope freeze is nevertheless permitted only after a fresh semantic cross-domain audit proves that the authority-NONE migration set has no material omission, contradiction, stale source assumption, or false closed-world claim for the current milestone."
+
+objective: "Independently audit the complete migrated documentation set against current canonical IELTS truth and, only if the current milestone is semantically closed-world, change milestone.scope_state from OPEN to FROZEN and prove deterministic DOCS_READY=TRUE without performing authority cutover, design lock, standards assessment, implementation, promotion or release."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology and resolve the complete current docs migration set, catalog, and the canonical legacy owners needed to verify PRODUCT, BEHAVIOR, ARCHITECTURE, DATA, INTERFACES, QUALITY, DELIVERY and DECISIONS semantics at the exact base."
+    - "Perform a closure-focused semantic audit for material omissions, contradictions, stale migration assumptions, false N/A/typed relation closure, unsupported CAP/EXT/provider claims, scope mismatch, ownership drift, or missing current-milestone design truth. Reuse prior accepted evidence where still exact/current, but do not treat structural validator success as semantic proof."
+    - "If any material closure defect exists, do not freeze scope. Report the exact blocker/gap with canonical evidence and stop without inventing compensating prose or expanding into a neighboring migration task."
+    - "If and only if the semantic audit passes, change exactly docs/catalog/project.json milestone.scope_state from OPEN to FROZEN. Do not change milestone scope_ref, root_refs, inventories, coverage records, relations, unknowns, decisions, identities, or any migration prose solely to obtain DOCS_READY."
+    - "After any FROZEN candidate is materialized, validate the exact candidate against agent-documents@acb3f02616e700190586681306a86905792e4c07 and require zero model/reference/traceability/orphan/coverage/resolution blockers and derived DOCS_READY=TRUE."
+    - "Preserve docs/* as MIGRATION DRAFT / AUTHORITY NONE. DOCS_READY means documentation closure only; it does not itself create operator design lock, canonical cutover, implementation readiness, standards PASS, provider activation, promotion or release authority."
+    - "On PASS, publish one bounded implementation commit non-force to dev containing only the catalog scope freeze, then a separate report-only child and stop at NEEDS_REVIEW. On semantic closure failure, publish only the canonical report evidence permitted by current task authority and stop BLOCKED/NEEDS_REVIEW as applicable without a false FROZEN mutation."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0011/report.yaml
+  allowed_existing_files:
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0011/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical throughout this task."
+  - "docs/* and docs/catalog/project.json remain authority-NONE migration artifacts even if DOCS_READY becomes true."
+  - "No semantic inventory/relation/coverage/unknown/decision change is permitted merely to force closure."
+  - "No standards PASS/level, operator design lock, authority cutover, exact contract materialization, implementation readiness, provider activation, promotion or release claim."
+  - "main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly {dev, main}."
+
+forbidden_changes:
+  - "No legacy canonical doc mutation; no PRODUCT/BEHAVIOR/ARCHITECTURE/DATA/INTERFACES/QUALITY/DELIVERY/DECISIONS prose mutation; no code, contracts, workflows, tools, provider/deployment configuration, external repository or main mutation."
+  - "Do not freeze scope when the semantic audit finds a material omission or contradiction, even if the structural validator would otherwise return DOCS_READY."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Fresh cross-domain semantic audit finds no material closure defect against current canonical legacy truth, or accurately blocks without false scope freeze."
+  - id: AC-2
+    requirement: "On PASS, the only implementation change is milestone.scope_state OPEN -> FROZEN in docs/catalog/project.json; all other catalog semantics remain byte-equivalent except that field."
+  - id: AC-3
+    requirement: "On PASS, pinned V1 validation derives DOCS_READY=TRUE with zero structural/reference/traceability/orphan/coverage/resolution blockers."
+  - id: AC-4
+    requirement: "Documentation closure remains explicitly separate from operator design lock, authority cutover, standards assessment and implementation authority."
+  - id: AC-5
+    requirement: "Implementation/report lineage is exact, main/topology unchanged, and no out-of-scope mutation occurs."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Audit the complete migration set against current canonical legacy owners for material semantic closure defects; fail closed on any unresolved material mismatch."
+      required: true
+    - id: CHECK-3
+      command_or_check: "If audit passes, mutate only catalog milestone.scope_state OPEN -> FROZEN and prove no other semantic catalog change."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model full validation on the exact candidate and require derived DOCS_READY=TRUE."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish bounded implementation/report lineage if PASS, verify final refs, stop at NEEDS_REVIEW; otherwise preserve OPEN and report the blocker."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
