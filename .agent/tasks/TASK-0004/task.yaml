@@ -1,0 +1,163 @@
+protocol_version: 3
+
+task_id: TASK-0004
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0003
+  gap_id: ARCHITECTURE_SYSTEM_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@61b89dc2474831db72bdf5adef6d5a95ac61c94b"
+    role: "Current target truth after accepted TASK-0003. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 documentation model and ARCHITECTURE/catalog ownership semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; no assurance status is created by this migration."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents ARCHITECTURE template/model plus canonical IELTS design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md and design/07-third-party-services.md where materially needed."
+  rationale: "Current canonical design already fixes three logical runtime responsibility units and their authority/trust boundaries. This slice migrates only that established system layer. Capability/build-buy remains separate because resolving CAP records can require DEC/EXT truth not yet migrated."
+
+objective: "Create the non-authoritative ARCHITECTURE migration draft and initial SYS catalog layer for the already-canonical IELTS Web/Core/Evaluator responsibility topology, without prematurely migrating capabilities, data, interfaces, external dependencies, or build/buy decisions."
+
+scope:
+  required_changes:
+    - "Create docs/ARCHITECTURE.md as MIGRATION DRAFT / AUTHORITY NONE. Map only existing system responsibilities, runtime topology, communication/trust boundaries, and material technology-family choices already owned by canonical design."
+    - "Materialize only directly supported SYS-* identities in docs/catalog/project.json for the logical runtime responsibility units established by canonical design; do not create another deployable merely for a feature/provider/operational concern."
+    - "Update existing FLW-* system_refs only where canonical flow/runtime truth establishes participation, so new SYS records are truthfully reachable from existing feature/flow roots. Do not invent feature behavior or new flows."
+    - "Raise only architecture.components_ownership, architecture.runtime_topology, architecture.communication_boundaries, and architecture.technology_choices to supported L1 when the new ARCHITECTURE sections actually satisfy them. Keep architecture.build_buy at NONE in this slice."
+    - "Keep current feature capability relations on UNK-004/unresolved_ref. Do not resolve UNK-004 or create CAP/DEC/EXT identities merely to make architecture look complete."
+    - "Preserve current DATA/INTERFACES/dependency unresolved relations and all existing behavior/product migration identities."
+    - "Validate catalog/reference/reachability/closure semantics against agent-documents@acb3f02616e700190586681306a86905792e4c07. Expected unfinished migration blockers remain acceptable; model/reference/traceability/orphan errors are not."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+  allowed_existing_files_or_components:
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0004/task.yaml
+  expected_files_are_restrictive: true
+
+structure_policy:
+  expected_new_files:
+    - docs/ARCHITECTURE.md
+    - .agent/tasks/TASK-0004/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+invariants:
+  - "CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1 and milestone.scope_state remains OPEN."
+  - "No product/learning/runtime behavior changes."
+  - "No DAT/IFC/EXT/CAP/DEC identity is created in this slice."
+  - "UNK-001..UNK-004 remain unresolved unless the task is revised; capability relations remain unresolved_ref -> UNK-004."
+  - "No DOCS_READY, design lock, standards PASS/level, implementation-readiness, promotion or release claim."
+  - "Branches remain exactly {dev, main}; main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+
+forbidden_changes:
+  - "Do not modify legacy canonical docs, docs/PRODUCT.md, docs/BEHAVIOR.md, code, contracts, workflows, tools, research, evidence, main, or external repositories."
+  - "Do not add provider registries, deployment automation, Kubernetes/Kafka/service-mesh abstractions, or another architecture/control model."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions: [BLOCKED, STALE_STATE, AUTHORITY_REQUIRED, CURRENT_PHASE_CAPABILITY_UNAVAILABLE, REVIEW_REQUIRED, REVERIFY_REQUIRED, USER_STOP]
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "ARCHITECTURE migration preserves the canonical authority boundary."
+    evidence_required: "ARCHITECTURE/catalog are authority NONE; legacy design owners are unchanged and remain canonical."
+  - id: AC-2
+    requirement: "System responsibility topology is faithfully migrated."
+    evidence_required: "Only canonical logical runtime units receive SYS identities; responsibilities, caller/callee/trust/persistence boundaries and relevant flow system_refs match current design."
+  - id: AC-3
+    requirement: "Architecture coverage advances without premature build/buy/domain materialization."
+    evidence_required: "Four supported architecture concerns reach L1; build_buy remains NONE; no DAT/IFC/EXT/CAP/DEC records are invented and UNK-004 remains open."
+  - id: AC-4
+    requirement: "Catalog remains structurally valid and intentionally not closed."
+    evidence_required: "Zero model/reference/traceability/orphan errors under the pinned validator; remaining closure blockers correspond only to unfinished migration truth."
+  - id: AC-5
+    requirement: "Execution is lineage-exact and bounded."
+    evidence_required: "One direct implementation child of exact base changes only docs/ARCHITECTURE.md + docs/catalog/project.json; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only current catalog plus canonical design owners needed for system responsibility/topology/technology mapping."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest SYS/ARCHITECTURE layer and update truthful FLW system_refs/coverage only; leave CAP/build-buy unresolved."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/closure validation and semantic audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
