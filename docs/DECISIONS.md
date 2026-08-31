@@ -28,7 +28,7 @@ Actual IELTS truth remains with the existing canonical legacy documents. `docs/P
 
 ## Migration unknowns
 
-Not-yet-migrated material feature relations remain catalog-owned `OPEN` `DESIGN` `UNK-*` records referenced through `unresolved_ref`. A later authorized migration may replace each remaining relation only with correctly typed `refs` or genuine demonstrated `na` after the owning domain is resolved. Resolving one bounded relation domain does not imply closure of neighboring relation domains, and documentation closure remains blocked while the milestone is OPEN or downstream blockers remain.
+All material feature relations covered by `UNK-001..UNK-009` are now migrated: those unknowns are `RESOLVED` and the catalog has no remaining `unresolved_ref` for those bounded relation domains. The resolved mappings use correctly typed refs or demonstrated N/A as accepted by their owning migrations. `milestone.scope_state` remains `OPEN` only because the post-reconciliation semantic closure/freeze audit has not yet passed; this section does not freeze scope or claim `DOCS_READY`.
 
 ## UNK-001 DATA relation resolution
 
@@ -118,7 +118,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 **Rationale.** Canonical design already owns the decomposition and its abstraction boundaries. One-to-one learner capability mapping plus seven genuinely distinct privileged behavior families is the smallest complete product feature surface that preserves those owners without inventing a second ontology or capability matrix.
 
-**Consequences.** Feature/flow/acceptance completeness can resolve independently of neighboring DATA/IFC/EXT/CAP migration completeness. Existing macro relation resolutions remain historically valid for `FTR-001..FTR-006`; newly detailed relations use exact existing refs only where their related accepted flows make those refs fully justified and otherwise remain explicit OPEN DESIGN unknowns. Milestone scope stays `OPEN`.
+**Consequences.** Feature/flow/acceptance completeness can resolve independently of neighboring DATA/IFC/EXT/CAP migration completeness. Existing macro relation resolutions remain historically valid for `FTR-001..FTR-006`; newly detailed relations were resolved independently by `TASK-0014..TASK-0017` using exact refs or demonstrated N/A where justified. Milestone scope stays `OPEN` pending the post-reconciliation semantic closure/freeze audit.
 
 **Reversibility.** `COSTLY`. The mapping can evolve only when canonical product design materially changes; renumbering or collapsing these stable migration identities later would require explicit traceability migration rather than cosmetic editing.
 

@@ -107,6 +107,6 @@ Sources: `design/06-implementation-stack.md` — Financial operating policy and 
 
 ## Migration boundary
 
-`docs/QUALITY.md` and the existing `docs/*` migration set remain **AUTHORITY NONE**. This task advances only the ten V1 QUALITY coverage concerns backed by the sections above. `architecture.build_buy`, `interfaces.external_dependencies`, `interfaces.dependency_failure_exit`, all `delivery.*`, `decisions.material_choices`, `unknowns.open_questions`, `UNK-003`, and `UNK-004` remain unchanged and intentionally incomplete.
+`docs/QUALITY.md` and the existing `docs/*` migration set remain **AUTHORITY NONE**. This file preserves the ten V1 QUALITY coverage concerns backed by the sections above. Neighboring architecture/interface/delivery/decision concerns are now migrated by their own bounded owners, and `UNK-001..UNK-009` are `RESOLVED`; this reconciliation changes none of those requirements or relations. `milestone.scope_state` remains `OPEN` pending a post-reconciliation semantic closure/freeze audit.
 
-This state creates no provider inventory or provider lifecycle state, no `EXT-*`/`CAP-*`/`DEC-*` identity, no exact OpenAPI/wire schema, no implementation, no workflow, no numerical SLO, no `agent-standards` PASS/level, no `DOCS_READY`, no design lock, no implementation-readiness claim, no provider activation, no promotion, and no release claim.
+This QUALITY reconciliation creates or changes no provider inventory or provider lifecycle state, no `EXT-*`/`CAP-*`/`DEC-*` identity, no exact OpenAPI/wire schema, no implementation, no workflow, no numerical SLO, no `agent-standards` PASS/level, no `DOCS_READY`, no design lock, no implementation-readiness claim, no provider activation, no promotion, and no release claim.

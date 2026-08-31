@@ -301,13 +301,13 @@ Eligible measurement → Observation → claim-scoped Assessment admission/evalu
 
 Authenticated privileged actor → resolve effective capability plus resource/purpose/action scope → validate current state and hard semantic/security preconditions → inspect or perform only the legal Core-owned operation → persist required mutation/work marker where applicable → return the actual authorized outcome. A UI role label or internal network position never bypasses this boundary; denied or out-of-scope work does not execute.
 
-The exact detailed DATA/IFC/EXT mapping for the newly decomposed privileged surfaces remains downstream migration work. This flow therefore records only the already-canonical Web/Core semantic ownership in this task rather than fabricating neighboring-domain refs.
+The detailed DATA/IFC/EXT mappings for the privileged surfaces are now resolved in the migration catalog. This flow continues to describe only the already-canonical Web/Core semantic ownership; the resolved typed relations remain owned by the catalog and are not redefined here.
 
 ### FLW-006 Consequential privileged audit reconciliation
 
 A consequential privileged attempt and its authoritative outcome → capture reconstructable actor identity/class, effective role/capability, target, reason, material prior/resulting state where applicable, and outcome → retain the durable audit required by policy. Audit cannot authorize the operation retroactively, rewrite immutable history, or become learning/evidence truth.
 
-The exact audit DATA/interface/external-dependency representation remains intentionally unresolved for the later bounded relation migrations.
+The audit DATA/interface/external-dependency representation is resolved by the bounded relation migrations: durable audit DATA is typed, the Core-internal interface/dependency cases are demonstrated N/A where applicable, and this flow does not redefine those catalog relations.
 
 ## BEHAVIOR-ACCEPTANCE Acceptance criteria
 
@@ -383,4 +383,4 @@ This file, `docs/PRODUCT.md`, `docs/DECISIONS.md`, and `docs/catalog/project.jso
 
 `TASK-0013` resolves `UNK-005` because the material learner/admin feature inventory is now complete under current canonical design: the six prior FTRs remain macro anchors, the 40 canonical learner capabilities are mapped one-for-one, the seven privileged surface families are materialized without capability/role inflation, and grouped learner/privileged flow plus acceptance traceability exists.
 
-The milestone nevertheless remains intentionally `OPEN`. Detailed DATA and CAP relations for the new inventory remain behind bounded relation-domain DESIGN unknowns, while newly decomposed privileged IFC and EXT relations also remain explicit downstream DESIGN work. No false N/A or speculative provider/data/contract identity is used to manufacture closure. This state does not claim `DOCS_READY`, documentation/design lock, implementation readiness, assurance status, authority cutover, promotion, or release readiness.
+The milestone nevertheless remains intentionally `OPEN`. Detailed DATA/IFC/EXT/CAP relations and `UNK-001..UNK-009` are now resolved by the bounded relation-domain migrations; no blocking relation unknown or `unresolved_ref` remains. Scope stays OPEN only because the post-reconciliation semantic closure/freeze audit has not yet passed. No false N/A or speculative provider/data/contract identity is used to manufacture closure. This state does not claim `DOCS_READY`, documentation/design lock, implementation readiness, assurance status, authority cutover, promotion, or release readiness.

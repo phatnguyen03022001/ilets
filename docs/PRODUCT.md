@@ -111,13 +111,13 @@ This decomposition intentionally does **not** inflate the FTR catalog with neigh
 
 Academic/General Training and delivery differences configure the same detailed feature where the learner interaction/capability is materially shared. They do not create duplicate feature identities or a different Band standard. One Skill Retake remains selected-skill focus, not a fifth Skill or duplicated feature family.
 
-The exact detailed names, source aliases, flow grouping, and acceptance grouping are owned by `docs/BEHAVIOR.md` plus `docs/catalog/project.json` for migration purposes. Downstream DATA/IFC/EXT/CAP relation expansion is not silently inferred from the six old macro records: exact accepted refs are reused only where the detailed feature is fully covered, otherwise explicit OPEN DESIGN relation unknowns remain.
+The exact detailed names, source aliases, flow grouping, and acceptance grouping are owned by `docs/BEHAVIOR.md` plus `docs/catalog/project.json` for migration purposes. Detailed DATA/IFC/EXT/CAP relations were resolved by the bounded relation-domain migrations in `TASK-0014..TASK-0017`; those mappings preserve exact accepted refs or demonstrated N/A only where supported and introduce no speculative neighboring-domain relation.
 
 **Sources:** `design/01-skill-features.md`; `design/02-practice-catalog.md`; `design/03-media-youtube.md`; `design/04-application-flows.md`.
 
 ## Scope
 
-For the documentation migration milestone, scope remains **OPEN**. `TASK-0013` resolves the feature-decomposition blocker `UNK-005`, but it deliberately admits bounded downstream relation-domain work for detailed DATA/IFC/EXT/CAP mappings where the accepted macro inventories do not yet fully justify typed refs. Resolving feature completeness therefore does not freeze the milestone or imply `DOCS_READY`.
+For the documentation migration milestone, scope remains **OPEN**. The bounded DATA/IFC/EXT/CAP relation migrations and `UNK-001..UNK-009` are resolved, but the post-reconciliation semantic closure/freeze audit has not yet passed. Therefore this reconciliation does not freeze the milestone or imply `DOCS_READY`.
 
 The intended complete standard-IELTS learning scope is:
 
@@ -176,7 +176,7 @@ The product owner also does not define exact pricing, acquisition or retention m
 
 No authority conflict was found between the consulted canonical PRODUCT owners for this bounded decomposition slice.
 
-`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` keeps `milestone.scope_state: OPEN`. `UNK-005` is resolved only for complete learner/admin feature/flow/acceptance decomposition; it does not resolve neighboring DATA/IFC/EXT/CAP relation-domain work. The explicit new OPEN DESIGN relation unknowns prevent false closure where detailed feature relations are not yet fully supported by the accepted neighboring inventories.
+`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` keeps `milestone.scope_state: OPEN`. `UNK-001..UNK-009` and the bounded detailed DATA/IFC/EXT/CAP relation work are resolved in the catalog. Scope remains OPEN only because a post-reconciliation semantic closure/freeze audit has not yet passed; this task does not perform that audit/freeze or claim `DOCS_READY`.
 
 This task does not establish `DOCS_READY`, design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
 
