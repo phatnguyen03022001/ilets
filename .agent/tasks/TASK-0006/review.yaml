@@ -1,0 +1,44 @@
+protocol_version: 3
+
+task_id: TASK-0006
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0006/report.yaml
+  commit: "08f9d420dadfb3da9ab12ee48b706b0faa9d5796"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition: []
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0006 is an accepted authority-NONE INTERFACES migration slice. External-dependency and capability relations plus remaining coverage gaps intentionally keep DOCS_READY false."
+
+notes:
+  - "Implementation 5a47ecfbb9e07642a888a4d9604ae1a3ee3bdd70 is exactly one direct child of authorized base 569ef665e6cdd488261f490376dd9134c3a75514 and changes only docs/INTERFACES.md, docs/DECISIONS.md, and docs/catalog/project.json."
+  - "Report 08f9d420dadfb3da9ab12ee48b706b0faa9d5796 is exactly one report-only child of the implementation commit."
+  - "The migration materializes only IFC-001 Core public product API and IFC-002 Core-to-Evaluator bounded capability API; it preserves Web/Core/Evaluator authority and does not invent endpoint, DTO, provider, queue, gateway, or exact-wire identities."
+  - "All migrated feature/flow interface relations are typed and UNK-002 is resolved under V1 QUESTION rules with dedicated docs/DECISIONS.md#UNK-002 evidence; UNK-003 and UNK-004 remain OPEN DESIGN."
+  - "Only interfaces.contracts, interfaces.async_jobs_commands, and interfaces.data_exchange_trust advance to L1. External dependency/failure-exit concerns remain NONE and no OpenAPI/generated bindings/contracts implementation is created."
+  - "Deterministic validation records zero model/reference/traceability/orphan errors. Remaining SCOPE_OPEN, COVERAGE_GAP, and UNRESOLVED_RELATION signals are intentional unfinished-migration blockers. Native local runner absence is non-blocking because the task required no authoritative native verifier."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** remain canonical; docs/* migration artifacts remain authority NONE until explicit cutover."
