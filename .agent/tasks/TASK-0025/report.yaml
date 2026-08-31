@@ -1,0 +1,145 @@
+protocol_version: 3
+
+task_id: TASK-0025
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0025/task.yaml
+  commit: "0f07168ce65424b3411ac07d6b1fb122a97d2037"
+  blob_sha: "93701259f176ff100d6e3d4d58defc82127a1e45"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "0f07168ce65424b3411ac07d6b1fb122a97d2037"
+  pre_execution_head: "0f07168ce65424b3411ac07d6b1fb122a97d2037"
+  final_execution_head: "217fd3f5bdaf2397f144032e33438513bc8e9b9f"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native pre-publication reads proved dev=0f07168ce65424b3411ac07d6b1fb122a97d2037, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0025 revision 1 APPROVED at the exact base, agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c present, and agent-documents@acb3f02616e700190586681306a86905792e4c07 present. Exact implementation candidate 217fd3f5bdaf2397f144032e33438513bc8e9b9f was verified as one direct child of the exact base before mutation."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0025 designates no external authoritative verifier. The required documentation-model check was performed as a GitHub-native exact-candidate audit against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 schema/closure semantics. Exact candidate 217fd3f5bdaf2397f144032e33438513bc8e9b9f has zero model/reference/traceability/reachability/orphan/unresolved/blocking defects and derives DOCS_READY=TRUE."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "No Agent Runtime, local Mac, tunnel, Codex, local checkout, or local execution surface was used. Discovery, candidate construction, validation, publication, and report construction were GitHub-native."
+
+changed_files:
+  - path: docs/PRODUCT.md
+    summary: "Restore the canonical guardian/legal-representative and payer participant distinctions; state that relationship alone grants no RBAC bundle or unrestricted protected learner-data access; preserve purpose-scoped, policy-governed and jurisdiction-dependent representative actions; update migration traceability."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Add only ACT-005 Guardian or legal representative and ACT-006 Payer as HUMAN actor identities and root them for model reachability; preserve ROL-001..ROL-007 and all existing FTR/ACC/FLW/DAT/IFC/EXT/CAP/DEC/UNK inventories and relations; final milestone state remains FROZEN after repair validation."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "217fd3f5bdaf2397f144032e33438513bc8e9b9f"
+    message: "docs(TASK-0025): repair guardian payer migration"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Canonical design/00 minor-safe semantics were reproduced against the base: successor PRODUCT/catalog omitted guardian/legal-representative and payer entirely. The implementation adds distinct HUMAN ACT-005 and ACT-006 identities and matching PRODUCT sections while leaving the authorization inventory exactly ROL-001..ROL-007. Relationship identity is therefore not conflated with RBAC authorization."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "PRODUCT now states that guardian/representative or payer status alone grants no unrestricted learner history, recordings, AI conversations, evidence, gap/weakness information, or other protected learner information. Representative protected-data access and consent/export/deletion actions remain purpose-scoped, policy-governed and limited to applicable rights; age, representative eligibility, consent requirements and rights remain jurisdiction-dependent external mutable policy rather than frozen IELTS semantics."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Exact base-to-implementation diff changes only docs/PRODUCT.md and docs/catalog/project.json. Catalog changes are bounded to two new HUMAN actors plus root reachability. No new ROL, FTR, ACC, FLW, DAT, IFC, EXT, CAP or DEC identity/relation was introduced; BEHAVIOR, DATA, INTERFACES, QUALITY, DECISIONS, ARCHITECTURE and DELIVERY are unchanged. No family-account, parental dashboard, household, billing product, legal engine, runtime, provider, schema, API route or wire detail was invented."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Independent comparison covered canonical design/00-learning-experience.md, design/04-application-flows.md, relevant spec commercial boundary, and directly affected successor PRODUCT/catalog plus existing DATA/INTERFACES/QUALITY access boundaries. Existing capability/purpose-scoped authorization, entitlement separation, protected-data and interface trust semantics already cover the boundary generically; no additional typed relation or owner change is materially required."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "During repair, documentation closure was treated as reopened and no DOCS_READY claim was used to justify the in-progress candidate. Because TASK-0025 permits at most one implementation publication, no contradictory intermediate remote OPEN commit was published. Only after semantic closure was established was the single final candidate evaluated with milestone.scope_state=FROZEN. Pinned V1 schema accepts HUMAN ACT records and ACT root_refs; ACT-005/006 doc_refs resolve, both new actors are roots, roles remain unchanged, no unresolved_ref exists, all unknowns remain RESOLVED/non-blocking, and the previously clean graph is otherwise preserved. Result: zero model/reference/traceability/reachability/orphan/unresolved/blocking defects and derived DOCS_READY=TRUE."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** are untouched and remain canonical. docs/** remains MIGRATION DRAFT / AUTHORITY NONE. The repair explicitly does not establish DESIGN LOCK, canonical cutover, standards PASS, implementation readiness, exact contracts, provider activation, promotion or release."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Implementation lineage is exact: 217fd3f5bdaf2397f144032e33438513bc8e9b9f is one direct child of authorized base 0f07168ce65424b3411ac07d6b1fb122a97d2037 and was published by non-force fast-forward to dev. This report is created as the one separate report-only child. main remains e707aeee43411cc8f99448b63220eb8beff552b6; final topology is refreshed after report publication."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Immediately before implementation publication, fresh GitHub reads confirmed dev=0f07168ce65424b3411ac07d6b1fb122a97d2037, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0025 revision 1 APPROVED, and exact pinned skill/model authorities present."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Canonical design/00 explicitly distinguishes learner, guardian/legal representative and payer where applicable and forbids relationship-only protected-data access; base PRODUCT/catalog had only ACT-001..ACT-004 and omitted the latter two identities. Directly affected design/04, spec, DATA, INTERFACES and QUALITY boundaries were inspected and showed no contradiction requiring neighboring-domain mutation."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Smallest repair adds ACT-005 and ACT-006 only, roots them to satisfy reachability, and adds corresponding PRODUCT semantics. Authorization bundles remain exactly ROL-001..ROL-007 and no feature relation attaches guardian or payer by implication. No speculative family/account/legal/commercial implementation architecture was added."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Exact candidate compare proved one commit and exactly two modified files. Pinned schema permits ACT-* HUMAN entries and ACT root_refs. New PRODUCT headings resolve the new actor doc_refs; catalog contains no ROL-008, unresolved_ref or blocking=true unknown. Existing graph and typed relations are otherwise preserved from the previously clean frozen base."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Final candidate was refrozen only after the bounded semantic audit; pinned-model closure result is zero defects/blockers with DOCS_READY=TRUE. dev was still the exact base immediately before non-force publication, then advanced to the exact implementation commit. This canonical report is the one authorized report-only child; final refs/topology are verified after report publication."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator-local worktree was used. Exact TASK-0025 implementation is 217fd3f5bdaf2397f144032e33438513bc8e9b9f; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
