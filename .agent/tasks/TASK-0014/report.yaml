@@ -1,0 +1,146 @@
+protocol_version: 3
+
+task_id: TASK-0014
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0014/task.yaml
+  commit: "5e541a6c10807d0bd3683fe59df48078d3512d42"
+  blob_sha: "e8749361de924735a7d42821211b8a39e294ed0f"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "5e541a6c10807d0bd3683fe59df48078d3512d42"
+  pre_execution_head: "5e541a6c10807d0bd3683fe59df48078d3512d42"
+  final_execution_head: "149f4b9e2b3ba4c66bcc64b33f6988881a3976e2"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native reads after Architect recovery and again immediately before publication proved dev=5e541a6c10807d0bd3683fe59df48078d3512d42, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}. TASK-0014 revision 1 was APPROVED at the exact base; pinned target/model/skill authorities resolved; Git Data object construction and non-force ref update were available. No local/runtime/Codex surface was probed."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0014 designates no authoritative verifier and requires GitHub-native execution only. The exact replacement candidate 149f4b9e2b3ba4c66bcc64b33f6988881a3976e2 was independently audited against agent-documents@acb3f02616e700190586681306a86905792e4c07 model semantics and canonical target authority. The audit found zero model/reference/traceability/reachability/orphan defects. Closure intentionally remains false only because scope_state is OPEN, 61 downstream IFC/EXT/CAP relation states remain unresolved through UNK-007..UNK-009, and those three DESIGN unknowns remain OPEN blocking unknowns. No DOCS_READY claim is made."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "No operator-local target checkout, Agent Runtime, tunnel, Mac or Codex surface was used. Candidate recovery, validation, publication and verification were GitHub-native."
+
+changed_files:
+  - path: docs/DATA.md
+    summary: "Preserve DAT-001..DAT-012 and add only DAT-013..DAT-027 semantic identities plus the bounded new lifecycle/retention/consistency/lineage consequences required by detailed learner/admin behavior; correct DAT-014 review authority from Flow H to canonical Flow G."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Add dedicated UNK-006 DATA-relation resolution evidence while keeping downstream UNK-007..UNK-009 open and milestone closure unclaimed."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Add DAT-013..DAT-027, replace every FTR-007..FTR-053 DATA unresolved_ref with exact DAT refs, resolve UNK-006, and preserve DAT-001..DAT-012 plus neighboring IFC/EXT/CAP state and milestone OPEN."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "149f4b9e2b3ba4c66bcc64b33f6988881a3976e2"
+    message: "docs(TASK-0014): resolve detailed data relations"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "All 47 detailed features FTR-007..FTR-053 now use exact typed DAT refs for their material DATA relations; no detailed DATA relation retains unresolved_ref UNK-006 and no false N/A was introduced. The mapping was audited feature-by-feature rather than copied from the six macro anchors."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "DAT-001..DAT-012 identities, meanings, kinds and SYS-002 ownership are preserved. DAT-013..DAT-027 are the minimum additional semantic surface justified by distinct canonical boundary/history/lifecycle semantics: FeedbackArtifact, ReviewState, MediaSource, ContentCandidate, ValidationDecision history, content operational eligibility, effective entitlement, support-managed product state, authorization grants, typed operating policy, operational work, privileged audit history, MockRun, LearningSession and CoverageGap. Every new DAT is referenced by at least one detailed FTR and owned by SYS-002; none represents a table, DTO, event, cache, provider state or per-feature duplicate."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "docs/DATA.md explains DAT-013..DAT-027 and only the newly material lifecycle/retention/consistency/migration/lineage consequences. It explicitly avoids tables/columns/indexes, API payloads, provider identities, queues, caches, storage buckets, schema migrations and exact retention periods. DAT-014 now cites canonical review Flow G; Flow H remains the unrelated media flow."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "UNK-006 is RESOLVED only after complete 47-feature DATA mapping, with docs/DECISIONS.md#UNK-006 evidence and lawful resolved_by_ref DAT-013 attribution under the pinned model's QUESTION semantics. UNK-007, UNK-008 and UNK-009 remain OPEN DESIGN blockers; milestone.scope_state remains OPEN."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Pinned-model audit found zero model/reference/traceability/reachability/orphan defects. Every DAT-013..DAT-027 is reachable from detailed feature roots. Base-to-implementation compare is ahead_by=1 with exactly docs/DATA.md, docs/DECISIONS.md and docs/catalog/project.json modified; the implementation is a direct child of the exact base. Fresh post-publication state proved dev=149f4b9e2b3ba4c66bcc64b33f6988881a3976e2, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub-native state after Architect recovery and immediately before publication confirmed exact base dev=5e541a6c10807d0bd3683fe59df48078d3512d42, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology {dev, main}, TASK-0014 revision 1 APPROVED and all pinned authorities resolved."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Canonical spec/design owners were independently audited for detailed learner, progression/review, content/media, entitlement, privileged authorization/policy/work/audit, mock/session and CoverageGap semantics. Semantic DATA identity was kept distinct from implementation tables, DTOs, events, caches and provider state."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "DAT-013..DAT-027 were materialized as the smallest complete additions, all 47 FTR-007..FTR-053 DATA relations were typed, and UNK-006 was resolved only after completeness/reachability review. DAT-001..DAT-012 and neighboring IFC/EXT/CAP mappings were preserved."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Exact replacement candidate audit against the pinned agent-documents V1 model found zero MODEL_ERROR, REFERENCE_ERROR, TRACEABILITY_GAP, reachability or ORPHAN defects. Intentional closure signals are limited to SCOPE_OPEN plus 61 downstream UNRESOLVED_RELATION instances backed by OPEN blocking UNK-007..UNK-009; DOCS_READY remains false."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale refs/topology were refreshed before publication. Implementation 149f4b9e2b3ba4c66bcc64b33f6988881a3976e2 was published by non-force fast-forward of dev only and verified at the exact published SHA; main remained unchanged. This report is constructed as a separate report-only child before the second non-force dev fast-forward."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task:
+  - "A prior aborted TASK-0014 execution left transient repository mutation state outside the final lineage. Architect repository-integrity recovery restored canonical refs to dev=5e541a6c10807d0bd3683fe59df48078d3512d42, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main} before this fresh execution. No prior mutation commit was inherited or published in the replacement lineage."
+  - "Immutable unreferenced candidate ab419111413df70daff01b66e1104439791d43d4 was reused only as source material. Its known DAT-014 source defect cited media Flow H instead of review Flow G; the replacement corrected only that source citation while reusing its docs/DECISIONS.md and docs/catalog/project.json blobs. Replacement 149f4b9e2b3ba4c66bcc64b33f6988881a3976e2 is a direct child of the exact base, so ab419111413df70daff01b66e1104439791d43d4 and prior aborted execution commits do not enter the published TASK-0014 lineage."
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Published implementation is 149f4b9e2b3ba4c66bcc64b33f6988881a3976e2; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
