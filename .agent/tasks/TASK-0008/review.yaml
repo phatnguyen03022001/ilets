@@ -1,0 +1,43 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0008/report.yaml
+  commit: "4afd3f6683019f0337e514ae3c5860eb3880574b"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition: []
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0008 is an accepted authority-NONE DELIVERY migration slice. External-dependency/build-buy/decision/unknown closure plus open milestone scope intentionally keep DOCS_READY false."
+
+notes:
+  - "Implementation 0261c197454bdaf3454e2278abcf291b6c09d7ec is exactly one direct child of authorized base 0823d028c7570da3ba4024b74eaf157d3c52df13 and changes only docs/DELIVERY.md and docs/catalog/project.json."
+  - "Report 4afd3f6683019f0337e514ae3c5860eb3880574b is exactly one report-only child of the implementation commit."
+  - "Exactly the five delivery.* concerns advance to L1 while Web/Core/Evaluator ownership, Core-only authoritative application persistence, DATA/INTERFACES/QUALITY semantics, and existing entity/relationship state remain unchanged."
+  - "No EXT/CAP/DEC identity, provider inventory, deployment implementation, workflow, exact SLO/RPO/RTO, standards PASS/level, DOCS_READY, design lock, promotion, or release claim is introduced."
+  - "Deterministic pinned-model audit records zero model/reference/traceability/orphan defects. Remaining SCOPE_OPEN=1, COVERAGE_GAP=5, and UNRESOLVED_RELATION=12 are intentional unfinished-migration blockers owned by the remaining external-dependency/build-buy/decision/unknown closure work."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** remain canonical; docs/* migration artifacts remain authority NONE until explicit cutover."
