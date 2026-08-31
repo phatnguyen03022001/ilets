@@ -1,0 +1,170 @@
+protocol_version: 3
+
+task_id: TASK-0006
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0005
+  gap_id: INTERFACES_DOMAIN_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@46473042a5b8c6fc3093a7a938e18b6e281a9aa8"
+    role: "Current target truth after accepted TASK-0005. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 INTERFACES/catalog ownership, IFC identity, unknown-resolution, coverage and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; this migration creates no assurance result."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents INTERFACES template/model plus canonical IELTS design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md and only the minimum design/07-third-party-services.md context needed to preserve provider-neutral boundaries."
+  rationale: "Current canonical design already fixes the material public Core API boundary, the internal Core->Evaluator boundary, durable asynchronous work semantics, and machine-contract materialization rules. This slice migrates those semantic interface identities only. Exact OpenAPI/wire schemas remain downstream machine-contract artifacts after documentation closure/lock; external dependency/provider inventory remains a separate unresolved domain concern."
+
+objective: "Create the non-authoritative INTERFACES migration draft and smallest truthful IFC catalog layer for the accepted target-to-evidence-to-next-action slice, resolving feature interface relations only where current canonical truth supports material boundaries while preserving external dependency/provider and exact machine-contract work for later authority."
+
+scope:
+  required_changes:
+    - "Create docs/INTERFACES.md as MIGRATION DRAFT / AUTHORITY NONE. Describe only material public/internal contract semantics, synchronous/async operation classes, data-exchange/trust boundaries, idempotency/failure semantics, and exact-contract materialization/evolution rules already owned by canonical design."
+    - "Materialize only material IFC-* identities in docs/catalog/project.json. Prefer stable semantic boundaries such as the learner/admin-facing Core public API, internal Core->Evaluator capability contract, and any genuinely material async/job/command boundary already required by current flows. Do not create one IFC per endpoint/button/DTO."
+    - "Assign owner_system_ref and peer_refs only from accepted ACT/SYS/EXT identities actually available in this slice. Do not invent EXT records merely to satisfy peer shape; if a provider-specific boundary cannot be represented truthfully without EXT migration, leave that relation outside this bounded IFC slice."
+    - "Update existing FLW-* interface_refs and FTR.interfaces relations only where the migrated IFC inventory fully and truthfully covers those material boundaries. Keep unresolved_ref -> UNK-002 for any feature whose interface relation remains unresolved; do not use false N/A."
+    - "Resolve UNK-002 only if every affected migrated feature interface relation is truthfully resolved and the bounded interface question for this slice is actually closed. If resolved, follow exact V1 unknown-resolution rules with dedicated docs/DECISIONS.md#UNK-002 evidence and valid resolved_by_ref attribution. Otherwise keep UNK-002 OPEN DESIGN."
+    - "Advance only interfaces.contracts, interfaces.async_jobs_commands, and interfaces.data_exchange_trust when non-empty INTERFACES sections actually establish design-sufficient L1 treatment. Keep interfaces.external_dependencies and interfaces.dependency_failure_exit at NONE unless the task is revised; UNK-003 remains OPEN DESIGN."
+    - "Do not create contracts/http/**, OpenAPI, generated bindings, exact wire fields/status codes, SDKs, transport DTOs, implementation code, provider adapters, EXT/CAP/DEC identities, or deployment configuration. API-first here means semantic/authority/contract boundary first; exact machine contracts materialize only after docs closure and explicit lock."
+    - "Preserve Core as the single learner/admin product API authority and sole application-runtime persistence path. Web cannot become a second domain API; Evaluator remains a bounded internal capability and cannot become public product authority."
+    - "Validate exact candidate catalog/reference/reachability/closure semantics against agent-documents@acb3f02616e700190586681306a86905792e4c07. Model/reference/traceability/orphan errors are not acceptable; unfinished migration closure blockers are."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+  allowed_existing_files_or_components:
+    - docs/catalog/project.json
+    - docs/DECISIONS.md
+    - .agent/tasks/TASK-0006/task.yaml
+  expected_files_are_restrictive: true
+
+structure_policy:
+  expected_new_files:
+    - docs/INTERFACES.md
+    - .agent/tasks/TASK-0006/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+invariants:
+  - "CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1 and milestone.scope_state remains OPEN."
+  - "Existing ACT/ROL/FTR/ACC/FLW/SYS/DAT identities and accepted product/behavior/architecture/data semantics remain unchanged except authorized interface relation resolution."
+  - "No EXT/CAP/DEC identity and no provider/deployment migration is introduced."
+  - "UNK-003 and UNK-004 remain OPEN DESIGN; UNK-002 resolves only if its bounded question is actually closed."
+  - "No exact machine contract or generated binding is materialized in this slice."
+  - "No DOCS_READY, design lock, standards PASS/level, implementation-readiness, promotion or release claim."
+  - "Branches remain exactly {dev, main}; main remains e707aeee43411cc8f99448b63220eb8beff552b6."
+
+forbidden_changes:
+  - "Do not modify legacy canonical docs, docs/PRODUCT.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, code, contracts/**, workflows, tools, research, evidence, main, or external repositories."
+  - "Do not invent endpoint-per-feature inventories, exact HTTP payload fields, external provider identities, callback implementations, queue/provider authority, API gateway/load balancer abstractions, or another semantic owner."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions: [BLOCKED, STALE_STATE, AUTHORITY_REQUIRED, CURRENT_PHASE_CAPABILITY_UNAVAILABLE, REVIEW_REQUIRED, REVERIFY_REQUIRED, USER_STOP]
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "INTERFACES migration preserves canonical semantic and authority boundaries."
+    evidence_required: "INTERFACES/catalog remain authority NONE; legacy API/runtime owners are unchanged; Web/Core/Evaluator authority split is preserved."
+  - id: AC-2
+    requirement: "Material interface identity/ownership is truthful and minimal."
+    evidence_required: "IFC inventory contains only material boundaries justified by current canonical flows/design, with valid owner/peer relationships and no endpoint/DTO/provider inflation."
+  - id: AC-3
+    requirement: "Feature/flow interface relations and UNK-002 evolve without false closure."
+    evidence_required: "Typed IFC refs replace unresolved_ref only where fully supported; remaining unknown relations stay explicit; UNK-002 resolves only if its bounded question is actually closed under V1 rules."
+  - id: AC-4
+    requirement: "Interface coverage advances without external-dependency or exact-wire overreach."
+    evidence_required: "Only supported interface concerns reach L1; external_dependencies/dependency_failure_exit remain NONE unless separately authorized; no OpenAPI/generated binding/provider inventory appears."
+  - id: AC-5
+    requirement: "Candidate remains structurally valid and intentionally incomplete."
+    evidence_required: "Zero model/reference/traceability/orphan errors under the pinned validator; remaining closure blockers correspond to unfinished migration truth."
+  - id: AC-6
+    requirement: "Execution is lineage-exact and bounded."
+    evidence_required: "One direct implementation child of exact base changes only docs/INTERFACES.md, docs/catalog/project.json and optional docs/DECISIONS.md UNK-002 resolution evidence; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only current migration docs/catalog and canonical flow/API/runtime owners needed for semantic interface mapping."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest truthful INTERFACES + IFC layer; resolve feature/flow interface relations and UNK-002 only to the extent directly supported."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/closure validation and semantic audit AC-1..AC-5."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
