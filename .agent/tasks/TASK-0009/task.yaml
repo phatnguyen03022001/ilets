@@ -1,0 +1,144 @@
+protocol_version: 3
+
+task_id: TASK-0009
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0008
+  gap_id: EXTERNAL_DEPENDENCY_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@4891798cc76fbb1317e51d2d231f378f9bf9dc30"
+    role: "Current target truth after accepted TASK-0008. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 EXT inventory, dependency relation, coverage, unknown-resolution and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; this migration creates no assurance result."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents INTERFACES/EXT model plus canonical IELTS design/07-third-party-services.md and only the minimum design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md and current migration docs needed to map external dependency/failure/exit boundaries."
+  rationale: "Canonical third-party design already owns provider capability inventory, lifecycle/status, selected initial routes, provider-neutral boundaries, data ingress/egress, retry/fallback/degradation, portability and exit rules. This slice migrates material external dependencies only. CAP build/buy decisions remain separate because resolved BUY/HYBRID capabilities depend on a stable EXT inventory."
+
+objective: "Complete the bounded external-dependency migration for the accepted behavior slice by materializing only justified EXT identities, resolving feature/flow dependency relations and UNK-003 where current canonical truth supports them, and advancing the two remaining INTERFACES dependency concerns without beginning CAP/build-buy closure."
+
+scope:
+  required_changes:
+    - "Extend docs/INTERFACES.md with design-sufficient external-dependency inventory/explanation and dependency failure/fallback/exit treatment already owned by canonical design. Keep it MIGRATION DRAFT / AUTHORITY NONE."
+    - "Materialize only material EXT-* identities justified by the current migrated behavior slice and current canonical third-party design. Do not inventory every vendor, library, optional research candidate, pricing plan, model alias, transport endpoint, or operational tool merely because it exists."
+    - "Preserve canonical provider lifecycle semantics including SELECTED_FOR_IMPLEMENTATION versus ACTIVE, DEFERRED and TBD. Do not promote any provider lifecycle state during migration. A provider-neutral/TBD dependency identity is allowed only when current canonical truth actually requires that external dependency while leaving provider selection unresolved."
+    - "Map FLW.dependency_refs and FTR.dependencies only where the selected EXT inventory fully and truthfully covers the material dependency relation. Use milestone.root_refs only for a material non-feature dependency that current milestone truth genuinely requires and that otherwise would be orphaned; do not use roots to hide an unjustified inventory."
+    - "Resolve UNK-003 only if all affected feature dependency relations are truthfully resolved under the migrated EXT inventory. If resolved, add dedicated docs/DECISIONS.md#UNK-003 resolution evidence and valid resolved_by_ref attribution. Otherwise leave UNK-003 OPEN DESIGN."
+    - "Advance only interfaces.external_dependencies and interfaces.dependency_failure_exit to L1 when supported by non-empty INTERFACES sections."
+    - "Preserve minimum-data egress, provider output non-authority, retry/idempotency/ambiguous-outcome handling, fallback equivalence floors, deletion/export reconciliation, provider lifecycle/activation gates, portability/exit boundaries, and failure/degradation semantics from canonical design."
+    - "Do not create CAP-* or DEC-* material-choice records, change architecture.build_buy, resolve UNK-004, select a new provider, activate a provider, change pricing/cost policy, create adapters/contracts/code/configuration, or modify external repositories."
+    - "Keep decisions.material_choices and unknowns.open_questions coverage unchanged in this slice; docs/DECISIONS.md may change only for truthful UNK-003 resolution evidence."
+    - "Validate exact candidate catalog/reference/feature-flow subset/reachability/orphan/closure semantics against agent-documents@acb3f02616e700190586681306a86905792e4c07. Structural/reference/traceability/orphan defects are not acceptable; unfinished CAP/decision/scope blockers are."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0009/report.yaml
+  allowed_existing_files:
+    - docs/INTERFACES.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0009/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy canonical owners remain unchanged; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1 and milestone.scope_state remains OPEN."
+  - "Existing ACT/ROL/FTR/ACC/SYS/DAT/IFC semantic identities remain unchanged except authorized dependency relation/flow/root updates."
+  - "No CAP identity, build/buy disposition, DEC material-choice identity, provider activation, standards PASS/level, DOCS_READY, design lock, implementation-readiness, promotion or release claim."
+  - "UNK-004 remains OPEN DESIGN and all capability relations remain unresolved_ref -> UNK-004."
+  - "main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly {dev, main}."
+
+forbidden_changes:
+  - "Do not modify legacy canonical docs, docs/PRODUCT.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, docs/QUALITY.md, docs/DELIVERY.md, code, contracts, workflows, tools, migrations, deployment/provider configuration, main or external repositories."
+  - "Do not turn mutable pricing/benchmark/quota research into canonical constants, add speculative redundancy, or create a dependency solely to satisfy catalog shape."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "External dependency inventory is material, truthful and minimal, preserving canonical provider lifecycle and authority boundaries."
+  - id: AC-2
+    requirement: "Feature/flow dependency relations and UNK-003 evolve without false closure or false N/A."
+  - id: AC-3
+    requirement: "External dependency/failure/exit coverage reaches L1 without provider activation, implementation, CAP/build-buy or material-choice decision overreach."
+  - id: AC-4
+    requirement: "Catalog remains structurally valid and intentionally incomplete, with zero model/reference/traceability/orphan defects and UNK-004 unchanged."
+  - id: AC-5
+    requirement: "Implementation is one exact-base child changing only docs/INTERFACES.md, docs/catalog/project.json and optional docs/DECISIONS.md UNK-003 evidence; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only canonical third-party/provider and flow/runtime owners needed to identify material EXT boundaries for the migrated behavior slice."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest truthful EXT inventory and dependency/failure/exit treatment; resolve feature/flow dependency relations and UNK-003 only to the extent fully supported."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/feature-flow subset/reachability/orphan/coverage/closure validation plus semantic audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
