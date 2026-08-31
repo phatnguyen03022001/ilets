@@ -1,0 +1,130 @@
+protocol_version: 3
+
+task_id: TASK-0021
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0020
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@54e99236fac5646cd6099aae2a71f8969ad81240"
+    role: "Current target truth after TASK-0020 BLOCKED closure audit. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Pinned V1 document/reference/closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 3
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0020 GAP-001 plus current docs/ARCHITECTURE.md, docs/INTERFACES.md and docs/catalog/project.json."
+  rationale: "The closure audit proved one stale sentence in ARCH-TECHNOLOGY: semantic INTERFACES migration is already resolved while only exact machine-contract materialization remains deferred. This is a wording-state reconciliation, not new design work."
+
+objective: "Correct the single stale ARCHITECTURE migration-state assertion so it reflects resolved semantic INTERFACES migration while preserving deferred exact machine-contract materialization."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and confirm TASK-0020 GAP-001 against current ARCHITECTURE/INTERFACES/catalog truth."
+    - "In docs/ARCHITECTURE.md#ARCH-TECHNOLOGY, replace only the stale claim that INTERFACES migration remains unresolved with wording that semantic IFC migration is resolved and exact machine-contract materialization remains later work."
+    - "Do not change architecture semantics, SYS/CAP/EXT/IFC identities, relations, provider lifecycle, technology choices, contracts or implementation details."
+    - "Keep milestone.scope_state OPEN and do not claim DOCS_READY."
+    - "If any broader semantic contradiction is exposed, stop BLOCKED instead of expanding scope."
+    - "Use GitHub-native surfaces only; do not probe local/runtime/Codex, create branches, mutate main/staging, freeze scope, perform cutover, standards assessment, contracts or implementation work."
+    - "Publish one bounded implementation commit to dev, then one report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0021/report.yaml
+  allowed_existing_files:
+    - docs/ARCHITECTURE.md
+    - .agent/tasks/TASK-0021/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "Catalog identities, typed relations and UNK-001..UNK-009 status remain unchanged."
+  - "Milestone remains OPEN."
+  - "No design lock, cutover, standards PASS, exact contract, code, schema, provider activation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The stale ARCH-TECHNOLOGY statement is corrected and no current text claims semantic INTERFACES migration remains unresolved."
+  - id: AC-2
+    requirement: "The replacement preserves the distinct truth that exact machine-contract materialization remains future work."
+  - id: AC-3
+    requirement: "No unrelated semantic or catalog mutation occurs; milestone remains OPEN and DOCS_READY is not claimed."
+  - id: AC-4
+    requirement: "Pinned structural/reference audit remains clean and no new semantic gap is exposed."
+  - id: AC-5
+    requirement: "Implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh refs/topology/task/pins and confirm exact base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Confirm the stale sentence against current INTERFACES/catalog truth and make the smallest truthful replacement."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Verify only docs/ARCHITECTURE.md changed semantically and catalog remains byte-unchanged."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Audit reference/heading/closure-state consistency; require SCOPE_OPEN remains the only intentional closure blocker."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Publish one implementation commit and one report-only child to dev; verify final refs/topology; stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
