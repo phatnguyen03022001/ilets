@@ -2,11 +2,11 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Originally created for `TASK-0001` revision 1 and extended by `TASK-0012` revision 1. This file remains non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
+> Originally created for `TASK-0001` revision 1 and extended by `TASK-0012` and `TASK-0013` revision 1. This file remains non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
 >
 > Target source snapshot: `phatnguyen03022001/ilets@23fa05c8586a9f295a3c0fe90774b78b248d61f7`.
 
-This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` adds only the minimum actor/role identity foundation needed for the reopened product-experience milestone; `docs/catalog/project.json` owns those structural identities. This file does not close the feature catalog, freeze documentation, cut over authority, or change canonical product semantics.
+This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` established the actor/RBAC/entitlement and learner/admin surface foundation; `TASK-0013` materializes the complete minimal feature-completeness surface already owned by canonical design. `docs/catalog/project.json` owns the migration identities. This file does not freeze documentation, cut over authority, activate providers, or change canonical product semantics.
 
 ## Objective
 
@@ -86,27 +86,38 @@ The ungated route remains a genuinely usable IELTS learning system. Eligible `PR
 
 ## Product-level features and capabilities
 
-This is a migration-only product-level inventory, not a closed `FTR-*` catalog and not a second authoritative feature inventory. `FTR-001` through `FTR-006` remain the six macro behavior anchors for this task. The reopened milestone intentionally defers the complete learner/admin feature and micro-skill surface decomposition to the explicit blocking design unknown in the catalog; exact feature inventories, practice-mode inventories, durations, UI defaults, and behavior remain owned by the current canonical `design/**` and `spec/**` owners until cutover.
+The material feature-completeness surface is now explicit. `FTR-001..FTR-006` remain historical macro route anchors for prior accepted migration traceability; they are not counted as the detailed completeness units. The detailed inventory is:
 
-The current product scope includes these learner-facing capability groups:
+| Detailed FTR range | Canonical source aliases | Material capability count |
+| --- | --- | ---: |
+| `FTR-007..FTR-014` | `L-F01..L-F08` Listening | 8 |
+| `FTR-015..FTR-022` | `R-F01..R-F08` Reading | 8 |
+| `FTR-023..FTR-031` | `W-F01..W-F09` Writing | 9 |
+| `FTR-032..FTR-040` | `S-F01..S-F09` Speaking | 9 |
+| `FTR-041..FTR-046` | `X-F01..X-F06` Shared | 6 |
+| `FTR-047..FTR-053` | privileged/admin/BOPS surface families | 7 |
 
-- onboarding and `TargetProfile` setup, including real overall and per-skill target constraints;
-- quick and fuller diagnostic entry paths and a learner model that preserves uncertainty rather than converting unknown evidence into weakness;
-- Today / Daily Plan selection from target blockers, uncertainty, due review, prerequisites, and current evidence;
-- Listening, Reading, Writing, and Speaking learning and practice across supported official task/question families;
-- vocabulary, grammar, and phonology acquisition, learner-saved study material, spaced retrieval, and later application in skill work;
-- feedback, remediation, scaffold fading, transfer, re-evidence, fluency work, review, and exam preparation;
-- media as an eligible learning source substrate when transcript, rights, and product-safety conditions permit it;
-- progress and readiness interpretation that keeps Attempt, Observation, EvidenceFact, mastery/readiness, gaps, and next actions distinct;
-- section and full mock flows;
-- AI-supported ordinary tutoring plus bounded productive-skill and Speaking/media support without giving AI learning or evidence authority;
-- focused preparation for One Skill Retake by reusing the selected skill construct rather than inventing a fifth Skill ontology.
+The 40 learner identities are the exact named capability surface from `design/01-skill-features.md`. The seven privileged identities are the minimum material surface families already admitted by `TASK-0012` and `design/04-application-flows.md`: content/review/release; user support; entitlement reconciliation; operations/provider/work visibility; approved policy administration; security/access administration; and audit.
 
-**Sources:** `OBJECTIVE.md` — Purpose, Learner route, Product experience, Media; `spec/00-PRODUCT.md` — Product identity, Product principles, Standard IELTS learning scope, Human-support boundary.
+This decomposition intentionally does **not** inflate the FTR catalog with neighboring abstractions:
+
+- **Today, Skills, Practice, Review, Media, Progress, Mock** remain navigation/information architecture, not seven extra feature identities;
+- the 28 `PM-*` modes remain practice packaging under `design/02-practice-catalog.md`, not 28 FTRs;
+- Skill Leaves / learner-visible micro-skills and Knowledge Objects remain learning ontology, not product-feature identities;
+- media sources, transcript/rights states, and source providers remain source/dependency state under `design/03-media-youtube.md` and their owning domains;
+- `FREE`/`PRO` remain commercial entitlement states, not features or roles;
+- individual AI/LLM/STT/TTS providers or model routes remain replaceable dependencies/capabilities, not features;
+- AI tutoring remains a cross-feature delivery/assistance overlay and `FTR-006` remains its bounded macro support anchor, not a duplicate detailed feature.
+
+Academic/General Training and delivery differences configure the same detailed feature where the learner interaction/capability is materially shared. They do not create duplicate feature identities or a different Band standard. One Skill Retake remains selected-skill focus, not a fifth Skill or duplicated feature family.
+
+The exact detailed names, source aliases, flow grouping, and acceptance grouping are owned by `docs/BEHAVIOR.md` plus `docs/catalog/project.json` for migration purposes. Downstream DATA/IFC/EXT/CAP relation expansion is not silently inferred from the six old macro records: exact accepted refs are reused only where the detailed feature is fully covered, otherwise explicit OPEN DESIGN relation unknowns remain.
+
+**Sources:** `design/01-skill-features.md`; `design/02-practice-catalog.md`; `design/03-media-youtube.md`; `design/04-application-flows.md`.
 
 ## Scope
 
-For the documentation migration milestone, scope is **OPEN** again because material current-milestone product/experience design has been explicitly admitted before design lock. This task establishes only the actor/RBAC/entitlement and learner/admin surface foundation; the complete learner/admin feature decomposition must be resolved before the milestone can be frozen again.
+For the documentation migration milestone, scope remains **OPEN**. `TASK-0013` resolves the feature-decomposition blocker `UNK-005`, but it deliberately admits bounded downstream relation-domain work for detailed DATA/IFC/EXT/CAP mappings where the accepted macro inventories do not yet fully justify typed refs. Resolving feature completeness therefore does not freeze the milestone or imply `DOCS_READY`.
 
 The intended complete standard-IELTS learning scope is:
 
@@ -163,13 +174,13 @@ The product owner also does not define exact pricing, acquisition or retention m
 
 ## Migration boundary and unresolved items
 
-No authority conflict was found between the consulted canonical PRODUCT owners for this bounded foundation slice.
+No authority conflict was found between the consulted canonical PRODUCT owners for this bounded decomposition slice.
 
-`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` now owns the minimum migrated actor/role identities and records the milestone as `OPEN`; this file explains their product meaning only. The six existing `FTR-*` records remain macro anchors rather than the complete feature inventory. The explicit open DESIGN blocker `UNK-005` prevents false re-closure until material learner/admin surface capabilities are decomposed and traced.
+`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` keeps `milestone.scope_state: OPEN`. `UNK-005` is resolved only for complete learner/admin feature/flow/acceptance decomposition; it does not resolve neighboring DATA/IFC/EXT/CAP relation-domain work. The explicit new OPEN DESIGN relation unknowns prevent false closure where detailed feature relations are not yet fully supported by the accepted neighboring inventories.
 
 This task does not establish `DOCS_READY`, design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
 
-**Sources:** `.agent/tasks/TASK-0012/task.yaml@4b6b29e5d3cc9b39d35267211b070d5bff44ca59`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 model/reopening semantics.
+**Sources:** `.agent/tasks/TASK-0013/task.yaml@07f409f37243f80695fcb98333f3ddd728960e7b`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 feature/relation/unknown semantics.
 
 ## Traceability summary
 
@@ -177,8 +188,8 @@ This task does not establish `DOCS_READY`, design lock, canonical cutover, stand
 | --- | --- | --- |
 | objective | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Objective |
 | actors / roles | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/04-application-flows.md` | Actors and roles |
-| features / capabilities | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/00-learning-experience.md`; `design/04-application-flows.md` | Product-level features and capabilities |
+| features / capabilities | `design/01-skill-features.md`; `design/04-application-flows.md` | Product-level features and capabilities |
 | scope / non-goals | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Scope; Non-goals |
 | domain / external constraints | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Domain and external constraints |
 
-The original PRODUCT migration references remain traceable to their recorded source snapshot; the `TASK-0012` actor/RBAC/entitlement and surface-foundation additions are derived from canonical `design/00-learning-experience.md` and `design/04-application-flows.md` at the accepted baseline `010a5cc9b002eaa22121047c54c8df116cfb3e27`. This traceability is migration evidence only and does not change source authority.
+The original PRODUCT migration references remain traceable to their recorded source snapshot. `TASK-0012` actor/RBAC/entitlement foundation remains derived from canonical `design/00-learning-experience.md` and `design/04-application-flows.md`; `TASK-0013` detailed feature identities are derived from canonical `design/01-skill-features.md` and the privileged surface/capability boundaries in `design/04-application-flows.md` at the accepted target authority `b60034a50d9a5ee5f197887ed14e7b917e919660`. This traceability is migration evidence only and does not change source authority.
