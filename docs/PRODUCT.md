@@ -2,11 +2,11 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Created only for `TASK-0001` revision 1. This file is non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
+> Originally created for `TASK-0001` revision 1 and extended by `TASK-0012` revision 1. This file remains non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
 >
 > Target source snapshot: `phatnguyen03022001/ilets@23fa05c8586a9f295a3c0fe90774b78b248d61f7`.
 
-This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. It does not create catalog identities, close documentation, or change product semantics.
+This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` adds only the minimum actor/role identity foundation needed for the reopened product-experience milestone; `docs/catalog/project.json` owns those structural identities. This file does not close the feature catalog, freeze documentation, cut over authority, or change canonical product semantics.
 
 ## Objective
 
@@ -22,9 +22,19 @@ The product may provide a strong governed route toward a target, but it must not
 
 ## Actors and roles
 
+The product keeps three different concepts separate:
+
+1. **participants / actor classes** describe who or what takes part in learner, support, content, or operational work;
+2. **authorization** is capability-based, with named role bundles used only as default capability bundles for operator usability;
+3. **commercial entitlement** controls availability of eligible product experiences and is never an RBAC role.
+
+`LEARNER`, `COLLABORATOR`, `REVIEWER`, `ADMIN`, and `OWNER` are the ordinary default authorization bundles. The existing AI-support and optional-human-expert participation roles are not authorization bundles by themselves. A service/system identity or human may receive an explicitly granted bundle or narrower capability set only when authorized; participation never implies privilege.
+
+**Sources:** `design/04-application-flows.md` — Actor, capability, and RBAC model; `design/00-learning-experience.md` — Entitlement-visible availability.
+
 ### Self-directed IELTS learner
 
-The primary learner has a real IELTS target and uses the ordinary product route without mandatory teacher dependency. The learner declares the target and may later change it. Learner controls such as Swap, Skip, Shorten, or Change-skill may choose among eligible paths, but cannot erase Required prerequisites, unsupported target conditions, or uncovered product conditions.
+The primary learner has a real IELTS target and uses the ordinary product route without mandatory teacher dependency. The learner declares the target and may later change it. Learner controls such as Swap, Skip, Shorten, or Change-skill may choose among eligible paths, but cannot erase Required prerequisites, unsupported target conditions, or uncovered product conditions. The ordinary default authorization bundle is `LEARNER`; it grants normal learner/account-scoped operations only and does not imply privileged content, support, entitlement, policy, security, or role-administration capability.
 
 **Sources:** `OBJECTIVE.md` — Purpose, Learner route; `spec/00-PRODUCT.md` — Product identity, Human-support boundary.
 
@@ -32,17 +42,51 @@ The primary learner has a real IELTS target and uses the ordinary product route 
 
 AI may support explanation, modelling, guided practice, feedback, tutoring, generation, analysis, evaluation, Speaking interaction, and media-related learning inside bounded roles. AI does not become IELTS truth, Assessment truth, Progression authority, or the standard against which learner competence is defined.
 
-**Sources:** `OBJECTIVE.md` — Product experience; `spec/00-PRODUCT.md` — AI supports learning without becoming the standard, Human-support boundary.
+This is a participation role, not an automatic authorization bundle. A first-party AI/service identity may receive `COLLABORATOR`, `REVIEWER`, or a narrower explicit capability grant only where current authorization policy permits it; being AI support does not imply release, entitlement, protected-data, grant-administration, security, or other privilege.
+
+**Sources:** `OBJECTIVE.md` — Product experience; `spec/00-PRODUCT.md` — AI supports learning without becoming the standard, Human-support boundary; `design/04-application-flows.md` — Actor, capability, and RBAC model.
 
 ### Optional human expert role
 
 Human expert input may be used for preference or coaching, or may enter as external evidence when the canonical Assessment rules admit it. Mandatory human scoring is not a prerequisite for the ordinary supported learning route merely to manufacture a consequence that the product itself cannot safely support.
 
+Optional human learning support is likewise a participation role, not an automatic privileged authorization bundle.
+
 **Source:** `spec/00-PRODUCT.md` — Human-support boundary.
+
+### Privileged human operator
+
+A privileged human operator is an authenticated person acting through one or more explicit content, operations, support, entitlement, policy, security, or grant-administration capabilities. Privilege is exercised only through the Core-owned authorization boundary; it does not become learning, Band, Assessment, evidence, content-quality, or validation-bypass authority.
+
+**Source:** `design/04-application-flows.md` — Actor, capability, and RBAC model.
+
+### Authorization bundles
+
+Authorization truth is the effective capability set; these names are stable default bundles, not a second authority layer:
+
+| Bundle | Default intent | Boundary |
+| --- | --- | --- |
+| `LEARNER` | normal authenticated learner/account-scoped product operations | no privileged content, support, entitlement, policy, security, or grant administration |
+| `COLLABORATOR` | draft/create/edit content candidates; bounded generation/processing; classification, deduplication, correction proposals, and required non-restricted inspection | no release/activation, entitlement mutation, protected learner-data access, grant administration, or security-sensitive operation |
+| `REVIEWER` | `COLLABORATOR` plus content inspection/review, validation input, permitted approve/reject outcomes, revalidation requests, and incident quarantine of new assignment | cannot bypass hard gates, grant roles, or perform unrelated learner/security administration |
+| `ADMIN` | gated content release/retirement and incident resolution; bounded user support; entitlement reconciliation; operational visibility; approved operational-policy administration; purpose-scoped protected learner-data access only when separately authorized | no learning/evidence truth change, generic validation override, safety-critical financial-ceiling increase, or top-level privilege/security-policy authority |
+| `OWNER` | `ADMIN` plus role/capability grant/revoke and explicitly authorized security-sensitive, recovery, destructive, or safety-critical financial-ceiling operations | still cannot rewrite immutable history or bypass hard content/evidence/product-truth gates |
+
+One actor may hold several compatible grants, and a narrower explicit capability grant is preferred when a bundle would be excessive. `REVIEWER` approval is operational validation input, not Assessment authority; release is legal only after applicable gates pass.
+
+**Source:** `design/04-application-flows.md` — Actor, capability, and RBAC model.
+
+### Commercial entitlement
+
+Commercial entitlement is a separate product-availability dimension. This migration may describe learner-visible `FREE` and `PRO` availability states, but those labels are not `ROL-*` identities and V1 defines no entitlement identity class. Entitlement may unlock otherwise eligible cost-intensive experiences, but it cannot change IELTS/Band/evidence truth, target/prerequisite semantics, learner history/data rights, or administrative privilege.
+
+The ungated route remains a genuinely usable IELTS learning system. Eligible `PRO` entitlement may make realtime AI Speaking available only after authoritative entitlement reconciliation and only when the required provider/capability/product-support gates are actually satisfied. Exact pricing, quotas, payment-provider behavior, and commercial packaging remain outside this migration slice.
+
+**Sources:** `design/00-learning-experience.md` — Entitlement-visible availability, Speaking interaction experience; `design/04-application-flows.md` — learner-entitlement lifecycle versus operational authorization.
 
 ## Product-level features and capabilities
 
-This is a migration-only product-level inventory, not a closed `FTR-*` catalog and not a second authoritative feature inventory. Exact feature inventories, practice-mode inventories, durations, UI defaults, and behavior remain owned by the current canonical `design/**` and `spec/**` owners until cutover.
+This is a migration-only product-level inventory, not a closed `FTR-*` catalog and not a second authoritative feature inventory. `FTR-001` through `FTR-006` remain the six macro behavior anchors for this task. The reopened milestone intentionally defers the complete learner/admin feature and micro-skill surface decomposition to the explicit blocking design unknown in the catalog; exact feature inventories, practice-mode inventories, durations, UI defaults, and behavior remain owned by the current canonical `design/**` and `spec/**` owners until cutover.
 
 The current product scope includes these learner-facing capability groups:
 
@@ -61,6 +105,8 @@ The current product scope includes these learner-facing capability groups:
 **Sources:** `OBJECTIVE.md` — Purpose, Learner route, Product experience, Media; `spec/00-PRODUCT.md` — Product identity, Product principles, Standard IELTS learning scope, Human-support boundary.
 
 ## Scope
+
+For the documentation migration milestone, scope is **OPEN** again because material current-milestone product/experience design has been explicitly admitted before design lock. This task establishes only the actor/RBAC/entitlement and learner/admin surface foundation; the complete learner/admin feature decomposition must be resolved before the milestone can be frozen again.
 
 The intended complete standard-IELTS learning scope is:
 
@@ -117,22 +163,22 @@ The product owner also does not define exact pricing, acquisition or retention m
 
 ## Migration boundary and unresolved items
 
-No authority conflict was found between the consulted canonical PRODUCT owners for the five PRODUCT-domain concerns in this slice.
+No authority conflict was found between the consulted canonical PRODUCT owners for this bounded foundation slice.
 
-This draft intentionally does **not** establish a closed feature catalog, actor/role IDs, milestone coverage state, `DOCS_READY`, or canonical document references. `agent-documents` assigns those structural identities to `docs/catalog/project.json`, and `TASK-0001` explicitly forbids creating that catalog in this slice. Exact downstream feature inventories and behavior also remain with their current canonical owners until a later explicit migration/cutover task.
+`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` now owns the minimum migrated actor/role identities and records the milestone as `OPEN`; this file explains their product meaning only. The six existing `FTR-*` records remain macro anchors rather than the complete feature inventory. The explicit open DESIGN blocker `UNK-005` prevents false re-closure until material learner/admin surface capabilities are decomposed and traced.
 
-This is a bounded migration state, not a claim that documentation closure or implementation readiness has been established.
+This task does not establish `DOCS_READY`, design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
 
-**Sources:** `.agent/tasks/TASK-0001/task.yaml@23fa05c8586a9f295a3c0fe90774b78b248d61f7`; `agent-documents@e6728594b0371e2e941c1457fc8efdc14a90deee` — `DOCUMENT_MODEL.md` and `templates/docs/PRODUCT.md`.
+**Sources:** `.agent/tasks/TASK-0012/task.yaml@4b6b29e5d3cc9b39d35267211b070d5bff44ca59`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 model/reopening semantics.
 
 ## Traceability summary
 
 | PRODUCT concern | Current canonical source at the authorized base | Draft section |
 | --- | --- | --- |
 | objective | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Objective |
-| actors / roles | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Actors and roles |
-| features / capabilities | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Product-level features and capabilities |
+| actors / roles | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/04-application-flows.md` | Actors and roles |
+| features / capabilities | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/00-learning-experience.md`; `design/04-application-flows.md` | Product-level features and capabilities |
 | scope / non-goals | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Scope; Non-goals |
 | domain / external constraints | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Domain and external constraints |
 
-All target-source references in this table resolve to `phatnguyen03022001/ilets@23fa05c8586a9f295a3c0fe90774b78b248d61f7`. This traceability is migration evidence only and does not change source authority.
+The original PRODUCT migration references remain traceable to their recorded source snapshot; the `TASK-0012` actor/RBAC/entitlement and surface-foundation additions are derived from canonical `design/00-learning-experience.md` and `design/04-application-flows.md` at the accepted baseline `010a5cc9b002eaa22121047c54c8df116cfb3e27`. This traceability is migration evidence only and does not change source authority.
