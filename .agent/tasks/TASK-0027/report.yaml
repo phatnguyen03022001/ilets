@@ -1,0 +1,150 @@
+protocol_version: 3
+
+task_id: TASK-0027
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0027/task.yaml
+  commit: "bcba8462c1e0b4981490a99deac548918974fe5f"
+  blob_sha: "afc9a462648e06ecc01ab08345709aa7119bc773"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "bcba8462c1e0b4981490a99deac548918974fe5f"
+  pre_execution_head: "bcba8462c1e0b4981490a99deac548918974fe5f"
+  final_execution_head: "85985719a647a936d04ad7528c763e608ffd1815"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native reads established dev=bcba8462c1e0b4981490a99deac548918974fe5f, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}; TASK-0027 revision 1 was APPROVED at the exact base and pinned target, legacy ontology, agent-documents and agent-skills authorities resolved. No branch creation, Agent Runtime, local Mac, tunnel or Codex surface was used."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0027 specifies no authoritative runtime verifier and requires GitHub-native execution only. The exact unreferenced implementation candidate 85985719a647a936d04ad7528c763e608ffd1815 was independently audited before ref publication against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1. The audit covered legal one-level PRODUCT shard paths, unique heading-token resolution, structural content, coverage-domain placement, exact catalog shape, unchanged typed identities/relations/roots/unknowns, reachability/orphan invariants, FROZEN scope, and the deterministic DOCS_READY predicate. Zero model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects were found and derived DOCS_READY=TRUE."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "GitHub-native execution only; no operator-local checkout, Agent Runtime, tunnel, Mac, Codex surface, temporary branch or local artifact was created or used."
+
+changed_files:
+  - path: docs/product/skill-leaves.md
+    summary: "Add the legal one-level PRODUCT shard preserving all 67 stable Skill Leaves, exact names/objectives, skill/component and variant semantics, Skill-to-Skill prerequisites, and consequential ontology ownership invariants from canonical spec/03-SKILLS.md."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/knowledge-objects.md
+    summary: "Add the legal one-level PRODUCT shard preserving all 46 stable Knowledge Objects, definitions, Knowledge-to-Knowledge prerequisites, complete Skill-to-Knowledge resolution semantics, and the enabling-knowledge-not-fifth-skill invariant from canonical spec/04-KNOWLEDGE.md."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Add only the two PRODUCT-shard support references to product.features_capabilities; preserve model_version, FROZEN milestone state, every existing inventory record, typed relation, root, decision and unknown unchanged."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "85985719a647a936d04ad7528c763e608ffd1815"
+    message: "docs(TASK-0027): migrate locked learning ontology shards"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "docs/product/skill-leaves.md preserves the exact 67-leaf inventory from canonical spec/03-SKILLS.md: Listening 11, Reading 12, Speaking 18, Writing shared/Academic 23 and GT Task-1 overlay 3. Identity, names, atomic objectives, skill/component grouping, variant inclusion semantics, all Skill-to-Skill prerequisite rows, external task-family separation and downstream ownership invariants were compared against the pinned legacy owner with zero omission, extra identity, rename or changed learning consequence."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "docs/product/knowledge-objects.md preserves the exact 46-object inventory from canonical spec/04-KNOWLEDGE.md: Grammar 29, Vocabulary 9 and Phonology 8. Every ID/name/domain/definition and Knowledge-to-Knowledge requires edge is preserved. The complete Skill-to-Knowledge mapping is preserved, including Writing and Speaking mappings, the universal-intrinsic prerequisite rule, no universal Reading mapping, no explicit Listening Knowledge edge, GT/Academic context exceptions, and Required/Recommended/Independent dependency semantics."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Both new files are legal one-level PRODUCT shards under docs/product/. project.json authorizes them only through product.features_capabilities.support_refs using docs/product/skill-leaves.md#SKILL-LEAF-ONTOLOGY and docs/product/knowledge-objects.md#KNOWLEDGE-OBJECT-ONTOLOGY. Pinned V1 permits one-level shards and defines no Skill/Knowledge catalog identity class; the candidate introduces neither a ninth authority domain nor any unsupported identity class."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Base-to-implementation compare is ahead_by=1 with exact merge base bcba8462c1e0b4981490a99deac548918974fe5f and exactly three changed files: two authorized new shards plus project.json. docs/PRODUCT.md required no change because its existing ontology/feature boundary is already correct. Catalog delta is limited to two support refs; all ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK inventories and relations remain unchanged."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Independent semantic parity against spec/03-SKILLS.md@3c923e44c206ee6a02e8cf5b4e90d8594d9c3c3a and spec/04-KNOWLEDGE.md at the same pinned commit found zero missing, extra, renamed, reinterpreted or consequence-changing Skill/Knowledge identities, objectives/definitions, prerequisite edges or Skill-to-Knowledge resolution semantics. Successor-only edits are authority-boundary/path wording and heading nesting needed to make each whole shard a single resolvable PRODUCT support section; they do not alter ontology semantics."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Pinned agent-documents V1 audit of exact candidate 85985719a647a936d04ad7528c763e608ffd1815 found: model_version=1 exact catalog shape; legal PRODUCT shard paths; unique resolvable SKILL-LEAF-ONTOLOGY and KNOWLEDGE-OBJECT-ONTOLOGY heading tokens with structural content; all 45 applicable coverage concerns still meet required L1; no typed identity/reference, relation, build/buy, unknown-resolution, N/A, traceability, reachability or orphan defect; UNK-001..UNK-009 remain RESOLVED; no unresolved_ref; milestone.scope_state remains FROZEN. The deterministic V1 predicate therefore derives DOCS_READY=TRUE with zero blockers."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Implementation 85985719a647a936d04ad7528c763e608ffd1815 is a direct child of exact base bcba8462c1e0b4981490a99deac548918974fe5f and was published by non-force dev fast-forward only. Post-implementation GitHub state proves dev=85985719a647a936d04ad7528c763e608ffd1815, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}. Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** are unchanged; no cutover, demotion, deletion, standards assessment, contract/code/provider/main/staging/promotion/release mutation occurred."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub-native preflight and immediate pre-publication refresh confirmed dev exact base bcba8462c1e0b4981490a99deac548918974fe5f, main e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, APPROVED TASK-0027 revision 1 and all pinned authorities. TASK-0026 GAP-001 was independently reproduced: the exact base successor plane lacked L-COMP-01 and the broader 67 Skill Leaves/46 Knowledge Objects even though they were material canonical legacy truth."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Enumerated and compared the full 67-leaf source inventory against the exact candidate skill shard across Listening, Reading, Speaking, shared/Academic Writing and GT Task-1 overlay. Stable IDs, names, atomic objectives, component/variant semantics and every Skill-to-Skill prerequisite row are preserved."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Enumerated and compared the full 46-object source inventory against the exact candidate knowledge shard. Stable IDs, names, domains, definitions, all Knowledge-to-Knowledge requires rows and the complete Skill-to-Knowledge resolution rules/mappings are preserved, including explicit no-edge/context-dependent cases."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Pinned V1 permits docs/product/<safe-file>.md one-level shards and requires direct catalog/coverage references for authority. The candidate uses exactly two new PRODUCT-domain support refs whose tokens each resolve uniquely to a top-level heading enclosing the whole shard, adds no catalog key or identity class, and leaves all existing catalog identities and relations unchanged."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Exact candidate 85985719a647a936d04ad7528c763e608ffd1815 was validated before ref publication and derives DOCS_READY=TRUE with zero model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects while FROZEN. Stale refs were refreshed immediately before publication; dev was non-force fast-forwarded once to the implementation, then verified with main unchanged/topology {dev, main}. This canonical report is the separate report-only child and execution stops at NEEDS_REVIEW."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Published implementation is 85985719a647a936d04ad7528c763e608ffd1815; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
