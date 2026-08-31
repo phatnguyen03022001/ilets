@@ -1,0 +1,166 @@
+protocol_version: 3
+
+task_id: TASK-0031
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0030
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@a02071a8087627ec4e87ce8274c811d80904c4d4"
+    role: "Current reviewed target truth after accepted TASK-0030 blocked review. DESIGN LOCK remains in force; no authority cutover has occurred."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@35b735b54b2613b8cd3a911655b58d0038ec66c6:.agent/tasks/TASK-0030/report.yaml"
+    role: "Accepted complete fresh 21-owner residual audit enumerating FRESH-RES-001..FRESH-RES-004."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39:spec/02-IELTS-MODEL.md"
+    role: "Canonical source for external-truth epistemic classes and owner-first external-change propagation."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39:spec/11-GLOSSARY.md"
+    role: "Canonical source for Official Evidence, Evidence-Based Interpretation and Blueprint Inference terminology."
+    precedence: 4
+  - source: "phatnguyen03022001/ilets@add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39:design/00-learning-experience.md"
+    role: "Canonical source for progressive disclosure and durable learner-facing visual/interaction product-quality semantics."
+    precedence: 5
+  - source: "phatnguyen03022001/ilets@add8b5b6ddf1485e6c7b3f144b3e1f3decd49c39:design/01-skill-features.md"
+    role: "Canonical source for the beginner L1-to-English Speaking scaffold."
+    precedence: 6
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Pinned V1 documentation model and legal one-level shard semantics."
+    precedence: 7
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 8
+
+structure_authority:
+  status: RESOLVED
+  rationale: "TASK-0030 completed a fresh audit of all 21 active canonical spec/design owners and found exactly four additional authority-representation residuals after TASK-0027/TASK-0029. They are locked semantics, not new product-design ambiguity. The smallest repair reuses existing successor shards for external-truth epistemics and beginner Speaking behavior, adds one cohesive PRODUCT learner-experience contract shard, then conditionally performs the already-authorized atomic cutover only after a fresh complete zero-residual proof."
+
+objective: "Preserve FRESH-RES-001..FRESH-RES-004 exactly in the successor authority plane with minimal structure, then—only if an exact fresh complete 21-owner audit proves zero material legacy-only truth—atomically cut canonical project-documentation authority over to the successor docs plane without changing locked product/system semantics."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reconfirm operator DESIGN LOCK and accepted TASK-0030 review; this task may change authority representation only, never the locked semantics themselves."
+    - "FRESH-RES-001 + FRESH-RES-002: extend docs/product/ielts-exam-and-bands.md with the complete three-class external-truth epistemic contract—Official Evidence, Evidence-Based Interpretation, Blueprint Inference—and the complete owner-first external-change propagation rule from canonical spec/02 plus the canonical term meanings from spec/11. Do not create a separate glossary system."
+    - "FRESH-RES-003: materialize one legal PRODUCT shard docs/product/learner-experience-contract.md preserving the durable learner-experience contract from design/00: learner mental model/progressive disclosure; typography-led/content-first calm character; explicit anti-pattern exclusions; capability/action/result-first learner language instead of generic AI-branded chrome; restrained functional iconography; bounded imagery/background depth; non-spectacle motion with reduced-motion/responsiveness/accessibility precedence; loading/empty/error/degraded/control-state interaction micro-quality; mobile/responsive hierarchy; and the simple-surface/deep-system invariant. Preserve these as product-quality semantics, not pixel tokens or a final brand system."
+    - "FRESH-RES-004: extend docs/behavior/practice-and-media.md with the complete beginner L1-to-English Speaking scaffold: temporary L1 meaning/task cue -> learner-produced English -> bounded correction/model/hint -> scaffold reduction -> English-only -> spontaneous response -> fresh transfer; preserve adaptive scaffold fading, assistance recording, and the rule that L1/model-supported performance cannot masquerade as independent Speaking evidence."
+    - "Use only the minimum valid catalog support reference needed to authorize the new PRODUCT learner-experience shard. Existing already-authorized shard edits do not justify new identity classes, new authority domains, or duplicate catalog identities."
+    - "Do not copy whole legacy files. Exclude examples, historical prose, mutable defaults, pixel tokens, implementation/component detail and redundant wording unless required to preserve a material consequence identified by FRESH-RES-001..004."
+    - "After constructing the exact combined successor repair candidate, perform a fresh COMPLETE owner-by-owner residual audit across all 21 active canonical spec/** + design/** owners against the entire successor plane plus scoped exact machine contracts. Do not rely on TASK-0030 alone and do not stop at the four expected closures."
+    - "If any material legacy-only residual remains after the repairs, make NO repository mutation at all, publish only a canonical BLOCKED report with the exact residual set and stop."
+    - "If and only if the fresh complete audit proves zero material residuals, include the canonical authority cutover in the same bounded implementation candidate: make the eight docs authority domains, legal referenced shards and docs/catalog/project.json canonical project-documentation authority; preserve distinct CONSTITUTION.md and OBJECTIVE.md authority; preserve scoped exact machine-contract authority in contracts/**; update README/read-order precedence; remove false MIGRATION DRAFT / AUTHORITY NONE / NON-CUTOVER wording from canonical successor roots/shards; minimally demote active canonical claims in legacy spec/** and design/** so no equal dual authority remains."
+    - "Legacy files must not be deleted, archived, renamed, relocated or broadly rewritten. Demotion is status/precedence only."
+    - "After successful cutover verify one unambiguous authority path, unchanged locked semantics, FROZEN milestone, zero pinned agent-documents model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects and derived DOCS_READY=TRUE."
+    - "Preserve every accepted ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK identity/relation, all Skill/Knowledge/Curriculum/practice/assessment/progression/content/provider/coverage semantics, and exact contracts outside their scoped authority."
+    - "Do not perform standards assessment, contract redesign/materialization, implementation planning/code, provider activation/configuration, spend authorization, main/staging mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe local/runtime/Codex. Mutation APIs are not discovery or validation probes."
+    - "On success publish at most one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the canonical BLOCKED report."
+
+structure_policy:
+  expected_new_files:
+    - docs/product/learner-experience-contract.md
+    - .agent/tasks/TASK-0031/report.yaml
+  allowed_existing_files:
+    - README.md
+    - docs/**
+    - spec/**
+    - design/**
+    - .agent/tasks/TASK-0031/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Operator DESIGN LOCK remains in force; no product/system redesign is authorized."
+  - "FRESH-RES-001..004 must be preserved with semantic parity, not expanded into new product scope."
+  - "No new glossary/domain/catalog identity system is introduced."
+  - "The learner-experience shard owns durable product-quality semantics only, not pixel-perfect tokens/final brand/component implementation."
+  - "Beginner L1 support remains a temporary/adaptive scaffold over unchanged English Speaking targets and normal evidence standards."
+  - "No partial cutover: zero complete residuals or no implementation mutation."
+  - "Legacy files are not deleted/archived/renamed/relocated."
+  - "No standards PASS, contract redesign, code, provider activation, main/staging mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Successor PRODUCT preserves Official Evidence, Evidence-Based Interpretation, Blueprint Inference and the owner-first external IELTS change-propagation rule with exact material meaning; no undefined epistemic label remains."
+  - id: AC-2
+    requirement: "A legal PRODUCT learner-experience shard preserves the material progressive-disclosure, visual/interaction language, capability-first copy, iconography/imagery/motion, micro-quality and simple-surface/deep-system constraints without freezing pixel tokens or a final brand."
+  - id: AC-3
+    requirement: "Successor BEHAVIOR preserves the complete staged beginner L1-to-English Speaking scaffold and its assistance/evidence boundaries without creating a new Speaking feature, curriculum or standard."
+  - id: AC-4
+    requirement: "The repair uses minimal legal structure, no ninth authority domain, no unsupported identity class, no separate glossary framework, and no whole-file legacy copy."
+  - id: AC-5
+    requirement: "A fresh complete 21-owner audit of the exact combined candidate finds zero material legacy-only truth."
+  - id: AC-6
+    requirement: "Only after AC-5 passes, authority is cut over atomically to docs roots/legal shards/catalog with distinct CONSTITUTION/OBJECTIVE and scoped exact-machine-contract authority preserved, README/read-order corrected, successor authority-none wording removed, and legacy spec/design equal-canonical claims demoted."
+  - id: AC-7
+    requirement: "Successful cutover candidate remains FROZEN, derives DOCS_READY=TRUE, has zero pinned-model defects/blockers, no dual-canonical contradiction and no locked semantic drift."
+  - id: AC-8
+    requirement: "Publication lineage is at most one implementation commit plus one report-only child; main and branch topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and reproduce FRESH-RES-001..004 from exact canonical owners before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Verify exact parity for the three epistemic classes/change rule, learner-experience product-quality contract, and staged beginner Speaking scaffold including evidence-assistance consequences."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run a complete exact-candidate residual audit across all 21 active canonical spec/design owners; zero material residuals are mandatory before cutover."
+      required: true
+    - id: CHECK-4
+      command_or_check: "If zero residuals, verify atomic cutover diff: README precedence, successor canonical wording, minimal legacy demotion, preserved CONSTITUTION/OBJECTIVE/contracts, no semantic redesign."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Validate exact successful candidate against pinned agent-documents; require FROZEN + zero defects/blockers + DOCS_READY=TRUE, publish one implementation commit then one report-only child, refresh final refs/topology and stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
