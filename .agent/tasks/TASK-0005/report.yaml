@@ -1,0 +1,147 @@
+protocol_version: 3
+
+task_id: TASK-0005
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0005/task.yaml
+  commit: "a1f07a589843e2c54a189d6ad47ededb44a0613b"
+  blob_sha: "12dd991bc4b66d1a92af6529c1a3729af36f173b"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "a1f07a589843e2c54a189d6ad47ededb44a0613b"
+  pre_execution_head: "a1f07a589843e2c54a189d6ad47ededb44a0613b"
+  final_execution_head: "38e270a0846e18ff7b82ce90ed4c1e5f6d9afb74"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub reads proved dev=a1f07a589843e2c54a189d6ad47ededb44a0613b, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0005 revision 1 APPROVED, and exact pinned authorities. Git Data blob/tree/commit plus non-force ref-update primitives were available for one atomic implementation commit and one report-only child."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0005 designates no authoritative verifier. The exact candidate bytes were checked deterministically against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 catalog shape, DATA/DAT typing, OPEN/RESOLVED unknown rules, document-token support, typed feature relations, reachability/orphan, and closure semantics before publication; the created Git blob SHAs matched the independently verified candidate bytes."
+
+local_hygiene:
+  result: PASS
+  run_root: "/mnt/data/task5work"
+  cleanup_performed: true
+  retained: []
+  evidence: "Only a run-owned isolated scratch directory was used for candidate construction/checks; no operator checkout was mutated. The scratch directory was removed after implementation publication verification."
+
+changed_files:
+  - path: docs/DATA.md
+    summary: "Add authority-NONE DATA migration draft covering the bounded material data identities, Core ownership, lifecycle/persistence, retention/deletion, consistency, migration/backfill, and provenance/lineage semantics supported by current canonical truth."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Materialize DAT-001..DAT-012, resolve all six migrated feature.data relations to typed DAT refs, resolve UNK-001 under V1 rules, and advance only the six data.* coverage concerns to L1."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Add dedicated UNK-001 resolution evidence required by the pinned V1 unknown-resolution model; no DEC identity or neighboring-domain decision is created."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "38e270a0846e18ff7b82ce90ed4c1e5f6d9afb74"
+    message: "docs(TASK-0005): migrate DATA catalog"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "docs/DATA.md explicitly declares MIGRATION DRAFT / AUTHORITY NONE and preserves CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** as canonical. Attempt, Observation, EvidenceFact, current Assessment/Progression interpretation, certification history, and target state remain distinct; storage/schema implementation is explicitly non-authoritative."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Catalog adds exactly 12 material DAT records justified by canonical TargetProfile/content revision/Attempt/Assessment/Progression/plan semantics. Every owner_system_ref is SYS-002 Core API; no Web/Evaluator ownership, DTO/table/cache/provider record, schema, IFC/EXT/CAP/DEC inventory, or false N/A was introduced. Persistent versus MATERIAL_EPHEMERAL classification avoids inventing durability where canonical truth does not require it."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "All six FTR data relations now contain non-empty typed DAT refs supported by the migrated slice. UNK-001 is RESOLVED with resolved_by_ref=DAT-001 plus dedicated docs/DECISIONS.md#UNK-001 evidence; UNK-002, UNK-003, and UNK-004 remain OPEN DESIGN and continue to own interface/dependency/capability unresolved relations."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Exactly data.entities_ownership, data.lifecycle_persistence, data.retention_deletion, data.consistency_transactions, data.migration_backfill, and data.provenance_lineage_quality advance from NONE to L1 through non-empty DATA sections. No neighboring coverage concern advances and L1 is stated only as documentation depth."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Pinned-model deterministic validation over the exact candidate found zero MODEL_ERROR, REFERENCE_ERROR, TRACEABILITY_GAP, or ORPHAN findings. Intentional unfinished-migration blockers are SCOPE_OPEN=1, COVERAGE_GAP=23, and UNRESOLVED_RELATION=18, so DOCS_READY remains false."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Implementation 38e270a0846e18ff7b82ce90ed4c1e5f6d9afb74 is exactly one direct child of authorized base a1f07a589843e2c54a189d6ad47ededb44a0613b. GitHub compare reports ahead_by=1 and exactly three implementation files: docs/DATA.md, docs/DECISIONS.md, docs/catalog/project.json. Publication was a non-force dev fast-forward; main stayed e707aeee43411cc8f99448b63220eb8beff552b6 and topology stayed exactly {dev, main}. This report is prepared as the separate report-only child."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh start and immediate pre-publication GitHub reads confirmed exact dev/main refs, topology exactly {dev, main}, TASK-0005 revision 1 APPROVED, and exact pinned agent-skills/agent-documents authority."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Resolved only current migration catalog/docs plus canonical spec/01-LEARNER-MODEL.md, spec/07-PRACTICE.md, spec/08-ASSESSMENT.md, spec/09-PROGRESSION.md, spec/10-CONTENT-MODEL.md, design/04-application-flows.md, and design/06-implementation-stack.md where directly needed for DATA ownership/lifecycle/lineage. No neighboring domain was adopted as migration authority."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Materialized the bounded DAT layer while preserving TargetProfile, exact ContentRevision, Attempt, Observation, EvidenceFact, ReadinessEvaluation, MasteryEstimate, BandCertificationState, historical attainment, GapEvaluation, ActionIntent, and DailyPlan distinctions. All DAT ownership remains Core; every affected feature data relation is typed and UNK-001 closes without false N/A."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Deterministic checks mirrored the pinned V1 validator's exact data record shape/kinds, global ID typing/uniqueness, DATA document tokens/support, resolved QUESTION unknown fields and DECISIONS token binding, typed relations, OPEN DESIGN requirements for remaining unresolved relations, material graph reachability/orphan detection, and closure accounting. Result: zero structural/reference/traceability/orphan failures; expected closure blockers only 1+23+18."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale state was refreshed immediately before the non-force ref update. Published candidate blob SHAs are 8c33e4e2615f02152caa437c0c1ce55e80cace45 (DATA), 0210d210d81579379bf5353d07c7f8a980e6346a (DECISIONS), and 943d1ac84fdf419e2a4514cbae78378a6ed2d790 (catalog), exactly matching independently verified candidate bytes. GitHub compare proves one direct implementation commit and three-file scope; the canonical report is the only remaining child mutation."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No target local worktree was used. Run-owned scratch was removed. Published implementation is 38e270a0846e18ff7b82ce90ed4c1e5f6d9afb74; only the canonical report-only child remains to finalize Executor evidence."
+
+result: NEEDS_REVIEW
