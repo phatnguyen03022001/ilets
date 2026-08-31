@@ -6,7 +6,7 @@
 >
 > Target source snapshot: `phatnguyen03022001/ilets@23fa05c8586a9f295a3c0fe90774b78b248d61f7`.
 
-This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` established the actor/RBAC/entitlement and learner/admin surface foundation; `TASK-0013` materializes the complete minimal feature-completeness surface already owned by canonical design. `docs/catalog/project.json` owns the migration identities. This file does not freeze documentation, cut over authority, activate providers, or change canonical product semantics.
+This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` established the actor/RBAC/entitlement and learner/admin surface foundation; `TASK-0013` materializes the complete minimal feature-completeness surface already owned by canonical design. `docs/catalog/project.json` owns the migration identities and current mutable milestone scope state. This file does not independently own that state, cut over authority, activate providers, or change canonical product semantics.
 
 ## Objective
 
@@ -117,7 +117,7 @@ The exact detailed names, source aliases, flow grouping, and acceptance grouping
 
 ## Scope
 
-For the documentation migration milestone, scope remains **OPEN**. The bounded DATA/IFC/EXT/CAP relation migrations and `UNK-001..UNK-009` are resolved, but the post-reconciliation semantic closure/freeze audit has not yet passed. Therefore this reconciliation does not freeze the milestone or imply `DOCS_READY`.
+Current mutable documentation-migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. The bounded DATA/IFC/EXT/CAP relation migrations and `UNK-001..UNK-009` are resolved. `DOCS_READY` is derived by the pinned documentation model from the combined migrated set and catalog state; it is not owned or stored by this document.
 
 The intended complete standard-IELTS learning scope is:
 
@@ -176,9 +176,9 @@ The product owner also does not define exact pricing, acquisition or retention m
 
 No authority conflict was found between the consulted canonical PRODUCT owners for this bounded decomposition slice.
 
-`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` keeps `milestone.scope_state: OPEN`. `UNK-001..UNK-009` and the bounded detailed DATA/IFC/EXT/CAP relation work are resolved in the catalog. Scope remains OPEN only because a post-reconciliation semantic closure/freeze audit has not yet passed; this task does not perform that audit/freeze or claim `DOCS_READY`.
+`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` is the sole owner of current migration milestone scope state; this file does not restate that mutable value. `UNK-001..UNK-009` and the bounded detailed DATA/IFC/EXT/CAP relation work are resolved in the catalog. `DOCS_READY`, when derived by the pinned model, is documentation-closure evidence only and does not cut over canonical authority.
 
-This task does not establish `DOCS_READY`, design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
+Documentation closure does not establish design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
 
 **Sources:** `.agent/tasks/TASK-0013/task.yaml@07f409f37243f80695fcb98333f3ddd728960e7b`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 feature/relation/unknown semantics.
 

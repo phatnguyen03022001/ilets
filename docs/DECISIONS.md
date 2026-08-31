@@ -24,11 +24,11 @@ IELTS continues to pin `phatnguyen03022001/agent-standards@3f4950f280a3a35fee814
 
 ## Ownership and cutover boundary
 
-Actual IELTS truth remains with the existing canonical legacy documents. `docs/PRODUCT.md`, this file, `docs/BEHAVIOR.md`, and `docs/catalog/project.json` remain authority-NONE migration artifacts. No canonical cutover, `DOCS_READY`, documentation lock, generated PROGRAM, promotion, or release is declared.
+Actual IELTS truth remains with the existing canonical legacy documents. `docs/PRODUCT.md`, this file, `docs/BEHAVIOR.md`, and `docs/catalog/project.json` remain authority-NONE migration artifacts. Current migration milestone scope state is owned exclusively by `docs/catalog/project.json`, and `DOCS_READY` is derived by the pinned documentation model rather than owned or stored by this Markdown. Documentation closure does not itself declare canonical cutover, documentation/design lock, generated PROGRAM, implementation readiness, standards/assurance status, provider activation, promotion, or release.
 
 ## Migration unknowns
 
-All material feature relations covered by `UNK-001..UNK-009` are now migrated: those unknowns are `RESOLVED` and the catalog has no remaining `unresolved_ref` for those bounded relation domains. The resolved mappings use correctly typed refs or demonstrated N/A as accepted by their owning migrations. `milestone.scope_state` remains `OPEN` only because the post-reconciliation semantic closure/freeze audit has not yet passed; this section does not freeze scope or claim `DOCS_READY`.
+All material feature relations covered by `UNK-001..UNK-009` are now migrated: those unknowns are `RESOLVED` and the catalog has no remaining `unresolved_ref` for those bounded relation domains. The resolved mappings use correctly typed refs or demonstrated N/A as accepted by their owning migrations. Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this section intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. `DOCS_READY` is derived from the pinned model and catalog state rather than claimed by this section.
 
 ## UNK-001 DATA relation resolution
 
@@ -118,7 +118,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 **Rationale.** Canonical design already owns the decomposition and its abstraction boundaries. One-to-one learner capability mapping plus seven genuinely distinct privileged behavior families is the smallest complete product feature surface that preserves those owners without inventing a second ontology or capability matrix.
 
-**Consequences.** Feature/flow/acceptance completeness can resolve independently of neighboring DATA/IFC/EXT/CAP migration completeness. Existing macro relation resolutions remain historically valid for `FTR-001..FTR-006`; newly detailed relations were resolved independently by `TASK-0014..TASK-0017` using exact refs or demonstrated N/A where justified. Milestone scope stays `OPEN` pending the post-reconciliation semantic closure/freeze audit.
+**Consequences.** Feature/flow/acceptance completeness can resolve independently of neighboring DATA/IFC/EXT/CAP migration completeness. Existing macro relation resolutions remain historically valid for `FTR-001..FTR-006`; newly detailed relations were resolved independently by `TASK-0014..TASK-0017` using exact refs or demonstrated N/A where justified. Current mutable migration milestone scope state is catalog-owned and intentionally not restated here; this decision remains feature-decomposition provenance rather than milestone-state authority.
 
 **Reversibility.** `COSTLY`. The mapping can evolve only when canonical product design materially changes; renumbering or collapsing these stable migration identities later would require explicit traceability migration rather than cosmetic editing.
 
@@ -166,7 +166,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ## UNK-INVENTORY Migration unknown inventory after TASK-0017
 
-`UNK-001..UNK-009` are resolved for their authorized migration slices. All 47 detailed feature relations now use typed CAP references, and no blocking design unknown or `unresolved_ref` remains. Milestone closure remains intentionally blocked only by `milestone.scope_state: OPEN`; no `DOCS_READY` claim is made.
+`UNK-001..UNK-009` are resolved for their authorized migration slices. All 47 detailed feature relations now use typed CAP references, and no blocking design unknown or `unresolved_ref` remains. Current mutable migration milestone scope state is catalog-owned and intentionally not restated here; no Markdown-local `SCOPE_OPEN` or `DOCS_READY` ownership is created.
 
 ### UNK-004 Capability/build-buy relation resolution
 
@@ -194,7 +194,7 @@ This resolution creates no pure `BUY` capability because the external dependenci
 
 `DEC-004` is the required `resolved_by_ref` attribution because the pinned V1 model requires a `DECISION_REQUIRED` unknown to resolve through a `DEC-*`. This is a decomposition/migration decision only; it does not create new canonical product authority.
 
-Resolving `UNK-005` does **not** imply neighboring relation closure. DATA, IFC, EXT, and CAP detailed relation domains were resolved independently by `TASK-0014..TASK-0017`; `milestone.scope_state` still stays `OPEN`, and `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain unclaimed.
+Resolving `UNK-005` does **not** imply neighboring relation closure. DATA, IFC, EXT, and CAP detailed relation domains were resolved independently by `TASK-0014..TASK-0017`. Current mutable migration milestone scope state and derived `DOCS_READY` are governed by the catalog/pinned model rather than this resolution paragraph; design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain distinct and unclaimed.
 
 ## Detailed relation-domain resolutions after TASK-0017
 
@@ -218,7 +218,7 @@ Canonical API/runtime ownership proves that no additional semantic IFC is materi
 
 `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. The resolution is the complete seven-feature mapping plus the affected grouped-flow interface refs, not a claim that every privileged consequence itself crosses Web/Core. `IFC-002` remains exclusively the Core-to-Evaluator bounded capability boundary and is not added to privileged relations without an actual evaluator crossing.
 
-This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` and `UNK-009` were resolved independently by later bounded relation migrations; milestone scope remains `OPEN`.
+This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` and `UNK-009` were resolved independently by later bounded relation migrations; current mutable milestone scope state remains catalog-owned and is not restated here.
 
 ### UNK-008 Privileged detailed external-dependency relation resolution
 
@@ -252,4 +252,4 @@ Exactly three new capability identities are required. `CAP-006`, `CAP-007`, and 
 
 `CAP-006` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. `DEC-005..DEC-007` record only the new material build/buy choices; `DEC-001..DEC-004` and `CAP-001..CAP-005` remain unchanged. Selected/TBD provider lifecycle remains owned by canonical `design/07-third-party-services.md`: this relation resolution does not activate/configure any provider, authorize spend/data egress, choose the unresolved pronunciation route, or create exact contracts, schema, implementation code, deployment topology, or new runtime components.
 
-With all 47 detailed CAP relations typed and `UNK-009` resolved, there is no remaining `UNRESOLVED_RELATION`, blocking unknown, or CAP/build-buy resolution defect in the migration catalog. `milestone.scope_state` deliberately remains `OPEN`, so the sole intentional documentation-closure blocker is `SCOPE_OPEN`; this task does not freeze documentation or claim `DOCS_READY`.
+With all 47 detailed CAP relations typed and `UNK-009` resolved, there is no remaining `UNRESOLVED_RELATION`, blocking unknown, or CAP/build-buy resolution defect in the migration catalog. Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json` and intentionally not restated here. `DOCS_READY` is derived by the pinned documentation model rather than owned by this resolution. Documentation closure does not itself imply design lock, canonical cutover, implementation readiness, standards PASS, provider activation, promotion, or release.
