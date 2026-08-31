@@ -1,0 +1,347 @@
+protocol_version: 3
+
+task_id: TASK-0028
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: BLOCKED
+
+task_source:
+  path: .agent/tasks/TASK-0028/task.yaml
+  commit: "f2b432a9206377b2fe69ba6b65463d9b9040caf6"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "f2b432a9206377b2fe69ba6b65463d9b9040caf6"
+  pre_execution_head: "f2b432a9206377b2fe69ba6b65463d9b9040caf6"
+  final_execution_head: "f2b432a9206377b2fe69ba6b65463d9b9040caf6"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+structure_model:
+  repository: phatnguyen03022001/agent-documents
+  authorized_revision: "acb3f02616e700190586681306a86905792e4c07"
+  observed_revision: "acb3f02616e700190586681306a86905792e4c07"
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  design_lock_confirmed: true
+  accepted_task_0027_repair_confirmed: true
+  topology_confirmed: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native state proved dev=f2b432a9206377b2fe69ba6b65463d9b9040caf6, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0028 revision 1 APPROVED at the exact base, accepted TASK-0027 ontology repair present, agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c present with executor/simplicity/verification, and agent-documents@acb3f02616e700190586681306a86905792e4c07 resolvable."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "The complete pre-cutover residual-authority audit found material legacy-only truth. TASK-0028 therefore forbids constructing an authority-cutover candidate, so post-cutover pinned agent-documents validation and DOCS_READY derivation are not applicable to this blocked execution."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "No local checkout, Agent Runtime, Mac, tunnel, Codex, or local execution surface was used. Reads and the sole report publication were GitHub-native."
+
+changed_files: []
+commits_created: []
+pushed: true
+promoted_to_main: false
+
+residual_audit:
+  scope: "Every active STATUS: CANONICAL owner under spec/** and design/** at the exact base, compared against docs/PRODUCT.md, docs/product/*.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, docs/DECISIONS.md and docs/catalog/project.json."
+  active_canonical_owner_count: 21
+  supporting_non_owner:
+    - owner: spec/DECISIONS.md
+      disposition: EXCLUDED_AUTHORITY_NONE
+      evidence: "Supporting/rationale surface with no independent canonical ownership."
+  preserved_without_material_residual:
+    - spec/00-PRODUCT.md
+    - spec/01-LEARNER-MODEL.md
+    - spec/03-SKILLS.md
+    - spec/04-KNOWLEDGE.md
+    - spec/11-GLOSSARY.md
+    - design/00-learning-experience.md
+    - design/01-skill-features.md
+    - design/05-api.md
+  preserved_notes:
+    - "TASK-0027 successfully removed the prior TASK-0026 ontology blocker: all 67 Skill Leaves are materialized in docs/product/skill-leaves.md and all 46 Knowledge Objects in docs/product/knowledge-objects.md."
+    - "design/05 exact wire/schema authority remains independently preserved by contracts/http/public.openapi.yaml and contracts/http/evaluator.openapi.yaml; higher-level interface/trust/evolution semantics are represented in successor INTERFACES/QUALITY/DELIVERY."
+    - "spec/11 glossary terms do not add independent behavioral/object inventory authority beyond their owning domains; residual term meanings below are reported under the primary semantic owners rather than duplicated as a glossary blocker."
+  material_residual_owner_count: 13
+  material_residuals:
+    - residual_id: RES-001
+      legacy_owner: spec/02-IELTS-MODEL.md
+      successor_domain: PRODUCT
+      sections:
+        - "Four scored sections and overall score"
+        - "Stable external task/question-family identity"
+        - "Listening family registry / Reading family registry / Writing task-family registry / Speaking part-family registry"
+        - "Delivery modes — 2026 external baseline"
+        - "Listening / Reading / Writing / Speaking"
+        - "One Skill Retake"
+      legacy_truth: "Stable IELTS-L-QF-01..06, IELTS-R-QF-01..11, IELTS-W-A-T1/IELTS-W-GT-T1/IELTS-W-T2 and IELTS-S-P1..P3 identities plus current external scoring, section composition, delivery, timing, Writing/Speaking criteria, raw-score anchors and OSR/UKVI constraints."
+      successor_gap: "Successor PRODUCT describes the intended IELTS product scope but does not materialize the stable IELTS-* registry or the complete external scoring/delivery/administrative truth. No successor catalog inventory owns these identities."
+      consequence: "Demoting spec/02 would remove the only authoritative external-exam identity/fact plane used by content, coverage, assessment and target/readiness behavior."
+
+    - residual_id: RES-002
+      legacy_owner: spec/05-BANDS.md
+      successor_domain: PRODUCT
+      sections:
+        - "Band 3 — structured entry through Band 9 — ceiling mastery"
+        - "Variant-specific Writing Task-1 capability bindings"
+        - "Skill-level exit criteria"
+        - "Residual errors and exclusions rule"
+      legacy_truth: "Per-skill Bands 3–9 learning thresholds, acceptable residual limitations, variant-specific Writing Task-1 thresholds/bindings and skill-level Band exit boundaries."
+      successor_gap: "Successor docs retain Band concepts and certification data but do not carry the complete Band-3..9 threshold/exit matrix or higher-band exclusion rule."
+      consequence: "Band certification and curriculum targets would retain identifiers but lose the authoritative quality boundary they are meant to prove."
+
+    - residual_id: RES-003
+      legacy_owner: spec/06-CURRICULUM.md
+      successor_domain: PRODUCT
+      sections:
+        - "Canonical curriculum / Band-phase node tables"
+        - "Prerequisite classes"
+        - "Selector semantics"
+        - "Variant routing"
+      legacy_truth: "The complete stable C-* curriculum node inventory (44 nodes), Required/Recommended/Independent dependency meaning, selector tokens/materialization rules and Academic/GT route semantics."
+      successor_gap: "Neither docs/product shards nor docs/catalog/project.json materialize C-* identities, selectors or the complete curriculum dependency/routing graph."
+      consequence: "Demotion would erase the canonical orchestration graph connecting preserved Skill/Knowledge identities to sequenced learning."
+
+    - residual_id: RES-004
+      legacy_owner: spec/07-PRACTICE.md
+      successor_domain: BEHAVIOR
+      sections:
+        - "Learning phases"
+        - "Learning Mechanism registry"
+        - "Practice Type registry"
+        - "Feedback focus and noise control"
+        - "Selection rules"
+        - "Intervention effectiveness / strategy change"
+      legacy_truth: "Six canonical learning phases, LM-01..LM-12 mechanisms, PT-01..PT-23 practice types, gap-to-practice selection semantics, feedback-focus constraints and intervention-effectiveness strategy rules."
+      successor_gap: "Successor BEHAVIOR/DATA reference practice and feedback concepts but contain no complete LM/PT stable registry and no semantically equivalent full practice-selection/effectiveness policy."
+      consequence: "The product could retain feature/mode surfaces while losing the learning-process authority that determines how a gap is legitimately trained."
+
+    - residual_id: RES-005
+      legacy_owner: spec/08-ASSESSMENT.md
+      successor_domain: DATA
+      sections:
+        - "Claim classes / inference ceiling"
+        - "EvidenceRequirement"
+        - "Assessment Type registry"
+        - "Evidence eligibility"
+        - "Independence / contamination"
+        - "Claim-scoped sufficiency"
+        - "Confidence / calibration"
+      legacy_truth: "AT-01..AT-07 measurement roles, versioned EvidenceRequirement semantics, evidence admission/independence rules, claim-scoped sufficiency and calibration boundaries."
+      successor_gap: "DATA preserves Attempt/Observation/EvidenceFact/ReadinessEvaluation identities and five readiness outcomes but does not materialize the AT registry or complete EvidenceRequirement/admission/sufficiency policy."
+      consequence: "Demotion would leave evidence objects without the complete authority that decides what they may legitimately support."
+
+    - residual_id: RES-006
+      legacy_owner: spec/09-PROGRESSION.md
+      successor_domain: DATA
+      sections:
+        - "Assessment state → learner gap"
+        - "GapEvaluation"
+        - "ActionIntent"
+        - "Required prerequisites"
+        - "Staleness, conflict, regression"
+        - "Certification history"
+      legacy_truth: "The exact nine GapEvaluation classes, eleven ActionIntent values, deterministic state/gap-to-intent mapping, prerequisite consequences and current-certification/regression/history transition semantics."
+      successor_gap: "DAT-010 and DAT-011 intentionally name GapEvaluation/ActionIntent but defer their class/value semantics to the canonical owner; they do not enumerate the registries or full mapping."
+      consequence: "Planner inputs would survive as generic data identities while their legal progression meanings and transition rules become non-authoritative."
+
+    - residual_id: RES-007
+      legacy_owner: spec/10-CONTENT-MODEL.md
+      successor_domain: DATA
+      sections:
+        - "Similarity facts and comparison scope"
+        - "Stable Content Context registry"
+        - "Stable Content Presentation Class registry"
+        - "LearningUnit / Stimulus / ScaffoldingProfile / ExposureContext / PracticeItem / AssessmentItem"
+        - "Content coverage manifest"
+        - "Content validation semantics"
+      legacy_truth: "CTX-* context identities, PRES-* presentation identities, similarity/exposure semantics, concrete content object invariants, content-coverage manifest obligations and consequence-aware validation gates."
+      successor_gap: "DATA migrates ContentRevision, Attempt, ValidationDecision and related lifecycle identities but has no CTX/PRES registry and does not reproduce the complete similarity, item-composition, manifest and validation semantic contract."
+      consequence: "Content could remain revision-safe while losing the canonical context/subformat identities and validation/coverage rules needed to prove real IELTS supply and safe evidence use."
+
+    - residual_id: RES-008
+      legacy_owner: design/02-practice-catalog.md
+      successor_domain: BEHAVIOR
+      sections:
+        - "Listening / Reading / Writing / Speaking / Shared practice modes"
+        - "Activity purpose vs evidence candidacy"
+        - "Retry purpose"
+        - "Catalog change rule"
+      legacy_truth: "The 28 stable PM-* learner-visible practice modes, orthogonal TRAINING/DIAGNOSTIC/ASSESSMENT/READINESS purpose and NOT_EVIDENCE_CANDIDATE/ASSESSMENT_MAY_ADMIT candidacy semantics, plus retry-purpose distinctions."
+      successor_gap: "Successor PRODUCT/BEHAVIOR explicitly treats the 28 PM-* modes as remaining under design/02 rather than migrating their registry; docs/catalog has no PM inventory."
+      consequence: "Cutover would immediately invalidate a successor reference to a demoted owner and erase the stable practice packaging/evidence-candidacy vocabulary used by runtime flows."
+
+    - residual_id: RES-009
+      legacy_owner: design/03-media-youtube.md
+      successor_domain: BEHAVIOR
+      sections:
+        - "Transcript states"
+        - "Explicit non-goal: arbitrary extraction"
+        - "Embedded-player compliance boundary"
+        - "Caption API constraint"
+        - "MediaSource / MediaLesson product contract"
+        - "Source removal/failure"
+      legacy_truth: "AUTHORIZED_CREATOR_CAPTION, LICENSED_TRANSCRIPT, USER_PROVIDED_TRANSCRIPT and NO_AUTHORIZED_TRANSCRIPT states plus rights-aware transcript-dependent behavior, YouTube player/source constraints and source-loss semantics."
+      successor_gap: "DAT-015 preserves a generic MediaSource with rights/transcript state and BEHAVIOR preserves safe failure, but the successor plane does not define the transcript-state registry or the full authorized-transcript/player/extraction product contract."
+      consequence: "Media availability would remain modelled but the exact legal/product distinction controlling transcript-backed scoring and source processing would be weakened."
+
+    - residual_id: RES-010
+      legacy_owner: design/04-application-flows.md
+      successor_domain: BEHAVIOR
+      sections:
+        - "Planner decision contract"
+        - "Stage 1 — target/support resolution through Stage 7 — plan/explanation"
+        - "Flow A through Flow L"
+        - "Legal lifecycle state machines"
+        - "Transition invariants"
+      legacy_truth: "Seven-stage Planner semantics, complete hard-eligibility and assignment-time recheck/serialization boundary, candidate/ranking/load/trajectory non-authority rules, end-to-end content/evaluation flows and exact legal LearningSession/Attempt/Evaluation/DiagnosticRun/MockRun/media lifecycle transitions."
+      successor_gap: "BEHAVIOR/DATA/QUALITY migrate many individual outcomes and async-safety invariants, but no successor owner contains the complete Planner decision contract or the legal runtime lifecycle state machines. DAT-012 itself cites the legacy Planner contract as source."
+      consequence: "Demotion would materially weaken product decision authority and allow incompatible runtime transitions despite preserving coarse FLW/DAT identities."
+
+    - residual_id: RES-011
+      legacy_owner: design/06-implementation-stack.md
+      successor_domain: ARCHITECTURE
+      sections:
+        - "Go → Python Evaluator"
+        - "Material boundary model"
+      legacy_truth: "The selected internal trust mechanism requires Cloud Run IAM plus Google-signed OIDC service identity for Core→Evaluator/eligible protected task delivery, treats network placement as insufficient authorization, and explicitly rejects a shared INTERNAL_SECRET/home-made JWT/HMAC/mTLS/service-mesh substitution for this locked boundary."
+      successor_gap: "Successor ARCHITECTURE/QUALITY preserve the Core-only authority direction and service-to-service trust requirement but do not preserve this selected boundary-authentication invariant."
+      consequence: "Demoting design/06 would weaken a design-locked operational-security boundary, not merely remove a patch-version/library detail."
+
+    - residual_id: RES-012
+      legacy_owner: design/07-third-party-services.md
+      successor_domain: INTERFACES
+      sections:
+        - "Provider lifecycle"
+        - "Initial capability inventory"
+        - "Initial selected provider routes"
+        - "Initial selected infrastructure and commerce routes"
+        - "Selected-route invariants"
+        - "Activation gate"
+      legacy_truth: "The eight-state provider lifecycle, complete selected/deferred/TBD capability inventory, exact primary/fallback AI/STT/TTS/realtime/translation routes, selected Clerk/Secret Manager/Neon/Upstash/Cloud Tasks/R2/Cloud Run/Cloudflare/SES/PostHog/Logging/payOS routes, Clerk audience requirement and activation/calibration consequences."
+      successor_gap: "INTERFACES intentionally carries only coarse EXT boundaries and explicitly leaves the exact provider/model route matrix canonical in design/07; the catalog does not encode the complete lifecycle/route selection state."
+      consequence: "Demotion would lose locked provider-selection/lifecycle truth and make the successor's own provider-boundary description incomplete."
+
+    - residual_id: RES-013
+      legacy_owner: design/08-coverage-and-support.md
+      successor_domain: PRODUCT
+      sections:
+        - "Product-support status machine"
+        - "Condition status is separate"
+        - "CoverageGap"
+        - "Required TargetCoverageSpecification conditions"
+        - "Derived reachability invariant"
+        - "Official-family closure"
+        - "Target support declaration / promotion gates"
+      legacy_truth: "MODELLED→COVERED→SUPPORTED_FOR_PRODUCT→VALIDATED promotion semantics; seven coverage-condition states; ten CoverageGap classes; the complete TargetCoverageSpecification condition set; derived reachability/family/subformat closure and support-declaration gates."
+      successor_gap: "PRODUCT carries the four high-level support-state names and DATA carries a generic CoverageGap identity, but neither materializes the full condition-state taxonomy, CoverageGap classes, TargetCoverageSpecification, promotion/reachability/closure rules or support declaration contract."
+      consequence: "The successor plane could name product support without retaining the authoritative proof conditions that make promotion truthful."
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The audit covered all 21 active canonical owners: 12 spec owners and 9 design owners. Eight owners have no independent material residual after accounting for successor domains/shards and scoped machine contracts; thirteen owners have material residuals enumerated in RES-001..RES-013. spec/DECISIONS.md is supporting authority-NONE and was excluded from active-owner count."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Material residuals exist, so no README/docs/spec/design authority-cutover mutation was made. Exactly this BLOCKED report is published as the sole report-only child of the exact base."
+  - criterion_id: AC-3
+    status: NOT_APPLICABLE
+    evidence: "Zero-residual precondition failed; no successor authority cutover was legal."
+  - criterion_id: AC-4
+    status: NOT_APPLICABLE
+    evidence: "No successful cutover candidate exists; current canonical precedence remains unchanged."
+  - criterion_id: AC-5
+    status: NOT_APPLICABLE
+    evidence: "Successor MIGRATION DRAFT/AUTHORITY NONE/NON-CUTOVER wording remains truthful because cutover did not occur."
+  - criterion_id: AC-6
+    status: NOT_APPLICABLE
+    evidence: "Post-cutover pinned-model validation and DOCS_READY=TRUE are required only for a successful cutover candidate. FROZEN successor/catalog state was not mutated."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Zero implementation commits were produced; only one report-only child is published to dev. main is not mutated and topology remains {dev, main}."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub-native refs/pins/task state were resolved at the exact authorized base; accepted TASK-0027 Skill/Knowledge shards are present and no post-lock semantic mutation was adopted."
+  - check_id: CHECK-2
+    result: BLOCKED
+    evidence: "Complete owner-by-owner comparison found RES-001..RES-013. The prior Skill/Knowledge residual is closed, but external IELTS, Band, Curriculum, Practice, Assessment, Progression, Content, Practice Mode, Media, Planner/lifecycle, internal-service security, provider lifecycle/selection and coverage/support truth still have material legacy-only portions."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Residuals are deduplicated by primary legacy owner and successor domain; no cutover mutation was made."
+  - check_id: CHECK-4
+    result: NOT_RUN
+    evidence: "Task forbids constructing an atomic cutover diff when any material residual exists."
+  - check_id: CHECK-5
+    result: NOT_RUN
+    evidence: "No successful cutover candidate exists for pinned agent-documents validation or implementation publication."
+
+discovered_gaps:
+  - gap_id: GAP-001
+    classification: BLOCKING
+    type: documentation_authority
+    severity: critical
+    description: "Locked successor docs authority plane is not yet a semantic replacement for the complete active legacy spec/design authority plane."
+    evidence: "RES-001..RES-013 enumerate the complete material residual set found in this pass across thirteen canonical legacy owners. Several successor docs explicitly reference the legacy owner for the missing registry/policy, including PM-* practice modes and the exact provider route matrix."
+    impact: "Demoting legacy spec/** and design/** now would lose or weaken locked exam, learning, evidence/progression, content/coverage, product-decision, provider and operational-safety authority. Retaining them as equal canonical owners after declaring cutover would instead create dual authority."
+    blocks_current_task: true
+    action_taken: none
+    suggested_next_step: architect_review
+
+structural_observations:
+  - "The TASK-0027 ontology repair was necessary but not sufficient for cutover: successor PRODUCT shards now preserve Skill/Knowledge identities, while other stable registries and policy contracts were never migrated into a legal successor authority domain."
+  - "The residuals are not requests to copy every legacy file. A follow-up should preserve only the material semantic registries/contracts identified here and continue excluding examples, historical prose, mutable UX defaults, library/package details and other non-material implementation detail."
+
+deviations_from_task: []
+blockers:
+  - "RESIDUAL_AUTHORITY_SET_NONEMPTY: RES-001..RES-013. Atomic documentation authority cutover is prohibited until these material legacy-only semantics are preserved in the successor authority plane or an Architect explicitly revises the authority model."
+
+working_tree_after:
+  clean: true
+  summary: "No local worktree was used. No authority-cutover implementation exists. Product/design/docs state remains exactly the authorized base; only this canonical report-only child is published on dev."
+
+result: BLOCKED
