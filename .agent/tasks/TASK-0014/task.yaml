@@ -1,0 +1,143 @@
+protocol_version: 3
+
+task_id: TASK-0014
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0013
+  gap_id: DETAILED_DATA_RELATIONS
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@a3f093c70d1c6e6d732c6714ac594cd53fd69eda"
+    role: "Current target truth after accepted TASK-0013. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 DAT ownership, typed feature-relation, unknown-resolution, reachability and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen engineering claim/evidence semantics; no assurance assessment is performed here."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Accepted TASK-0013 detailed feature inventory plus canonical spec/01, spec/08, spec/09, spec/10 and design/00, design/01, design/03, design/04, design/06 DATA-owning semantics."
+  rationale: "TASK-0013 intentionally left every new detailed feature DATA relation unresolved through UNK-006 because DAT-001..DAT-012 were proven only for the six macro anchors. The next bounded step is to determine which existing DAT identities truthfully cover each detailed feature and which additional semantic DATA identities are materially required by detailed learner, media/content, entitlement, privileged policy/security and audit behavior."
+
+objective: "Resolve UNK-006 by extending the minimum semantic DATA inventory only where current canonical truth requires it and by mapping every FTR-007..FTR-053 data relation to exact DAT identities, without inventing database schema, storage implementation, interface/dependency/capability state or false N/A."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and resolve current docs/DATA.md, current catalog, FTR-007..FTR-053 behavior, and only the canonical legacy owners necessary to determine material semantic data identity/ownership."
+    - "Preserve DAT-001..DAT-012 identities, meanings, kinds and SYS-002 ownership exactly unless current canonical truth demonstrates a material contradiction; such a contradiction is a blocker, not permission for silent rewrite."
+    - "For every FTR-007..FTR-053 DATA relation, reuse existing DAT-* refs only when the detailed feature truly reads, creates, mutates, derives or materially depends on that semantic data identity. Do not copy macro feature mappings mechanically."
+    - "Add only the minimum additional DAT identities required by current canonical detailed behavior. Consider semantic state such as learner knowledge/review material, media/content source or operational state, entitlement, authorization/policy, privileged work or consequential audit only where canonical owners require a distinct material identity; merge when ownership/lifecycle/history semantics are genuinely the same."
+    - "Every new DAT identity must have one stable semantic meaning, a justified PERSISTENT or MATERIAL_EPHEMERAL kind, SYS-002 Core ownership unless canonical architecture explicitly proves another authoritative owner, and a structural DATA doc_ref. Do not create one DAT per feature, screen, provider, database table, event, DTO or implementation cache."
+    - "Extend docs/DATA.md only enough to explain each new material DAT identity plus any lifecycle/retention/consistency/lineage implications that are new relative to DAT-001..DAT-012. Do not restate unchanged DATA prose."
+    - "Replace each FTR-007..FTR-053 relations.data unresolved_ref UNK-006 with truthful typed refs once the complete mapping is known. Genuine N/A is allowed only when canonical behavior demonstrates the feature has no material DATA relation; migration uncertainty is never N/A."
+    - "Resolve UNK-006 only when all 47 detailed feature DATA relations are typed or genuine N/A and the resulting DAT inventory is materially complete for current design. Add dedicated docs/DECISIONS.md#UNK-006 resolution evidence and valid resolved_by_ref attribution."
+    - "Do not modify IFC/EXT/CAP relations or resolve UNK-007, UNK-008 or UNK-009. Keep milestone.scope_state OPEN and preserve all existing FTR/ACC/FLW/DEC semantics outside the exact UNK-006/DATA delta."
+    - "Do not define SQL tables/columns/indexes, ORM models, exact retention durations, API payloads, provider identities, queues, caches, storage buckets, schema migrations or implementation code."
+    - "Current execution context is phone/ChatGPT+GitHub only. Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Do not invoke branch-creation primitives."
+    - "Validate the exact candidate against the pinned agent-documents model. Require zero model/reference/traceability/reachability/orphan defects. Remaining intentional blockers must be limited to OPEN scope plus unresolved downstream UNK-007..UNK-009 and their relation states."
+    - "Publish one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0014/report.yaml
+  allowed_existing_files:
+    - docs/DATA.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0014/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "FTR-001..FTR-053, ACT/ROL, ACC, FLW, SYS, IFC, EXT, CAP and DEC-001..DEC-004 identities remain unchanged."
+  - "DAT-001..DAT-012 remain unchanged unless a canonical contradiction blocks execution."
+  - "UNK-005 remains RESOLVED; UNK-007..UNK-009 remain OPEN and untouched except reference-accounting effects deterministically caused by resolving UNK-006."
+  - "Milestone remains OPEN."
+  - "No interface/external-dependency/capability/build-buy expansion, exact contract, provider activation, code, schema, workflow, staging, main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Every detailed FTR-007..FTR-053 has a truthful DATA relation using exact DAT refs or demonstrated N/A; no relation remains on UNK-006."
+  - id: AC-2
+    requirement: "The resulting DAT inventory is the smallest materially complete semantic data surface for current detailed learner/admin design; existing DAT-001..DAT-012 are preserved and any new DAT identities are justified by distinct ownership/lifecycle/history semantics rather than implementation structure."
+  - id: AC-3
+    requirement: "docs/DATA.md explains all newly material data identities and only new material lifecycle/retention/consistency/lineage consequences without schema/provider/contract overreach."
+  - id: AC-4
+    requirement: "UNK-006 is RESOLVED only after complete detailed DATA mapping, with valid resolution evidence and attribution; UNK-007..UNK-009 remain explicit downstream DESIGN blockers and milestone remains OPEN."
+  - id: AC-5
+    requirement: "Pinned-model validation has zero model/reference/traceability/reachability/orphan defects; implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve current detailed FTR behavior plus canonical DATA-owning legacy sections; distinguish semantic DATA identity from tables, DTOs, events, caches and provider state."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the minimum DAT additions if required, map all FTR-007..053 DATA relations, and resolve UNK-006 only when complete."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/orphan/unknown validation plus semantic audit AC-1..AC-4; confirm only intended downstream blockers remain."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish one implementation commit and one report-only child non-force to dev, verify final refs/topology, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
