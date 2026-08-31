@@ -1,0 +1,145 @@
+protocol_version: 3
+
+task_id: TASK-0017
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0016
+  gap_id: DETAILED_CAPABILITY_RELATIONS
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@bba36353412893a02e9da6379f9d046515b9f941"
+    role: "Current target truth after accepted TASK-0016. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 CAP build/buy, feature-relation, unknown-resolution, reachability and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen engineering claim/evidence semantics; no assurance assessment is performed here."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Accepted FTR-007..FTR-053 detailed surface; accepted DAT/IFC/EXT mappings; current CAP-001..CAP-005; canonical design/04, design/06 and design/07 build/buy/runtime/provider boundaries."
+  rationale: "TASK-0013 left all 47 detailed feature capability relations unresolved through UNK-009 because CAP-001..CAP-005 were proven only against the six macro anchors. DATA/IFC/EXT expansion is now accepted, including EXT-005 object/media storage, EXT-006 payment/subscription observations and EXT-007 secret custody. This task must determine whether CAP-001..CAP-005 already cover each detailed feature and add only minimum boundary-sized CAP identities where distinct project/external responsibility and build/buy semantics are materially required."
+
+objective: "Resolve UNK-009 by mapping FTR-007..FTR-053 to the smallest materially complete CAP/build-buy surface, preserving CAP-001..CAP-005 and adding only justified capability boundaries rather than one CAP per feature/provider/implementation concern."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and resolve FTR-007..FTR-053 plus current SYS/DAT/IFC/EXT/CAP/DEC state and only canonical architecture/provider sections needed for material capability/build-buy judgment."
+    - "Preserve CAP-001..CAP-005 identities, meanings, dispositions, SYS/EXT/DEC ownership and exit boundaries exactly unless canonical truth demonstrates a material contradiction; contradiction is a blocker, not permission for silent rewrite."
+    - "For every FTR-007..FTR-053 capability relation, reuse CAP-001..CAP-005 only where the feature materially depends on that capability boundary. Do not mechanically copy the six macro-anchor mappings."
+    - "Add only minimum new CAP identities where current detailed learner/admin behavior plus accepted EXT-005..EXT-007 or other already-canonical project responsibility proves a distinct build/buy boundary. Candidate concerns may include object/media custody, commercial entitlement/payment reconciliation, secret custody/security operations, or other truly separate responsibility boundaries; merge where ownership/disposition/exit semantics are genuinely the same."
+    - "Each new CAP must be boundary-sized rather than feature-sized or vendor-sized, use only BUILD/BUY/HYBRID/DEFER semantics permitted by the pinned model, have valid SYS/EXT relations, a material DEC ref, structural ARCHITECTURE boundary/exit evidence, and no provider lifecycle advancement."
+    - "Do not create one CAP per FTR, practice mode, micro-skill, provider/model alias, endpoint, table, queue, bucket, UI surface, permission, or runtime helper. A selected/TBD provider sub-route does not itself require a CAP identity when an existing provider-neutral capability boundary already owns it."
+    - "Replace every FTR-007..FTR-053 relations.capabilities unresolved_ref UNK-009 with truthful exact CAP refs. Genuine N/A is allowed only if canonical behavior demonstrates no material capability relation; uncertainty is never N/A."
+    - "Extend docs/ARCHITECTURE.md only enough to explain any new material CAP boundaries, dispositions, project/external ownership, decision refs and exit semantics. Preserve existing architecture and do not materialize implementation components or provider configuration."
+    - "Add only the minimum new DEC records required by any new CAP build/buy choices. Reuse an existing DEC only when its subject/outcome actually governs the new capability. Do not rewrite DEC-001..DEC-004."
+    - "Resolve UNK-009 only when all 47 detailed feature capability relations are complete and the CAP inventory is materially complete for current design. Add dedicated docs/DECISIONS.md#UNK-009 resolution evidence and valid resolved_by_ref attribution."
+    - "Keep milestone.scope_state OPEN. After successful UNK-009 resolution, remaining closure blocker should be SCOPE_OPEN only; do not freeze the milestone or claim DOCS_READY in this task."
+    - "Do not modify accepted DAT/IFC/EXT identities or relations except deterministic reference-accounting required by new CAP records. Do not activate/configure providers, authorize spend, define exact contracts/schema/code, create branches, or mutate main/staging."
+    - "Current execution context is phone/ChatGPT+GitHub only. Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Validate the exact candidate against the pinned agent-documents model. Require zero model/reference/traceability/reachability/orphan defects. After UNK-009 resolution, require zero unresolved relation/blocking unknown defects and exactly the intentional OPEN-scope closure blocker."
+    - "Publish one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0017/report.yaml
+  allowed_existing_files:
+    - docs/ARCHITECTURE.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0017/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "FTR-001..FTR-053, ACT/ROL, ACC, DAT, SYS, IFC, EXT and DEC-001..DEC-004 identities remain unchanged."
+  - "CAP-001..CAP-005 remain unchanged unless a canonical contradiction blocks execution."
+  - "UNK-005..UNK-008 remain RESOLVED."
+  - "Milestone remains OPEN."
+  - "No exact contract, provider activation, code, schema, workflow, staging, main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Every FTR-007..FTR-053 has a truthful capability relation using exact CAP refs or demonstrated N/A; no relation remains on UNK-009."
+  - id: AC-2
+    requirement: "The resulting CAP inventory is the smallest materially complete build/buy surface for current detailed design; CAP-001..CAP-005 are preserved and any additions are justified by distinct responsibility/disposition/exit semantics rather than feature/provider granularity."
+  - id: AC-3
+    requirement: "Any new CAP/DEC records have valid SYS/EXT ownership, disposition, decision and exit evidence without advancing provider lifecycle or inventing implementation structure."
+  - id: AC-4
+    requirement: "UNK-009 is RESOLVED only after complete detailed capability mapping; milestone remains OPEN and the sole intentional documentation-closure blocker is SCOPE_OPEN."
+  - id: AC-5
+    requirement: "Pinned-model validation has zero model/reference/traceability/reachability/orphan/unresolved-relation defects beyond SCOPE_OPEN; implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Audit all 47 detailed feature capability needs against canonical runtime/build-buy/provider boundaries; distinguish material CAP identity from features, providers, interfaces, data, routes and implementation helpers."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Reuse CAP-001..005 where truthful, add only minimum justified CAP/DEC records, map all FTR-007..053 capability relations and resolve UNK-009 only when complete."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/orphan/unknown/CAP validation plus semantic audit AC-1..AC-4; require the only remaining closure blocker to be scope OPEN."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish one implementation commit and one report-only child non-force to dev, verify final refs/topology, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
