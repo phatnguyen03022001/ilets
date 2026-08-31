@@ -1,0 +1,147 @@
+protocol_version: 3
+
+task_id: TASK-0006
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0006/task.yaml
+  commit: "569ef665e6cdd488261f490376dd9134c3a75514"
+  blob_sha: "6cf61187e5ae5fb627309f4d4117f6905f35366a"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "569ef665e6cdd488261f490376dd9134c3a75514"
+  pre_execution_head: "569ef665e6cdd488261f490376dd9134c3a75514"
+  final_execution_head: "5a47ecfbb9e07642a888a4d9604ae1a3ee3bdd70"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub reads proved dev=569ef665e6cdd488261f490376dd9134c3a75514, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0006 revision 1 APPROVED, and exact pinned authorities. Git Data blob/tree/commit plus non-force ref-update primitives were available for one atomic implementation commit and one report-only child."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0006 designates no authoritative verifier. Exact candidate blobs were audited against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 record shapes, document-token rules, typed references, resolved-unknown attribution, feature/flow subset traceability, graph reachability/orphan semantics, and closure accounting. A separate native local runner was attempted but unavailable before command execution; it was not a task capability requirement and no weaker authoritative-verification claim is made."
+
+local_hygiene:
+  result: PASS
+  run_root: "/tmp/task-0006-28444"
+  cleanup_performed: true
+  retained: []
+  evidence: "No operator target checkout was mutated. Run-owned ChatGPT-native scratch roots created or probed during verification setup were bounded under /tmp and removed; the unavailable native runner executed no command and created no host scratch state."
+
+changed_files:
+  - path: docs/INTERFACES.md
+    summary: "Add authority-NONE INTERFACES migration draft for the Core public API and Core-to-Evaluator semantic contract boundaries, async work semantics, data exchange/trust, and downstream exact-contract materialization rules."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Materialize IFC-001 and IFC-002, map FLW interface_refs, replace all six migrated feature interface unresolved relations with typed IFC refs, resolve UNK-002, and advance only the three authorized interface coverage concerns to L1."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Add dedicated docs/DECISIONS.md#UNK-002 resolution evidence required by the pinned V1 unknown-resolution model; no DEC identity or neighboring-domain decision is created."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "5a47ecfbb9e07642a888a4d9604ae1a3ee3bdd70"
+    message: "docs(TASK-0006): migrate INTERFACES catalog"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "docs/INTERFACES.md explicitly declares MIGRATION DRAFT / AUTHORITY NONE and keeps legacy canonical owners authoritative. Web remains presentation-only, SYS-002 Core remains the sole learner/admin product API and application-runtime persistence authority, and SYS-003 Evaluator remains a bounded internal capability whose output is non-authoritative until Core reconciliation."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Catalog adds exactly two material API identities: IFC-001 Core public product API owned by SYS-002 with SYS-001 peer, and IFC-002 Core-to-Evaluator bounded capability API owned by SYS-003 with SYS-002 peer. No endpoint/button/DTO/job-queue/provider/API-gateway identity, EXT/CAP/DEC identity, or provider-specific peer was invented."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "FLW-001 and FLW-003 use IFC-001+IFC-002, FLW-002 uses IFC-001, and FLW-004 uses IFC-002. All six affected FTR interface relations now use typed [IFC-001, IFC-002], satisfying every related flow subset. UNK-002 is RESOLVED with resolved_by_ref=IFC-001 and dedicated docs/DECISIONS.md#UNK-002 evidence; UNK-003 and UNK-004 remain OPEN DESIGN."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Exactly interfaces.contracts, interfaces.async_jobs_commands, and interfaces.data_exchange_trust advance from NONE to L1 through non-empty INTERFACES sections. interfaces.external_dependencies and interfaces.dependency_failure_exit remain NONE with empty support refs. No contracts/http/**, OpenAPI, wire fields/status codes, generated bindings, SDKs, transport DTOs, provider inventory, or implementation was materialized."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Pinned-model deterministic audit of the exact candidate found zero MODEL_ERROR, REFERENCE_ERROR, TRACEABILITY_GAP, or ORPHAN conditions. Intentional unfinished-migration closure blockers are SCOPE_OPEN=1, COVERAGE_GAP=20, and UNRESOLVED_RELATION=12, so DOCS_READY remains false."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Implementation 5a47ecfbb9e07642a888a4d9604ae1a3ee3bdd70 is exactly one direct child of authorized base 569ef665e6cdd488261f490376dd9134c3a75514. GitHub compare reports ahead_by=1 with exactly docs/INTERFACES.md, docs/catalog/project.json, and docs/DECISIONS.md changed. Publication was a non-force dev fast-forward; main remained e707aeee43411cc8f99448b63220eb8beff552b6 and topology remained exactly {dev, main}. This report is the separate report-only child."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh start and immediate pre-publication GitHub reads confirmed exact dev/main refs, topology exactly {dev, main}, TASK-0006 revision 1 APPROVED at the exact base, and exact pinned agent-skills/agent-documents authorities."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Resolved only current migration catalog/DECISIONS plus canonical design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md, and the minimum design/07-third-party-services.md context needed to preserve provider-neutral/external-domain boundaries."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Materialized only IFC-001 and IFC-002; async/job/command behavior remains semantics of those material boundaries rather than a fabricated queue/job interface. Feature/flow mappings are typed and UNK-002 closes without false N/A, provider identity, CAP state, or authority drift."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Exact candidate audit mirrored the pinned V1 validator's interface shape/kinds, global ID typing/uniqueness, INTERFACES document-token/support resolution, resolved QUESTION fields and DECISIONS token binding, typed flow/feature relations, flow-subset traceability, material graph reachability/orphan detection, and closure accounting. Result: zero structural/reference/traceability/orphan failures; expected closure blockers only 1+20+12."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale state was refreshed immediately before the non-force dev ref update. GitHub proves implementation parent=569ef665e6cdd488261f490376dd9134c3a75514, tree=8109f70bbf4a11d9a5f8dfb048e7b02e168b6f6a, ahead_by=1, and exactly three implementation files. Dev then resolved to the implementation SHA while main/topology stayed pinned; the canonical report is the only remaining child mutation."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Run-owned scratch was removed. Published implementation is 5a47ecfbb9e07642a888a4d9604ae1a3ee3bdd70; only this canonical report-only child remains to finalize Executor evidence."
+
+result: NEEDS_REVIEW
