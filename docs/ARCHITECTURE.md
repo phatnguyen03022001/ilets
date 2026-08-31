@@ -77,7 +77,7 @@ These are architecture-level relationships only. Exact `IFC-*`, `DAT-*`, externa
 | `SYS-002` Core API | Go, `net/http`, `chi` | public product API, deterministic orchestration, product authorization, and sole application persistence access |
 | `SYS-003` Evaluator | Python, FastAPI | bounded internal evaluator capability only; no product-state authority |
 | Core persistence boundary | PostgreSQL-compatible authoritative store | application access remains Core-only; storage schema is derived rather than semantic authority |
-| Cross-runtime HTTP boundaries | one exact machine contract per material boundary once materialized | parallel runtimes do not independently author equivalent wire truth; INTERFACES migration remains unresolved |
+| Cross-runtime HTTP boundaries | one exact machine contract per material boundary once materialized | parallel runtimes do not independently author equivalent wire truth; semantic INTERFACES migration is resolved, while exact machine-contract materialization remains future work |
 
 Patch versions, concrete deployment topology, provider inventory, exact persistence schema, and exact machine contracts remain with their existing canonical owners and are not materialized here.
 
