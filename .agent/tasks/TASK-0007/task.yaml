@@ -1,0 +1,141 @@
+protocol_version: 3
+
+task_id: TASK-0007
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0006
+  gap_id: QUALITY_DOMAIN_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@0af34c5036bff0526e52e2c22932b49f08c23e37"
+    role: "Current target truth after accepted TASK-0006. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 QUALITY ownership and coverage semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; QUALITY documentation depth must not be reported as standards PASS or maturity."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents QUALITY template/model plus canonical IELTS design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md, design/07-third-party-services.md and existing repository verification contract where directly relevant."
+  rationale: "Current canonical target design already specifies authentication/authorization boundaries, secret handling, privacy/data-egress constraints, retry/idempotency/recovery and concurrency semantics, performance/resource and cost planning bounds, observability classes, and verification expectations. This slice migrates those existing quality properties only; it does not perform assurance assessment or provider/CAP resolution."
+
+objective: "Create the non-authoritative QUALITY migration draft and advance only the ten V1 quality coverage concerns to design-sufficient treatment actually supported by current canonical target truth, without changing runtime behavior, external-dependency inventory, build/buy state, or engineering-assurance status."
+
+scope:
+  required_changes:
+    - "Create docs/QUALITY.md as MIGRATION DRAFT / AUTHORITY NONE. Migrate only current canonical quality constraints for authentication; authorization/trust; secrets/sensitive operations; privacy; timeout/retry/idempotency/recovery; concurrency/failure boundaries; performance/load/resources; observability; testing/evidence; and cost/usage bounds."
+    - "Reference PRODUCT/BEHAVIOR/DATA/INTERFACES ownership instead of duplicating behavioral permission matrices, learner/evidence semantics, or retention values."
+    - "Preserve selected auth/session authority split, Core-owned authorization, Core-only authoritative persistence, bounded internal Evaluator trust, minimum-necessary external data egress, and the distinction between product/provider failure and learner evidence."
+    - "Preserve current cost policy as a planning/admission constraint rather than an invoice guarantee: public request planning volume, operating target, variable-spend safety ceiling, and degrade/deny behavior may be migrated only with the same caveats and authority already present in canonical design. Do not invent new provider pricing or universal scaling thresholds."
+    - "Preserve retry/idempotency/concurrency semantics around authoritative mutation and async work; do not turn queue/provider state, cache, telemetry, or timeout into business-state authority."
+    - "Describe performance/load/resource treatment at the current design level only. Do not introduce Kubernetes, Kafka, service mesh, multi-region active-active, second queue/cache, fixed autoscaling constants, or unsupported SLO numbers."
+    - "Describe observability and verification/evidence strategy without turning logs/metrics/tests into product truth or standards PASS. Existing repository verifier/evidence boundaries may be referenced; do not create GitHub Actions or new tooling."
+    - "Advance only quality.authentication, quality.authorization_trust_boundaries, quality.secrets_sensitive_operations, quality.privacy_sensitive_data, quality.timeouts_retries_idempotency_recovery, quality.concurrency_failure_boundaries, quality.performance_load_resources, quality.observability, quality.testing_evidence, and quality.cost_usage_bounds to L1 when backed by non-empty QUALITY sections."
+    - "Keep architecture.build_buy, interfaces.external_dependencies, interfaces.dependency_failure_exit, delivery.*, decisions.material_choices, unknowns.open_questions and UNK-003/UNK-004 unchanged. Do not create EXT/CAP/DEC identities."
+    - "Validate exact candidate catalog/reference/coverage/closure semantics against agent-documents@acb3f02616e700190586681306a86905792e4c07. Model/reference/traceability/orphan errors are not acceptable; unfinished migration blockers are."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - docs/QUALITY.md
+    - .agent/tasks/TASK-0007/report.yaml
+  allowed_existing_files:
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0007/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy canonical owners remain unchanged; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1; milestone.scope_state remains OPEN."
+  - "No ACT/ROL/FTR/ACC/FLW/SYS/DAT/IFC/EXT/CAP/DEC/UNK semantic mutation except catalog quality coverage updates."
+  - "No standards PASS/level, DOCS_READY, design lock, implementation readiness, promotion, release, or provider activation claim."
+  - "main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly {dev, main}."
+
+forbidden_changes:
+  - "No legacy docs, PRODUCT/BEHAVIOR/ARCHITECTURE/DATA/INTERFACES/DECISIONS prose mutation, code, contracts, workflows, tools, provider inventory, deployment config, main, or external repository mutation."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "QUALITY migration preserves authority boundaries and does not duplicate neighboring domain truth."
+  - id: AC-2
+    requirement: "All ten quality concerns receive truthful design-sufficient L1 treatment from current canonical target design, with no invented values or infrastructure."
+  - id: AC-3
+    requirement: "Security/privacy/reliability/performance/observability/testing/cost semantics remain bounded and do not become product/learner/assurance authority."
+  - id: AC-4
+    requirement: "Catalog remains structurally valid and intentionally incomplete, with zero model/reference/traceability/orphan defects."
+  - id: AC-5
+    requirement: "Implementation is one exact-base child changing only docs/QUALITY.md + docs/catalog/project.json; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only current migration docs/catalog and canonical quality/runtime/provider-boundary owners needed for the ten concerns."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest truthful QUALITY draft and advance only supported quality coverage."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/coverage/closure validation plus semantic audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
