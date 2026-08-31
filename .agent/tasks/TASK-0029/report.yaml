@@ -1,0 +1,211 @@
+protocol_version: 3
+
+task_id: TASK-0029
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0029/task.yaml
+  commit: "59f651cb335f1de4c68e2bb1d22df1aeaddbcdbb"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "59f651cb335f1de4c68e2bb1d22df1aeaddbcdbb"
+  pre_execution_head: "59f651cb335f1de4c68e2bb1d22df1aeaddbcdbb"
+  final_execution_head: "46a49258a8d0834c53c3f3a48a8358f15b94b7b6"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+structure_model:
+  repository: phatnguyen03022001/agent-documents
+  authorized_revision: "acb3f02616e700190586681306a86905792e4c07"
+  observed_revision: "acb3f02616e700190586681306a86905792e4c07"
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  design_lock_confirmed: true
+  accepted_task_0028_residual_set_confirmed: true
+  accepted_task_0027_successor_baseline_confirmed: true
+  topology_confirmed: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native reads established dev=59f651cb335f1de4c68e2bb1d22df1aeaddbcdbb, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}; TASK-0029 revision 1 was APPROVED at the exact base; accepted TASK-0028 RES-001..RES-013, accepted TASK-0027 successor validation, agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c and agent-documents@acb3f02616e700190586681306a86905792e4c07 resolved before mutation."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0029 specifies no external authoritative verifier. The exact detached candidate 46a49258a8d0834c53c3f3a48a8358f15b94b7b6 was evaluated before ref publication against the deterministic pinned agent-documents V1 model and validator source using GitHub-native exact-SHA reads. No local/runtime/Codex execution surface was used or required."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "GitHub-native execution only; no local checkout, Agent Runtime, Mac, tunnel, Codex, temporary branch or local artifact was created or used. Detached Git objects not referenced by dev, including superseded candidate aa7cf5b60ae21eee6d78e94b400e921d9b778048, are non-authoritative and not part of publication lineage."
+
+changed_files:
+  - path: docs/product/ielts-exam-and-bands.md
+    summary: "Add the legal PRODUCT shard preserving RES-001 external IELTS family/scoring/delivery/administrative semantics and RES-002 Bands 3-9 threshold/exit semantics."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/curriculum-and-coverage.md
+    summary: "Add the legal PRODUCT shard preserving RES-003 complete 44-node curriculum/selectors/dependency routing and RES-013 coverage/status/gap/TCS/reachability/official-family/TargetSupportDeclaration promotion semantics."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/behavior/practice-and-media.md
+    summary: "Add the legal BEHAVIOR shard preserving RES-004 learning phases/LM/PT/feedback/effectiveness, RES-008 all 28 PM modes plus purpose/candidacy/retry semantics, and RES-009 transcript/player/media-source legality and failure semantics."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/behavior/planner-and-lifecycle.md
+    summary: "Add the legal BEHAVIOR shard preserving RES-010 seven-stage Planner, hard eligibility/assignment serialization, Flows A-L and legal runtime lifecycle/transition/failure semantics."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/data/evidence-progression-content.md
+    summary: "Add the legal DATA shard preserving RES-005 Assessment/EvidenceRequirement/AT/evidence semantics, RES-006 GapEvaluation/ActionIntent/certification/regression semantics, and RES-007 CTX/PRES/content/similarity/exposure/manifest/validation semantics."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/architecture/internal-service-trust.md
+    summary: "Add the legal ARCHITECTURE shard preserving RES-011 Core-to-Evaluator Cloud Run IAM plus Google-signed OIDC service-identity trust boundary and material boundary authority rules."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/interfaces/provider-lifecycle-and-routes.md
+    summary: "Add the legal INTERFACES shard preserving RES-012 eight-state provider lifecycle, selected/deferred/TBD capability inventory, exact provider/infrastructure routes, Clerk audience and activation/calibration/exit rules."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Add only seven matching-domain coverage support_refs for the seven legal shards; preserve model_version, FROZEN milestone, every existing ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK identity, relation, decision, unknown resolution and root semantics."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "46a49258a8d0834c53c3f3a48a8358f15b94b7b6"
+    message: "docs(TASK-0029): preserve residual authority semantics"
+
+pushed: true
+promoted_to_main: false
+
+residual_migration:
+  - residual_refs: [RES-001, RES-002]
+    successor_ref: "docs/product/ielts-exam-and-bands.md#IELTS-EXAM-BANDS"
+  - residual_refs: [RES-003, RES-013]
+    successor_ref: "docs/product/curriculum-and-coverage.md#CURRICULUM-COVERAGE"
+  - residual_refs: [RES-004, RES-008, RES-009]
+    successor_ref: "docs/behavior/practice-and-media.md#PRACTICE-MEDIA"
+  - residual_refs: [RES-010]
+    successor_ref: "docs/behavior/planner-and-lifecycle.md#PLANNER-LIFECYCLE"
+  - residual_refs: [RES-005, RES-006, RES-007]
+    successor_ref: "docs/data/evidence-progression-content.md#EVIDENCE-PROGRESSION-CONTENT"
+  - residual_refs: [RES-011]
+    successor_ref: "docs/architecture/internal-service-trust.md#INTERNAL-SERVICE-TRUST"
+  - residual_refs: [RES-012]
+    successor_ref: "docs/interfaces/provider-lifecycle-and-routes.md#PROVIDER-LIFECYCLE-ROUTES"
+
+model_validation:
+  candidate: "46a49258a8d0834c53c3f3a48a8358f15b94b7b6"
+  pinned_model: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+  scope_state: FROZEN
+  model_defects: 0
+  reference_defects: 0
+  coverage_defects: 0
+  traceability_defects: 0
+  reachability_or_orphan_defects: 0
+  unresolved_relation_or_blocking_unknown_defects: 0
+  docs_ready: true
+  evidence: "Accepted TASK-0027 proves the inherited successor catalog/docs baseline at this pin had zero model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects and DOCS_READY=TRUE. Between that accepted baseline and TASK-0029 base, authority-audit/report/task commits did not alter the successor catalog graph. TASK-0029 changes only seven legal one-level shards plus matching support_refs. The pinned validator accepts one-level safe Markdown shards, requires each support_ref to remain in the concern's existing authority domain, resolve exactly one heading token, and contain structural support. Exact candidate reads proved all seven path/domain/token/content pairs. Catalog milestone remains FROZEN; no OPEN blocking unknown, unresolved_ref, new identity class, changed inventory relation or coverage-depth regression was introduced. Under the deterministic pinned validator predicate, the exact candidate therefore yields DOCS_READY=TRUE with zero defects/blockers."
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "All accepted residual groups RES-001..RES-013 are mapped exactly once into the seven authorized legal shards in PRODUCT, BEHAVIOR, DATA, ARCHITECTURE and INTERFACES. Each shard remains MIGRATION DRAFT / AUTHORITY NONE, so preservation does not perform cutover or transfer current authority."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Residual-by-residual comparison preserved the complete material stable/value sets required by TASK-0028: IELTS-L/R/W/S official-family identities and external facts; Bands 3-9 per-skill thresholds and exit/exclusion semantics; all 44 C-* nodes with literal Recommended edges and selector rules; LM-01..LM-12; PT-01..PT-23; all 28 PM-* modes; AT-01..AT-07; all nine GapEvaluation classes and eleven ActionIntent values/mapping; CTX-* and PRES-* registries; Planner stages/assignment boundary/Flows A-L/lifecycle states; IAM+OIDC internal trust; provider lifecycle/routes; coverage statuses, ten CoverageGap classes, full TargetCoverageSpecification conditions, reachability/family closure, and complete TargetSupportDeclaration minimum/revocation gates."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Implementation uses exactly the seven task-authorized one-level shards. No ninth authority domain or catalog key/identity class was introduced. Shards are cohesive semantic migrations rather than copies of whole legacy owners; legacy files remain untouched."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Base-to-implementation compare is exactly one direct commit and exactly eight changed files: seven new shards plus docs/catalog/project.json. No root doc required modification. Catalog change is support-reference-only by construction; model_version, FROZEN milestone, roots and all existing ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK inventories/relations remain the accepted locked state. TASK-0027 Skill/Knowledge shards are unchanged."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Independent parity was performed against every exact legacy owner/section named by accepted TASK-0028 RES-001..RES-013 and did not stop at first success. A pre-publication parity recheck detected one missing RES-013 TargetSupportDeclaration-minimum/revocation detail in an earlier unattached candidate; that candidate was discarded and the final direct-child candidate was corrected before publication. Final parity found zero omitted or consequence-changing residual semantics and each migrated semantic now has a successor-shard owner reference rather than depending exclusively on its legacy owner."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Exact final candidate 46a49258a8d0834c53c3f3a48a8358f15b94b7b6 satisfies the deterministic pinned agent-documents V1 checks: legal shard paths, unique tokens with structural content, correct authority-domain support refs, unchanged valid catalog graph, all 45 applicable concerns still at required L1, FROZEN scope, no model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects, and derived DOCS_READY=TRUE."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Implementation 46a49258a8d0834c53c3f3a48a8358f15b94b7b6 is the single published implementation direct child of exact base 59f651cb335f1de4c68e2bb1d22df1aeaddbcdbb and was published by one non-force dev fast-forward. Legacy CONSTITUTION.md/OBJECTIVE.md/spec/**/design/** and contracts/** were not mutated; no authority cutover, standards assessment, contract redesign/materialization, implementation code/schema, provider activation, main/staging mutation, promotion or release occurred."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub-native preflight and immediate pre-publication refresh confirmed exact dev base, main e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, APPROVED TASK-0029 revision 1 and exact pins; accepted TASK-0028 RES-001..RES-013 were resolved from repository authority."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Compared all thirteen residual groups against their exact canonical legacy sections, covering material identities/registries, graph edges, state/value sets, mappings, evidence/progression policies, failure/authority consequences and support/coverage gates. Final parity is zero-residual for the accepted TASK-0028 set."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "All seven files use legal one-level shard paths and unique authority tokens: IELTS-EXAM-BANDS and CURRICULUM-COVERAGE in PRODUCT; PRACTICE-MEDIA and PLANNER-LIFECYCLE in BEHAVIOR; EVIDENCE-PROGRESSION-CONTENT in DATA; INTERNAL-SERVICE-TRUST in ARCHITECTURE; PROVIDER-LIFECYCLE-ROUTES in INTERFACES. Catalog references each only from a matching existing concern authority domain."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Exact implementation compare contains no root, legacy, contract, source/runtime/provider configuration or unrelated file. No whole-file copy, authority-domain expansion, unsupported catalog identity class, product redesign, legacy mutation or cutover occurred. Existing TASK-0027 Skill/Knowledge successor semantics remain unchanged."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "The exact detached final candidate was evaluated against pinned agent-documents before publication and satisfied FROZEN + zero defects/blockers + DOCS_READY=TRUE. Stale refs were refreshed immediately before the non-force fast-forward; post-publication dev resolves exactly to the approved implementation. This report is the separate report-only child and execution stops at NEEDS_REVIEW."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No local worktree was used. Published implementation is 46a49258a8d0834c53c3f3a48a8358f15b94b7b6; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
