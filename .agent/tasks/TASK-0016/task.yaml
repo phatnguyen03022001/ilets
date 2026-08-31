@@ -1,0 +1,145 @@
+protocol_version: 3
+
+task_id: TASK-0016
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0015
+  gap_id: PRIVILEGED_EXTERNAL_RELATIONS
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@c2d0d7c00b325c359b5829c7ecadb41c3968d0cc"
+    role: "Current target truth after accepted TASK-0015. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 EXT identity, typed dependency relation, unknown-resolution, reachability and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen engineering claim/evidence semantics; no assurance assessment is performed here."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Accepted FTR-047..FTR-053 / FLW-005..FLW-006 privileged surface, accepted EXT-001..EXT-004 inventory, canonical design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md and design/07-third-party-services.md."
+  rationale: "TASK-0013 intentionally left only the seven privileged feature external-dependency relations unresolved through UNK-008. Canonical design/07 contains a broader provider inventory than these seven features require, so this task must prove the minimum material external boundaries actually traversed by privileged behavior rather than promote every selected service into the catalog. Existing EXT-001..EXT-004 are reused only where they fully represent the material dependency boundary; additional EXT identities are justified only by distinct selected/TBD external capability boundaries that a privileged feature materially depends on."
+
+objective: "Resolve UNK-008 by mapping FTR-047..FTR-053 to the smallest truthful external-dependency surface, reusing EXT-001..EXT-004 where justified and adding only minimum new EXT identities required by current privileged feature semantics, without activating providers or cataloging the whole third-party inventory."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and resolve FTR-047..FTR-053, FLW-005..FLW-006, EXT-001..EXT-004, current DATA/IFC mappings, and only canonical third-party/runtime sections needed to determine material privileged external crossings."
+    - "Preserve EXT-001..EXT-004 identities, meanings, lifecycle boundaries and current learner/evaluator mappings exactly unless canonical truth demonstrates a contradiction; contradiction is a blocker, not permission for silent rewrite."
+    - "For each privileged feature, distinguish a material external dependency from Core-owned data/state, public API interface, capability permission, provider telemetry, implementation library, route group or incidental infrastructure. A feature does not depend on every provider used somewhere in its broader flow."
+    - "Reuse an existing EXT only when its current boundary fully represents the privileged feature's material external dependency. Do not attach EXT-004 merely because AI exists elsewhere, EXT-003 merely because async work is possible, or EXT-001 merely because the actor authenticated."
+    - "Add only the minimum additional EXT identities required by canonical privileged behavior. Candidate concerns such as payment/subscription facts, secret custody, operational observability, object/media storage, transactional email or other selected/TBD routes are cataloged only if a current privileged feature materially crosses that external boundary. Do not create one EXT per provider model alias, endpoint, SDK, dashboard, log stream, storage bucket or optional/deferred service."
+    - "Each new EXT identity must be boundary-sized, have a stable semantic dependency meaning, a justified SERVICE or PLATFORM kind, criticality supported by the affected product behavior, and a structural docs/INTERFACES.md doc_ref. Provider lifecycle remains canonical in design/07; catalog identity does not imply ACTIVE."
+    - "Update FLW-005/FLW-006 dependency_refs only where the grouped flow materially crosses an external boundary. Pure Core-internal audit reconciliation must not receive provider refs merely because the audited operation used a provider earlier."
+    - "Replace each FTR-047..FTR-053 relations.dependencies unresolved_ref UNK-008 with truthful typed refs or demonstrated N/A. Uncertainty is never N/A."
+    - "Extend docs/INTERFACES.md only enough to explain newly material external boundaries plus failure/fallback/exit treatment that is materially new for those boundaries. Do not duplicate the entire design/07 provider matrix or mutable model/pricing/quota research."
+    - "Resolve UNK-008 only when all seven privileged feature dependency relations and affected grouped-flow dependency_refs are complete. Add dedicated docs/DECISIONS.md#UNK-008 resolution evidence and valid resolved_by_ref attribution."
+    - "Do not modify CAP mappings or resolve UNK-009. Preserve accepted DAT/IFC mappings and all existing provider lifecycle truth. Keep milestone.scope_state OPEN."
+    - "No provider activation/configuration, credential handling, spend authorization, exact webhook fields/signatures, OpenAPI/DTO materialization, implementation code, workflow, branch creation, staging, main mutation, promotion or release."
+    - "Current execution context is phone/ChatGPT+GitHub only. Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Validate the exact candidate against the pinned agent-documents model. Require zero model/reference/traceability/reachability/orphan defects. Remaining intentional blockers must be limited to OPEN scope plus UNK-009 and its CAP relation states."
+    - "Publish one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0016/report.yaml
+  allowed_existing_files:
+    - docs/INTERFACES.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0016/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "FTR-001..FTR-053, ACT/ROL, ACC, DAT, SYS, IFC, CAP and DEC-001..DEC-004 identities remain unchanged."
+  - "EXT-001..EXT-004 remain unchanged unless a canonical contradiction blocks execution."
+  - "UNK-005..UNK-007 remain RESOLVED; UNK-009 remains OPEN and untouched except reference-accounting effects deterministically caused by resolving UNK-008."
+  - "Milestone remains OPEN."
+  - "No capability/build-buy expansion, exact contract, provider activation, code, schema, workflow, staging, main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Every privileged FTR-047..FTR-053 has a truthful external-dependency relation using exact EXT refs or demonstrated N/A; no relation remains on UNK-008."
+  - id: AC-2
+    requirement: "The resulting EXT inventory is the smallest materially complete dependency surface for current privileged behavior; existing boundaries are reused where valid and broader design/07 provider inventory is not mechanically promoted into EXT identities."
+  - id: AC-3
+    requirement: "FLW-005..FLW-006 dependency_refs reflect actual external crossings; provider identities are not attached to purely Core-internal semantics or merely adjacent audited operations."
+  - id: AC-4
+    requirement: "UNK-008 is RESOLVED only after complete privileged dependency mapping, with valid resolution evidence and attribution; UNK-009 remains the only downstream DESIGN blocker and milestone remains OPEN."
+  - id: AC-5
+    requirement: "Pinned-model validation has zero model/reference/traceability/reachability/orphan defects; implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve privileged feature/flow behavior plus canonical third-party lifecycle/boundaries; distinguish material EXT identity from provider aliases, SDKs, telemetry, endpoints and incidental infrastructure."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Prove existing EXT reuse and any minimum justified new EXT identities, map all seven privileged dependency relations and affected flow dependency_refs, and resolve UNK-008 only when complete."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/orphan/unknown validation plus semantic audit AC-1..AC-4; confirm only intended UNK-009 CAP blockers remain."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish one implementation commit and one report-only child non-force to dev, verify final refs/topology, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
