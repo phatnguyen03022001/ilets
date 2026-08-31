@@ -1,0 +1,150 @@
+protocol_version: 3
+
+task_id: TASK-0013
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0013/task.yaml
+  commit: "07f409f37243f80695fcb98333f3ddd728960e7b"
+  blob_sha: "64fa3dc1b324d65a9a9d4b1a712729f143124401"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "07f409f37243f80695fcb98333f3ddd728960e7b"
+  pre_execution_head: "07f409f37243f80695fcb98333f3ddd728960e7b"
+  final_execution_head: "9359f0503e1fa4f6efae43a58aca0fe95bca8ae1"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub-native reads immediately before publication proved dev=07f409f37243f80695fcb98333f3ddd728960e7b, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}. TASK-0013 revision 1 was APPROVED at the exact base; the preserved four candidate blobs resolved exactly; Git Data tree/commit construction and non-force ref update were available. No local/runtime/Codex surface was probed."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0013 designates no authoritative verifier and explicitly requires GitHub-only execution with no native execution. The exact published candidate 9359f0503e1fa4f6efae43a58aca0fe95bca8ae1 was audited against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 model semantics. The audit found zero model/reference/feature-flow-subset/reachability/orphan/coverage defects. Closure intentionally remains false because scope_state is OPEN, 108 newly explicit detailed relation states are unresolved through bounded DESIGN unknowns, and UNK-006..UNK-009 are OPEN blocking unknowns. No DOCS_READY claim is made."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "No operator-local target checkout, Agent Runtime, tunnel, Mac or Codex surface was used. Candidate construction, publication and verification were GitHub-native."
+
+changed_files:
+  - path: docs/PRODUCT.md
+    summary: "Materialize the detailed feature-completeness boundary in product prose while preserving migration authority NONE, entitlement/RBAC separation and milestone OPEN."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/BEHAVIOR.md
+    summary: "Materialize FTR-007..FTR-053 behavior, two grouped privileged flows and grouped acceptance semantics while preserving the six macro anchors and neighboring abstraction boundaries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Add DEC-004, resolve UNK-005 for complete feature decomposition, and document bounded downstream DATA/IFC/EXT/CAP relation unknowns without claiming closure."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Preserve all pre-existing catalog records outside the authorized delta; add 47 detailed FTRs, ACC-008..ACC-015, FLW-005..FLW-006, DEC-004, resolve UNK-005, and add OPEN blocking UNK-006..UNK-009."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "9359f0503e1fa4f6efae43a58aca0fe95bca8ae1"
+    message: "docs(TASK-0013): decompose product features"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "FTR-007..FTR-046 map one-for-one to the 40 canonical learner aliases L-F01..L-F08, R-F01..R-F08, W-F01..W-F09, S-F01..S-F09 and X-F01..X-F06. PRODUCT/BEHAVIOR explicitly keep navigation, the 28 PM practice modes, Skill Leaves/micro-skills/Knowledge Objects, media/transcript/source state, FREE/PRO entitlement, providers/models and the AI tutor overlay outside FTR identity."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "FTR-047..FTR-053 are exactly the seven minimum privileged/admin/BOPS surface families established by TASK-0012 and canonical design: content/review/release, user support, entitlement reconciliation, operations/provider/work visibility, approved policy administration, security/access administration and consequential audit. ACT-004 plus ROL-004..ROL-007 capability/RBAC separation is preserved."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Every new FTR has explicit actor, role, flow and acceptance traceability. Learner detailed features reuse FLW-001..FLW-004 where truthful; privileged behavior adds only FLW-005 and FLW-006. ACC-008..ACC-015 group shared consequence boundaries. FTR-001..FTR-006 remain unchanged historical macro route anchors rather than completeness units."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "UNK-005 is RESOLVED by dedicated DEC-004 only after complete feature/flow/acceptance decomposition. Detailed DATA and CAP relations remain explicit through UNK-006 and UNK-009 for all 47 new features; privileged IFC and EXT relations remain explicit through UNK-007 and UNK-008. Existing IFC/EXT refs are reused for learner features only where the accepted learner flow footprint fully justifies them. No false N/A or speculative neighboring identity was created."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Pinned-model audit reports zero model/reference/traceability/orphan defects. Milestone remains OPEN. Base-to-implementation compare is ahead_by=1 with exactly docs/PRODUCT.md, docs/BEHAVIOR.md, docs/DECISIONS.md and docs/catalog/project.json modified. The implementation commit is a direct child of the exact authorized base and was published by non-force fast-forward. Post-publication refresh proved dev=9359f0503e1fa4f6efae43a58aca0fe95bca8ae1, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub state immediately before publication confirmed exact base dev=07f409f37243f80695fcb98333f3ddd728960e7b, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology {dev, main}, TASK-0013 revision 1 APPROVED, and preserved candidate blob resolution."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Canonical feature/practice/media/admin boundaries established earlier in this execution were preserved exactly in the immutable candidate: 40 learner capabilities plus seven privileged families form the detailed FTR surface; navigation, practice packaging, learning ontology, source state, entitlement, provider/model routes and AI overlay remain neighboring abstractions."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Catalog and prose materialize FTR-007..FTR-053, grouped FLW-005..FLW-006 and ACC-008..ACC-015, resolve UNK-005 through DEC-004, and add only four bounded downstream relation-domain unknowns. Exact candidate audit reconfirmed pre-existing milestone/coverage/ACT/ROL/FTR-001..006/ACC-001..007/SYS/DAT/IFC/FLW-001..004/EXT/CAP/DEC-001..003/UNK-001..004 records are preserved outside the authorized TASK-0013 delta."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Pinned agent-documents V1 semantic audit of the exact published candidate found zero MODEL_ERROR, REFERENCE_ERROR, TRACEABILITY_GAP, ORPHAN or coverage defects. Intentional closure signals are exactly SCOPE_OPEN plus 108 UNRESOLVED_RELATION instances backed by four OPEN blocking DESIGN unknowns UNK-006..UNK-009. DOCS_READY therefore remains false as required."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale state was refreshed before publication. Implementation 9359f0503e1fa4f6efae43a58aca0fe95bca8ae1 is a direct child of the exact base and dev was advanced non-force. Published diff is exactly four authorized documentation/catalog files; main and final branch topology remained unchanged before report creation."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task:
+  - "A prior interrupted TASK-0013 publication attempt transiently created unauthorized branch __dummy__ at the exact base. Architect/operator cleanup restored canonical topology to exactly {dev, main} before this resumed publication. The resumed publication created no branch, did not use that ref, and re-proved topology before mutating dev."
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Published implementation is 9359f0503e1fa4f6efae43a58aca0fe95bca8ae1; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
