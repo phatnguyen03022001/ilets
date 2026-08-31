@@ -2,11 +2,11 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Created by `TASK-0006` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0006` revision 1 and extended only for the bounded external-dependency slice by `TASK-0009` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
-> Canonical target snapshot: `phatnguyen03022001/ilets@46473042a5b8c6fc3093a7a938e18b6e281a9aa8`.
+> Canonical target snapshot: `phatnguyen03022001/ilets@4891798cc76fbb1317e51d2d231f378f9bf9dc30`.
 >
-> This document migrates semantic interface boundaries only. It does not materialize OpenAPI, wire fields/status codes, generated bindings, provider identities, deployment topology, database schema, or another product authority.
+> This document migrates semantic interface boundaries plus the smallest material external-dependency inventory and its failure/fallback/exit treatment for the current behavior slice. It does not materialize OpenAPI, wire fields/status codes, generated bindings, provider activation/configuration, deployment topology, database schema, `CAP-*` build/buy state, `DEC-*` closure, or another product authority.
 
 ## INTERFACES-CONTRACTS Material contract boundaries
 
@@ -45,7 +45,7 @@ A successful internal transport response only proves that a bounded capability r
 
 ## INTERFACES-ASYNC Asynchronous jobs and commands
 
-No separate `IFC-*` job/command identity is justified by current canonical truth. Durable work registration, dispatch claim/fencing, retry, and reconciliation are operation semantics of `IFC-001` and `IFC-002`; the canonical slice does not require an independently owned queue, broker, worker API, scheduler, or provider boundary.
+No separate `IFC-*` job/command identity is justified by current canonical truth. Durable work registration, dispatch claim/fencing, retry, and reconciliation are operation semantics of `IFC-001` and `IFC-002`; the selected external dispatch service is cataloged separately as dependency `EXT-003`, but its queue/delivery state is not an independently authoritative interface or business-work identity.
 
 For material asynchronous work:
 
@@ -59,7 +59,7 @@ For material asynchronous work:
 - accepted completion that requires downstream semantic continuation is not semantically complete until the required continuation is committed or durably/recoverably reconstructable; and
 - backlog, pending, degraded, or honestly rejected state is preferred to unbounded process/provider queues or silent quality reduction.
 
-Scheduled/background work remains conditional on a real product/operational need. This migration therefore does not invent a queue/provider identity or a third interface solely to make the catalog look complete.
+Scheduled/background work remains conditional on a real product/operational need. This migration does not invent a third interface or queue contract solely to make the catalog look complete; `EXT-003` records only the already-canonical selected external dispatch dependency.
 
 ## INTERFACES-TRUST Data exchange and trust
 
@@ -75,7 +75,56 @@ Material data crossing either interface preserves canonical semantic identity an
 
 Public projections expose only data the caller may legally observe and must not reveal another learner's protected resource, privileged content/security state, evaluator/system instructions, hidden assessment material, or provider secrets. Evaluator output remains an untrusted bounded signal until Core validates and interprets it under the owning policy, with provenance/uncertainty retained where consequential.
 
-External provider egress/ingress, callbacks, provider lifecycle, processor retention/reuse, provider failure/fallback, and exit treatment remain outside this bounded IFC inventory. `UNK-003` continues to own that unresolved external-dependency migration rather than creating `EXT-*` records here.
+External provider egress/ingress, callbacks, processor retention/reuse, failure/fallback, and exit treatment are migrated only at the semantic dependency level below. Canonical provider lifecycle and exact selected/TBD route truth remain owned by `design/07-third-party-services.md`; this migration does not promote any route to `ACTIVE`.
+
+## INTERFACES-EXTERNAL-DEPENDENCIES External dependency inventory
+
+The current migrated behavior slice justifies exactly four material `EXT-*` identities. The inventory is deliberately boundary-sized: it does not create one identity per model alias, SDK/library, endpoint, pricing plan, optional candidate, observability tool, CDN/edge service, email route, payment route, or every infrastructure product named by canonical third-party design.
+
+All concrete routes named below remain at their canonical lifecycle state. `SELECTED_FOR_IMPLEMENTATION` means selected for implementation only; it is not production activation, legal/privacy approval, data-egress approval, calibration evidence, or permission to carry real learner traffic.
+
+### EXT-001 Clerk identity and session service
+
+`EXT-001` is the selected external identity/session service for authenticated public product access. Clerk may hold credential/session mechanics and issue the external principal presented to Core, but Core retains the stable internal actor/learner identity, principal association, authorization/capability policy, entitlements, and all learner/product state.
+
+Durable learner state in this slice requires authenticated durable identity. Provider roles, organizations, permissions, or metadata cannot become Core authorization truth. Replacing the identity service therefore means re-establishing external-principal association to the same Core-owned actor semantics rather than migrating product authority into the provider.
+
+### EXT-002 Neon Launch PostgreSQL hosting
+
+`EXT-002` is the selected managed PostgreSQL hosting route for the Core-owned authoritative product store. Hosting does not own the data semantics in `docs/DATA.md`: only Core application runtime reads/writes authoritative product state, and network/provider behavior cannot redefine transaction, evidence, progression, target, or content meaning.
+
+The dependency is material because the migrated target/evidence/plan loop relies on durable Core state. Its managed-hosting identity does not create a database-schema identity, provider-owned product authority, or a requirement for a second live database.
+
+### EXT-003 Google Cloud Tasks bounded dispatch
+
+`EXT-003` is the selected bounded asynchronous dispatch service for recoverable external delivery of already accepted Core work. It is not the authority for acceptance, logical work identity, cancellation/deletion eligibility, execution ownership, or semantic completion.
+
+Core must durably register or recoverably derive required work before learner-visible acceptance depends on dispatch. A task message/delivery is an execution attempt, not business truth; dispatch claim/fencing, idempotency, current egress eligibility, completion reconciliation, and downstream semantic continuation stay anchored in Core-owned state.
+
+### EXT-004 External evaluator AI and speech provider boundary
+
+`EXT-004` is the material external provider boundary behind bounded Evaluator AI/speech capabilities used by the migrated evidence/support loop. The exact provider/model route matrix remains canonical in `design/07-third-party-services.md` and is intentionally not duplicated as one catalog identity per provider or model alias.
+
+Selected productive-evaluation, speech/transcription, realtime and translation routes remain selected-for-implementation only. Any capability whose canonical provider state remains `TBD`—including the unresolved pronunciation/acoustic route—remains unavailable as a resolved provider claim here. A successful provider response is still only bounded external output; Evaluator/Core validation, provenance, quality/uncertainty and owning Assessment/product policy determine whether it may have any downstream consequence.
+
+## INTERFACES-DEPENDENCY-FAILURE-EXIT Dependency failure, fallback, and exit
+
+Every external call is bounded by a caller deadline and an explicit retry classification. Transient failures may receive bounded retry/backoff when safe; permanent failures do not become retry storms; timeout, connection loss, or missing acknowledgement is an ambiguous outcome rather than proof that remote work did not execute. Retry/replacement preserves one logical work identity and sufficient execution-attempt/fencing state to prevent duplicate accepted learner work, provider cost, Observation, EvidenceFact, or semantic continuation.
+
+Provider ingress/output is untrusted until associated with current authoritative work and validated. Provider or infrastructure failure may leave work pending, degraded, temporarily unavailable, or unresolved; it never authorizes a fake score, learner weakness, fabricated evidence, lower target, content-quality rewrite, or silent completion.
+
+Fallback is allowed only to a pre-approved route that independently satisfies the same consequence-specific quality/calibration, privacy, security, rights, reliability, and evidence floor. A fallback label does not prove interchangeability. When no equivalent route exists, the valid outcome is delayed/unavailable/unresolved work or a semantically valid lower-consequence product path—not lower standards disguised as recovery.
+
+External egress uses only the minimum data necessary for the declared operation. Before a route may become active, applicable retention/reuse/training, deletion/export, callback authentication/replay, quota/cost and rights constraints must be satisfied under their canonical owners. A deletion/export request being sent is not deletion/export truth; ambiguous outcomes remain pending and are retried/reconciled safely, including provider copies/derived artifacts where the canonical provider contract requires them.
+
+Exit remains semantic and bounded rather than a speculative multi-provider framework:
+
+- `EXT-001`: Core-owned stable actor/learner identity and authorization state remain independent of the external subject so identity-provider replacement can re-associate principals without redefining product identity.
+- `EXT-002`: portability uses the smallest PostgreSQL-native export/restore/recovery path that preserves canonical state and migration compatibility; no second live database or automatic multi-cloud failover is implied.
+- `EXT-003`: durable Core logical-work/recovery state makes the dispatch service replaceable without treating provider queue state as accepted business state; ambiguous in-flight attempts are reconciled before safe redrive.
+- `EXT-004`: provider-neutral Evaluator capability boundaries, exact consequential provenance and consequence-specific calibration keep provider/model replacement from redefining product/evidence semantics; replacement still requires independent validation before use.
+
+These exit rules do not select alternates, activate providers, create `CAP-*` build/buy dispositions, create `DEC-*` choices, or close `UNK-004`.
 
 ## INTERFACES-EVOLUTION Exact contract materialization and evolution
 
