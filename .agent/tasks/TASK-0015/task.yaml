@@ -1,0 +1,143 @@
+protocol_version: 3
+
+task_id: TASK-0015
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0014
+  gap_id: PRIVILEGED_INTERFACE_RELATIONS
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@9c25f76ffae6eb2c867b1d3361c0fb358bbf35cd"
+    role: "Current target truth after accepted TASK-0014. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 IFC ownership, typed feature/flow relation, unknown-resolution, reachability and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen engineering claim/evidence semantics; no assurance assessment is performed here."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Accepted TASK-0013 privileged feature/flow surface plus canonical design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md and current docs/INTERFACES.md."
+  rationale: "Canonical design exposes one learner/admin-facing public API through Core and routes privileged operations through the same authenticated/capability-gated Core boundary. Current IFC-001 already states that it is the learner/admin-facing Core public product API and includes privileged mutations. TASK-0013 intentionally left only FTR-047..FTR-053 interface relations unresolved through UNK-007 so this task must first prove whether IFC-001 fully covers them and add another IFC only if canonical truth demonstrates a genuinely separate semantic runtime/trust/ownership boundary."
+
+objective: "Resolve UNK-007 by mapping the seven privileged/admin features to the smallest truthful semantic interface surface, reusing IFC-001 wherever the existing Core public API boundary fully applies and introducing no new IFC unless current canonical truth proves a distinct material interface authority boundary."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and resolve current FTR-047..FTR-053, FLW-005..FLW-006, IFC-001..IFC-002, and only the canonical API/runtime sections needed to determine privileged semantic interface crossings."
+    - "Preserve IFC-001 and IFC-002 identities, ownership, peers, meanings and current learner/evaluator mappings exactly unless canonical truth demonstrates a contradiction; contradiction is a blocker, not permission for silent rewrite."
+    - "Treat endpoint groups, admin routes, buttons, DTOs, resource types, SSE, webhook handlers, queue messages, provider SDKs and capability permissions as non-IFC concepts unless they cross a genuinely distinct semantic runtime/trust/ownership boundary."
+    - "First test whether existing IFC-001, the Core learner/admin-facing public product API consumed through Web, fully covers each of FTR-047..FTR-053. Reuse IFC-001 when the feature is an authorized public/admin read or mutation through Web/Core, including privileged operation patterns already owned by canonical design."
+    - "Add a new IFC identity only if canonical design proves a distinct material semantic interface whose owner/peer/trust boundary is not already represented by IFC-001 or IFC-002. Do not create a separate admin API merely for route organization or privilege level."
+    - "Update FLW-005 and/or FLW-006 interface_refs only where the actual grouped flow crosses an existing or newly justified IFC boundary. A purely Core-internal audit/reconciliation step must not be assigned a cross-runtime IFC just to make arrays non-empty."
+    - "Replace each FTR-047..FTR-053 relations.interfaces unresolved_ref UNK-007 with truthful typed refs once the complete privileged mapping is known. Genuine N/A is allowed only if canonical behavior proves a feature has no material interface relation; uncertainty is never N/A."
+    - "Extend docs/INTERFACES.md only if necessary to make the privileged mapping explicit or to explain a genuinely new IFC boundary. Do not materialize OpenAPI, exact routes, DTOs, fields, status codes, generated bindings, webhook/provider authentication details, or implementation adapters."
+    - "Resolve UNK-007 only when all seven privileged feature interface relations and affected grouped flow interface_refs are complete and structurally valid. Add dedicated docs/DECISIONS.md#UNK-007 resolution evidence and valid resolved_by_ref attribution."
+    - "Do not modify EXT/CAP relations or resolve UNK-008 or UNK-009. Preserve the accepted DAT inventory and mappings from TASK-0014. Keep milestone.scope_state OPEN."
+    - "Current execution context is phone/ChatGPT+GitHub only. Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Do not invoke branch-creation primitives. Mutation APIs are not discovery/validation probes."
+    - "Validate the exact candidate against the pinned agent-documents model. Require zero model/reference/traceability/reachability/orphan defects. Remaining intentional blockers must be limited to OPEN scope plus UNK-008..UNK-009 and their relation states."
+    - "Publish one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0015/report.yaml
+  allowed_existing_files:
+    - docs/INTERFACES.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0015/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "FTR-001..FTR-053, ACT/ROL, ACC, DAT, SYS, EXT, CAP and DEC-001..DEC-004 identities remain unchanged."
+  - "IFC-001 and IFC-002 remain unchanged unless a canonical contradiction blocks execution."
+  - "UNK-005 and UNK-006 remain RESOLVED; UNK-008 and UNK-009 remain OPEN and untouched except reference-accounting effects deterministically caused by resolving UNK-007."
+  - "Milestone remains OPEN."
+  - "No external-dependency/capability/build-buy expansion, exact contract, provider activation, code, schema, workflow, staging, main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Every privileged FTR-047..FTR-053 has a truthful interface relation using exact IFC refs or demonstrated N/A; no relation remains on UNK-007."
+  - id: AC-2
+    requirement: "The resulting IFC inventory is the smallest materially complete semantic interface surface for current privileged design; IFC-001 is reused for ordinary learner/admin Core API crossings and no separate admin API is invented without a distinct authority/trust boundary."
+  - id: AC-3
+    requirement: "FLW-005..FLW-006 interface_refs reflect actual runtime crossings; purely Core-internal semantics are not given artificial interface identities."
+  - id: AC-4
+    requirement: "UNK-007 is RESOLVED only after complete privileged interface mapping, with valid resolution evidence and attribution; UNK-008..UNK-009 remain explicit downstream DESIGN blockers and milestone remains OPEN."
+  - id: AC-5
+    requirement: "Pinned-model validation has zero model/reference/traceability/reachability/orphan defects; implementation/report lineage is exact; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve FTR-047..053/FLW-005..006 plus canonical privileged-operation and API boundaries; distinguish semantic IFC identity from routes, DTOs, webhooks, permissions and provider interfaces."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Prove IFC-001 reuse or the minimum justified new IFC boundary, map all seven privileged interface relations, update affected grouped flow interface_refs, and resolve UNK-007 only when complete."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/orphan/unknown validation plus semantic audit AC-1..AC-4; confirm only intended downstream blockers remain."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish one implementation commit and one report-only child non-force to dev, verify final refs/topology, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
