@@ -1,0 +1,147 @@
+protocol_version: 3
+
+task_id: TASK-0010
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0009
+  gap_id: CAPABILITY_BUILD_BUY_DECISION_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@09504f4d782a5a53f9f8c57e750cc28274525667"
+    role: "Current target truth after accepted TASK-0009. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 CAP disposition, DEC, feature-capability relation, unknown-resolution, coverage and closure semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; this migration creates no assurance result."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents ARCHITECTURE/CAP/DEC model plus canonical IELTS design/06-implementation-stack.md, design/07-third-party-services.md and the accepted SYS/EXT migration state."
+  rationale: "Canonical design already separates custom product semantics from commodity engineering/external capability routes, fixes Web/Core/Evaluator ownership, selects initial external routes behind replaceable boundaries, and defines reuse-first plus portability/exit rules. This slice migrates those existing build/buy consequences only; it does not select or activate providers or freeze scope."
+
+objective: "Complete the bounded capability/build-buy and material-decision migration for the accepted behavior slice by materializing the smallest justified CAP/DEC inventory, resolving feature capability relations and UNK-004 only where current canonical truth fully supports them, and closing the remaining build-buy/decision/unknown coverage without claiming milestone closure."
+
+scope:
+  required_changes:
+    - "Extend docs/ARCHITECTURE.md with design-sufficient CAP-* capability boundary/build-buy/exit treatment already supported by canonical design. Keep it MIGRATION DRAFT / AUTHORITY NONE."
+    - "Materialize only material CAP-* boundaries that genuinely explain implementation-driving build/buy ownership for the current migrated behavior slice. Do not create one CAP per vendor, library, endpoint, model alias, framework or minor implementation concern."
+    - "Use V1 dispositions truthfully: BUILD only for a capability resolved to project systems; BUY only for a capability resolved to external dependencies; HYBRID only when project-owned system responsibility and an external dependency jointly implement the capability boundary; DEFER only for a genuine current-milestone capability decision that is intentionally deferred and not feature-referenced."
+    - "Prefer existing canonical product/domain semantics as BUILD inside their current SYS owners and commodity/external execution behind the existing EXT boundaries where current canonical design establishes that split. Do not collapse product authority into a provider merely to make a BUY disposition simple."
+    - "Every resolved non-DEFER CAP must have the required SYS/EXT references for its disposition, one material DEC-* attribution, a non-empty ARCHITECTURE boundary_ref and truthful exit treatment under the pinned V1 model."
+    - "Materialize the minimum DEC-* records needed to explain current material build/buy choices. A decision may support more than one CAP only when it is genuinely one architectural choice; do not mechanically create one DEC per CAP or combine unrelated choices into one mega-decision."
+    - "For each material DEC-* add design-sufficient docs/DECISIONS.md explanation covering context, selected outcome, rejected/alternative direction where material, rationale, consequences and reversibility without duplicating mutable provider pricing/benchmark/quota research."
+    - "Map FTR.capabilities only where the CAP inventory fully and truthfully covers the material capability relation for that feature. Resolve UNK-004 only if all six affected feature capability relations are typed without false N/A or speculative CAP identities. If resolved, add dedicated docs/DECISIONS.md#UNK-004 evidence and valid resolved_by_ref attribution."
+    - "Advance architecture.build_buy and decisions.material_choices to L1 when supported by non-empty ARCHITECTURE/DECISIONS sections. Advance unknowns.open_questions to L1 only if the migration set truthfully documents the unknown inventory/resolutions and no required open design relation is hidden."
+    - "Preserve provider lifecycle truth: SELECTED_FOR_IMPLEMENTATION is not ACTIVE; pronunciation/acoustic provider state remains TBD where canonical design says so; provider selection/activation, pricing, calibration evidence and runtime configuration are not changed by CAP/DEC migration."
+    - "Preserve the accepted EXT-001..EXT-004 inventory and existing SYS/DAT/IFC identities unless a model-valid relation update requires references only. Do not create new EXT identities in this task."
+    - "Keep milestone.scope_state OPEN. Do not claim DOCS_READY, design lock, cutover, implementation readiness, standards PASS, promotion or release even if all coverage gaps and unresolved relations reach zero. Scope freeze/closure is a later explicit Architect-controlled step."
+    - "Validate exact candidate CAP disposition requirements, DEC references, feature-capability typing, global refs, reachability/orphan semantics, unknown resolution and coverage/closure accounting against agent-documents@acb3f02616e700190586681306a86905792e4c07. Structural/reference/traceability/orphan defects are not acceptable; SCOPE_OPEN is expected to remain."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0010/report.yaml
+  allowed_existing_files:
+    - docs/ARCHITECTURE.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0010/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy canonical owners remain unchanged; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1 and milestone.scope_state remains OPEN."
+  - "Existing ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT identities remain unchanged except authorized capability/decision references."
+  - "No new provider route, provider activation, exact contract, code, deployment/configuration, pricing constant or assurance claim."
+  - "UNK-001..UNK-003 remain RESOLVED; UNK-004 changes only if this exact task fully resolves its affected feature capability relations."
+  - "main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly {dev, main}."
+
+forbidden_changes:
+  - "Do not modify legacy canonical docs, docs/PRODUCT.md, docs/BEHAVIOR.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, code, contracts, workflows, tools, migrations, deployment/provider configuration, main or external repositories."
+  - "Do not invent generic multi-provider frameworks, dynamic routing/failover, a second queue/cache/database, Kubernetes/Kafka/service-mesh infrastructure, or material CAP/DEC records solely to satisfy catalog shape."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "CAP inventory is minimal, material and truthful under V1 BUILD/BUY/HYBRID/DEFER semantics while preserving product/system/provider authority boundaries."
+  - id: AC-2
+    requirement: "Material DEC records explain current build/buy choices with correct reversibility and no mutable research promoted to canonical constants."
+  - id: AC-3
+    requirement: "Feature capability relations and UNK-004 resolve only to the extent fully supported, with no false N/A or speculative capability identities."
+  - id: AC-4
+    requirement: "architecture.build_buy, decisions.material_choices and, when justified, unknowns.open_questions reach L1 while milestone scope remains OPEN and no DOCS_READY/cutover claim is made."
+  - id: AC-5
+    requirement: "Catalog remains structurally valid with zero model/reference/traceability/orphan defects; implementation is one exact-base child changing only docs/ARCHITECTURE.md, docs/DECISIONS.md and docs/catalog/project.json; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only canonical implementation-stack/third-party owners plus accepted SYS/EXT state needed to derive material CAP/DEC boundaries."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest truthful CAP/DEC inventory; map feature capability relations and resolve UNK-004 only if fully supported."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model CAP/DEC/reference/feature-relation/reachability/orphan/coverage/unknown/closure validation plus semantic audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
