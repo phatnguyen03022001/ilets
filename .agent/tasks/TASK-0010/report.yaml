@@ -1,0 +1,144 @@
+protocol_version: 3
+
+task_id: TASK-0010
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0010/task.yaml
+  commit: "4ae466876dfd57479170bf1e43c6a713a75e05f8"
+  blob_sha: "4a80cbcd08b8999af7aa27ac6aaf86ae8ebab412"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "4ae466876dfd57479170bf1e43c6a713a75e05f8"
+  pre_execution_head: "4ae466876dfd57479170bf1e43c6a713a75e05f8"
+  final_execution_head: "efe355de5d9ec3959ebb381d0cb9d96a7d77dd8c"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub reads proved dev=4ae466876dfd57479170bf1e43c6a713a75e05f8, main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}; TASK-0010 revision 1 was APPROVED at the exact base and the pinned agent-skills/agent-documents revisions resolved. Git Data blob/tree/commit and non-force ref update were available for one atomic implementation commit plus one report-only child."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0010 designates no authoritative verifier. The exact published candidate blobs were audited against agent-documents@acb3f02616e700190586681306a86905792e4c07 V1 CAP/DEC shapes, typed references, feature-capability relations, resolved-unknown attribution, coverage, reachability/orphan and closure semantics. The optional operator-local Agent Runtime tunnel was unavailable before command execution; it was not a required task capability and no native-runner or authoritative-verification PASS is claimed."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "No operator target checkout was mutated or used as authority. The optional local-runner availability probe failed before executing a command, and no target-local temporary artifact was created."
+
+changed_files:
+  - path: docs/ARCHITECTURE.md
+    summary: "Add authority-NONE L1 CAP/build-buy/exit treatment for the five material current capability boundaries while preserving Web/Core/Evaluator and provider authority boundaries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Add three material build/buy decisions, bounded unknown inventory treatment, and dedicated UNK-004 resolution evidence without promoting mutable provider research or activation state."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Materialize CAP-001..CAP-005 and DEC-001..DEC-003, replace all six feature capability unresolved relations with typed CAP refs, resolve UNK-004, and advance build-buy/decision/unknown coverage to L1 while keeping scope OPEN."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "efe355de5d9ec3959ebb381d0cb9d96a7d77dd8c"
+    message: "docs(TASK-0010): migrate CAP build-buy decisions"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Catalog contains exactly five material capability boundaries: CAP-001 BUILD in SYS-002 and CAP-002..CAP-005 HYBRID across existing SYS/EXT boundaries. No pure BUY is fabricated because each external dependency supports but does not own the whole capability; no feature-referenced DEFER is created. Product semantics, stable identity/authorization, authoritative persistence/work state and final result interpretation remain project-owned."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Exactly three BUILD_BUY decisions cover three genuine choices: DEC-001 keeps authoritative product policy in Core; DEC-002 groups the single commodity-infrastructure choice spanning identity, managed PostgreSQL and bounded dispatch behind Core authority; DEC-003 keeps the Evaluator project-owned while external AI/speech execution stays behind adapters. All are COSTLY and document context, selected outcome, rejected direction, rationale, consequences and reversibility without pricing/quota/benchmark constants."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "FTR-001 resolves to CAP-001..CAP-003 only; FTR-002..FTR-006 resolve to CAP-001..CAP-005. No false N/A is used. UNK-004 is RESOLVED with resolved_by_ref=CAP-001 and dedicated docs/DECISIONS.md#UNK-004 evidence. Selected provider routes remain SELECTED_FOR_IMPLEMENTATION rather than ACTIVE and pronunciation/acoustic routing remains canonical TBD."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "architecture.build_buy, decisions.material_choices and unknowns.open_questions each advance from NONE to L1 with non-empty authority-domain support sections. model_version remains 1 and milestone.scope_state remains OPEN. Closure accounting has zero coverage gaps, zero unresolved feature relations and zero open blocking unknowns, while SCOPE_OPEN intentionally remains; therefore no DOCS_READY, cutover, design lock, implementation readiness, standards PASS, promotion or release is claimed."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Implementation efe355de5d9ec3959ebb381d0cb9d96a7d77dd8c is exactly one direct child of authorized base 4ae466876dfd57479170bf1e43c6a713a75e05f8. GitHub compare reports ahead_by=1 and exactly docs/ARCHITECTURE.md, docs/DECISIONS.md and docs/catalog/project.json changed. Published catalog blob b7395d0883103b5f74a95ecc091e8618b3a383e4 exactly matches the pre-audited candidate. Publication was a non-force dev fast-forward; main remained e707aeee43411cc8f99448b63220eb8beff552b6 and topology remained exactly {dev, main}. This report is the separate report-only child."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh start and immediate pre-publication GitHub reads confirmed exact dev/main refs, topology exactly {dev, main}, TASK-0010 revision 1 APPROVED at exact base, agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c and agent-documents@acb3f02616e700190586681306a86905792e4c07."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Resolved only canonical design/06-implementation-stack.md, design/07-third-party-services.md and the already accepted SYS/EXT migration state needed to derive Core-owned product authority, external identity/managed PostgreSQL/dispatch support, and the bounded Evaluator provider boundary. No neighboring provider or implementation domain was promoted into this migration."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Materialized five CAP and three DEC records only. CAP identities are boundary-sized rather than vendor/model/library-sized; DEC-002 is shared only because identity, hosted PostgreSQL and dispatch instantiate one common commodity-infrastructure-behind-Core-authority decision. All six feature capability relations are fully typed and UNK-004 closes without false N/A, new EXT identities, provider activation or speculative DEFER records."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Pinned V1 delta-complete deterministic audit reused the exact accepted base for unchanged references and re-applied the pinned CAP/DEC field/disposition rules, global ID/reference typing, ARCHITECTURE/DECISIONS support-token requirements, feature-capability relation typing, resolved-unknown attribution, graph reachability/orphan logic, coverage depth and closure accounting to the exact candidate. Result: zero model/reference/traceability/orphan defects in the changed closure surface, zero coverage gaps, zero unresolved relations and zero open blocking unknowns; the sole expected closure signal is SCOPE_OPEN because milestone.scope_state remains OPEN. Semantic AC-1..AC-4 audit found no product/provider authority drift, false ACTIVE/TBD claim, false N/A, or mutable provider research promoted into DEC truth."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale state was refreshed immediately before publication and still showed dev=4ae466876dfd57479170bf1e43c6a713a75e05f8 with main/topology pinned. GitHub proves implementation efe355de5d9ec3959ebb381d0cb9d96a7d77dd8c is ahead_by=1 from that exact base with exactly the three authorized implementation files; dev was advanced by non-force update only. A second refresh proved dev at the implementation SHA with main/topology unchanged before this canonical report-only child was created."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No operator target worktree was used. Published implementation is efe355de5d9ec3959ebb381d0cb9d96a7d77dd8c; this canonical report is the separate report-only child."
+
+result: NEEDS_REVIEW
