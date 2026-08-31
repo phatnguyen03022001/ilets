@@ -1,0 +1,140 @@
+protocol_version: 3
+
+task_id: TASK-0019
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0018
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@6a47de1fe336c4107c5d61c28e44222e3067dfcc"
+    role: "Current target state including truthful TASK-0018 BLOCKED report. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 closure/blocker semantics; this task does not freeze scope."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 3
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0018 GAP-001 plus accepted TASK-0013..TASK-0017 relation-domain state."
+  rationale: "TASK-0018 proved a false-closure blocker caused by stale migration prose: catalog relations and UNK-001..UNK-009 are resolved, while several authority-NONE docs still describe those exact relation domains/unknowns as unresolved. The fix is state reconciliation only, not product redesign or scope freeze."
+
+objective: "Reconcile stale migration closure-state assertions with the already-accepted resolved relation/unknown state, without changing product semantics, identities, relations, milestone scope_state, legacy authority, or downstream lifecycle authority."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and resolve TASK-0018 GAP-001 evidence before editing."
+    - "Correct only stale migration-state prose that still claims already-resolved DATA/IFC/EXT/CAP relation work or UNK-001..UNK-009 remains OPEN/incomplete."
+    - "At minimum inspect and reconcile the GAP-001 locations in docs/PRODUCT.md, docs/BEHAVIOR.md, docs/DATA.md, docs/QUALITY.md, docs/DELIVERY.md and docs/DECISIONS.md."
+    - "Where text explains why milestone scope is OPEN, update it truthfully: relation/unknown work is resolved; scope remains OPEN only because the post-reconciliation semantic closure/freeze audit has not yet passed."
+    - "Preserve all product/domain semantics, actor/role/entitlement definitions, FTR/FLW/ACC behavior, SYS/DAT/IFC/EXT/CAP/DEC identities and relations, provider lifecycle, quality/delivery requirements, and canonical legacy truth."
+    - "Do not change docs/catalog/project.json milestone.scope_state; it must remain OPEN in this task. Do not claim DOCS_READY."
+    - "Do not add new features, unknowns, relation identities, providers, capabilities, decisions or deeper design merely to improve wording. If reconciliation exposes a genuinely new material contradiction rather than stale wording, stop BLOCKED and report it instead of redesigning."
+    - "Validate the exact candidate against the pinned agent-documents model/reference/reachability semantics and independently confirm no stale assertion remains that contradicts resolved UNK-001..UNK-009/current typed relations."
+    - "Do not perform closure freeze, DESIGN LOCK, authority cutover, legacy retirement, standards assessment, exact contracts, implementation planning/code, provider activation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Publish one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0019/report.yaml
+  allowed_existing_files:
+    - docs/PRODUCT.md
+    - docs/BEHAVIOR.md
+    - docs/DATA.md
+    - docs/QUALITY.md
+    - docs/DELIVERY.md
+    - docs/DECISIONS.md
+    - .agent/tasks/TASK-0019/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "milestone.scope_state remains OPEN."
+  - "UNK-001..UNK-009 remain RESOLVED."
+  - "All ACT/ROL/FTR/ACC/FLW/SYS/DAT/IFC/EXT/CAP/DEC identities, meanings and typed relations remain unchanged."
+  - "No design lock, cutover, standards PASS, contracts, code, schema, provider activation, staging, main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Every stale closure-state assertion identified by TASK-0018 GAP-001 is reconciled with the accepted resolved relation/unknown state."
+  - id: AC-2
+    requirement: "Edits are state-prose-only: no product/domain semantic, identity, relation, provider lifecycle, quality/delivery requirement or legacy authority changes occur."
+  - id: AC-3
+    requirement: "docs/PRODUCT.md#Scope and equivalent migration-boundary prose truthfully state that relation/unknown work is resolved while milestone remains OPEN pending a new closure/freeze audit."
+  - id: AC-4
+    requirement: "Pinned-model/reference audit has zero defects attributable to the reconciliation and finds no remaining stale assertion contradicting UNK-001..UNK-009 RESOLVED/current typed relations."
+  - id: AC-5
+    requirement: "Implementation/report lineage is exact; milestone stays OPEN; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Audit all GAP-001 locations plus directly equivalent migration-state prose for stale claims against current resolved catalog truth."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Apply only minimum stale-state wording corrections; preserve semantics/identities/relations and scope_state OPEN."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Validate pinned model/references and re-audit for stale closure contradictions; if a genuine new semantic gap appears, stop BLOCKED rather than redesign."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish one implementation commit and one report-only child non-force to dev, verify final refs/topology, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
