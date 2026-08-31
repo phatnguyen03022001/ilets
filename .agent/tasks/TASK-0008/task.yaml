@@ -1,0 +1,143 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0007
+  gap_id: DELIVERY_DOMAIN_MIGRATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@560a2798710fcf463c2eb32022252a84438224f1"
+    role: "Current target truth after accepted TASK-0007. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/* migration artifacts remain authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 DELIVERY ownership and coverage semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen V1 engineering claim/evidence semantics; DELIVERY documentation depth is not an assurance result."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "agent-documents DELIVERY template/model plus canonical IELTS design/06-implementation-stack.md, design/07-third-party-services.md, current architecture/data/interfaces/quality migration drafts for cross-reference, and existing repository verification/deployment constraints where directly relevant."
+  rationale: "Current canonical design already fixes environment/configuration separation, deployment/release and rollback invariants, persistence migration/restore boundaries, compatibility/version-skew requirements, and operational ownership responsibilities. This slice migrates those DELIVERY properties only; external dependency inventory, build/buy capability decisions, provider activation and exact deployment configuration remain separate unresolved work."
+
+objective: "Create the non-authoritative DELIVERY migration draft and advance only the five V1 delivery coverage concerns to design-sufficient treatment already supported by current canonical target truth, without materializing external dependency/capability/decision inventory or deployment implementation."
+
+scope:
+  required_changes:
+    - "Create docs/DELIVERY.md as MIGRATION DRAFT / AUTHORITY NONE. Migrate only current canonical treatment for environments/configuration; deployment/migration/rollback; backup/restore; compatibility/versioning/platform constraints; and operational ownership."
+    - "Preserve environment-specific configuration as deployment/bootstrap input rather than product/domain authority. Secrets remain under QUALITY/security ownership; typed runtime policy remains distinct from secret custody and provider control-plane state."
+    - "Preserve the three logical runtime units and their trust/persistence boundaries across deployment or co-location. Deployment topology may change only without moving Web/Core/Evaluator semantic authority or Core-only authoritative application persistence."
+    - "Preserve ordered/versioned schema migration, application/schema compatibility, bounded rollout/rollback and accepted-work recovery semantics without inventing DDL, migration commands, provider products, exact rollout percentages, RPO/RTO or universal SLO constants."
+    - "Preserve backup/restore as recovery evidence for authoritative product state, including deletion/tombstone reconciliation and credible provider-exit restore where current canonical design requires it. Do not create a second live database, automatic multi-cloud failover or provider-specific backup implementation."
+    - "Preserve machine-contract and generated-artifact compatibility/version-skew rules already owned by INTERFACES/architecture. Deployment cannot silently place incompatible producer/consumer/schema revisions into a supported skew direction."
+    - "Describe operational ownership for runtime health, incidents, config/release provenance, rollback/recovery, cost/capacity observations and provider degradation at the current design level only. Operational telemetry/control-plane state remains evidence/operations state, not product truth."
+    - "Advance only delivery.environments_config, delivery.deployment_migration_rollback, delivery.backup_restore, delivery.compatibility_versioning_platforms and delivery.operational_ownership to L1 when backed by non-empty DELIVERY sections."
+    - "Keep architecture.build_buy, interfaces.external_dependencies, interfaces.dependency_failure_exit, decisions.material_choices, unknowns.open_questions, UNK-003 and UNK-004 unchanged. Do not create EXT/CAP/DEC identities or provider inventory."
+    - "Do not create deployment manifests, Terraform, Docker/Kubernetes configuration, GitHub Actions, secrets, provider configuration, exact environment files, release scripts, migrations, contracts, code or other implementation artifacts."
+    - "Validate exact candidate catalog/reference/coverage/closure semantics against agent-documents@acb3f02616e700190586681306a86905792e4c07. Model/reference/traceability/orphan errors are not acceptable; unfinished migration blockers are."
+    - "Publish one bounded implementation commit non-force to dev, then a separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - docs/DELIVERY.md
+    - .agent/tasks/TASK-0008/report.yaml
+  allowed_existing_files:
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0008/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy canonical owners remain unchanged; docs/* remain authority NONE until explicit cutover."
+  - "model_version remains 1; milestone.scope_state remains OPEN."
+  - "No existing entity inventory, typed relation or UNK semantic state changes; only authorized delivery coverage changes."
+  - "No EXT/CAP/DEC/provider inventory, provider activation, exact deployment implementation or external dependency closure."
+  - "No standards PASS/level, DOCS_READY, design lock, implementation readiness, promotion or release claim."
+  - "main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly {dev, main}."
+
+forbidden_changes:
+  - "No legacy docs, PRODUCT/BEHAVIOR/ARCHITECTURE/DATA/INTERFACES/QUALITY/DECISIONS prose mutation, code, contracts, workflows, tools, migrations, provider inventory, deployment config, main or external repository mutation."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "DELIVERY migration preserves authority boundaries and does not duplicate neighboring domain truth."
+  - id: AC-2
+    requirement: "All five delivery concerns receive truthful design-sufficient L1 treatment with no invented deployment/provider/SLO details."
+  - id: AC-3
+    requirement: "Deployment, rollback, restore, compatibility and operational ownership preserve current Web/Core/Evaluator, persistence, data-lifecycle, interface and quality invariants."
+  - id: AC-4
+    requirement: "Catalog remains structurally valid and intentionally incomplete, with zero model/reference/traceability/orphan defects and unchanged UNK-003/UNK-004 relations."
+  - id: AC-5
+    requirement: "Implementation is one exact-base child changing only docs/DELIVERY.md + docs/catalog/project.json; report is a separate report-only child; main/topology unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only current migration docs/catalog and canonical delivery/runtime/provider-boundary owners needed for the five concerns."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Materialize the smallest truthful DELIVERY draft and advance only the five supported delivery coverage records."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/coverage/closure validation plus semantic audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale-state, publish one bounded implementation commit non-force to dev, create report-only child, verify lineage/diff/final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
