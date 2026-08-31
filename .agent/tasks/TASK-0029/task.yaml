@@ -1,0 +1,177 @@
+protocol_version: 3
+
+task_id: TASK-0029
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0028
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@cbe0948c169248f12fb6157a34c3f67eba909ff6"
+    role: "Current reviewed target truth after accepted TASK-0028 BLOCKED review. Operator DESIGN LOCK remains in force; no authority cutover has occurred."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@df836c2a63f920dfdbb2f04141bedeb7e3d8e931:.agent/tasks/TASK-0028/report.yaml"
+    role: "Accepted exhaustive residual-authority inventory RES-001..RES-013. This is the bounded residual set to preserve; do not rediscover unrelated migration work or stop after one item."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@cbe0948c169248f12fb6157a34c3f67eba909ff6:spec/**"
+    role: "Canonical legacy source material for RES-001..RES-007."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@cbe0948c169248f12fb6157a34c3f67eba909ff6:design/**"
+    role: "Canonical legacy source material for RES-008..RES-013."
+    precedence: 4
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Pinned V1 documentation model permitting one-level shards within the eight authority domains and requiring catalog/coverage references for canonical shard authority."
+    precedence: 5
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 6
+
+structure_authority:
+  status: RESOLVED
+  source: "Accepted TASK-0028 exhaustive residual inventory plus pinned agent-documents V1 shard semantics."
+  rationale: "The thirteen residuals are not thirteen new design problems. They are bounded material semantics still represented only by legacy owners. The smallest coherent repair is one residual-migration batch that preserves only those semantics inside legal shards of existing PRODUCT, BEHAVIOR, DATA, ARCHITECTURE and INTERFACES domains. The task must not copy legacy files wholesale, create new authority domains, invent unsupported catalog identity classes, or perform authority cutover in the same mutation."
+
+objective: "Preserve the complete accepted material residual set RES-001..RES-013 inside the locked successor documentation authority plane using a small cohesive shard set, with semantic parity and pinned-model closure, while leaving legacy authority and cutover unchanged."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Treat TASK-0028 RES-001..RES-013 as the complete bounded migration input for this task. Re-read each exact legacy owner/section to preserve the material semantics, but do not reopen the exhaustive residual discovery phase or add unrelated legacy prose."
+    - "Preserve RES-001 and RES-002 in one legal PRODUCT shard docs/product/ielts-exam-and-bands.md: stable IELTS external section/task/question-family identities and material scoring/delivery/criteria/OSR constraints plus Bands 3-9 per-skill threshold/exit semantics, residual limitations and variant-specific Writing Task-1 bindings."
+    - "Preserve RES-003 and RES-013 in one legal PRODUCT shard docs/product/curriculum-and-coverage.md: complete stable C-* curriculum node inventory, dependency-class and selector semantics, Academic/GT routing, product-support status/condition separation, CoverageGap, TargetCoverageSpecification conditions, derived reachability and official-family closure semantics."
+    - "Preserve RES-004, RES-008 and RES-009 in one legal BEHAVIOR shard docs/behavior/practice-and-media.md: six learning phases, LM-01..LM-12, PT-01..PT-23, gap-to-practice selection, feedback-focus/intervention rules, 28 PM-* learner-visible practice modes with purpose/evidence-candidacy/retry semantics, and the material media transcript-state/rights/player/source-loss contract."
+    - "Preserve RES-010 in one legal BEHAVIOR shard docs/behavior/planner-and-lifecycle.md: complete seven-stage Planner decision contract, hard eligibility/assignment-time recheck/serialization boundaries, candidate/ranking/load/trajectory non-authority rules, material Flow A..L semantics, legal lifecycle state machines and transition invariants."
+    - "Preserve RES-005, RES-006 and RES-007 in one legal DATA shard docs/data/evidence-progression-content.md: AT-01..AT-07 and EvidenceRequirement/admission/independence/sufficiency/calibration semantics; nine GapEvaluation classes, eleven ActionIntent values, deterministic mapping/prerequisite/staleness/conflict/regression/certification-history semantics; CTX-* and PRES-* registries, similarity/exposure rules, material content-object/manifest/validation semantics."
+    - "Preserve RES-011 in one legal ARCHITECTURE shard docs/architecture/internal-service-trust.md: selected Core-to-Evaluator/protected-task service identity boundary using Cloud Run IAM plus Google-signed OIDC, network placement non-authority, and the locked rejection of shared INTERNAL_SECRET/home-made JWT/HMAC/mTLS/service-mesh substitution for this boundary. Do not promote package/library/patch details."
+    - "Preserve RES-012 in one legal INTERFACES shard docs/interfaces/provider-lifecycle-and-routes.md: eight-state provider lifecycle, material selected/deferred/TBD capability inventory, exact selected primary/fallback provider/model routes and selected infrastructure/commerce routes, Clerk audience invariant, and activation/calibration consequences. Preserve SELECTED_FOR_IMPLEMENTATION != ACTIVE and provider output non-authority."
+    - "Use exactly the seven cohesive shards above unless a pinned-model path/token constraint forces a smaller structural adjustment. Do not mirror the thirteen legacy files one-for-one."
+    - "Keep each shard one level below its authority-domain directory. No deeper nesting, ninth domain, new top-level directory, or new catalog identity class. Stable domain-specific IDs such as IELTS-*, C-*, LM-*, PT-*, PM-*, AT-*, CTX-* and PRES-* may remain canonical Markdown identities inside their owning shards without inventing V1 catalog classes."
+    - "Update root docs only when needed for concise ownership/traceability and to remove references that would otherwise continue delegating the migrated residual semantics exclusively to legacy owners. Do not duplicate full shard contents in roots."
+    - "Update docs/catalog/project.json only with the minimum valid coverage/support references needed to authorize all seven shards in their existing authority domains. Preserve every existing ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK identity, relation, root, decision, provider boundary and resolved unknown unless a direct pinned-model validation requirement proves a minimal reference-only adjustment necessary."
+    - "Preserve exact machine-contract authority under contracts/** where current truth already scopes it to wire/schema details; do not copy exact OpenAPI payload fields into these documentation shards merely for completeness."
+    - "Do not copy historical prose, examples, mutable UX defaults, library/package versions, speculative alternatives, implementation instructions, redundant rationale or non-material commentary from legacy owners. Preserve semantic identity/graph/policy/failure/authority consequences only."
+    - "Perform semantic parity checks for every RES-001..RES-013. Require zero omitted stable identity/registry item, prerequisite/transition mapping, policy consequence, authority boundary or support/coverage condition identified by the accepted residual report."
+    - "Treat documentation closure as reopened during candidate construction. The published final candidate may remain FROZEN only after complete residual parity and pinned agent-documents validation succeed."
+    - "Validate the exact combined candidate against agent-documents@acb3f02616e700190586681306a86905792e4c07; require legal shard paths/tokens, valid coverage references, zero model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects and derived DOCS_READY=TRUE."
+    - "If any RES item cannot be represented faithfully under pinned V1 without redesigning product semantics, changing agent-documents, inventing an unsupported identity class or creating a new authority domain, make no implementation mutation and stop BLOCKED with exact evidence."
+    - "Operator DESIGN LOCK remains in force. Do not change external IELTS facts beyond the locked canonical source, Band thresholds, curriculum graph, practice/evidence/progression semantics, provider selections, coverage/support rules or system boundaries."
+    - "Do not perform canonical authority cutover, legacy demotion/deletion/retirement, README precedence change, standards assessment, exact-contract redesign/materialization, implementation planning/code, provider activation/configuration, spend authorization, main/staging mutation, promotion or release."
+    - "Use GitHub-native surfaces only. Do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "Publish at most one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the canonical BLOCKED report."
+
+structure_policy:
+  expected_new_files:
+    - docs/product/ielts-exam-and-bands.md
+    - docs/product/curriculum-and-coverage.md
+    - docs/behavior/practice-and-media.md
+    - docs/behavior/planner-and-lifecycle.md
+    - docs/data/evidence-progression-content.md
+    - docs/architecture/internal-service-trust.md
+    - docs/interfaces/provider-lifecycle-and-routes.md
+    - .agent/tasks/TASK-0029/report.yaml
+  allowed_existing_files:
+    - docs/PRODUCT.md
+    - docs/BEHAVIOR.md
+    - docs/ARCHITECTURE.md
+    - docs/DATA.md
+    - docs/INTERFACES.md
+    - docs/QUALITY.md
+    - docs/DELIVERY.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0029/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Operator DESIGN LOCK remains in force; this task preserves locked semantics and does not redesign them."
+  - "RES-001..RES-013 are the complete bounded migration set from TASK-0028; no serial first-finding loop and no unrelated framework expansion."
+  - "Exactly seven cohesive legal shards are preferred across existing PRODUCT, BEHAVIOR, DATA, ARCHITECTURE and INTERFACES domains."
+  - "No ninth authority domain and no unsupported catalog identity class is introduced."
+  - "Existing Skill/Knowledge shards from TASK-0027 remain unchanged in semantic content."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged during this residual migration."
+  - "Scoped contracts/** exact wire/schema authority remains unchanged."
+  - "No canonical cutover, legacy retirement, standards PASS, exact-contract redesign, code/schema, provider activation, main/staging mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "All thirteen accepted residual groups RES-001..RES-013 are preserved with semantic parity inside legal successor shards in their correct existing authority domains."
+  - id: AC-2
+    requirement: "Stable registries/identities and material graph/policy semantics identified by the residual report are complete, including IELTS-*, Bands 3-9, C-*, LM-*, PT-*, PM-*, AT-*, GapEvaluation/ActionIntent, CTX-*/PRES-*, Planner/lifecycle states, internal service trust, provider lifecycle/routes and coverage/support conditions."
+  - id: AC-3
+    requirement: "The implementation uses the bounded cohesive shard plan without creating a ninth authority domain, unsupported catalog identity class, or wholesale legacy-file copy."
+  - id: AC-4
+    requirement: "Root-doc and catalog changes are minimal and only establish ownership/traceability/coverage support for the new shards; existing catalog identities/relations and locked semantics remain unchanged."
+  - id: AC-5
+    requirement: "Independent residual-by-residual parity finds zero omitted or consequence-changing semantics from RES-001..RES-013 and no successor section continues to depend exclusively on a legacy owner for one of those migrated semantics."
+  - id: AC-6
+    requirement: "Pinned agent-documents validation has zero defects/blockers, milestone is FROZEN and derived DOCS_READY=TRUE for the exact final successor candidate."
+  - id: AC-7
+    requirement: "No authority cutover or legacy mutation occurs; publication lineage is bounded to at most one implementation commit plus one report-only child and main/topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and resolve accepted TASK-0028 report RES-001..RES-013 from the exact base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "For each RES-001..RES-013 compare the exact legacy source sections to the planned successor shard and verify all material identities, registries, edges, state/value sets, mappings, policy/authority/failure consequences and coverage conditions are preserved."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Verify the seven one-level shard paths/tokens are legal and root/catalog references authorize them only inside the correct existing authority domains."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Verify no whole-file copy/churn, new authority domain, unsupported identity class, product redesign, legacy mutation or cutover occurred; existing catalog and TASK-0027 Skill/Knowledge semantics remain stable."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Validate exact combined candidate against pinned agent-documents; require FROZEN + zero defects/blockers + DOCS_READY=TRUE before one implementation publication, then one report-only child, final ref/topology refresh, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
