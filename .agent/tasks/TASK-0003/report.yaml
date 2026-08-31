@@ -1,0 +1,144 @@
+protocol_version: 3
+
+task_id: TASK-0003
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0003/task.yaml
+  commit: "77358e19bd245ba030082b1dd1a6cbabfcd2edf6"
+  blob_sha: "40a7f71853cae2c4ff272a6885c8a1eccd0da0ae"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "77358e19bd245ba030082b1dd1a6cbabfcd2edf6"
+  pre_execution_head: "77358e19bd245ba030082b1dd1a6cbabfcd2edf6"
+  final_execution_head: "b83ea5a44ba2ff13e3d3ba0437846dc3933a4e36"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub reads confirmed exact dev/main refs and topology; exact immutable task/pin reads plus Git Data tree/commit and non-force ref update primitives were available."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0003 names no authoritative verifier. The published candidate was instead checked deterministically against the pinned agent-documents V1 schema/validator semantics and exact GitHub blob/tree/lineage evidence."
+
+local_hygiene:
+  result: PASS
+  run_root: "/tmp/ilets-task0003-77358e19"
+  cleanup_performed: true
+  retained: []
+  evidence: "Only run-owned isolated scratch was created and it was removed. No target working tree or operator repository checkout was mutated."
+
+changed_files:
+  - path: docs/BEHAVIOR.md
+    summary: "Add authority-NONE BEHAVIOR migration draft for the bounded target-to-evidence-to-next-action slice, with catalog-owned FTR/ACC/FLW headings and preserved legacy semantics."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/DECISIONS.md
+    summary: "Rebind the migration rationale to agent-documents@acb3f026 and record corrected unresolved relation and cutover boundaries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Add model_version 1 initial catalog with OPEN milestone, conservative coverage, directly supported ACT/ROL/FTR/ACC/FLW identities, four OPEN DESIGN UNK records, and unresolved_ref relation states."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "b83ea5a44ba2ff13e3d3ba0437846dc3933a4e36"
+    message: "docs(TASK-0003): migrate behavior catalog foundation"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "docs/BEHAVIOR.md, docs/DECISIONS.md, and docs/catalog/project.json explicitly remain MIGRATION DRAFT / AUTHORITY NONE; the implementation diff contains no legacy canonical source, code, workflow, runtime, main, or external-repository mutation."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Catalog contains directly supported ACT/ROL identities, FTR-001..FTR-006, ACC-001..ACC-007, and FLW-001..FLW-004. Every FTR spec_ref, ACC doc_ref, FLW doc_ref, and supported coverage ref resolves to one non-empty BEHAVIOR/PRODUCT heading under the pinned reference semantics."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "All 24 not-yet-migrated feature relations for data/interfaces/dependencies/capabilities use unresolved_ref to UNK-001..UNK-004; each target is OPEN with resolution_phase DESIGN. Relation na count is zero and SYS/DAT/IFC/EXT/CAP inventories remain empty, so no false N/A or premature neighboring-domain identity was introduced."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Catalog model_version=1, milestone.scope_state=OPEN, exact 45-concern coverage is present, product+behavior supported concerns are L1 and unmigrated concerns remain NONE. Deterministic pinned-semantic verification found zero model/reference/traceability/orphan errors; expected closure only is 1 SCOPE_OPEN + 33 COVERAGE_GAP + 24 UNRESOLVED_RELATION, so DOCS_READY remains false by construction."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Implementation b83ea5a44ba2ff13e3d3ba0437846dc3933a4e36 is a single direct child of exact base 77358e19bd245ba030082b1dd1a6cbabfcd2edf6. GitHub commit evidence shows exactly docs/BEHAVIOR.md added, docs/DECISIONS.md modified, and docs/catalog/project.json added. Pre-report refresh kept main=e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly {dev, main}."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh start and pre-publication GitHub truth confirmed dev=77358e19bd245ba030082b1dd1a6cbabfcd2edf6, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0003 revision 1 APPROVED, and all pinned authorities resolved at their exact immutable revisions."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Resolved current canonical IELTS behavior from OBJECTIVE.md, design/00-learning-experience.md, design/04-application-flows.md, spec/08-ASSESSMENT.md, spec/09-PROGRESSION.md, plus the corrected agent-documents BEHAVIOR/catalog model at acb3f02616e700190586681306a86905792e4c07."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Materialized the smallest coherent BEHAVIOR + catalog slice: 6 features, 3 actors, 3 roles, 7 acceptance identities, 4 flows, and 4 bounded relation unknowns. No SYS/DAT/IFC/EXT/CAP/DEC identities and no relation na values were created."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Isolated deterministic semantic verification over the exact candidate bytes checked V1 root/coverage shapes, global ID typing/uniqueness, relation-state exclusivity, OPEN DESIGN unresolved targets, typed refs, role/actor overlap, flow subset rules, Markdown token resolution/content, graph reachability, and closure semantics. Result: 0 errors; expected blockers only: SCOPE_OPEN=1, COVERAGE_GAP=33, UNRESOLVED_RELATION=24. Candidate Git blob SHAs matched published blobs exactly: BEHAVIOR b5927972a93a4d0db9637a4dda88890817040dfe, DECISIONS 956eb9724c86df1c63200fe883e5190c8856ab5a, catalog bab537444dda715ea691ec7a47f76152991f121f."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale-state was refreshed immediately before the non-force implementation ref update and again before report construction. Published implementation parentage and exact three-file diff were verified from GitHub; main remained unchanged and topology remained exactly {dev, main}. This report is prepared as the separate report-only child."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No target local worktree was used. Run-owned scratch was cleaned. Published implementation is b83ea5a44ba2ff13e3d3ba0437846dc3933a4e36; only the canonical report-only child remains to finalize the execution record."
+
+result: NEEDS_REVIEW
