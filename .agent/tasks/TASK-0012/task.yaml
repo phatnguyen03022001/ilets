@@ -1,0 +1,147 @@
+protocol_version: 3
+
+task_id: TASK-0012
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: operator_direction
+  task_id: TASK-0011
+  gap_id: FULL_PRODUCT_EXPERIENCE_EXPANSION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@010a5cc9b002eaa22121047c54c8df116cfb3e27"
+    role: "Accepted frozen migration baseline. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 PRODUCT/BEHAVIOR/catalog/unknown/reopening semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "Frozen engineering claim/evidence semantics; this task performs no assurance assessment."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Current canonical design/00-learning-experience.md and design/04-application-flows.md, plus the explicit operator product direction captured by this task."
+  rationale: "Canonical design already owns the simple-surface/deep-system learner journey, primary navigation, progressive disclosure, entitlement-visible availability, actor classification, capability-based RBAC bundles and learner-entitlement separation. The operator direction expands the current documentation milestone from the six macro behavior anchors toward the full product/UX design required before production implementation."
+
+operator_delta:
+  - "The intended product is an ambitious self-directed IELTS system whose learner-facing UI remains simple/modern while the underlying model covers target-band requirements, four skills, micro-skills, vocabulary/grammar/phonology, review, mocks, media and broad repeatable traditional-centre practice patterns. The 95-99% replacement aspiration is a direction, not a current measured coverage claim."
+  - "Five authorization bundles are the intended ordinary product model: LEARNER, COLLABORATOR, REVIEWER, ADMIN, OWNER. Learning-support participants such as AI support or optional human expert are not automatically authorization-role bundles."
+  - "Commercial entitlement such as FREE/PRO is not an RBAC role and cannot change IELTS/Band/evidence truth."
+  - "A browser-microphone learner path may support bounded speaking capture/practice with explicit capability limitations; absent a supported acoustic/pronunciation route it must not claim pronunciation evidence. Eligible PRO entitlement may unlock realtime AI speaking when its provider/capability gates are actually satisfied."
+  - "Ordinary supported learning must not require a teacher. AI may perform the ordinary teaching/support workload inside bounded non-authoritative roles."
+  - "Learner UX should expose a small surface model over deep semantics; admin/BOPS should expose only operational/product decisions and never bypass Core or learning/evidence authority."
+
+objective: "Reopen the accepted frozen migration baseline for the full product-experience milestone and materialize the minimum PRODUCT + BEHAVIOR foundation for actor/RBAC/entitlement distinctions and learner/admin surface architecture, without yet exploding the six macro FTR anchors into the complete feature/micro-skill inventory."
+
+scope:
+  required_changes:
+    - "Change docs/catalog/project.json milestone.scope_state from FROZEN back to OPEN because the operator has explicitly expanded/clarified material current-milestone product/UX design before design lock. Do not claim DOCS_READY after reopening."
+    - "Extend docs/PRODUCT.md with the minimum current product actor/role/entitlement model. Preserve learner, AI-support and optional-human participation semantics, but distinguish those from authorization bundles. Record LEARNER plus canonical COLLABORATOR/REVIEWER/ADMIN/OWNER default authorization bundles and keep entitlement separate from RBAC."
+    - "Where the V1 catalog needs identities for newly material privileged actor/role truth, add only the minimum ACT/ROL records justified by canonical design, with model-valid doc refs and milestone roots as needed for reachability. Do not create an entitlement identity class that V1 does not own."
+    - "Extend docs/BEHAVIOR.md with a compact learner-facing surface/experience map derived from canonical design/00: simple default navigation over deep semantics, including Today, Skills, Practice, Review, Media, Progress and Mock plus only justified contextual/secondary surfaces such as Target/Diagnostic, Vocabulary and Profile."
+    - "Add a compact privileged/admin/BOPS surface family sufficient to expose content/review/release, user support, entitlement reconciliation, operational/provider/work visibility, approved policy administration, security-sensitive administration and audit according to canonical capability boundaries. Do not design pixel-level UI or duplicate the full RBAC matrix."
+    - "Capture entitlement-visible speaking behavior without inventing provider availability: bounded browser-mic practice remains truthful about unsupported pronunciation/acoustic evidence; realtime AI speaking is available only when entitlement plus provider/capability/product-support gates permit it."
+    - "Preserve FTR-001..FTR-006 as macro behavior anchors in this task. Do not create the full learner/admin feature inventory yet. Add one OPEN DESIGN blocking unknown for the next feature-decomposition step so the reopened milestone cannot be falsely re-closed before material learner/admin surface capabilities are decomposed and traced."
+    - "Keep all docs/** migration artifacts authority NONE and legacy canonical owners unchanged. This task does not perform authority cutover, operator design lock, standards assessment, exact contracts or implementation."
+    - "Validate the exact candidate against the pinned agent-documents model. Structural/reference/traceability/orphan defects are not acceptable; OPEN scope plus the explicit feature-decomposition design unknown are intentional blockers."
+    - "Publish one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0012/report.yaml
+  allowed_existing_files:
+    - docs/PRODUCT.md
+    - docs/BEHAVIOR.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0012/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE."
+  - "dev remains the active engineering branch; main is unchanged; staging is not introduced or activated by this task."
+  - "No role/entitlement choice may change Band, evidence, mastery/readiness, target, content-quality or Assessment semantics."
+  - "No provider is selected/activated and canonical pronunciation/acoustic TBD truth is preserved."
+  - "No code, exact API contract, schema, component system, pricing, deployment, workflow, promotion or release mutation."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The previously FROZEN migration milestone is truthfully reopened to OPEN because material product-experience design work is now admitted before design lock."
+  - id: AC-2
+    requirement: "PRODUCT clearly distinguishes product participants, authorization bundles and commercial entitlements; the intended five authorization bundles are represented without turning FREE/PRO or AI support into false RBAC roles."
+  - id: AC-3
+    requirement: "BEHAVIOR provides a compact simple-surface/deep-system learner IA plus bounded admin/BOPS surface semantics and truthful FREE/PRO speaking availability without pixel/UI/provider overreach."
+  - id: AC-4
+    requirement: "Catalog changes are minimal/model-valid: only justified ACT/ROL/root additions plus one explicit OPEN DESIGN feature-decomposition blocker; existing FTR-001..FTR-006 and accepted SYS/DAT/IFC/EXT/CAP/DEC semantics remain unchanged."
+  - id: AC-5
+    requirement: "Pinned-model validation has zero structural/reference/traceability/orphan defects; implementation/report lineage is exact; main/topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and require dev equals exact handoff base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve only current canonical learner-experience/RBAC owners plus existing migration state needed for PRODUCT/BEHAVIOR foundation."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Reopen scope and materialize the minimum actor/RBAC/entitlement + learner/admin surface foundation; preserve macro FTR anchors and add the explicit next-step design blocker."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned-model structural/reference/reachability/orphan/unknown validation plus semantic audit AC-1..AC-4."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Refresh stale state, publish one implementation commit and one report-only child non-force to dev, verify final refs, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
