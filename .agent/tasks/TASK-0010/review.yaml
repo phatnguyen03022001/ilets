@@ -1,0 +1,45 @@
+protocol_version: 3
+
+task_id: TASK-0010
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0010/report.yaml
+  commit: "e921d16ef7ccea94994b8324c24c7298606a358d"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition: []
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0010 completes the authority-NONE CAP/build-buy/decision migration, but milestone.scope_state remains OPEN. Documentation closure/freeze and any later authority cutover remain separate Architect-controlled phases."
+
+notes:
+  - "Implementation efe355de5d9ec3959ebb381d0cb9d96a7d77dd8c is exactly one direct child of authorized base 4ae466876dfd57479170bf1e43c6a713a75e05f8 and changes only docs/ARCHITECTURE.md, docs/DECISIONS.md and docs/catalog/project.json."
+  - "Report e921d16ef7ccea94994b8324c24c7298606a358d is exactly one report-only child of the implementation commit."
+  - "Exactly five material capabilities are introduced: one BUILD and four HYBRID. No false BUY or DEFER is used; existing SYS and EXT ownership boundaries remain intact."
+  - "Exactly three material BUILD_BUY decisions explain the current architectural choices without promoting mutable provider pricing, quota, benchmark, activation or calibration state into decision truth."
+  - "All six feature capability relations are typed and UNK-004 is RESOLVED with dedicated DECISIONS evidence. Provider lifecycle remains SELECTED_FOR_IMPLEMENTATION/TBD/DEFERRED as canonically applicable; pronunciation/acoustic remains TBD."
+  - "architecture.build_buy, decisions.material_choices and unknowns.open_questions reach L1. Deterministic pinned-model evidence records zero coverage gaps, unresolved relations, open blocking unknowns, and zero model/reference/traceability/orphan defects in the changed closure surface."
+  - "The sole intentional closure blocker is milestone.scope_state OPEN. No DOCS_READY, design lock, cutover, implementation-readiness, standards PASS, promotion or release claim is introduced."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical; docs/* migration artifacts remain authority NONE until explicit cutover."
