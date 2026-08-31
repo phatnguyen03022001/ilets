@@ -1,0 +1,139 @@
+protocol_version: 3
+
+task_id: TASK-0004
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0004/task.yaml
+  commit: "64d5915a2d31ec5eec025ccaf05b11aef60e9933"
+  blob_sha: "ad12fc5a2e459c40482f73fccf505dc17a86de13"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "64d5915a2d31ec5eec025ccaf05b11aef60e9933"
+  pre_execution_head: "64d5915a2d31ec5eec025ccaf05b11aef60e9933"
+  final_execution_head: "dd84c507cf588c201bd4a5a8c6297bebcff57db9"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub reads proved exact dev/main refs and topology; immutable task/pin reads plus Git Data blob/tree/commit and non-force ref-update primitives were available. Agent Runtime local tunnel was unavailable but was not a task-required capability; isolated deterministic validation remained available."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0004 designates no authoritative verifier. The exact candidate bytes were instead checked deterministically against agent-documents@acb3f02616e700190586681306a86905792e4c07 model/reference/reachability/closure semantics and rebound to matching Git blob SHAs before publication."
+
+local_hygiene:
+  result: PASS
+  run_root: "/mnt/data/task4work"
+  cleanup_performed: true
+  retained: []
+  evidence: "The isolated run-owned scratch root resolved exactly to /mnt/data/task4work, was not a symlink, and was removed after verification. No operator target checkout was mutated."
+
+changed_files:
+  - path: docs/ARCHITECTURE.md
+    summary: "Add authority-NONE ARCHITECTURE migration draft for the established Web/Core API/Evaluator responsibility topology, ownership, trust boundaries, runtime flow, and material technology families."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: docs/catalog/project.json
+    summary: "Add SYS-001..SYS-003, truthful existing FLW system_refs, and L1 support for four architecture concerns while preserving build-buy and neighboring migration gaps."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "dd84c507cf588c201bd4a5a8c6297bebcff57db9"
+    message: "docs(TASK-0004): migrate architecture system catalog"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "docs/ARCHITECTURE.md explicitly declares MIGRATION DRAFT / AUTHORITY NONE and preserves CONSTITUTION.md, OBJECTIVE.md, spec/**, and design/** as canonical. The implementation commit changes only docs/ARCHITECTURE.md and docs/catalog/project.json."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Catalog materializes exactly SYS-001 Web, SYS-002 Core API, and SYS-003 Evaluator. FLW-001 maps to all three, FLW-002 to Web+Core, FLW-003 to all three, and FLW-004 to Core+Evaluator, matching canonical runtime responsibility/caller-callee truth without inventing another deployable."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "architecture.components_ownership, runtime_topology, communication_boundaries, and technology_choices advance from NONE to L1 with non-empty ARCHITECTURE support sections. architecture.build_buy remains NONE; DAT/IFC/EXT/CAP/DEC inventories remain empty; UNK-001..UNK-004 remain OPEN and feature capability relations remain unresolved_ref -> UNK-004."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Pinned-model deterministic verification over the exact published candidate bytes found zero MODEL_ERROR, REFERENCE_ERROR, TRACEABILITY_GAP, or ORPHAN findings. Expected unfinished-migration blockers only: SCOPE_OPEN=1, COVERAGE_GAP=29, UNRESOLVED_RELATION=24; DOCS_READY therefore remains false."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Implementation dd84c507cf588c201bd4a5a8c6297bebcff57db9 is one direct child of exact base 64d5915a2d31ec5eec025ccaf05b11aef60e9933 and changes exactly docs/ARCHITECTURE.md plus docs/catalog/project.json. Publication used a non-force dev fast-forward; main remained e707aeee43411cc8f99448b63220eb8beff552b6 and topology remained exactly {dev, main}. This report is prepared as the separate report-only child."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh start and immediate pre-publication GitHub reads confirmed dev=64d5915a2d31ec5eec025ccaf05b11aef60e9933, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}, TASK-0004 revision 1 APPROVED, and exact pinned authorities."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Resolved only the current catalog plus canonical design/04-application-flows.md, design/05-api.md, design/06-implementation-stack.md, and design/07-third-party-services.md only where needed to preserve the external-provider boundary. No neighboring domain was adopted as migration authority."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Materialized the smallest architecture layer: three canonical SYS records, four truthful FLW system mappings, and four L1 architecture coverage links. CAP/build-buy, DATA, INTERFACES, dependencies, and existing product/behavior identities remain unresolved or unchanged exactly as authorized."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Deterministic checks mirrored the pinned V1 validator's exact catalog shapes, identity typing/uniqueness, OPEN DESIGN unresolved relation targets, document token/content rules for all new ARCHITECTURE references, typed references, flow subset rules, graph reachability, orphan detection, and closure accounting. Result: 0 structural/reference/traceability/orphan failures; expected closure blockers only 1+29+24."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Stale-state was refreshed immediately before the non-force dev ref update. Published commit evidence confirms exact parentage and two-file diff, with blob SHAs c264e71eb5f7cfcb603debe06fceb373ceda9663 (ARCHITECTURE) and fadc7c1c67c0adbdd8e94f62e880350cae17b319 (catalog). The canonical report is the only remaining child mutation."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "No target local worktree was used. Run-owned isolated scratch was cleaned. Published implementation is dd84c507cf588c201bd4a5a8c6297bebcff57db9; only the canonical report-only child remains to finalize the Executor record."
+
+result: NEEDS_REVIEW
