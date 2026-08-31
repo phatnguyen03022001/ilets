@@ -1,0 +1,147 @@
+protocol_version: 3
+
+task_id: TASK-0024
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0023
+  gap_id: GAP-002
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@ae0e26c988627b8bfaadb4246a155cc4ded21993"
+    role: "Current target truth after TASK-0023 failed closed on additional transition-coupled OPEN milestone prose. Legacy CONSTITUTION/OBJECTIVE/spec/design remain canonical; docs/** remains authority NONE until explicit cutover."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Accepted unreleased V1 documentation closure, scope freeze, blocker accounting and DOCS_READY derivation semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 3
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0023 GAP-002 plus accepted TASK-0013..TASK-0021 migration state and current canonical legacy owners."
+  rationale: "The remaining defect is duplicated ownership of transient milestone OPEN/SCOPE_OPEN state across multiple authority-NONE migration documents. Prior repair tasks were too file-specific and therefore discovered additional coupled prose iteratively. This task authorizes one repository-wide transition-state reconciliation across the complete migrated documentation set, followed by the conditional catalog freeze in the same candidate, while preserving all product/design semantics."
+
+objective: "Remove all current transition-coupled duplicate ownership of mutable documentation milestone state across the complete migrated docs set, independently re-run semantic closure, and freeze the milestone only when the repository-wide combined candidate is truthful and derives DOCS_READY=TRUE."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Independently re-run the complete semantic closure audit against current canonical CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** before implementation mutation. Do not trust prior task labels as proof of closure."
+    - "Search the complete migrated Markdown set docs/PRODUCT.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md and docs/DECISIONS.md for current present-tense assertions that independently own mutable milestone state, including scope remains/stays OPEN, milestone.scope_state remains OPEN, SCOPE_OPEN as a current/sole closure blocker, or equivalent not-yet-frozen statements that would become false on a truthful freeze."
+    - "Distinguish current transition-coupled state from historical provenance. Past-tense descriptions of what an earlier task intentionally did or did not do may remain when still truthful; do not rewrite history merely because it mentions OPEN or an earlier blocker."
+    - "If any material semantic omission, contradiction, stale assumption unrelated to the known transition-state coupling, authority drift, false N/A, unresolved product/provider/support meaning, or other genuine design blocker exists, make no implementation mutation, keep scope OPEN, publish the exact blocker and stop BLOCKED."
+    - "Only if semantic closure otherwise passes, replace every current transition-coupled milestone-state assertion across the migrated Markdown set with the smallest transition-safe wording. The wording must not independently own OPEN/FROZEN state; docs/catalog/project.json remains the sole migration milestone-state authority."
+    - "Preserve all product/behavior/architecture/data/interface/quality/delivery/decision semantics, all ACT/ROL/FTR/ACC/FLW/SYS/DAT/IFC/EXT/CAP/DEC identities and typed relations, UNK-001..UNK-009 RESOLVED state, provider lifecycle, exact-contract deferral, migration authority NONE, legacy authority, and the distinction among DOCS_READY, DESIGN LOCK, authority cutover, implementation readiness and release readiness."
+    - "In the same bounded implementation candidate, change docs/catalog/project.json milestone.scope_state from OPEN to FROZEN. Do not publish an intermediate state where Markdown and catalog disagree."
+    - "Validate the exact combined candidate against the pinned agent-documents model. Require zero model/reference/traceability/reachability/orphan/unresolved/blocking defects and derived DOCS_READY=TRUE."
+    - "If combined-candidate validation fails, do not claim closure or DOCS_READY and do not broaden into redesign; stop fail-closed with exact evidence."
+    - "Do not perform operator DESIGN LOCK, authority cutover, legacy retirement, standards assessment, exact machine-contract materialization, implementation planning/code, provider activation/configuration, spend authorization, staging/main mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery or validation probes."
+    - "Publish exactly one bounded implementation commit non-force to dev only when the combined transition is justified, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the truthful canonical report and stop BLOCKED."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0024/report.yaml
+  allowed_existing_files:
+    - docs/PRODUCT.md
+    - docs/BEHAVIOR.md
+    - docs/ARCHITECTURE.md
+    - docs/DATA.md
+    - docs/INTERFACES.md
+    - docs/QUALITY.md
+    - docs/DELIVERY.md
+    - docs/DECISIONS.md
+    - docs/catalog/project.json
+    - .agent/tasks/TASK-0024/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical and unchanged."
+  - "docs/** remains MIGRATION DRAFT / AUTHORITY NONE after documentation closure; FROZEN/DOCS_READY does not imply canonical cutover."
+  - "All ACT/ROL/FTR/ACC/FLW/SYS/DAT/IFC/EXT/CAP/DEC identities and typed relations remain unchanged."
+  - "UNK-001..UNK-009 remain RESOLVED."
+  - "Only mutable documentation-milestone state may transition OPEN->FROZEN."
+  - "No design lock, cutover, standards PASS, exact contract materialization, code, schema, provider activation, staging/main mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Independent semantic closure audit finds no material blocker beyond transition-coupled duplicate milestone-state prose."
+  - id: AC-2
+    requirement: "All current transition-coupled OPEN/SCOPE_OPEN assertions across the complete migrated Markdown set are made transition-safe without changing product/design semantics or historical provenance."
+  - id: AC-3
+    requirement: "The same implementation candidate changes docs/catalog/project.json milestone.scope_state OPEN->FROZEN with no intermediate contradictory published state."
+  - id: AC-4
+    requirement: "Pinned-model validation of the exact combined FROZEN candidate has zero model/reference/traceability/reachability/orphan/unresolved/blocking defects and derives DOCS_READY=TRUE."
+  - id: AC-5
+    requirement: "Legacy authority remains unchanged; docs/** remains authority NONE; no DESIGN LOCK, cutover, implementation-readiness or standards PASS is implied."
+  - id: AC-6
+    requirement: "Implementation/report lineage is exact: one bounded implementation commit then one report-only child; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins; require dev equals exact handoff base and topology exactly {dev, main}."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Independently audit complete migrated docs/catalog versus all material canonical legacy truth and separately enumerate every current transition-coupled milestone-state assertion across all eight migrated Markdown owners."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Only if semantic closure passes, create one combined transition-safe candidate across only affected migrated Markdown files plus project.json OPEN->FROZEN; preserve historical provenance and all semantic inventories/relations."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run pinned agent-documents closure validation on the exact combined candidate and require derived DOCS_READY=TRUE with zero defects."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Verify implementation changed only authorized affected Markdown files plus docs/catalog/project.json, then publish one report-only child; refresh final refs/topology and stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
