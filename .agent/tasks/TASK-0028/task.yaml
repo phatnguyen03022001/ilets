@@ -1,0 +1,166 @@
+protocol_version: 3
+
+task_id: TASK-0028
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0026
+  gap_id: GAP-001
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@5a92cf31d34d89fb7b25cfdfe0cd70a7c1d993a0"
+    role: "Current reviewed target truth after accepted TASK-0027. Operator DESIGN LOCK remains in force. TASK-0027 closed TASK-0026 GAP-001 by preserving the 67 Skill Leaves and 46 Knowledge Objects in legal successor PRODUCT shards; canonical cutover has still not occurred."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@5a92cf31d34d89fb7b25cfdfe0cd70a7c1d993a0:CONSTITUTION.md"
+    role: "Current highest repository constitutional authority where distinct constitutional truth remains."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@5a92cf31d34d89fb7b25cfdfe0cd70a7c1d993a0:OBJECTIVE.md"
+    role: "Current objective/product authority where distinct objective truth remains."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@5a92cf31d34d89fb7b25cfdfe0cd70a7c1d993a0:spec/**"
+    role: "Current canonical learning/product specification plane to be exhaustively checked for remaining material legacy-only truth before any demotion."
+    precedence: 4
+  - source: "phatnguyen03022001/ilets@5a92cf31d34d89fb7b25cfdfe0cd70a7c1d993a0:design/**"
+    role: "Current canonical product/system design plane to be exhaustively checked for remaining material legacy-only truth before any demotion."
+    precedence: 5
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Pinned V1 documentation model and authority-domain/shard semantics."
+    precedence: 6
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 7
+
+structure_authority:
+  status: RESOLVED
+  source: "Explicit operator DESIGN LOCK, accepted TASK-0027 review, TASK-0026 fail-closed lesson, and pinned agent-documents V1."
+  rationale: "The next safe operation is not another product redesign. It is a complete residual-authority audit followed by an atomic documentation authority cutover only if every material legacy-owned semantic is already preserved in the successor authority plane. The prior cutover attempt stopped on the first discovered residual; this retry must inspect the complete legacy plane and must not create another serial first-finding loop."
+
+objective: "Exhaustively determine whether any material canonical truth remains solely in legacy spec/** or design/** after TASK-0027; if and only if the residual set is empty, atomically cut canonical documentation authority over to the locked successor docs/** plane while preserving scoped machine-contract authority and distinct CONSTITUTION/OBJECTIVE authority."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reconfirm the accepted operator DESIGN LOCK remains in force and that no post-lock product-semantic mutation occurred outside authorized representation repairs."
+    - "Perform a COMPLETE residual-authority audit across every active canonical file in spec/** and design/** against docs/PRODUCT.md, docs/product/*.md, docs/BEHAVIOR.md, docs/ARCHITECTURE.md, docs/DATA.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, docs/DECISIONS.md and docs/catalog/project.json."
+    - "Do not stop at the first residual. If any material legacy-only truth remains, enumerate ALL material residuals found in this pass, grouped by legacy owner and successor authority domain, with exact file/section evidence and the missing semantic consequence."
+    - "A residual is material only when demoting its legacy owner would lose or materially weaken locked product/system semantics, stable identity/graph meaning, evidence/progression rules, external exam truth, content/coverage semantics, authority/failure semantics, operational safety, or another design-locked consequence. Do not preserve duplicate prose, historical explanation, examples, implementation detail, or redundant wording merely because it exists."
+    - "If one or more material residuals exist: make NO authority-cutover implementation mutation, do not partially demote legacy, publish only a truthful BLOCKED report containing the complete residual inventory from this pass, and stop."
+    - "If and only if the complete residual audit finds zero material legacy-only truth, perform one coherent atomic documentation authority cutover."
+    - "On successful cutover, make the eight docs authority domains, their legal referenced shards, and docs/catalog/project.json the canonical project documentation authority plane under pinned agent-documents V1."
+    - "Preserve CONSTITUTION.md and OBJECTIVE.md as higher-precedence canonical authorities only for distinct constitutional/objective truth they still own; do not duplicate their semantics into docs merely to delete them."
+    - "Preserve contracts/** as scoped exact machine authority wherever current repository truth already designates a machine-readable contract as authoritative for exact wire/schema details. Documentation cutover must not silently demote exact machine-contract authority or let wire contracts override higher-level product semantics outside their scope."
+    - "Update README.md/read-order/precedence wording to expose one unambiguous authority path after cutover: operator input where applicable -> CONSTITUTION -> OBJECTIVE -> canonical docs authority domains/catalog -> scoped exact machine contracts where applicable -> implementation/evidence. Use current repository semantics rather than blindly copying this prose."
+    - "Remove successor-only MIGRATION DRAFT / AUTHORITY NONE / NON-CUTOVER wording from canonical docs roots and referenced shards where that wording would become false after cutover."
+    - "Demote active authority claims in legacy spec/** and design/** consistently enough that no file continues to claim equal canonical ownership. Prefer minimal header/status/read-order changes; do not broadly rewrite, archive, delete, rename, or relocate legacy content in this task."
+    - "Do not delete legacy files. Legacy retirement/deletion remains a separate later audit after successful cutover."
+    - "Verify no dual-canonical contradiction remains, no material truth is lost, all docs/catalog references remain valid, milestone remains FROZEN, and pinned agent-documents validation has zero model/reference/coverage/traceability/reachability/orphan/unresolved/blocking defects with derived DOCS_READY=TRUE."
+    - "Verify the cutover does not alter locked ACT/ROL/FTR/ACC/SYS/DAT/IFC/FLW/EXT/CAP/DEC/UNK semantics, the 67 Skill Leaves, the 46 Knowledge Objects, provider lifecycle state, coverage/support meaning, or product/system behavior."
+    - "Do not perform standards assessment, exact-contract redesign/materialization, implementation planning/code, provider activation/configuration, spend authorization, main/staging mutation, promotion or release."
+    - "Use GitHub-native surfaces only; do not probe Agent Runtime, local Mac, tunnel or Codex. Mutation APIs are not discovery/validation probes."
+    - "On successful cutover publish at most one bounded implementation commit non-force to dev, then one separate report-only child and stop at NEEDS_REVIEW. If blocked before implementation, publish only the canonical BLOCKED report."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0028/report.yaml
+  allowed_existing_files:
+    - README.md
+    - CONSTITUTION.md
+    - OBJECTIVE.md
+    - docs/**
+    - spec/**
+    - design/**
+    - .agent/tasks/TASK-0028/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Operator DESIGN LOCK remains in force; this task changes authority representation, not locked product/system semantics."
+  - "No partial cutover: either the complete residual set is empty and the authority transition is coherent, or no cutover implementation mutation occurs."
+  - "Residual discovery is exhaustive for the active spec/** and design/** plane in this pass; Executor must not stop after the first blocker."
+  - "CONSTITUTION.md and OBJECTIVE.md survive when they retain distinct higher-order authority."
+  - "Scoped exact machine contracts survive as exact wire/schema authority where currently applicable."
+  - "Legacy spec/** and design/** are not deleted, archived, renamed or relocated in this task."
+  - "Successor docs remain FROZEN and must derive DOCS_READY=TRUE after any successful cutover candidate."
+  - "No standards PASS, contract redesign, implementation/code, provider activation, main/staging mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "A complete residual-authority audit covers every active canonical spec/** and design/** owner and either proves zero material legacy-only truth or records the complete material residual inventory from this pass."
+  - id: AC-2
+    requirement: "If any material residual exists, no partial authority cutover occurs and the canonical report is BLOCKED with exact evidence for all material residuals found."
+  - id: AC-3
+    requirement: "If zero material residuals exist, canonical project documentation authority is cut over coherently to the eight docs domains/catalog and legal referenced shards, while distinct CONSTITUTION/OBJECTIVE authority and scoped exact machine-contract authority are preserved."
+  - id: AC-4
+    requirement: "After successful cutover README/read-order and legacy status/authority declarations expose one unambiguous precedence path with no spec/design file still claiming equal canonical ownership."
+  - id: AC-5
+    requirement: "Successful cutover removes false successor AUTHORITY NONE/NON-CUTOVER wording without changing locked product/system semantics or material identities/graphs."
+  - id: AC-6
+    requirement: "Pinned agent-documents validation of a successful cutover candidate has zero defects/blockers, milestone remains FROZEN and derived DOCS_READY=TRUE."
+  - id: AC-7
+    requirement: "Publication lineage is bounded to at most one implementation commit plus one report-only child; main and branch topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Refresh exact refs/topology/task/pins and verify the accepted DESIGN LOCK plus TASK-0027 ontology repair are present at the exact base."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Enumerate every active spec/** and design/** canonical file/owned section and compare its material locked semantics against the successor docs authority plane; do not stop at the first residual."
+      required: true
+    - id: CHECK-3
+      command_or_check: "If residuals exist, deduplicate and report the complete material residual inventory grouped by owner/domain, prove no cutover mutation occurred, and stop BLOCKED."
+      required: true
+    - id: CHECK-4
+      command_or_check: "If zero residuals exist, verify the exact atomic cutover diff: README precedence, docs canonical wording, legacy authority demotion, preserved CONSTITUTION/OBJECTIVE and scoped machine-contract authority, no semantic redesign."
+      required: true
+    - id: CHECK-5
+      command_or_check: "For a successful cutover candidate validate exact docs/catalog state against pinned agent-documents; require FROZEN + zero defects/blockers + DOCS_READY=TRUE and no dual-canonical claims before one implementation publication, then one report-only child, final ref/topology refresh, stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_content_write]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
