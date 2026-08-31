@@ -2,7 +2,7 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Created by `TASK-0004` revision 1 and extended through `TASK-0010` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0004` revision 1 and extended through `TASK-0017` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
 > Execution base: `phatnguyen03022001/ilets@64d5915a2d31ec5eec025ccaf05b11aef60e9933`.
 >
@@ -96,7 +96,7 @@ This table does not create new behavior, interfaces, data identities, dependenci
 
 ## ARCH-BUILD-BUY Capability and build/buy boundaries
 
-The migrated behavior slice needs five material capability boundaries. They are deliberately larger than vendors, libraries, model aliases, endpoints, or minor implementation concerns. The dispositions describe who implements the capability boundary; they do not promote any external route from `SELECTED_FOR_IMPLEMENTATION` to `ACTIVE`.
+The migrated detailed behavior surface needs eight material capability boundaries. They are deliberately larger than features, vendors, libraries, model aliases, endpoints, storage buckets, or minor implementation concerns. The dispositions describe who implements the capability boundary; they do not promote any external route from `SELECTED_FOR_IMPLEMENTATION` to `ACTIVE`.
 
 | Capability | Disposition | Project owner | External boundary | Material decision |
 | --- | --- | --- | --- | --- |
@@ -105,8 +105,11 @@ The migrated behavior slice needs five material capability boundaries. They are 
 | `CAP-003` Authoritative PostgreSQL persistence on managed hosting | `HYBRID` | `SYS-002` | `EXT-002` | `DEC-002` |
 | `CAP-004` Recoverable asynchronous dispatch | `HYBRID` | `SYS-002` | `EXT-003` | `DEC-002` |
 | `CAP-005` Bounded evaluator AI and speech execution | `HYBRID` | `SYS-003` | `EXT-004` | `DEC-003` |
+| `CAP-006` Governed object/media artifact custody | `HYBRID` | `SYS-002` | `EXT-005` | `DEC-005` |
+| `CAP-007` Commercial entitlement reconciliation | `HYBRID` | `SYS-002` | `EXT-006` | `DEC-006` |
+| `CAP-008` Secret custody with Core-owned security administration | `HYBRID` | `SYS-002` | `EXT-007` | `DEC-007` |
 
-There is no pure `BUY` record in this slice because none of the four external dependencies owns the whole product capability it supports. Identity/session, hosted persistence, dispatch, and evaluator-provider execution all remain coupled to project-owned responsibility that cannot be transferred to the provider without changing canonical architecture. There is no feature-referenced `DEFER` record; deferred/TBD provider sub-routes remain lifecycle truth inside the existing external boundary instead of becoming fake resolved feature capabilities.
+There is no pure `BUY` record in this slice because none of the external dependencies owns the whole product capability it supports. Identity/session, hosted persistence, dispatch, evaluator execution, object/media byte custody, commercial observations, and secret custody all remain coupled to project-owned responsibility that cannot be transferred to the provider without changing canonical architecture. There is no feature-referenced `DEFER` record; deferred/TBD provider sub-routes remain lifecycle truth inside the existing external boundary instead of becoming fake resolved feature capabilities.
 
 ### CAP-001 Core-owned product policy and orchestration
 
@@ -150,10 +153,34 @@ The canonical pronunciation/acoustic provider route remains `TBD`. `CAP-005` the
 
 **Exit.** Provider/model replacement occurs behind the same bounded Evaluator contract with consequential provenance retained and consequence-specific validation/calibration performed before use. Dynamic routing, generic multi-provider infrastructure, or a second semantic owner is not implied.
 
+### CAP-006 Governed object/media artifact custody
+
+**Boundary.** `SYS-002` owns artifact identity, authoritative metadata/reference, access eligibility, lifecycle, retention/deletion decision, integrity/provenance reconciliation, and product usability; `EXT-005` supplies external custody of governed large or retained object/media bytes. Any narrow direct browser transfer remains temporary and Core-authorized, and provider receipt never activates content or mutates product truth.
+
+**Build/buy consequence.** This is `HYBRID`: commodity byte custody is external while semantic artifact authority remains in Core. A storage bucket, object key, upload endpoint, CDN route, or signed-transfer mechanism does not become a separate capability identity or product authority.
+
+**Exit.** Replacement preserves Core-owned artifact identity and lifecycle while moving eligible bytes through the smallest provider-neutral export/copy/reconciliation path. Integrity, deletion/tombstone state, orphaned or temporary objects, and ambiguous in-flight transfers are reconciled before the replacement route can make artifacts usable; provider-specific object identity must not become canonical product identity.
+
+### CAP-007 Commercial entitlement reconciliation
+
+**Boundary.** `SYS-002` owns effective commercial entitlement and the legal product-access consequence; `EXT-006` supplies bounded payment/subscription observations only. Provider callbacks or queried provider state remain external facts until authenticated, associated, deduplicated/replayed safely, and reconciled into Core-owned entitlement state. Commercial state never grants RBAC privilege or changes learning/evidence truth.
+
+**Build/buy consequence.** This is `HYBRID`: the external commerce route may own payment/subscription processing facts, but it cannot own effective product entitlement or its relationship to learner history and authorization. A provider plan, webhook, checkout route, or billing SDK does not become another `CAP-*` identity.
+
+**Exit.** Provider replacement preserves Core-owned effective entitlement, stable internal identity, and reconciliation history while outstanding provider observations, callbacks, refunds/cancellations, and ambiguous commercial events are reconciled. Cutover cannot infer entitlement merely from provider reachability and cannot erase learner history when paid access changes.
+
+### CAP-008 Secret custody with Core-owned security administration
+
+**Boundary.** `SYS-002` owns authorization and typed security-operation policy for privileged secret-sensitive administration; `EXT-007` supplies external custody/versioning of credential material. Routine administration exposes only minimum safe metadata and never plaintext secret export. Credential creation, rotation, switching, destructive/recovery actions, and safety-critical changes require the canonical stronger security-sensitive capability plus durable audit.
+
+**Build/buy consequence.** This is `HYBRID`: external secret storage does not own RBAC, operating policy, provider activation, deployment authority, or permission to disclose/use a secret. Environment variables and deployment/bootstrap references remain configuration rather than dynamic product-policy authority, and one secret/provider/credential does not create one capability identity.
+
+**Exit.** Replacement rotates or rebinds secret references and least-privilege runtime identities without promoting plaintext export into the normal migration path. Old versions/references are revoked or retained only under explicit policy, consumers are reconciled to the new custody route, and Core-owned authorization/audit semantics remain unchanged.
+
 ## Migration boundary
 
 This file and `docs/catalog/project.json` remain **AUTHORITY NONE** migration artifacts. Legacy canonical owners are unchanged.
 
-`TASK-0010` adds only the five capability identities above and their catalog decision references. Existing `SYS-*` and `EXT-*` identities are reused without changing provider lifecycle, activation, configuration, pricing, or exact contracts. The earlier DATA/INTERFACES/external-dependency migrations remain separate accepted migration state.
+`TASK-0010` established `CAP-001..CAP-005`. `TASK-0017` preserves those boundaries, resolves all 47 detailed feature capability relations, and adds only `CAP-006..CAP-008` plus their material decision references for the distinct object/media custody, commercial entitlement reconciliation, and secret-custody/security boundaries already supported by canonical design and accepted `EXT-005..EXT-007` identities. No provider lifecycle, activation, configuration, pricing, spend authority, exact contract, schema, implementation component, or deployment topology is changed.
 
 `milestone.scope_state` remains `OPEN`. This state does not claim `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, promotion, or release readiness.

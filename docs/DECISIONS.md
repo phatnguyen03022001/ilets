@@ -2,7 +2,7 @@
 
 > **MIGRATION DRAFT — AUTHORITY NONE**
 >
-> Created by `TASK-0003` revision 1 and extended through `TASK-0016` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
+> Created by `TASK-0003` revision 1 and extended through `TASK-0017` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
 >
 > Current CAP/build-buy migration authority snapshot: `phatnguyen03022001/ilets@09504f4d782a5a53f9f8c57e750cc28274525667`; current accepted product-experience authority: `phatnguyen03022001/ilets@b60034a50d9a5ee5f197887ed14e7b917e919660`.
 
@@ -16,7 +16,7 @@ The corrected feature relation state distinguishes typed `refs`, genuine demonst
 
 `docs/catalog/project.json` exists only as a migration artifact with **authority NONE**. Its pathname does not grant canonical target authority. The catalog owns migration identities/typed relations; `docs/BEHAVIOR.md` owns migrated behavior explanation.
 
-The migration includes the previously accepted `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, and `CAP-*` inventories plus the existing material `DEC-*` records. `TASK-0013` adds only the decomposition decision required to resolve the already-approved `DECISION_REQUIRED` feature blocker and bounded relation-domain unknowns for detailed relations that current neighboring inventories do not yet fully support. `TASK-0014` extends only the DATA inventory/relations required to resolve `UNK-006`. `TASK-0015` resolves only the privileged detailed IFC relations and `UNK-007`; it preserves both accepted IFC identities and does not alter EXT/CAP mappings. `TASK-0016` resolves only the privileged detailed EXT relations and `UNK-008`, adds the minimum external dependency identities justified by current privileged behavior, and leaves CAP mappings/`UNK-009` untouched. These records remain authority-NONE migration state and cannot override canonical legacy owners.
+The migration includes the previously accepted `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, and `CAP-*` inventories plus the existing material `DEC-*` records. `TASK-0013` adds only the decomposition decision required to resolve the already-approved `DECISION_REQUIRED` feature blocker and bounded relation-domain unknowns for detailed relations that current neighboring inventories do not yet fully support. `TASK-0014` extends only the DATA inventory/relations required to resolve `UNK-006`. `TASK-0015` resolves only the privileged detailed IFC relations and `UNK-007`; it preserves both accepted IFC identities and does not alter EXT/CAP mappings. `TASK-0016` resolves only the privileged detailed EXT relations and `UNK-008`, adding the minimum external dependency identities justified by current privileged behavior. `TASK-0017` resolves only the 47 detailed CAP relations and `UNK-009`, preserving `CAP-001..CAP-005` and adding only the three distinct build/buy boundaries supported by accepted `EXT-005..EXT-007`. These records remain authority-NONE migration state and cannot override canonical legacy owners.
 
 ## Engineering claim and evidence semantics adoption
 
@@ -64,7 +64,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ## DEC-BUILD-BUY Material build/buy decisions
 
-`TASK-0010` records only three material build/buy decisions because the five capability records reduce to three genuine architectural choices: keep product semantic authority first-party; buy selected commodity infrastructure behind Core-owned authority; and keep the Evaluator project-owned while buying bounded external AI/speech execution. Provider names, prices, quotas, model benchmarks, activation state, and mutable operational research are intentionally not promoted into these decision records.
+`TASK-0010` records three material build/buy decisions for the original five capability boundaries: keep product semantic authority first-party; buy selected commodity identity/persistence/dispatch behind Core-owned authority; and keep the Evaluator project-owned while buying bounded external AI/speech execution. `TASK-0017` adds three further decisions only because accepted `EXT-005..EXT-007` introduce materially different artifact-custody, commercial-reconciliation, and secret-custody responsibility/exit semantics. Provider names, prices, quotas, model benchmarks, activation state, and mutable operational research are intentionally not promoted into these decision records.
 
 ### DEC-001 Core product authority remains project-owned
 
@@ -122,9 +122,51 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 **Reversibility.** `COSTLY`. The mapping can evolve only when canonical product design materially changes; renumbering or collapsing these stable migration identities later would require explicit traceability migration rather than cosmetic editing.
 
-## UNK-INVENTORY Migration unknown inventory after TASK-0016
+### DEC-005 Governed object/media custody stays behind Core artifact authority
 
-`UNK-001..UNK-008` are resolved for their authorized migration slices. `UNK-008` resolves only the seven privileged detailed EXT relations. `UNK-009` remains the sole downstream DESIGN relation blocker for the 47 detailed CAP mappings. Milestone closure also remains intentionally blocked by `milestone.scope_state: OPEN`; no `DOCS_READY` claim is made.
+**Context.** Canonical implementation and third-party design permit large or retained content/media bytes to live in the accepted `EXT-005` object/media storage boundary while Core remains authoritative for artifact identity, metadata/reference, eligibility, access, lifecycle, retention/deletion, integrity/provenance reconciliation, and product usability.
+
+**Selected outcome.** Implement `CAP-006` as `HYBRID`: keep governed artifact semantics and lifecycle in `SYS-002`, and use `EXT-005` only for external byte custody and bounded transfer behind Core authorization/reconciliation.
+
+**Alternative rejected.** Treat storage bucket/object keys, signed-upload success, CDN state, or provider metadata as content/product authority; or create a separate capability per bucket, object class, media type, transfer route, or storage vendor.
+
+**Rationale.** Byte custody is commodity infrastructure, but object/media lifecycle and usability are product/security/data semantics. Their exit path also requires artifact-integrity, deletion/orphan, and in-flight-transfer reconciliation that is materially different from identity, database hosting, or task dispatch.
+
+**Consequences.** The selected external route remains only `SELECTED_FOR_IMPLEMENTATION`; no activation, public permanence, data-egress approval, storage plan, bucket, credential, or spend is authorized here. Direct browser transfer remains narrow, temporary, and Core-authorized where later implemented.
+
+**Reversibility.** `COSTLY`. Provider replacement can preserve Core-owned artifact identity while moving eligible bytes, but must reconcile integrity, deletion/tombstone state, orphaned/temporary objects, and ambiguous transfers before new custody becomes usable.
+
+### DEC-006 Effective commercial entitlement remains Core-owned
+
+**Context.** Canonical privileged behavior defines entitlement reconciliation as accepting bounded commercial/provider facts and committing effective product access in Core. The accepted `EXT-006` boundary supplies payment/subscription observations only; learner commercial entitlement is separate from RBAC and learning/evidence truth.
+
+**Selected outcome.** Implement `CAP-007` as `HYBRID`: keep effective entitlement, stable learner association, and product-access consequence in `SYS-002`, while `EXT-006` supplies externally observed payment/subscription facts and provider events that Core reconciles.
+
+**Alternative rejected.** Treat provider subscription/checkout state as authoritative product entitlement, map provider roles/plans directly into RBAC or learning truth, or create one capability per webhook, billing product, payment method, plan, or commerce endpoint.
+
+**Rationale.** Commercial processing can be bought, but the meaning of paid access inside this product cannot. Reconciliation, replay/idempotency, downgrade/expiry semantics, and exit from a commerce provider are materially different from general product policy or storage custody.
+
+**Consequences.** Provider observations remain untrusted external facts until authenticated/associated/reconciled. No checkout, webhook, billing credential, price, provider activation, spend, or commercial policy is created by this migration.
+
+**Reversibility.** `COSTLY`. Provider change preserves Core-owned effective entitlement/history while outstanding callbacks, refunds/cancellations, ambiguous events, and provider-account association are reconciled before cutover.
+
+### DEC-007 Secret custody remains external while security authority stays in Core
+
+**Context.** Canonical runtime design separates secrets, Core-owned typed runtime policy, and deployment/bootstrap configuration. `EXT-007` is the accepted external secret-custody boundary, while canonical privileged behavior reserves credential creation/rotation/switching and other security-sensitive operations for stronger authorization plus reconstructable audit.
+
+**Selected outcome.** Implement `CAP-008` as `HYBRID`: keep security authorization and typed secret-operation policy in `SYS-002`, and use `EXT-007` only to custody/version credential material behind least-privilege runtime access.
+
+**Alternative rejected.** Make a secret manager, environment-variable store, provider console, or plaintext export path the owner of authorization/runtime policy; or create a capability per credential, secret version, provider, environment variable, or administrative button.
+
+**Rationale.** Secret material has disclosure/rotation/revocation and least-privilege exit semantics that differ materially from ordinary operating policy, content objects, commercial observations, or identity/session mechanics. Core must retain the permission/audit meaning even if custody changes.
+
+**Consequences.** Routine administration exposes only minimum safe metadata; plaintext read/export is not introduced. No secret, credential, provider activation, environment edit, deployment configuration, or spend is materialized by this migration.
+
+**Reversibility.** `COSTLY`. Exit requires controlled rotation or rebinding of references and runtime identities, reconciliation/revocation of old versions, and preservation of Core-owned authorization/audit semantics rather than routine plaintext migration through the admin surface.
+
+## UNK-INVENTORY Migration unknown inventory after TASK-0017
+
+`UNK-001..UNK-009` are resolved for their authorized migration slices. All 47 detailed feature relations now use typed CAP references, and no blocking design unknown or `unresolved_ref` remains. Milestone closure remains intentionally blocked only by `milestone.scope_state: OPEN`; no `DOCS_READY` claim is made.
 
 ### UNK-004 Capability/build-buy relation resolution
 
@@ -152,9 +194,9 @@ This resolution creates no pure `BUY` capability because the external dependenci
 
 `DEC-004` is the required `resolved_by_ref` attribution because the pinned V1 model requires a `DECISION_REQUIRED` unknown to resolve through a `DEC-*`. This is a decomposition/migration decision only; it does not create new canonical product authority.
 
-Resolving `UNK-005` does **not** imply neighboring relation closure. The CAP mapping for all detailed features remains the separate OPEN DESIGN relation unknown `UNK-009`. `milestone.scope_state` therefore stays `OPEN`, and `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain unclaimed.
+Resolving `UNK-005` does **not** imply neighboring relation closure. DATA, IFC, EXT, and CAP detailed relation domains were resolved independently by `TASK-0014..TASK-0017`; `milestone.scope_state` still stays `OPEN`, and `DOCS_READY`, design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain unclaimed.
 
-## Detailed relation-domain resolutions after TASK-0016
+## Detailed relation-domain resolutions after TASK-0017
 
 ### UNK-006 Expanded detailed feature DATA relations
 
@@ -176,7 +218,7 @@ Canonical API/runtime ownership proves that no additional semantic IFC is materi
 
 `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. The resolution is the complete seven-feature mapping plus the affected grouped-flow interface refs, not a claim that every privileged consequence itself crosses Web/Core. `IFC-002` remains exclusively the Core-to-Evaluator bounded capability boundary and is not added to privileged relations without an actual evaluator crossing.
 
-This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` is resolved independently below; `UNK-009` remains OPEN and milestone scope remains `OPEN`.
+This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` and `UNK-009` were resolved independently by later bounded relation migrations; milestone scope remains `OPEN`.
 
 ### UNK-008 Privileged detailed external-dependency relation resolution
 
@@ -190,8 +232,24 @@ The complete detailed mapping is intentionally sparse. `FTR-047` uses `EXT-005`;
 
 The broader canonical provider inventory is deliberately not promoted: no transactional-email EXT is justified by current support semantics; selected external operational telemetry does not become a product dependency merely because operations can display provider/work state; deferred AI generation/model-assisted validation does not justify `EXT-004` reuse; and neither authentication, persistence hosting nor possible asynchronous dispatch is attached without a material feature-specific dependency crossing. Provider lifecycle remains owned by `design/07-third-party-services.md`; catalog identity does not make any route `ACTIVE`, approve data egress, authorize spend, configure credentials, or materialize webhook/OpenAPI/DTO contracts.
 
-### UNK-009 Expanded detailed feature capability/build-buy relations
+### UNK-009 Expanded detailed feature capability/build-buy relation resolution
 
-The accepted `CAP-001..CAP-005` mappings were resolved for the six macro anchors. Projecting those capability/build-buy refs across all 47 newly detailed features would require feature-specific boundary proof and could hide missing privileged/commercial/audit capability state. `FTR-007..FTR-053` therefore use one bounded OPEN DESIGN CAP relation unknown until a dedicated migration performs that mapping. Existing CAP dispositions and `DEC-001..DEC-003` remain unchanged.
+`UNK-009` is resolved only after every `FTR-007..FTR-053` capability relation is replaced with exact `CAP-*` references and the resulting boundary inventory is audited against canonical runtime, detailed behavior, accepted DATA/IFC/EXT relations, and pinned V1 build/buy semantics.
 
-`UNK-009` is now the only unresolved detailed relation-domain blocker. Together with the intentionally `OPEN` milestone scope, it keeps the migration truthful without reopening `UNK-005..UNK-008` or manufacturing neighboring-domain coverage.
+All 40 detailed learner features use `CAP-001`, `CAP-002`, and `CAP-003`: Core owns their product behavior/policy, protected product access uses the existing identity/session-plus-Core-authorization capability, and their durable authoritative learner/content/evidence/product state remains behind the Core-owned managed-PostgreSQL capability. This is not a mechanical copy of macro mappings: `CAP-004`/`CAP-005` are added only to the eight detailed learner features whose current semantics materially require recoverable bounded evaluator/media work rather than merely sharing broad learner flows: `FTR-030`, `FTR-031`, `FTR-035`, `FTR-038`, `FTR-039`, `FTR-040`, `FTR-045`, and `FTR-046`. The remaining 32 detailed learner features remain usable through Core-owned deterministic/content/capture behavior without making optional AI tutoring, realtime interaction, or a broader flow footprint into a required capability relation.
+
+The seven privileged mappings remain equally sparse and feature-specific:
+
+- `FTR-047` = `CAP-001`, `CAP-002`, `CAP-003`, `CAP-006` for Core-authorized content/review/release behavior plus governed external object/media byte custody;
+- `FTR-048` = `CAP-001`, `CAP-002`, `CAP-003` for Core-owned support state only;
+- `FTR-049` = `CAP-001`, `CAP-002`, `CAP-003`, `CAP-007` for Core-owned effective entitlement plus external commercial observations;
+- `FTR-050` = `CAP-001`, `CAP-002`, `CAP-003` for authorized Core-owned operational visibility; optional telemetry is not a product build/buy dependency;
+- `FTR-051` = `CAP-001`, `CAP-002`, `CAP-003` for typed Core-owned operating-policy administration; raw secret editing remains excluded;
+- `FTR-052` = `CAP-001`, `CAP-002`, `CAP-003`, `CAP-008` for Core-owned security/access authority plus external secret custody; and
+- `FTR-053` = `CAP-001`, `CAP-003` because consequential audit reconciliation is a Core-internal durable product/security responsibility after the initiating authorization boundary and has no separate live identity/session or external provider capability crossing of its own.
+
+Exactly three new capability identities are required. `CAP-006`, `CAP-007`, and `CAP-008` are all `HYBRID` because `SYS-002` retains semantic authority while accepted `EXT-005`, `EXT-006`, and `EXT-007` supply distinct external execution/custody. They are not merged because object/media bytes, commercial observations/effective-entitlement reconciliation, and sensitive credential custody have different responsibility and exit semantics. They are not split further by feature, role, provider, bucket, webhook, credential, model, endpoint, table, queue, permission, or UI surface.
+
+`CAP-006` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. `DEC-005..DEC-007` record only the new material build/buy choices; `DEC-001..DEC-004` and `CAP-001..CAP-005` remain unchanged. Selected/TBD provider lifecycle remains owned by canonical `design/07-third-party-services.md`: this relation resolution does not activate/configure any provider, authorize spend/data egress, choose the unresolved pronunciation route, or create exact contracts, schema, implementation code, deployment topology, or new runtime components.
+
+With all 47 detailed CAP relations typed and `UNK-009` resolved, there is no remaining `UNRESOLVED_RELATION`, blocking unknown, or CAP/build-buy resolution defect in the migration catalog. `milestone.scope_state` deliberately remains `OPEN`, so the sole intentional documentation-closure blocker is `SCOPE_OPEN`; this task does not freeze documentation or claim `DOCS_READY`.
