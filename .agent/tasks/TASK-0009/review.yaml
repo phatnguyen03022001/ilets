@@ -1,0 +1,44 @@
+protocol_version: 3
+
+task_id: TASK-0009
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0009/report.yaml
+  commit: "c9f09b8097686b238882dc193932391801b5abed"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition: []
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0009 is an accepted authority-NONE external-dependency migration slice. CAP/build-buy, material decision, unknown closure and open milestone scope intentionally keep DOCS_READY false."
+
+notes:
+  - "Implementation e1b7e3e110f919bc5a36c2f575c61ec6bb885ee9 is exactly one direct child of authorized base dc025aba921607d9ec8b31fb986f379d72c99198 and changes only docs/INTERFACES.md, docs/DECISIONS.md and docs/catalog/project.json."
+  - "Report c9f09b8097686b238882dc193932391801b5abed is exactly one report-only child of the implementation commit."
+  - "The migration materializes exactly EXT-001 Clerk identity/session, EXT-002 Neon Launch PostgreSQL hosting, EXT-003 Google Cloud Tasks bounded dispatch, and EXT-004 the boundary-sized external Evaluator AI/speech provider dependency; it does not expand the catalog to every vendor/model/operational service named by canonical third-party design."
+  - "All six migrated feature dependency relations are typed and flow dependency_refs remain a truthful narrower footprint. UNK-003 is resolved with dedicated docs/DECISIONS.md#UNK-003 evidence and valid non-decision attribution."
+  - "Exactly interfaces.external_dependencies and interfaces.dependency_failure_exit advance to L1. Provider lifecycle remains canonical SELECTED_FOR_IMPLEMENTATION/TBD/DEFERRED rather than ACTIVE; no provider activation/configuration, CAP, build/buy disposition, DEC material-choice identity or UNK-004 closure is introduced."
+  - "Deterministic pinned-model audit records zero model/reference/traceability/orphan defects. Remaining SCOPE_OPEN=1, COVERAGE_GAP=3 and UNRESOLVED_RELATION=6 are intentional unfinished CAP/decision/scope blockers."
+  - "Legacy CONSTITUTION.md, OBJECTIVE.md, spec/** and design/** remain canonical; docs/* migration artifacts remain authority NONE until explicit cutover."
