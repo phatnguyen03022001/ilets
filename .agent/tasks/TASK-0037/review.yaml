@@ -1,0 +1,30 @@
+protocol_version: 3
+
+task_id: TASK-0037
+task_revision: 1
+review_revision: 1
+state: REVIEWED
+review_result: ACCEPTED
+
+review_binding:
+  repository: phatnguyen03022001/ilets
+  branch: dev
+  task_commit: "c1ff173b33efb79bbf2922ac02b0d3569478a5e3"
+  implementation_commit: "cd002e8054d3617f50183d6bb1df13ce6d5a9cc4"
+  verification_boundary_commit: "c1899bafa823cd1079e63b7c75dc9e6bad9378bc"
+  report_commit: "55e55c353808e6f584b5835f70460948b685de83"
+
+review:
+  lineage: PASS
+  scope: PASS
+  formatter_equivalence: PASS
+  exact_candidate_verification: PASS
+  report_truthfulness: PASS
+  topology: PASS
+
+findings: []
+blockers: []
+follow_up_required: false
+
+acceptance_rationale: >-
+  TASK-0037 remained within the authorized formatter-only recovery lane. The implementation is a direct child of the exact task base and changes only apps/web/e2e/reading-training.spec.ts. The report records repository-pinned Node v24.19.0, pnpm 11.21.0, and Prettier 3.9.6, with deterministic formatter normalization, idempotence, debug-check, and formatting-only equivalence against the TASK-0035 semantic reference. The sole verification boundary is a direct child of the implementation and changes only .github/verification-boundary/candidate to the exact implementation SHA. GitHub Actions run 33515706109 independently confirms successful boundary binding, detached exact-candidate checkout, exact HEAD assertion, and full ./verify PASS. The report is a separate report-only child, main remains unchanged, topology remains exactly {dev, main}, and no semantic, workflow, dependency, documentation, contract, runtime, UI, planner, progression, generated-artifact, promotion, or release mutation is present.
