@@ -1,0 +1,174 @@
+protocol_version: 3
+
+task_id: TASK-0038
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0032
+  gap_ids:
+    - GAP-001
+    - GAP-002
+    - LEGACY-ROOT-SUBTRACTION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@da6451e71fe77e544589dafdb1568651248e2785"
+    role: "Current accepted dev truth after TASK-0037 review."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0032/report.yaml@da6451e71fe77e544589dafdb1568651248e2785"
+    role: "Historical complete subtraction preflight and legacy-root dependency evidence."
+    precedence: 2
+  - source: ".agent/tasks/TASK-0033/report.yaml@da6451e71fe77e544589dafdb1568651248e2785"
+    role: "Canonical evidence that the materializer source-map now uses docs-only owners and has zero remaining legacy registry owners."
+    precedence: 3
+  - source: "tools/canonical/source-map.json@da6451e71fe77e544589dafdb1568651248e2785"
+    role: "Current machine evidence: allowlisted authority root is docs; spec/design/research/evidence/archive are forbidden authority sources."
+    precedence: 4
+  - source: ".agent/tasks/TASK-0037/review.yaml@da6451e71fe77e544589dafdb1568651248e2785"
+    role: "Accepted evidence that a capable Codex/local execution surface plus sentinel-bound full ./verify is available."
+    precedence: 5
+
+objective: >-
+  Complete the previously blocked repository-subtraction pass by proving the current inbound-reference and provenance state of spec/**, design/**, research/** and evidence/**, then delete every file in those roots that has no unique current role, preserving only the minimum canonical successor truth/provenance required by the active repository, with no archive creation and no product-semantic redesign.
+
+scope:
+  required_changes:
+    - "Refresh refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Use a capable Codex/local checkout for exhaustive current-tree search and repository-native verification. Historical .agent task/report/review artifacts are immutable evidence and references inside them do not count as active inbound dependencies requiring rewrite."
+    - "Audit every current active inbound dependency into spec/**, design/**, research/** and evidence/** across README.md, docs/**, contracts/**, tools/**, workflows, tests, runtime/code, generated inputs and active repository configuration. Do not stop at the first reference."
+    - "Treat CONSTITUTION.md, OBJECTIVE.md, docs/** and scoped contracts/** as current authority. spec/** and design/** are superseded/non-canonical; research/** and evidence/** are non-canonical provenance candidates; Git history is the default home for superseded prose/history."
+    - "Reconfirm tools/canonical/source-map.json has docs-only owners and zero legacy registry owners before deleting any legacy file. If that invariant no longer holds, make no subtraction mutation and publish a truthful BLOCKED report."
+    - "For active navigation/provenance references to legacy roots, repoint only to the smallest correct canonical docs/contracts owner or, when the reference is purely historical, remove it or replace it with an immutable Git-history anchor if such an anchor is materially necessary."
+    - "For research/** and evidence/**, inspect whether any unique materially required provenance is not already represented in canonical owners. If yes, harvest only the smallest sufficient provenance metadata into the owning canonical doc; do not copy legacy prose wholesale. If no unique current role remains, delete the files."
+    - "Do not create archive/**. Do not move superseded files into another legacy/history directory."
+    - "Delete every subtraction-eligible file in spec/**, design/**, research/** and evidence/** after reference/provenance repair. A file must not be retained merely because it once contained useful history; Git history already preserves that history."
+    - "If any file in those roots still has a unique current executable/runtime/machine role that cannot be rehomed by a semantics-preserving reference change within this task, retain only that proven minimum file, enumerate the exact blocker/owner in the report, and do not retain unrelated files around it."
+    - "Semantic product/design changes are forbidden. Any required change outside deletion, reference repointing, provenance minimization or derived-artifact refresh must fail closed as BLOCKED rather than reinterpret canonical truth."
+    - "Before publishing the implementation commit, run exhaustive no-dangling-reference checks for all deleted paths and run full local ./verify using the repository-pinned toolchain. Correct only task-scoped subtraction/reference/provenance defects before the implementation commit."
+    - "Publish exactly one implementation commit for the completed subtraction candidate. The implementation may contain the bounded deletions plus directly necessary current-reference/provenance/derived-artifact repairs, and nothing else."
+    - "After the implementation commit, publish exactly one sentinel-only verification-boundary child changing only .github/verification-boundary/candidate to the implementation SHA."
+    - "Require GitHub Actions to prove boundary parent identity, detached exact-candidate checkout, exact HEAD and full ./verify PASS on the exact candidate."
+    - "Do not perform a second implementation mutation after the verification boundary. If full ./verify fails for any reason, publish the truthful BLOCKED report and stop."
+    - "Always publish exactly one canonical TASK-0038 report when report publication remains available. NEEDS_REVIEW is allowed only after exact-candidate full ./verify PASS."
+    - "Do not modify prior task artifacts, main/staging, promotion/release surfaces, provider/runtime feature behavior, product semantics or standards claims."
+
+allowed_existing_paths:
+  - spec/**
+  - design/**
+  - research/**
+  - evidence/**
+  - README.md
+  - docs/**
+  - contracts/**
+  - tools/**
+  - .github/verification-boundary/candidate
+
+conditional_existing_paths:
+  rule: >-
+    A current active file outside allowed_existing_paths may be changed only when exhaustive search proves it contains a direct live reference to a deletion candidate and the edit is a semantics-neutral reference removal/repointing. Record every such file and exact reason in the report. Runtime/code behavior changes remain forbidden.
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0038/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+  forbid_new_roots:
+    - archive
+
+invariants:
+  - "CONSTITUTION.md and OBJECTIVE.md authority remains unchanged."
+  - "Canonical docs/contracts semantics remain unchanged except minimum provenance/navigation normalization that does not alter product meaning."
+  - "tools/canonical/source-map.json remains docs-only and spec/design/research/evidence/archive remain forbidden authority sources."
+  - "No active machine/runtime/tool dependency may point at a deleted legacy path after the implementation candidate."
+  - "Historical .agent evidence is not rewritten merely because it mentions deleted paths."
+  - "Git history is sufficient historical retention unless a concrete current provenance requirement proves otherwise."
+  - "No archive or replacement legacy-history tree is created."
+  - "Sentinel-bound exact-candidate verification remains fail closed."
+  - "No second implementation mutation occurs after the TASK-0038 verification boundary."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The current active inbound-reference set for all candidate legacy roots is exhaustively classified."
+    evidence_required: "Report enumerates active references and explicitly separates immutable historical .agent references from current runtime/tool/docs/navigation dependencies."
+  - id: AC-2
+    requirement: "Legacy roots are reduced to the smallest justified current tree."
+    evidence_required: "Every deleted file has no unique current role after bounded repair; any retained legacy file has an exact proven current owner/dependency reason, with unrelated legacy files still deleted."
+  - id: AC-3
+    requirement: "No canonical product semantics are lost or silently redesigned."
+    evidence_required: "Any harvested research/evidence material is minimum provenance metadata only; canonical docs/contracts retain meaning and source-map remains docs-only."
+  - id: AC-4
+    requirement: "No dangling active references remain."
+    evidence_required: "Exact current-tree search after deletion returns no active references to deleted legacy paths outside immutable historical evidence; local full ./verify passes before publication."
+  - id: AC-5
+    requirement: "Mutation scope is subtraction-focused and minimal."
+    evidence_required: "Single implementation commit contains only deletions and directly necessary semantics-neutral reference/provenance/derived-artifact repairs; no archive or unrelated feature change."
+  - id: AC-6
+    requirement: "Verification is exact-candidate and full repository verification passes."
+    evidence_required: "Sole sentinel boundary points to the implementation SHA; Actions proves boundary parent identity, detached checkout, exact HEAD and full ./verify PASS."
+  - id: AC-7
+    requirement: "Terminal reporting is durable and truthful."
+    evidence_required: "Separate report-only child; NEEDS_REVIEW only after exact-candidate full ./verify PASS, otherwise BLOCKED."
+
+verification:
+  local_prepublication:
+    required: true
+    mechanism: "repository-pinned local ./verify plus exhaustive deleted-path/reference search"
+    expected_signal: "PASS before implementation publication"
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
+    expected_signal: "exact candidate binding PASS and full ./verify PASS"
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - local_repository_checkout
+    - exhaustive_repository_search
+    - repository_pinned_toolchain_execution
+    - exact_diff_inspection
+    - repository_git_object_write
+    - non_force_ref_update
+    - repository_native_deterministic_verification_execution
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
