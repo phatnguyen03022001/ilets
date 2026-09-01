@@ -1,0 +1,131 @@
+protocol_version: 3
+
+task_id: TASK-0035
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0034
+  gap_ids: [T34-E2E-POST-SAMPLED-BLOCKER]
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@1bac190b9079877d88088202a5e082dcdb14c846"
+    role: "Current dev truth after the published TASK-0034 verification boundary."
+    precedence: 1
+  - source: "GitHub Actions run 33483524892 attempt 2"
+    role: "Exact TASK-0034 verification evidence: boundary 1bac190b9079877d88088202a5e082dcdb14c846 bound candidate d1a046ca8831deb0b96191f9cdb2f010429e98ac; exact checkout gates passed; ./verify failed only at the sampled Reading Playwright expectation."
+    precedence: 2
+  - source: "Current canonical CONSTITUTION.md, OBJECTIVE.md, docs/**, contracts/** at the exact execution base"
+    role: "Product/system authority for the post-sampled AT-02 behavior. Superseded spec/** and design/** are not authority."
+    precedence: 3
+
+objective: >-
+  Resolve the single post-sampled Academic Reading AT-02 E2E blocker exposed by TASK-0034 by reconciling current runtime/UI/test behavior to existing canonical product authority, without inventing Progression/ActionIntent semantics, readiness/Band inference, or new product behavior; then obtain exact-candidate repository-native verification and publish a truthful canonical report.
+
+scope:
+  required_changes:
+    - "Refresh refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reconfirm the inherited evidence from GitHub Actions run 33483524892 attempt 2: sentinel boundary 1bac190b9079877d88088202a5e082dcdb14c846 resolved exact candidate d1a046ca8831deb0b96191f9cdb2f010429e98ac; checkout and exact-HEAD gates passed; ./verify failed at apps/web/e2e/reading-training.spec.ts because the expected post-submission authoritative-blocker state was not visible."
+    - "Inspect only the minimum current canonical CONSTITUTION.md / OBJECTIVE.md / docs/** / contracts/** evidence plus the relevant sampled Reading runtime/UI/tests needed to determine the intended state after an AT-02 submission admits the bounded EvidenceFact while no authorized Progression/ActionIntent transition exists."
+    - "Do not use superseded spec/** or design/** as authority. They may be consulted only if needed as non-authoritative historical evidence after canonical owners are exhausted."
+    - "If canonical authority unambiguously requires a learner-visible bounded blocker/no-next-recommendation state and current implementation fails to present it, make the smallest implementation/test correction required to realize that existing behavior."
+    - "If canonical authority shows the runtime behavior is already semantically correct but the Playwright assertion is stale, over-specific, or coupled to incidental copy, correct the test minimally so it proves the canonical semantic state rather than a non-authoritative wording artifact."
+    - "If canonical authority is materially ambiguous or contradictory about the post-EvidenceFact state, do not redesign or guess. Make no semantic implementation/test mutation; publish a truthful BLOCKED report naming the exact canonical ambiguity and stop."
+    - "Preserve the sampled assessment invariants already proven before the failing assertion: the activity remains ASSESSMENT/ASSESSMENT_MAY_ADMIT; submission creates only bounded evidence; the learner is not told that Band/readiness/passed state was established; no unsupported Progression/ActionIntent transition is fabricated."
+    - "Preserve the TASK-0034 gofmt repair and reusable sentinel-bound verify.yml semantics unchanged unless exact current evidence proves a direct regression required for this task; otherwise do not touch them."
+    - "Preserve TASK-0033 materializer authority recovery and generated artifacts unchanged."
+    - "Publish at most one semantic implementation commit for this task."
+    - "After the implementation commit, publish exactly one sentinel-only verification-boundary child changing only .github/verification-boundary/candidate to the exact implementation SHA."
+    - "Require GitHub Actions to prove boundary->parent candidate binding, detached exact candidate checkout, exact HEAD assertion, and full ./verify execution on that exact implementation SHA."
+    - "Do not perform a second semantic implementation mutation after the verification boundary. If verification still fails, publish the truthful blocking report under the current report authority and stop."
+    - "Always publish exactly one canonical TASK-0035 report when report publication authority/capability remains available. NEEDS_REVIEW is allowed only after exact-candidate ./verify PASS; otherwise report the truthful blocking terminal result."
+    - "Do not perform repository subtraction, new feature work, planner/progression redesign, standards assessment, provider activation, main/staging mutation, promotion, or release."
+
+allowed_existing_files:
+  - apps/web/e2e/reading-training.spec.ts
+  - apps/web/src/features/today/today.tsx
+  - apps/web/src/features/today/today.test.tsx
+  - .github/verification-boundary/candidate
+  - .agent/tasks/TASK-0035/task.yaml
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0035/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "Canonical docs authority and DESIGN LOCK remain unchanged."
+  - "No new Progression/ActionIntent transition is introduced."
+  - "No sampled AT-02 result directly establishes or claims Reading Band, readiness, pass/fail readiness, or target completion."
+  - "The fix is semantic-authority-preserving and minimal; exact user-facing copy is not promoted to authority unless current canonical owner explicitly requires that copy."
+  - "TASK-0034 verifier transport remains sentinel-bound and fail closed."
+  - "No second semantic implementation mutation occurs after the TASK-0035 verification boundary is published."
+  - "Report publication remains truthful on PASS or failure when authorized and available."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The exact TASK-0034 blocker is reproduced/resolved against current canonical authority rather than guessed from the failing assertion alone."
+    evidence_required: "Report cites the exact canonical owner(s), current runtime/UI/test evidence, and a bounded diagnosis distinguishing implementation defect, stale/over-specific test, or canonical ambiguity."
+  - id: AC-2
+    requirement: "Post-sampled AT-02 learner behavior matches existing authority without fabricated progression."
+    evidence_required: "Relevant unit/E2E evidence proves bounded EvidenceFact handling, no unsupported Band/readiness claim, no unauthorized Progression/ActionIntent transition, and the correct learner-visible next/blocker state."
+  - id: AC-3
+    requirement: "Mutation scope is minimal and authority-traceable."
+    evidence_required: "Base-to-implementation changes only the minimum authorized Today/E2E files required by the diagnosis; no docs/contracts/progression/provider or unrelated mutation occurs."
+  - id: AC-4
+    requirement: "Verification remains exact-candidate and fail closed."
+    evidence_required: "The sole sentinel boundary changes only .github/verification-boundary/candidate to the implementation SHA; workflow proves boundary parent identity, detached checkout, exact HEAD, and full ./verify result on that SHA."
+  - id: AC-5
+    requirement: "Terminal reporting is durable and truthful."
+    evidence_required: "A separate report-only child is published whether the verifier passes or returns a blocking failure, provided report publication authority/capability remains available; NEEDS_REVIEW is emitted only on exact-candidate ./verify PASS."
+
+verification:
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
+    expected_signal: "exact candidate binding PASS and full ./verify PASS"
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_git_object_write, non_force_ref_update, repository_native_deterministic_verification_execution]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
