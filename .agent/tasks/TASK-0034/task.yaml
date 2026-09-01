@@ -1,0 +1,114 @@
+protocol_version: 3
+
+task_id: TASK-0034
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0033
+  gap_ids: [GAP-003]
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@bc526d24fa1bff501bc1261c9ff99a15ce509618"
+    role: "Reviewed target truth after accepted TASK-0033 verifier blocker."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@8c9bac1db76654ea66d2ee9cb09abef04a91afc0:.agent/tasks/TASK-0033/report.yaml"
+    role: "Accepted exact verification evidence and inherited gofmt blocker."
+    precedence: 2
+
+objective: "Repair the inherited gofmt defect that blocked TASK-0033, make the sentinel-bound verifier reusable without task-specific hard-coded candidate SHAs, and obtain repository-native ./verify PASS on the exact repaired descendant that includes the accepted TASK-0033 materializer-authority migration."
+
+scope:
+  required_changes:
+    - "Refresh refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reproduce GAP-003 and confirm services/core-api/internal/progression/sampled_reading.go differs from gofmt output only by formatting."
+    - "Apply exactly the gofmt-normalized form to services/core-api/internal/progression/sampled_reading.go with zero semantic change."
+    - "Minimally generalize .github/workflows/verify.yml so sentinel-bound verification derives the latest reachable boundary and its exact parent candidate from repository evidence rather than hard-coding TASK-0033-specific SHAs."
+    - "Preserve the fail-closed invariants: boundary commit must change only .github/verification-boundary/candidate; sentinel content must be one valid commit SHA; sentinel candidate must equal boundary parent; workflow must checkout that candidate detached and assert HEAD before ./verify."
+    - "Do not weaken, skip or special-case gofmt or any ./verify gate."
+    - "Publish exactly one implementation commit containing only the gofmt repair plus the minimal verifier generalization."
+    - "Publish exactly one verification-boundary child changing only .github/verification-boundary/candidate to the exact implementation SHA."
+    - "Require the resulting GitHub Actions run to prove exact boundary->candidate binding and ./verify PASS on the implementation parent."
+    - "Only after PASS publish exactly one report-only child at .agent/tasks/TASK-0034/report.yaml and stop at NEEDS_REVIEW."
+    - "Preserve the already-landed TASK-0033 docs-only materializer authority migration and its generated artifacts unchanged except where ./verify itself deterministically proves drift requiring a separately reported blocker."
+    - "Do not perform repository subtraction, feature work, standards assessment, provider activation, main/staging mutation, promotion or release."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0034/report.yaml
+  allowed_existing_files:
+    - services/core-api/internal/progression/sampled_reading.go
+    - .github/workflows/verify.yml
+    - .github/verification-boundary/candidate
+    - .agent/tasks/TASK-0034/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "No runtime semantic change; sampled_reading.go repair is formatting-only."
+  - "No weakening or bypass of repository verification."
+  - "Verifier remains sentinel-bound and fail-closed but is no longer coupled to one historical TASK-0033 SHA pair."
+  - "Canonical docs authority, DESIGN LOCK, CONSTITUTION.md, OBJECTIVE.md, catalog FROZEN state and contracts remain unchanged."
+  - "No second implementation mutation after the verification boundary is published."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "sampled_reading.go is gofmt-clean with byte-level change limited to formatting and no semantic change."
+  - id: AC-2
+    requirement: "verify.yml derives and validates the latest sentinel boundary and exact parent candidate without task-specific hard-coded candidate/boundary SHAs, while preserving fail-closed sentinel-only boundary semantics."
+  - id: AC-3
+    requirement: "Exact lineage is task base -> one implementation commit -> one sentinel-only verification-boundary child -> one report-only child."
+  - id: AC-4
+    requirement: "GitHub Actions proves exact boundary->implementation binding and ./verify completes PASS on that exact implementation candidate."
+  - id: AC-5
+    requirement: "The verified implementation retains TASK-0033 materializer authority recovery: zero materializer owner under spec/** or design/** and no semantic registry regression."
+
+verification:
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
+    expected_signal: "exact candidate binding PASS and ./verify PASS"
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_git_object_write, non_force_ref_update, repository_native_deterministic_verification_execution]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
