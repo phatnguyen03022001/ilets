@@ -1,11 +1,13 @@
 name: verify
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
     paths:
       - '.github/verification-boundary/candidate'
+      - '.github/workflows/verify.yml'
 
 permissions:
   contents: read
@@ -19,33 +21,51 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout boundary
+      - name: Checkout verification ref
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           persist-credentials: false
 
-      - name: Bind candidate to boundary parent
+      - name: Bind exact candidate from latest sentinel boundary
         id: candidate
         shell: bash
         env:
-          BOUNDARY_SHA: ${{ github.sha }}
+          EXPECTED_BOUNDARY_SHA: ed6910c2876d696ecce9e3f1bae156ce2a00d384
+          EXPECTED_CANDIDATE_SHA: 0bc42d3f07f0f9893f10ad5093586f91b0bdc147
         run: |
           set -euo pipefail
           sentinel=.github/verification-boundary/candidate
-          test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
-          candidate="$(cat "$sentinel")"
+
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          boundary="$(git log -n 1 --format=%H -- "$sentinel")"
+          test -n "$boundary"
+          test "$boundary" = "$EXPECTED_BOUNDARY_SHA"
+
+          mapfile -t changed < <(git diff-tree --no-commit-id --name-only -r "$boundary")
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = "$sentinel"
+
+          candidate_file="$RUNNER_TEMP/task-0033-candidate"
+          git show "${boundary}:${sentinel}" > "$candidate_file"
+          test "$(wc -l < "$candidate_file")" -eq 1
+          candidate="$(cat "$candidate_file")"
           if [[ ! "$candidate" =~ ^[0-9a-f]{40}$ ]]; then
             echo "invalid candidate SHA" >&2
             exit 1
           fi
-          printf '%s\n' "$candidate" | cmp -s - "$sentinel"
-          git cat-file -e "${candidate}^{commit}"
-          parent="$(git rev-parse "${BOUNDARY_SHA}^")"
-          test "$candidate" = "$parent"
-          echo "sha=$candidate" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$candidate" | cmp -s - "$candidate_file"
 
-      - name: Checkout declared candidate
+          git cat-file -e "${candidate}^{commit}"
+          parent="$(git rev-parse "${boundary}^")"
+          test "$candidate" = "$parent"
+          test "$candidate" = "$EXPECTED_CANDIDATE_SHA"
+
+          echo "boundary=$boundary" >> "$GITHUB_OUTPUT"
+          echo "sha=$candidate" >> "$GITHUB_OUTPUT"
+          printf 'Verified boundary %s -> exact candidate %s\n' "$boundary" "$candidate"
+
+      - name: Checkout exact candidate
         shell: bash
         env:
           CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
@@ -55,7 +75,11 @@ jobs:
         shell: bash
         env:
           CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
-        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+          EXPECTED_CANDIDATE_SHA: 0bc42d3f07f0f9893f10ad5093586f91b0bdc147
+        run: |
+          set -euo pipefail
+          test "$CANDIDATE_SHA" = "$EXPECTED_CANDIDATE_SHA"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE_SHA"
 
       - uses: actions/setup-go@v5
         with:
