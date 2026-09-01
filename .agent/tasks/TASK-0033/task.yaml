@@ -1,7 +1,7 @@
 protocol_version: 3
 
 task_id: TASK-0033
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
@@ -34,102 +34,104 @@ execution_skills:
   recommended: []
 
 authority_sources:
-  - source: "phatnguyen03022001/ilets@e1915d3c15db239d592ad5f0739b3519922da93a"
-    role: "Current reviewed target truth after accepted TASK-0032 capability blocker review."
+  - source: "phatnguyen03022001/ilets@0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+    role: "Already-published TASK-0033 canonical-materializer implementation candidate; preserve exactly and do not rebuild."
     precedence: 1
-  - source: "phatnguyen03022001/ilets@a1752ae969787deafdedeff3fe3aa0eaea0b2c17:.agent/tasks/TASK-0032/report.yaml"
-    role: "Accepted evidence for seven live superseded materializer inputs, verification-boundary topology and generated-materialization drift."
+  - source: "phatnguyen03022001/ilets@ed6910c2876d696ecce9e3f1bae156ce2a00d384"
+    role: "Already-published verification-boundary child; changes only .github/verification-boundary/candidate and names the exact implementation SHA."
     precedence: 2
+  - source: "phatnguyen03022001/ilets@a1752ae969787deafdedeff3fe3aa0eaea0b2c17:.agent/tasks/TASK-0032/report.yaml"
+    role: "Accepted source evidence for live superseded materializer inputs, generated drift and need for repository-native verification."
+    precedence: 3
   - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
     role: "Protocol-v3 governance authority."
-    precedence: 3
+    precedence: 4
 
 structure_authority:
   status: RESOLVED
-  rationale: "TASK-0032 proved that repository subtraction is blocked by stale executable ownership, not by product ambiguity. The smallest recovery is to re-home canonical registry materialization from seven superseded spec/design paths to already-canonical docs owners, refresh derived artifacts, and use the repository's existing verification-boundary workflow with an explicitly authorized evidence-only boundary child. No verifier architecture redesign is required."
+  rationale: "Revision 1 implementation and boundary are already correct and published. Verification did not enqueue because the verify workflow had been manually disabled when the boundary push occurred. After the operator re-enabled it, GitHub proved that the dev workflow lacks workflow_dispatch while the default-branch workflow exposes it, so the missed push cannot be replayed unchanged. The smallest recovery is a verification-only workflow repair that preserves the existing sentinel-bound candidate model, discovers the latest reachable boundary commit, proves that boundary changed only the sentinel and that the sentinel SHA equals the boundary parent, then checks out and verifies that exact parent. No candidate rebuild, second boundary, product change or verifier-framework redesign is authorized."
 
-objective: "Remove the canonical materializer's dependency on superseded spec/design authority paths, eliminate exact-base generated-materialization drift, and obtain repository-native ./verify PASS on the exact repaired candidate without deleting legacy/provenance trees yet."
+objective: "Complete TASK-0033 verification against the already-published exact implementation 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 by repairing only the repository-native verification trigger/binding path proven unavailable after the missed disabled-workflow push, then publish the canonical terminal report."
 
 scope:
   required_changes:
-    - "Refresh refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
-    - "Reproduce TASK-0032 GAP-001/GAP-002: source-map uses seven superseded spec/design owners; generated reading-training registry contains stale owner blob identity after TASK-0031."
-    - "Audit tools/canonical/source-map.json, materialize.py, test_materialize.py and current canonical docs/** to map every existing registry entry to an already-canonical successor owner/section with exact semantic parity."
-    - "Re-home all registry ownership away from spec/** and design/** to canonical docs/**. Preserve the existing registry IDs, cells, enum values, semantic meanings and parser/materializer architecture."
-    - "Update source-map allowlist/forbidden-source policy minimally so canonical docs/** are the permitted authority source and superseded spec/**, design/**, research/**, evidence/** and archive/** cannot silently become materializer authority again."
-    - "If an existing canonical docs section needs only a formatting/anchor adjustment so the current parser can consume semantics already present there, make the minimum semantics-neutral adjustment. Do not add new product semantics, duplicate whole legacy tables or redesign the parser."
-    - "Regenerate every derived canonical materialization artifact affected by the owner/path/blob changes, including tools/canonical/generated/reading-training-registry.json and any exact companion trace/revision output owned by the current materializer."
-    - "Require the regenerated artifacts to preserve the same stable registry identities and semantic payload while changing provenance owner/path/blob and canonical source revision exactly as implied by the new canonical docs sources."
-    - "Do not delete spec/**, design/**, research/**, evidence/** or any other subtraction candidate in this task. TASK-0033 is recovery only."
-    - "Do not modify .github/workflows/verify.yml unless exact evidence proves the existing workflow cannot perform its documented parent-candidate verification. The expected path is to use it unchanged."
-    - "After constructing and publishing exactly one implementation commit, publish exactly one verification-boundary evidence child that changes only .github/verification-boundary/candidate to the exact implementation SHA. This boundary child is explicitly authorized for TASK-0033 and is not an implementation commit."
-    - "Require the resulting GitHub Actions verify workflow to bind the boundary child to its parent implementation candidate and run ./verify on that exact parent. Verification must PASS before the report is published."
-    - "After PASS, publish exactly one report-only child adding only .agent/tasks/TASK-0033/report.yaml and stop at NEEDS_REVIEW."
+    - "Refresh refs/topology/task/pins and require the current dev handoff head to match the revision-2 planning commit with topology exactly {dev, main}."
+    - "Preserve implementation 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 byte-for-byte and preserve boundary ed6910c2876d696ecce9e3f1bae156ce2a00d384; do not create a replacement implementation or second boundary."
+    - "Reproduce the execution-surface defect: Actions produced zero runs because verify was manually disabled at boundary push time; after re-enable, dev's workflow definition has no workflow_dispatch path for dev, so the missed event cannot be manually replayed against dev."
+    - "Modify only .github/workflows/verify.yml in one verification-recovery commit."
+    - "Keep the existing sentinel-bound exact-candidate architecture. Add workflow_dispatch and make verification binding robust to a recovery commit after the boundary: from the current ref HEAD, resolve the latest reachable commit that changed .github/verification-boundary/candidate; require that commit to change only the sentinel; read the candidate SHA from that boundary version; require candidate == boundary parent; then checkout and run ./verify on that exact candidate."
+    - "Retain push verification on dev and include .github/workflows/verify.yml itself in the push path filter so the verification-recovery commit can enqueue the now-enabled workflow without another boundary mutation."
+    - "Use sufficient fetch depth to prove the boundary/candidate ancestry from the recovery commit."
+    - "Do not weaken exact-candidate proof: the workflow must not verify current HEAD, an arbitrary input SHA or a non-parent candidate."
+    - "Require the resulting GitHub Actions run to identify candidate 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 and execute ./verify on that exact detached commit."
+    - "If the recovery push enqueues no run, or the run cannot prove the exact candidate binding, publish a truthful BLOCKED report with exact execution-surface evidence and stop."
+    - "If the exact candidate run completes PASS, publish exactly one report-only child adding only .agent/tasks/TASK-0033/report.yaml and stop at NEEDS_REVIEW."
+    - "If the exact candidate run executes and FAILS, publish a truthful BLOCKED report containing the exact failing job/step/log evidence; do not mutate the candidate under this revision."
     - "Preserve canonical docs authority, DESIGN LOCK, CONSTITUTION.md, OBJECTIVE.md, docs/catalog identities/relations/FROZEN state, exact contracts and runtime semantics."
-    - "Do not perform repository subtraction, standards assessment, implementation feature work, provider activation, spend authorization, main/staging mutation, promotion or release."
+    - "Do not perform repository subtraction, standards assessment, feature implementation, provider activation, spend authorization, main/staging mutation, promotion or release."
     - "Use GitHub-native surfaces only; do not probe local/runtime/Codex."
 
 structure_policy:
   expected_new_files:
     - .agent/tasks/TASK-0033/report.yaml
   allowed_existing_files:
+    - .github/workflows/verify.yml
+    - .github/verification-boundary/candidate
+    - .agent/tasks/TASK-0033/task.yaml
     - tools/canonical/source-map.json
     - tools/canonical/materialize.py
     - tools/canonical/test_materialize.py
     - tools/canonical/generated/**
     - docs/**
-    - .github/verification-boundary/candidate
-    - .agent/tasks/TASK-0033/task.yaml
   unlisted_new_files:
     allowed: false
     max: 0
   allow_new_top_level_directories: false
 
 invariants:
+  - "Implementation 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 is immutable under revision 2."
+  - "Boundary ed6910c2876d696ecce9e3f1bae156ce2a00d384 is immutable under revision 2 and remains the sole TASK-0033 verification-boundary child."
   - "No product/system redesign and no DESIGN LOCK change."
   - "No stable registry identity or semantic meaning changes."
-  - "No canonical materializer owner remains under superseded spec/** or design/** after successful implementation."
+  - "No canonical materializer owner remains under superseded spec/** or design/** in the preserved implementation candidate."
   - "No research/**, evidence/** or archive/** authority source is introduced."
-  - "Current parser/materializer architecture is preserved; only authority-source migration and derived refresh are authorized."
+  - "Verification recovery changes workflow mechanics only and may not alter candidate semantics."
   - "No legacy/provenance deletion occurs in this task."
-  - "Verification-boundary child changes only .github/verification-boundary/candidate and names the exact implementation parent SHA."
-  - "No report may claim NEEDS_REVIEW unless repository-native ./verify PASS is attached to the exact implementation candidate."
+  - "No report may claim NEEDS_REVIEW unless repository-native ./verify PASS is attached to exact candidate 0bc42d3f07f0f9893f10ad5093586f91b0bdc147."
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "All existing canonical registry entries are sourced from canonical docs/** owners with exact stable identity/semantic parity; zero source-map registry owner remains under spec/** or design/**."
+    requirement: "Preserved implementation retains all revision-1 semantic/materializer acceptance properties with no candidate rebuild or semantic mutation."
   - id: AC-2
-    requirement: "Source-map authority policy permits only the intended canonical docs source plane and prevents superseded spec/design plus research/evidence/archive from serving as canonical materializer authority."
+    requirement: "Exactly one verification-recovery commit changes only .github/workflows/verify.yml and preserves the sentinel-bound exact-parent proof while supporting replay after the already-published boundary."
   - id: AC-3
-    requirement: "Generated canonical registry/trace artifacts are refreshed, BASE-DRIFT-001 is eliminated, and provenance owner/path/blob plus canonical source revision match the exact implementation candidate."
+    requirement: "The verification workflow proves boundary ed6910c2876d696ecce9e3f1bae156ce2a00d384 changed only the sentinel, proves its sentinel names parent 0bc42d3f07f0f9893f10ad5093586f91b0bdc147, checks out that exact candidate and runs ./verify there."
   - id: AC-4
-    requirement: "Canonical docs semantics, DESIGN LOCK, CONSTITUTION/OBJECTIVE, catalog FROZEN state and exact contracts remain unchanged except semantics-neutral parser-consumable formatting where strictly required."
+    requirement: "Repository-native ./verify on exact candidate 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 completes PASS before NEEDS_REVIEW may be reported."
   - id: AC-5
-    requirement: "Repository-native verify workflow runs ./verify against the exact implementation parent through one authorized verification-boundary child and completes PASS."
-  - id: AC-6
-    requirement: "Publication lineage is exactly one implementation commit -> one verification-boundary evidence child -> one report-only child; main and branch topology remain unchanged."
+    requirement: "Successful terminal history preserves the existing implementation and boundary, then contains the Architect revision-2 authority commit, one verification-recovery workflow commit, and one report-only child; main and branch topology remain unchanged."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Resolve the exact seven legacy materializer owners and their canonical docs successors; prove semantic parity before mutation."
+      command_or_check: "Verify current refs and preserved implementation/boundary identities before mutation."
       required: true
     - id: CHECK-2
-      command_or_check: "Verify regenerated registry IDs/cells/enums are semantically identical to the pre-migration registry while source provenance moves to canonical docs and BASE-DRIFT-001 disappears."
+      command_or_check: "Verify workflow-recovery diff is only .github/workflows/verify.yml and exact-candidate binding cannot select anything other than the sole sentinel boundary parent."
       required: true
     - id: CHECK-3
-      command_or_check: "Verify source-map contains zero registry owner under spec/** or design/** and forbids superseded/non-canonical authority sources."
+      command_or_check: "Inspect the resulting GitHub Actions run/jobs/steps and require checkout/run evidence for exact candidate 0bc42d3f07f0f9893f10ad5093586f91b0bdc147."
       required: true
     - id: CHECK-4
-      command_or_check: "Publish the authorized boundary child and require GitHub Actions ./verify PASS on the exact implementation parent."
+      command_or_check: "Require ./verify PASS; otherwise stop BLOCKED with exact run evidence."
       required: true
     - id: CHECK-5
-      command_or_check: "Verify exact three-commit lineage, bounded changed-file sets, final refs/topology, then publish report and stop NEEDS_REVIEW."
+      command_or_check: "Verify bounded lineage, final refs/topology and report-only diff before terminal status."
       required: true
   authoritative_verification:
     required: true
-    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via verification-boundary child"
-    expected_signal: "./verify PASS on exact implementation parent SHA"
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml using preserved sentinel boundary ancestry"
+    expected_signal: "./verify PASS on exact implementation SHA 0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
 
 capability_requirements:
   EXECUTION: [exact_remote_ref_read, repository_content_read, repository_git_object_write, non_force_ref_update, repository_native_deterministic_verification_execution]
