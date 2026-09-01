@@ -1,0 +1,51 @@
+protocol_version: 3
+
+task_id: TASK-0031
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0031/report.yaml
+  commit: "b1929ca67b8505136abec8928263d929b69c7cb0"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition:
+  - gap_id: GAP-001
+    classification: RESOLVED
+    source_ref: TASK-0030/report.yaml
+    disposition: ACCEPTED
+
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "Canonical documentation authority cutover is accepted on dev, but standards applicability/evidence planning, exact contract reconciliation, implementation program synthesis, implementation evidence and release gates remain separate later lifecycle work."
+
+notes:
+  - "Exact refs were refreshed before review: dev=b1929ca67b8505136abec8928263d929b69c7cb0, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}."
+  - "Implementation 55712d277387f46a3b1be98cd52793095be58d53 is exactly one direct commit ahead of authorized base 133b0c31de3e499bcd23ba00eccb91d548c930b1; the bounded diff contains only README authority/read-order changes, successor docs/shards/catalog authority repair/cutover, and minimal status demotion of the 12 spec owners plus 9 design owners."
+  - "Report b1929ca67b8505136abec8928263d929b69c7cb0 is exactly one direct report-only child of the implementation and adds only .agent/tasks/TASK-0031/report.yaml."
+  - "FRESH-RES-001..004 are preserved in the successor authority plane: the epistemic classes/external-change rule, learner-experience product-quality contract, and staged beginner L1-to-English Speaking scaffold are represented without new authority domain, unsupported catalog identity class, glossary framework, or whole-file legacy copy."
+  - "The new docs/product/learner-experience-contract.md is a legal one-level PRODUCT shard and docs/catalog/project.json includes exactly its PRODUCT support ref while milestone.scope_state remains FROZEN."
+  - "README now defines one active precedence path through CONSTITUTION.md, OBJECTIVE.md, canonical docs roots/legal referenced shards/catalog, plus scoped contracts/** exact machine authority; spec/** and design/** are superseded non-canonical legacy reference rather than equal authority."
+  - "Architect independently verified contract blobs on the exact implementation: public.openapi.yaml=11e303e946ccddbcd8a21a509f54f6c82b1d721d and evaluator.openapi.yaml=c4759657cfb5ab4215e3ceb7da35e1cd5fae5e0c, matching the exact-base identities recorded by the task/report."
+  - "The report records the fresh complete 21-owner audit at zero material legacy-only residuals, zero equal dual-canonical owners, unchanged DESIGN LOCK semantics, unchanged CONSTITUTION.md/OBJECTIVE.md, pinned agent-documents V1 zero defects/blockers and derived DOCS_READY=TRUE; no contradictory review evidence was found."
+  - "Canonical documentation authority cutover is therefore accepted. Legacy file deletion/archive cleanup, research/evidence/archive subtraction, standards assessment, contract redesign/materialization, implementation planning/code, provider activation, main/staging mutation, promotion and release remain unauthorized by this review and should be handled only by separate bounded lifecycle work."
