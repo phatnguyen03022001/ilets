@@ -10,7 +10,7 @@ const (
 	NoGapEvaluation GapEvaluation = ""
 	EvidenceGap     GapEvaluation = "EVIDENCE_GAP"
 
-	NoActionIntent ActionIntent = ""
+	NoActionIntent  ActionIntent = ""
 	CollectEvidence ActionIntent = "COLLECT_EVIDENCE"
 
 	SampledReadingNeedsEvidence               SampledReadingState = "NEEDS_EVIDENCE"

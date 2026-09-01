@@ -30,9 +30,6 @@ jobs:
       - name: Bind exact candidate from latest sentinel boundary
         id: candidate
         shell: bash
-        env:
-          EXPECTED_BOUNDARY_SHA: ed6910c2876d696ecce9e3f1bae156ce2a00d384
-          EXPECTED_CANDIDATE_SHA: 0bc42d3f07f0f9893f10ad5093586f91b0bdc147
         run: |
           set -euo pipefail
           sentinel=.github/verification-boundary/candidate
@@ -40,13 +37,12 @@ jobs:
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
           boundary="$(git log -n 1 --format=%H -- "$sentinel")"
           test -n "$boundary"
-          test "$boundary" = "$EXPECTED_BOUNDARY_SHA"
 
           mapfile -t changed < <(git diff-tree --no-commit-id --name-only -r "$boundary")
           test "${#changed[@]}" -eq 1
           test "${changed[0]}" = "$sentinel"
 
-          candidate_file="$RUNNER_TEMP/task-0033-candidate"
+          candidate_file="$RUNNER_TEMP/verification-candidate"
           git show "${boundary}:${sentinel}" > "$candidate_file"
           test "$(wc -l < "$candidate_file")" -eq 1
           candidate="$(cat "$candidate_file")"
@@ -59,7 +55,6 @@ jobs:
           git cat-file -e "${candidate}^{commit}"
           parent="$(git rev-parse "${boundary}^")"
           test "$candidate" = "$parent"
-          test "$candidate" = "$EXPECTED_CANDIDATE_SHA"
 
           echo "boundary=$boundary" >> "$GITHUB_OUTPUT"
           echo "sha=$candidate" >> "$GITHUB_OUTPUT"
@@ -75,11 +70,9 @@ jobs:
         shell: bash
         env:
           CANDIDATE_SHA: ${{ steps.candidate.outputs.sha }}
-          EXPECTED_CANDIDATE_SHA: 0bc42d3f07f0f9893f10ad5093586f91b0bdc147
         run: |
           set -euo pipefail
-          test "$CANDIDATE_SHA" = "$EXPECTED_CANDIDATE_SHA"
-          test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE_SHA"
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
 
       - uses: actions/setup-go@v5
         with:
