@@ -1,0 +1,142 @@
+protocol_version: 3
+
+task_id: TASK-0032
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0031
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+structure_model:
+  repository: phatnguyen03022001/agent-documents
+  revision: "acb3f02616e700190586681306a86905792e4c07"
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@cc36c9cd52469f8c06198aa243258a1d1bb56d3f"
+    role: "Reviewed post-TASK-0031 canonical authority state. docs/** is canonical project-documentation authority; spec/** and design/** are superseded non-canonical legacy reference."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@cc36c9cd52469f8c06198aa243258a1d1bb56d3f:.agent/tasks/TASK-0031/review.yaml"
+    role: "Accepted authority cutover review."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07"
+    role: "Pinned V1 documentation model."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+    role: "Protocol-v3 governance authority."
+    precedence: 4
+
+objective: "Reduce the active repository to the smallest truthful post-cutover structure by retiring superseded/non-canonical documentation and supporting-history surfaces that no longer have a unique current role, while preserving every current canonical semantic, exact machine contract, necessary provenance fact, and live tool/runtime dependency."
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task/pins and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Audit the exact dev tree, not main, for every current reference/dependency into spec/**, design/**, research/**, evidence/** and archive/** across README, docs/**, contracts/**, tools/**, workflows, tests, code, generated inputs, task/runtime configuration and repository verification surfaces."
+    - "Treat Git history as the default home for superseded historical prose. Do not keep active-tree copies merely for convenience or nostalgia."
+    - "Confirm archive/** is absent or classify any present archive content. Never recreate archive content just to retire it."
+    - "For superseded spec/** and design/**, delete files/directories only after proving no current canonical truth or live executable/tooling dependency still requires their active-tree path. If a live reference exists, replace it with the exact successor docs/contracts authority before deletion when that replacement is semantics-preserving."
+    - "For research/**, preserve only material current provenance/rationale that is actually referenced by canonical truth or a live verifier. Harvest the minimum necessary citation/fact into the owning canonical docs/DECISIONS surface when required, then remove obsolete research files/directories. Do not create a new research framework or archive."
+    - "For evidence/**, preserve only provenance metadata materially required to substantiate a current canonical claim or external-change check. Prefer minimum source metadata beside/in the owning canonical authority rather than a separate evidence plane when semantic parity and traceability remain intact. Do not invent an evidence framework."
+    - "Remove stale references/tooling assumptions that point to already-absent historical paths, but do not redesign verification/tool architecture."
+    - "Update README only as needed to describe the resulting active repository truth; do not retain navigation for deleted non-canonical planes."
+    - "After subtraction, require docs/** authority semantics, DESIGN LOCK, FROZEN scope, catalog identities/relations, exact contracts and product/runtime behavior to remain unchanged."
+    - "Validate the exact candidate against the pinned agent-documents model; require zero defects/blockers and DOCS_READY=TRUE."
+    - "Run repository-native deterministic verification that is materially affected by removed paths/references. Do not add new CI/framework machinery merely to verify this cleanup."
+    - "If a candidate file has a material unique current role that cannot be minimally rehomed without semantic redesign, retain only the minimum required item and record the exact retention reason; do not block unrelated safe subtraction and do not preserve an entire tree for one required artifact."
+    - "Publish at most one bounded implementation commit plus one report-only child and stop at NEEDS_REVIEW."
+
+candidate_roots:
+  superseded_legacy:
+    - spec/**
+    - design/**
+  supporting_noncanonical:
+    - research/**
+    - evidence/**
+    - archive/**
+
+invariants:
+  - "docs/** roots/legal shards/catalog remain canonical project-documentation authority."
+  - "CONSTITUTION.md and OBJECTIVE.md remain distinct authority and are not rewritten by this task."
+  - "contracts/** scoped exact machine authority is byte/semantic preserved."
+  - "No product/system redesign, new feature, new authority domain, new catalog identity class, new provenance framework or new archive structure."
+  - "No loss of materially required external-source provenance."
+  - "Git history is sufficient for superseded prose unless a current legal/provenance/recovery dependency is demonstrated."
+  - "No standards assessment, implementation planning/code, provider activation, spend authorization, main/staging mutation, promotion or release."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "A complete exact-dev dependency audit classifies every candidate root/path that remains material to current canonical truth, tooling, tests, workflows or provenance."
+  - id: AC-2
+    requirement: "All safely redundant superseded/non-canonical files are removed from the active tree; any retained item has a precise demonstrated current role rather than historical convenience."
+  - id: AC-3
+    requirement: "No live repository reference points to a deleted path; semantics-preserving successor references are used where needed."
+  - id: AC-4
+    requirement: "Canonical docs semantics, DESIGN LOCK, catalog inventories/relations, FROZEN scope, CONSTITUTION/OBJECTIVE authority and exact contracts are unchanged."
+  - id: AC-5
+    requirement: "Pinned agent-documents validation remains zero defects/blockers with DOCS_READY=TRUE and affected repository-native verification passes."
+  - id: AC-6
+    requirement: "README reflects the actual reduced active tree and does not describe removed support/history planes as active repository surfaces."
+  - id: AC-7
+    requirement: "Publication is one bounded implementation commit plus one report-only child; main and topology remain unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Enumerate exact current contents and complete inbound references/dependencies for spec/**, design/**, research/**, evidence/** and archive/** on dev."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Before each deletion class, prove replacement or non-use and verify no current canonical owner/runtime/tooling path depends on the removed path."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Verify final repository has no dangling references to removed candidate paths and no duplicate historical authority plane."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Validate exact candidate against pinned agent-documents and run affected repository-native deterministic checks."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Verify bounded implementation lineage, then publish one report-only child and refresh final refs/topology."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, repository_git_object_write, non_force_ref_update]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
