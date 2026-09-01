@@ -1,0 +1,554 @@
+protocol_version: 3
+
+task_id: TASK-0039
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0039/task.yaml
+  commit: "4c4b9ee9c77ab2df553762e46cf3590a3c03f226"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "4c4b9ee9c77ab2df553762e46cf3590a3c03f226"
+  pre_execution_head: "4c4b9ee9c77ab2df553762e46cf3590a3c03f226"
+  implementation_commit: "a98d2bee3895c5dbe5655495ec1bd580d8e0847c"
+  verification_boundary_commit: ""
+  final_execution_head: "a98d2bee3895c5dbe5655495ec1bd580d8e0847c"
+  implementation_commits: 1
+  verification_boundaries_published: 0
+  repository_mutations_before_report: 1
+  semantic_mutations: 0
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+  observed_revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external:
+    - superpowers:using-superpowers
+    - superpowers:executing-plans
+    - superpowers:using-git-worktrees
+    - superpowers:verification-before-completion
+    - superpowers:finishing-a-development-branch
+
+pre_execution_checks:
+  protocol_version_supported: true
+  task_revision_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  topology_exact_dev_main_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  report_path_absent_at_boundary: true
+  no_branch_created: true
+  no_unrelated_file_mutation_before_report: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+  missing: []
+  passed: true
+  evidence: >-
+    GitHub-native exact-ref reads, blob/tree/commit writes, commit comparison, exact candidate
+    content reads, and a non-force dev ref update were available. Agent Runtime was not
+    required by TASK-0039 and its tunnel was unavailable before any local run root or checkout
+    was created; execution therefore remained entirely on the authorized GitHub repository surface.
+
+authority_resolution:
+  task_0031_cutover_accepted: true
+  canonical_path:
+    - USER
+    - CONSTITUTION.md
+    - OBJECTIVE.md
+    - docs/**
+    - scoped contracts/** exact machine-interface truth
+  docs_authority_domains:
+    - PRODUCT
+    - BEHAVIOR
+    - ARCHITECTURE
+    - DATA
+    - INTERFACES
+    - QUALITY
+    - DELIVERY
+    - DECISIONS
+  domain_count: 8
+  ninth_domain_created: false
+  glossary_framework_created: false
+  source_map_docs_only_confirmed: true
+  legacy_authority_roots_forbidden:
+    - spec
+    - design
+    - research
+    - evidence
+    - archive
+  task_0038_reopened: false
+  task_0038_report_modified: false
+
+constitutional_audit:
+  complete_file_audited: true
+  stale_surfaces:
+    - surface: authority_hierarchy
+      result: RECONCILED
+      evidence: >-
+        Replaced the pre-cutover spec -> design authority chain with USER -> Constitution ->
+        Objective -> canonical docs authority plane -> scoped exact contracts truth.
+    - surface: canonical_markdown_metadata
+      result: RECONCILED
+      evidence: >-
+        Removed the rule that legacy spec/design four-field headers confer canonical ownership;
+        canonical docs ownership is semantic and legal shards remain inside an existing domain.
+    - surface: active_authority_surface
+      result: RECONCILED
+      evidence: >-
+        Replaced the 12-learning-owner plus 9-design-owner active surface with the accepted
+        eight docs domains, legal shards/catalog, and scoped contracts authority.
+    - surface: learning_design_planes
+      result: RECONCILED
+      evidence: >-
+        Removed parallel spec learning and design runtime authority planes and represented
+        their successor semantics inside the existing eight docs domains.
+    - surface: evidence_ownership
+      result: RECONCILED
+      evidence: >-
+        External IELTS/Band truth now resolves to docs/product/ielts-exam-and-bands.md and
+        other evidence interpretation resolves to the smallest applicable canonical docs owner.
+    - surface: canonical_domain_ownership
+      result: RECONCILED
+      evidence: >-
+        Replaced the legacy learning-domain and design-domain lists with exactly PRODUCT,
+        BEHAVIOR, ARCHITECTURE, DATA, INTERFACES, QUALITY, DELIVERY, and DECISIONS.
+    - surface: change_rules
+      result: RECONCILED
+      evidence: >-
+        Change questions now resolve to the smallest owner inside one of the eight docs domains
+        plus scoped contracts/provider/coverage consequences instead of spec/design owners.
+    - surface: implementation_stack_ownership
+      result: RECONCILED
+      evidence: >-
+        First-order runtime responsibility, technology-family allocation, and approved initial
+        deployable topology now resolve to the canonical ARCHITECTURE authority, currently
+        docs/ARCHITECTURE.md and its legal referenced shards/catalog relations where applicable.
+    - surface: cross_language_ownership
+      result: RECONCILED
+      evidence: >-
+        Cross-language flow now starts from a canonical docs semantic owner; domain meaning
+        remains docs-owned while contracts own exact machine-interface truth only.
+    - surface: terminology_glossary_ownership
+      result: RECONCILED
+      evidence: >-
+        Canonical vocabulary is owned by the semantic owner defining each concept. The only
+        remaining Constitution reference to spec/11-GLOSSARY.md explicitly identifies it as
+        superseded non-canonical legacy reference with no override authority.
+    - surface: direct_legacy_path_owner_references
+      result: RECONCILED
+      evidence: >-
+        All remaining spec/** and design/** path references in the final Constitution are
+        explicit provenance/non-authority statements; none assigns current canonical ownership.
+
+objective_audit:
+  direct_stale_authority_contradictions_found: true
+  changed: true
+  stale_claims_reconciled:
+    - legacy design ownership of feature inventories, practice modes, durations, and UI defaults
+    - legacy design/08 ownership of current coverage declaration
+    - legacy design ownership of framework, route, provider, and deployment details
+    - legacy spec ownership requirement in the success definition
+    - legacy design ownership requirement in the success definition
+  replacement_model: >-
+    Existing canonical docs owners plus docs/catalog/project.json, with scoped machine-contract
+    owners where exact materialized interface truth applies.
+  semantic_change: false
+
+readme_audit:
+  contradiction_found: false
+  changed: false
+  evidence: >-
+    README.md already states the accepted read order and authority model: Constitution,
+    Objective, eight canonical docs roots/legal shards/catalog, scoped contracts truth, and
+    spec/design as superseded non-canonical legacy reference.
+
+terminology_audit:
+  legacy_file: spec/11-GLOSSARY.md
+  legacy_status: SUPERSEDED_NON_CANONICAL
+  full_file_audited: true
+  terms_compared: 85
+  already_owned_terms: 85
+  rehomed_terms: []
+  unique_unowned_terms: []
+  material_meaning_conflicts: []
+  ambiguity_requires_block: false
+  legacy_glossary_modified: false
+  groups:
+    - group: authority_documentation
+      count: 7
+      terms:
+        - Canonical
+        - Canonical owner
+        - Supporting
+        - Historical / archived
+        - SSOT
+        - Semantic ownership
+        - Reference
+      current_owners:
+        - CONSTITUTION.md
+        - README.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: ielts
+      count: 10
+      terms:
+        - IELTS Band
+        - Section Band
+        - Overall Band
+        - Academic
+        - General Training / GT
+        - Delivery mode
+        - Variant overlay
+        - Official task/question family
+        - Task 1 / Task 2
+        - TA / TR / CC / LR / GRA / FC
+      current_owners:
+        - docs/product/ielts-exam-and-bands.md
+        - docs/PRODUCT.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: learning_domains
+      count: 8
+      terms:
+        - Knowledge
+        - Skill
+        - Band threshold
+        - Curriculum
+        - Practice
+        - Assessment
+        - Progression
+        - Content Model
+      current_owners:
+        - docs/product/knowledge-objects.md
+        - docs/product/skill-leaves.md
+        - docs/product/ielts-exam-and-bands.md
+        - docs/product/curriculum-and-coverage.md
+        - docs/behavior/practice-and-media.md
+        - docs/data/evidence-progression-content.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: canonical_objects
+      count: 8
+      terms:
+        - Skill Leaf
+        - Knowledge Object
+        - Curriculum Node
+        - Learning Mechanism
+        - Practice Type
+        - Assessment Type
+        - Content Context
+        - Content Presentation Class
+      current_owners:
+        - docs/product/skill-leaves.md
+        - docs/product/knowledge-objects.md
+        - docs/product/curriculum-and-coverage.md
+        - docs/behavior/practice-and-media.md
+        - docs/data/evidence-progression-content.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: concrete_runtime_representations
+      count: 10
+      terms:
+        - Learning Unit
+        - Stimulus
+        - ScaffoldingProfile
+        - ExposureContext
+        - Practice Item
+        - Assessment Item
+        - Content coverage manifest
+        - Error Pattern
+        - Remediation Pattern
+        - Feedback Artifact
+      current_owners:
+        - docs/data/evidence-progression-content.md
+        - docs/behavior/practice-and-media.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: evidence_epistemic_state
+      count: 14
+      terms:
+        - Attempt
+        - Observation
+        - EvidenceFact
+        - EvidenceRequirement
+        - Evidence eligibility
+        - Inference scope
+        - MasteryEstimate
+        - ReadinessEvaluation
+        - Insufficient evidence
+        - Conflicting evidence
+        - Stale evidence
+        - Not yet supported
+        - Supported
+        - Confidence
+      current_owners:
+        - docs/data/evidence-progression-content.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: progression
+      count: 11
+      terms:
+        - Certification
+        - Certification history
+        - Regression
+        - Re-certification
+        - GapEvaluation
+        - ActionIntent
+        - Required prerequisite
+        - Recommended prerequisite
+        - Independent
+        - Adaptive sequencing
+        - Same outcomes, different paths
+      current_owners:
+        - docs/data/evidence-progression-content.md
+        - docs/product/curriculum-and-coverage.md
+        - docs/behavior/planner-and-lifecycle.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: learning_phases
+      count: 7
+      terms:
+        - Acquisition
+        - Consolidation
+        - Retrieval
+        - Transfer
+        - Fluency
+        - Exam Readiness
+        - Exam Preparation
+      current_owners:
+        - docs/behavior/practice-and-media.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: assessment_roles_and_external_truth_classes
+      count: 7
+      terms:
+        - Formative assessment
+        - Diagnostic assessment
+        - Readiness assessment
+        - Mastery portfolio
+        - Official Evidence
+        - Evidence-Based Interpretation
+        - Blueprint Inference
+      current_owners:
+        - docs/data/evidence-progression-content.md
+        - docs/product/ielts-exam-and-bands.md
+      classification: ALREADY_MATERIALLY_OWNED
+    - group: representation_boundaries
+      count: 3
+      terms:
+        - Single representation
+        - Canonical/runtime separation
+        - Localization overlay
+      current_owners:
+        - CONSTITUTION.md
+        - docs/PRODUCT.md
+        - docs/behavior/practice-and-media.md
+      classification: ALREADY_MATERIALLY_OWNED
+  conclusion: >-
+    The legacy glossary has no remaining unique current terminology semantic after full
+    comparison with the canonical plane. No term required copying or rehoming. Removing
+    constitutional dependence is sufficient and avoids duplicate terminology authority.
+
+implementation:
+  commit: "a98d2bee3895c5dbe5655495ec1bd580d8e0847c"
+  parent: "4c4b9ee9c77ab2df553762e46cf3590a3c03f226"
+  message: "fix(TASK-0039): reconcile constitutional authority"
+  changed_files:
+    - CONSTITUTION.md
+    - OBJECTIVE.md
+  files_changed: 2
+  additions: 89
+  deletions: 131
+  exact_diff_changes: 220
+  diff_bounded: true
+  semantic_mutation: false
+  legacy_tree_deletion: false
+  new_authority_path: false
+  new_authority_domain: false
+  new_glossary_file: false
+  readme_modified: false
+  docs_shard_modified: false
+  spec_glossary_modified: false
+  historical_agent_artifact_modified: false
+  summary: >-
+    Reconciled the stale highest-governance authority representation with the already
+    accepted TASK-0031 docs-only cutover and minimally removed direct stale owner claims
+    from OBJECTIVE.md. No learning/product/runtime rule, threshold, planner/progression
+    behavior, provider policy, API/schema semantic, standards claim, feature scope, or
+    DESIGN LOCK meaning changed.
+
+diff_review:
+  complete_exact_diff_reviewed: true
+  base: "4c4b9ee9c77ab2df553762e46cf3590a3c03f226"
+  head: "a98d2bee3895c5dbe5655495ec1bd580d8e0847c"
+  commits_ahead: 1
+  files:
+    - path: CONSTITUTION.md
+      additions: 84
+      deletions: 125
+      classification: AUTHORITY_REPRESENTATION_ONLY
+      hunk_scope:
+        - governance introduction and authority hierarchy
+        - canonical ownership/metadata model
+        - active authority surface and docs semantic plane
+        - DECISIONS authority qualification
+        - evidence ownership paths
+        - exact eight-domain ownership and legal-shard/contracts relationship
+        - canonical identity/runtime ownership wording
+        - change-rule owner resolution
+        - implementation-stack/topology owner resolution
+        - cross-language and terminology ownership
+        - final architecture self-test
+    - path: OBJECTIVE.md
+      additions: 5
+      deletions: 6
+      classification: AUTHORITY_REPRESENTATION_ONLY
+      hunk_scope:
+        - feature/practice/UI owner reference
+        - coverage/support owner reference
+        - downstream framework/provider/deployment owner reference
+        - success-definition owner reference
+  forbidden_semantic_changes_found: false
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: >-
+    TASK-0039 explicitly requires no authoritative verifier, sentinel boundary, or GitHub
+    Actions run. The task-specific exact repository checks below were performed directly on
+    the implementation commit before report publication.
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Complete Constitution audit and fresh exact candidate reads show no active claim that
+      spec/** or design/** own current semantics. Remaining references mark them explicitly
+      superseded/non-canonical; the sole spec/11-GLOSSARY.md reference explicitly denies authority.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      Constitution now names exactly PRODUCT, BEHAVIOR, ARCHITECTURE, DATA, INTERFACES,
+      QUALITY, DELIVERY, and DECISIONS; legal shards/catalog remain inside that docs plane and
+      contracts retain scoped exact machine-interface authority. No ninth domain was created.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      All 85 terminology entries in spec/11-GLOSSARY.md were classified across the ten
+      glossary groups above as already materially owned by existing Constitution/docs owners.
+      Zero terms were rehomed, zero meanings conflicted, and no glossary file/domain was created.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      Exact base-to-implementation diff is one commit changing only CONSTITUTION.md and
+      OBJECTIVE.md. All hunks are authority-representation reconciliation; no product,
+      learning, Band, planner/progression, provider, runtime, API/schema, standards, feature,
+      or DESIGN LOCK semantics changed.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      Implementation a98d2bee3895c5dbe5655495ec1bd580d8e0847c is the sole implementation
+      child of exact base 4c4b9ee9c77ab2df553762e46cf3590a3c03f226. This canonical report is
+      published as the sole direct report-only child. No sentinel, Actions run, legacy
+      deletion, branch creation, main mutation, promotion, tag, release, or metadata mutation occurred.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Exact complete base-to-implementation comparison reports one commit and exactly two
+      changed files: CONSTITUTION.md (84 additions, 125 deletions) and OBJECTIVE.md (5 additions,
+      6 deletions). Candidate text was then re-read from the exact implementation SHA.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      Final Constitution search/inspection found only explicit superseded/non-authority
+      references to spec/** and design/**; no current canonical-owner claim remains.
+  - check_id: CHECK-3
+    result: PASS
+    evidence: >-
+      Final governance/navigation inspection covered CONSTITUTION.md, OBJECTIVE.md, and
+      README.md. Constitution's only spec/11-GLOSSARY.md occurrence states it is superseded
+      non-canonical and cannot override docs; Objective and README contain no current glossary dependence.
+  - check_id: CHECK-4
+    result: PASS
+    evidence: >-
+      Exact diff changed no docs shard, source map, contract, legacy tree, or historical
+      .agent artifact. tools/canonical/source-map.json remains allowlisted_roots=[docs] with
+      spec/design/research/evidence/archive forbidden as authority. Exactly eight authority
+      domains remain and no new path/domain was created.
+  - check_id: CHECK-5
+    result: PASS
+    evidence: >-
+      Immediately before report publication, branch topology remained exactly {dev, main};
+      dev equaled a98d2bee3895c5dbe5655495ec1bd580d8e0847c and main remained
+      e707aeee43411cc8f99448b63220eb8beff552b6.
+
+changed_files:
+  - path: CONSTITUTION.md
+    summary: Reconciled all stale pre-cutover authority representation to the accepted docs-only model.
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: OBJECTIVE.md
+    summary: Removed only direct stale spec/design owner claims proven by exact inspection.
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "a98d2bee3895c5dbe5655495ec1bd580d8e0847c"
+    message: "fix(TASK-0039): reconcile constitutional authority"
+
+pushed: true
+promoted_to_main: false
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: >-
+    No local checkout or task run root was created. The optional Agent Runtime tunnel was
+    unavailable before any local artifact creation, and all authorized execution used exact
+    GitHub repository objects only.
+
+working_tree_after:
+  clean: true
+  summary: >-
+    No local working tree existed. Immediately before report publication the remote dev ref
+    exactly matched the verified implementation commit and no unrelated branch/file mutation
+    was present.
+
+result: NEEDS_REVIEW
