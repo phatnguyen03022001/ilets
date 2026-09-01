@@ -82,6 +82,10 @@ Trains locating explicit information efficiently in eligible text. Completion an
 
 Exercises evidence-versus-claim and writer-view classification for the applicable official question families. Feedback preserves the difference between contradiction, support, and missing information rather than teaching keyword heuristics as truth.
 
+| ID | Feature | Learner experience | Primary output |
+|---|---|---|---|
+| `R-F04` | T/F/NG + Y/N/NG Lab | classify support/contradiction/absence or writer stance | classification observation |
+
 ### FTR-019 R-F05 — Headings & Structure Lab
 
 Trains paragraph function, organization, and heading matching from textual evidence. Variant packaging may select different source contexts without creating duplicate Reading feature identities.

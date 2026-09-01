@@ -81,6 +81,12 @@ Missing required evidence → `INSUFFICIENT_EVIDENCE`; materially incompatible v
 | `AT-06` | Human / human-verified productive assessment | optional expert verification | Writing, Speaking | may contribute productive EvidenceFacts through normal eligibility |
 | `AT-07` | Full mock test | integrated exam-readiness measurement | four skills | non-certifying by itself |
 
+#### Canonical materializer anchor — objective receptive assessment
+
+| ID | Type | Primary role | Scope | Certification relation |
+|---|---|---|---|---|
+| `AT-02` | Objective receptive item set | keyed receptive measurement | Listening, Reading | may contribute EvidenceFacts within sampled scope |
+
 Productive measurement preserves criterion visibility and evaluator/model/rubric provenance/calibration. Receptive full-section Band inference uses applicable current external scoring rather than a frozen invented table and preserves Academic/GT distinction. Knowledge probes never certify target skills. Diagnostic sampling never cross-infers skills or variants, never fabricates unsampled completeness, keeps quick diagnostic provisional, preserves `sampled`, `not_sampled`, `unusable`, `pending_evaluation` where applicable, and stops based on decision value while leaving uncertainty visible. Diagnostic observations enter higher-consequence claims only through normal eligibility. Human verification remains optional; lack of safe automated evaluator cannot create hidden mandatory human dependency for ordinary product support. Full mock resolves one coherent variant and cannot bypass claim-scoped sufficiency.
 
 ### Evidence eligibility and independence

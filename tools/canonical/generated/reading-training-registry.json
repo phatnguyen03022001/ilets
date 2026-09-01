@@ -1,15 +1,15 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:c0a39e94dc74dc4fb64e92dfb4f46d90847f8e98d255db864eb9c0cc86950302",
+  "canonical_source_revision": "canonical-source-revision/v1:413fdd16ddb35e0861c8782bdef4999ee31cf746d9e210c721f33c9f82bd3bd3",
   "entries": [
     {
       "cells": [],
       "id": "ASSESSMENT",
       "source": {
-        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
-        "owner": "design/02-practice-catalog.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "## Primary activity purpose"
+        "section": "#### Primary activity purpose"
       },
       "type": "activity_purpose"
     },
@@ -17,10 +17,10 @@
       "cells": [],
       "id": "TRAINING",
       "source": {
-        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
-        "owner": "design/02-practice-catalog.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "## Primary activity purpose"
+        "section": "#### Primary activity purpose"
       },
       "type": "activity_purpose"
     },
@@ -33,10 +33,10 @@
       ],
       "id": "AT-02",
       "source": {
-        "git_blob": "4707e092da46c45f2a10919dabce489b2eb44fcd",
-        "owner": "spec/08-ASSESSMENT.md",
+        "git_blob": "c200edf700c6821178c4407881ad91f5417dff58",
+        "owner": "docs/data/evidence-progression-content.md",
         "parent_section": null,
-        "section": "# Assessment Type registry"
+        "section": "#### Canonical materializer anchor \u2014 objective receptive assessment"
       },
       "type": "assessment_type"
     },
@@ -47,10 +47,10 @@
       ],
       "id": "CTX-READING-ACADEMIC",
       "source": {
-        "git_blob": "23fead249ac0bc58aea9b3a758eadca420aecc7f",
-        "owner": "spec/10-CONTENT-MODEL.md",
+        "git_blob": "c200edf700c6821178c4407881ad91f5417dff58",
+        "owner": "docs/data/evidence-progression-content.md",
         "parent_section": null,
-        "section": "# Stable Content Context registry"
+        "section": "### Stable Content Context registry"
       },
       "type": "content_context"
     },
@@ -58,10 +58,10 @@
       "cells": [],
       "id": "ASSESSMENT_MAY_ADMIT",
       "source": {
-        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
-        "owner": "design/02-practice-catalog.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "## Evidence candidacy"
+        "section": "#### Evidence candidacy"
       },
       "type": "evidence_candidacy"
     },
@@ -69,10 +69,10 @@
       "cells": [],
       "id": "NOT_EVIDENCE_CANDIDATE",
       "source": {
-        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
-        "owner": "design/02-practice-catalog.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "## Evidence candidacy"
+        "section": "#### Evidence candidacy"
       },
       "type": "evidence_candidacy"
     },
@@ -84,10 +84,10 @@
       ],
       "id": "R-F04",
       "source": {
-        "git_blob": "fc0c5e9d0f66b935b63d23ddb40b4ceb0e2ff273",
-        "owner": "design/01-skill-features.md",
+        "git_blob": "1665d13a2dec4d4a6f6fc8f9eab27bb2cd11fac2",
+        "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
-        "section": "# Reading \u2014 8"
+        "section": "### FTR-018 R-F04 \u2014 T/F/NG + Y/N/NG Lab"
       },
       "type": "feature"
     },
@@ -97,10 +97,10 @@
       ],
       "id": "IELTS-R-QF-02",
       "source": {
-        "git_blob": "4cb566f961f1a1f1b56786b6f70a75e4ba61b14a",
-        "owner": "spec/02-IELTS-MODEL.md",
+        "git_blob": "58d30c50e0ef679a6f02a7d808e968351d1f76e6",
+        "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
-        "section": "## Reading family registry"
+        "section": "#### Canonical materializer anchor \u2014 Reading classification families"
       },
       "type": "official_family"
     },
@@ -110,10 +110,10 @@
       ],
       "id": "IELTS-R-QF-03",
       "source": {
-        "git_blob": "4cb566f961f1a1f1b56786b6f70a75e4ba61b14a",
-        "owner": "spec/02-IELTS-MODEL.md",
+        "git_blob": "58d30c50e0ef679a6f02a7d808e968351d1f76e6",
+        "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
-        "section": "## Reading family registry"
+        "section": "#### Canonical materializer anchor \u2014 Reading classification families"
       },
       "type": "official_family"
     },
@@ -126,10 +126,10 @@
       ],
       "id": "PM-R03",
       "source": {
-        "git_blob": "16f530fecc61c96561e70c7d5e097811eef609da",
-        "owner": "design/02-practice-catalog.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "# Reading \u2014 6"
+        "section": "### Canonical materializer anchor \u2014 Reading classification mode"
       },
       "type": "practice_mode"
     },
@@ -143,10 +143,10 @@
       ],
       "id": "PT-13",
       "source": {
-        "git_blob": "cb16428b5d5f7bddf866351bb3c502c9a2546a93",
-        "owner": "spec/07-PRACTICE.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "# Canonical Practice Type registry"
+        "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
       },
       "type": "practice_type"
     },
@@ -160,10 +160,10 @@
       ],
       "id": "PT-16",
       "source": {
-        "git_blob": "cb16428b5d5f7bddf866351bb3c502c9a2546a93",
-        "owner": "spec/07-PRACTICE.md",
+        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
-        "section": "# Canonical Practice Type registry"
+        "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
       },
       "type": "practice_type"
     },
@@ -174,10 +174,10 @@
       ],
       "id": "R-QT-02",
       "source": {
-        "git_blob": "366de7c4878e76a7675b260f27b4de6154862a99",
-        "owner": "spec/03-SKILLS.md",
-        "parent_section": "# Reading",
-        "section": "## Question-type strategies"
+        "git_blob": "61994086a592860f7a1268ca8ba31217f2d2ca83",
+        "owner": "docs/product/skill-leaves.md",
+        "parent_section": "## Reading",
+        "section": "### Question-type strategies"
       },
       "type": "skill_leaf"
     },
@@ -188,14 +188,14 @@
       ],
       "id": "R-QT-03",
       "source": {
-        "git_blob": "366de7c4878e76a7675b260f27b4de6154862a99",
-        "owner": "spec/03-SKILLS.md",
-        "parent_section": "# Reading",
-        "section": "## Question-type strategies"
+        "git_blob": "61994086a592860f7a1268ca8ba31217f2d2ca83",
+        "owner": "docs/product/skill-leaves.md",
+        "parent_section": "## Reading",
+        "section": "### Question-type strategies"
       },
       "type": "skill_leaf"
     }
   ],
   "schema_version": 1,
-  "source_map_sha256": "4c317e92f98ead96c5bba58a30f9ccbcca7d60595f0e976ce3ea090f8b34c4d8"
+  "source_map_sha256": "93d07827593143a328dc8b60675f2cbdcbf3dd9f80b2c8ff86d8e74df34e1cb5"
 }

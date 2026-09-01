@@ -66,6 +66,13 @@ AI tutoring is delivery/runtime capability, not a Learning Mechanism, and may no
 | `PT-22` | Diagnostic checkpoint practice | Re / Re,Co | diagnostic cross | uncertainty-dependent | low-friction sampling; measurement interpretation belongs to `AT-04` |
 | `PT-23` | Full mock test | ER / ER | timed cross | none by default | broad readiness/re-evidence with possible learning side-effects |
 
+### Canonical materializer anchor — receptive classification practice types
+
+| ID | Type | Primary / supported phases | Mode / scope | Typical mechanisms | Canonical target role |
+|---|---|---|---|---|---|
+| `PT-13` | Comprehension question set | Co / Co, Re | individual / listening, reading | `LM-02`, `LM-04` | receptive comprehension/question-type work |
+| `PT-16` | Distractor/error review | Re / Re, Co | individual / listening, reading | `LM-04`, `LM-10` | discriminate why an alternative failed |
+
 Concrete binding resolves target families to explicit stable Skill/Knowledge IDs before execution/evidence recording.
 
 ## Gap-to-practice selection
@@ -153,11 +160,33 @@ The locked catalog contains exactly 28 modes: 6 Listening, 6 Reading, 6 Writing,
 | `PM-X03` | Adaptive Mixed Set | 10–20m | interleaved eligible targets; `PT-20`,`PT-21` |
 | `PM-X04` | Full IELTS Mock | ≈150m L+R+W; Speaking per applicable separate/scheduled configuration | variant/delivery whole-test readiness; `PT-23` |
 
+### Canonical materializer anchor — Reading classification mode
+
+| ID | Mode | Default duration | Learning role | Typical canonical backing |
+|---|---|---:|---|---|
+| `PM-R03` | T/F/NG + Y/N/NG | 6–12 min | evidence/stance classification | `PT-13`, `PT-16`, Contrast |
+
 `PM-R06` resolves variant/scope; full-Reading readiness uses complete applicable variant conditions. `PM-W06` records material delivery/input condition. Task-1 mode instantiation resolves Academic to `W-TA-01/02/03` and GT to `W-GT1-01/02/03` plus shared Writing. `PM-X04` resolves variant before Reading/Writing Task 1 and does not allow mixed Academic/GT as normal readiness.
 
 ### Activity purpose and evidence candidacy
 
 Exactly one primary purpose describes why an activity is scheduled: `TRAINING`, `DIAGNOSTIC`, `ASSESSMENT`, or `READINESS`. Separately, pre-attempt evidence candidacy is exactly `NOT_EVIDENCE_CANDIDATE` or `ASSESSMENT_MAY_ADMIT`. The dimensions are orthogonal; purpose never admits evidence. `ASSESSMENT_MAY_ADMIT` only permits later claim-scoped Assessment consideration after actual assistance, exposure, evaluator quality, provenance and other conditions are known. There is no pre-attempt `CERTIFICATION_CONTRIBUTING` role.
+
+#### Primary activity purpose
+
+```text
+TRAINING
+DIAGNOSTIC
+ASSESSMENT
+READINESS
+```
+
+#### Evidence candidacy
+
+```text
+NOT_EVIDENCE_CANDIDATE
+ASSESSMENT_MAY_ADMIT
+```
 
 Retries remain purpose-labelled: recovery retry, faded retry, retention retry, transfer retry, re-evidence attempt. Immediate same-item retry is normally recovery, not independent transfer evidence. Catalog durations are UX/planning defaults, never dosage/mastery/certification. A new PM mode requires materially distinct learner-visible goal, interaction model, unrepresentable task family, or learning/evidence role; not merely topic/source/Band/variant/delivery/template.
 

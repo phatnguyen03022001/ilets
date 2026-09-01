@@ -40,6 +40,13 @@ These IDs identify external exam families, not Skills, Practice Types, product f
 | `IELTS-S-P2` | Speaking Part 2 — individual long turn |
 | `IELTS-S-P3` | Speaking Part 3 — extended discussion |
 
+#### Canonical materializer anchor — Reading classification families
+
+| ID | Official family |
+|---|---|
+| `IELTS-R-QF-02` | Identifying information — True / False / Not Given |
+| `IELTS-R-QF-03` | Identifying writer views/claims — Yes / No / Not Given |
+
 A Skill Leaf may serve several official families and one family may require several Skills. Academic Task-1 visual presentation subformats remain content-presentation coverage dimensions, not extra scored Writing tasks. Speaking remains a holistic Band construct even though Parts 1–3 have stable family identities for coverage.
 
 ## External-truth epistemic contract

@@ -1,20 +1,20 @@
 {
   "version": 1,
   "allowlisted_roots": [
-    "spec",
-    "design"
+    "docs"
   ],
   "forbidden_authority_sources": [
+    "spec",
+    "design",
     "research",
-    "archive",
     "evidence",
-    "spec/DECISIONS.md"
+    "archive"
   ],
   "registries": [
     {
       "type": "feature",
-      "owner": "design/01-skill-features.md",
-      "section": "# Reading \u2014 8",
+      "owner": "docs/BEHAVIOR.md",
+      "section": "### FTR-018 R-F04 — T/F/NG + Y/N/NG Lab",
       "kind": "markdown_table",
       "ids": [
         "R-F04"
@@ -22,8 +22,8 @@
     },
     {
       "type": "practice_mode",
-      "owner": "design/02-practice-catalog.md",
-      "section": "# Reading \u2014 6",
+      "owner": "docs/behavior/practice-and-media.md",
+      "section": "### Canonical materializer anchor — Reading classification mode",
       "kind": "markdown_table",
       "ids": [
         "PM-R03"
@@ -31,8 +31,8 @@
     },
     {
       "type": "practice_type",
-      "owner": "spec/07-PRACTICE.md",
-      "section": "# Canonical Practice Type registry",
+      "owner": "docs/behavior/practice-and-media.md",
+      "section": "### Canonical materializer anchor — receptive classification practice types",
       "kind": "markdown_table",
       "ids": [
         "PT-13",
@@ -41,9 +41,9 @@
     },
     {
       "type": "skill_leaf",
-      "owner": "spec/03-SKILLS.md",
-      "parent_section": "# Reading",
-      "section": "## Question-type strategies",
+      "owner": "docs/product/skill-leaves.md",
+      "parent_section": "## Reading",
+      "section": "### Question-type strategies",
       "kind": "markdown_table",
       "ids": [
         "R-QT-02",
@@ -52,8 +52,8 @@
     },
     {
       "type": "official_family",
-      "owner": "spec/02-IELTS-MODEL.md",
-      "section": "## Reading family registry",
+      "owner": "docs/product/ielts-exam-and-bands.md",
+      "section": "#### Canonical materializer anchor — Reading classification families",
       "kind": "markdown_table",
       "ids": [
         "IELTS-R-QF-02",
@@ -62,8 +62,8 @@
     },
     {
       "type": "content_context",
-      "owner": "spec/10-CONTENT-MODEL.md",
-      "section": "# Stable Content Context registry",
+      "owner": "docs/data/evidence-progression-content.md",
+      "section": "### Stable Content Context registry",
       "kind": "markdown_table",
       "ids": [
         "CTX-READING-ACADEMIC"
@@ -71,8 +71,8 @@
     },
     {
       "type": "activity_purpose",
-      "owner": "design/02-practice-catalog.md",
-      "section": "## Primary activity purpose",
+      "owner": "docs/behavior/practice-and-media.md",
+      "section": "#### Primary activity purpose",
       "kind": "code_enum",
       "ids": [
         "TRAINING",
@@ -81,8 +81,8 @@
     },
     {
       "type": "evidence_candidacy",
-      "owner": "design/02-practice-catalog.md",
-      "section": "## Evidence candidacy",
+      "owner": "docs/behavior/practice-and-media.md",
+      "section": "#### Evidence candidacy",
       "kind": "code_enum",
       "ids": [
         "NOT_EVIDENCE_CANDIDATE",
@@ -91,8 +91,8 @@
     },
     {
       "type": "assessment_type",
-      "owner": "spec/08-ASSESSMENT.md",
-      "section": "# Assessment Type registry",
+      "owner": "docs/data/evidence-progression-content.md",
+      "section": "#### Canonical materializer anchor — objective receptive assessment",
       "kind": "markdown_table",
       "ids": [
         "AT-02"
