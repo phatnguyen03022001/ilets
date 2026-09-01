@@ -1,0 +1,284 @@
+protocol_version: 3
+
+task_id: TASK-0032
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+
+task_source:
+  path: .agent/tasks/TASK-0032/task.yaml
+  commit: "9bbf0dfb4545aa5998b08804ae255581307124e9"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "9bbf0dfb4545aa5998b08804ae255581307124e9"
+  pre_execution_head: "9bbf0dfb4545aa5998b08804ae255581307124e9"
+  final_execution_head: "9bbf0dfb4545aa5998b08804ae255581307124e9"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+  design_lock_confirmed: true
+  topology_confirmed: true
+  archive_absence_confirmed: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - repository_native_deterministic_verification_execution
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+  missing:
+    - repository_native_deterministic_verification_execution
+  passed: false
+  evidence: >-
+    TASK-0032 requires affected repository-native deterministic verification PASS.
+    The only repository-native remote execution surface on exact base is
+    .github/workflows/verify.yml, which triggers only when
+    .github/verification-boundary/candidate changes and then verifies the boundary
+    commit's parent. Verifying a new implementation candidate through that workflow
+    therefore requires a separate boundary child commit. TASK-0032 permits at most
+    one implementation commit plus one report-only child, so that extra boundary
+    mutation is not authorized; the report-only child cannot also mutate the sentinel.
+    The operator additionally forbids local/runtime/Codex execution and verifier
+    architecture redesign.
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "task.authoritative_verification.required=false; this does not waive TASK-0032's repository-native deterministic verification acceptance check."
+
+repository_native_verification:
+  required: true
+  performed: false
+  result: BLOCKED
+  command: ./verify
+  evidence:
+    - "verify invokes tools/canonical/test_materialize.py and tools/canonical/materialize.py --check before the broader deterministic suite."
+    - "The GitHub workflow capable of invoking ./verify is boundary-triggered and cannot verify a new candidate within the task-authorized implementation+report lineage."
+    - "No local/runtime/Codex execution was probed or used."
+
+subtraction_audit:
+  exact_tree: "9bbf0dfb4545aa5998b08804ae255581307124e9"
+  candidate_roots:
+    spec:
+      present: true
+      classification: MIXED_LEGACY_AND_LIVE_TOOL_INPUT
+      live_tool_owners:
+        - spec/02-IELTS-MODEL.md
+        - spec/03-SKILLS.md
+        - spec/07-PRACTICE.md
+        - spec/08-ASSESSMENT.md
+        - spec/10-CONTENT-MODEL.md
+      evidence: "tools/canonical/source-map.json names these exact active paths as registry owners."
+    design:
+      present: true
+      classification: MIXED_LEGACY_AND_LIVE_TOOL_INPUT
+      live_tool_owners:
+        - design/01-skill-features.md
+        - design/02-practice-catalog.md
+      evidence: "tools/canonical/source-map.json names these exact active paths as registry owners."
+    research:
+      present: true
+      files:
+        - research/learning-science-baseline.md
+      classification: NON_CANONICAL_PROVENANCE_CANDIDATE
+      evidence: "tools/canonical/source-map.json explicitly forbids research as an authority source; no current source-map registry consumes it. Any material provenance must be harvested minimally before deletion."
+    evidence:
+      present: true
+      files:
+        - evidence/2026-08-22-ielts-official-baseline.md
+      classification: NON_CANONICAL_PROVENANCE_CANDIDATE
+      evidence: "tools/canonical/source-map.json explicitly forbids evidence as an authority source; current docs/product/ielts-exam-and-bands.md already owns the live external-fact semantics/change-propagation rule, with only minimum provenance metadata eligible for harvest."
+    archive:
+      present: false
+      classification: ABSENT_AS_EXPECTED
+      evidence: "Exact root tree contains no archive/ entry; no archive content was recreated."
+  live_dependency_findings:
+    - id: DEP-001
+      class: executable_tooling
+      source: tools/canonical/source-map.json
+      targets:
+        - design/01-skill-features.md
+        - design/02-practice-catalog.md
+        - spec/02-IELTS-MODEL.md
+        - spec/03-SKILLS.md
+        - spec/07-PRACTICE.md
+        - spec/08-ASSESSMENT.md
+        - spec/10-CONTENT-MODEL.md
+      consequence: "These seven legacy files cannot be deleted while the current materializer remains unchanged. Rehoming requires an exact semantics-preserving source-map/parser/materialization change; TASK-0032 forbids verifier/tool architecture redesign."
+    - id: DEP-002
+      class: generated_input_identity
+      source: tools/canonical/materialize.py
+      consequence: "Materialization hashes current owner Git blobs and embeds owner/path/blob provenance; Git history is deliberately not consulted by the materializer."
+    - id: DEP-003
+      class: repository_verification
+      source: verify
+      consequence: "Any subtraction touching these critical roots requires the repository verifier, which runs canonical materializer drift checks."
+    - id: DEP-004
+      class: provenance_navigation
+      source: README.md and canonical docs provenance annotations
+      consequence: "Before any safely redundant legacy/provenance path is deleted, active navigation/provenance references must be converted to successor docs/contracts or immutable Git-history anchors as applicable; historical .agent task/report/review records are immutable evidence and are not rewritten."
+  exact_base_defect:
+    id: BASE-DRIFT-001
+    severity: blocking_for_required_verification
+    description: >-
+      TASK-0031 changed legacy owner blobs while the committed generated canonical
+      registry still records pre-change owner blob identities. For example,
+      design/01-skill-features.md is blob
+      3916f63333fb00b5f3d0911932fd203bfe5732b9 at the TASK-0032 exact base, while
+      tools/canonical/generated/reading-training-registry.json records
+      fc0c5e9d0f66b935b63d23ddb40b4ceb0e2ff273 for that owner. The materializer
+      test explicitly requires an owner-blob change to change canonical source
+      revision, and ./verify invokes materialize.py --check. Therefore the exact
+      base already has deterministic generated-materialization drift that must be
+      refreshed before required verification can pass.
+    action_taken: none
+    rationale: "Refreshing derived artifacts without an authorized way to run the required native verifier would create an unverified implementation mutation."
+
+retention_assessment:
+  required_minimum_if_execution_resumes:
+    - path: design/01-skill-features.md
+      reason: "live tools/canonical/source-map.json owner"
+    - path: design/02-practice-catalog.md
+      reason: "live tools/canonical/source-map.json owner"
+    - path: spec/02-IELTS-MODEL.md
+      reason: "live tools/canonical/source-map.json owner"
+    - path: spec/03-SKILLS.md
+      reason: "live tools/canonical/source-map.json owner"
+    - path: spec/07-PRACTICE.md
+      reason: "live tools/canonical/source-map.json owner"
+    - path: spec/08-ASSESSMENT.md
+      reason: "live tools/canonical/source-map.json owner"
+    - path: spec/10-CONTENT-MODEL.md
+      reason: "live tools/canonical/source-map.json owner"
+  note: >-
+    This is not authority retention: these paths are superseded/non-canonical and
+    are only demonstrated current tool inputs. The remainder of spec/design remains
+    subtraction-eligible only after exact inbound references are rewritten and the
+    candidate is natively verified.
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "GitHub-native reads/writes only; no local worktree/runtime/Codex surface was used."
+
+changed_files: []
+commits_created: []
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: NOT_PROVEN
+    evidence: "Exact candidate roots and the material live tooling dependency set were identified, but execution terminated at mandatory capability preflight before claiming a complete deletion-ready inbound-reference proof."
+  - criterion_id: AC-2
+    status: NOT_PROVEN
+    evidence: "No subtraction implementation was performed after preflight failed."
+  - criterion_id: AC-3
+    status: NOT_PROVEN
+    evidence: "No deletion candidate was published; final no-dangling-reference proof therefore does not exist."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "No implementation mutation occurred; canonical docs semantics, DESIGN LOCK, catalog/FROZEN state, CONSTITUTION.md, OBJECTIVE.md, contracts and runtime remain exactly at authorized base."
+  - criterion_id: AC-5
+    status: BLOCKED
+    evidence: "Required affected repository-native verification cannot be executed on a new candidate within the authorized GitHub-only commit topology; exact base also demonstrates canonical generated-materialization drift."
+  - criterion_id: AC-6
+    status: NOT_PROVEN
+    evidence: "README was not changed because no reduced active tree was published."
+  - criterion_id: AC-7
+    status: NOT_PROVEN
+    evidence: "No implementation commit exists; only this authorized report-only terminal child is published. main/topology are untouched."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: BLOCKED
+    evidence: "Exact root inventory and material tooling owners were resolved, but no completion claim is made after mandatory execution capability preflight failed."
+  - check_id: CHECK-2
+    result: BLOCKED
+    evidence: "Seven spec/design files have demonstrated live materializer ownership; no deletion was attempted. research/evidence provenance candidates were not harvested because there is no verifiable implementation candidate."
+  - check_id: CHECK-3
+    result: NOT_RUN
+    evidence: "No subtraction candidate exists."
+  - check_id: CHECK-4
+    result: BLOCKED
+    evidence: "Pinned agent-documents candidate validation and affected repository-native deterministic verification cannot be completion evidence because no exact implementation candidate was allowed to proceed; native verifier execution is unavailable in the authorized surface/lineage."
+
+discovered_gaps:
+  - gap_id: GAP-001
+    classification: BLOCKING
+    type: capability
+    severity: high
+    description: "No authorized GitHub-native execution route can run ./verify against a new TASK-0032 implementation candidate within the one-implementation-plus-report-only-child lineage."
+    evidence: ".github/workflows/verify.yml requires a separate verification-boundary child commit and validates that child's parent."
+    impact: "AC-5/CHECK-4 cannot be proven; implementation mutation must fail closed before publication."
+    blocks_current_task: true
+    action_taken: stop_before_implementation_mutation
+    suggested_next_step: "Architect/operator must provide an authorized native verifier execution surface or explicitly authorize a compatible verification-boundary lineage; do not weaken AC-5."
+  - gap_id: GAP-002
+    classification: LOCAL
+    type: generated_artifact_drift
+    severity: high
+    description: "Exact base canonical generated registry contains stale owner blob identity after TASK-0031 owner-file changes."
+    evidence: "design/01-skill-features.md current blob 3916f63333fb00b5f3d0911932fd203bfe5732b9 != generated registry owner blob fc0c5e9d0f66b935b63d23ddb40b4ceb0e2ff273; owner blob changes are revision-significant by tools/canonical/test_materialize.py."
+    impact: "./verify materialize.py --check cannot be truthfully claimed PASS until derived artifacts are refreshed and verified."
+    blocks_current_task: true
+    action_taken: none
+    suggested_next_step: "Refresh generated canonical registry/trace as part of the next authorized exact candidate, then run the repository-native verifier before publication/review."
+
+structural_observations:
+  - type: minimum_live_legacy_tool_inputs
+    path: tools/canonical/source-map.json
+    evidence: "Exactly seven spec/design paths are configured as active registry owners; retaining whole legacy trees is not justified by this dependency."
+    recommendation: "When execution resumes, keep only demonstrated live inputs unless they can be minimally rehomed without semantic/verifier redesign; delete unrelated legacy files after reference repair and verification."
+    action_taken: none
+
+deviations_from_task: []
+blockers:
+  - "CURRENT_PHASE_CAPABILITY_UNAVAILABLE: mandatory repository-native deterministic verification cannot be run against a new candidate under the authorized GitHub-only surface and commit lineage."
+  - "BASE-DRIFT-001: exact base generated canonical materialization is already stale relative to current owner blobs."
+
+working_tree_after:
+  clean: true
+  summary: "No local worktree was used. No subtraction implementation exists. Product/design/docs/contracts/runtime state remains exactly the authorized base; only this canonical report-only terminal child is published on dev."
+
+result: CURRENT_PHASE_CAPABILITY_UNAVAILABLE
