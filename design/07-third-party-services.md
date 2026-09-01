@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: third-party capability inventory, provider lifecycle/selection rules, external-infrastructure applicability triggers, portability boundaries, external ingress/egress and data-sharing constraints, provider failure/degradation semantics, external processor lifecycle/deletion obligations, and external-service activation requirements
 DEPENDS_ON: ../CONSTITUTION.md, 03-media-youtube.md, 04-application-flows.md, 06-implementation-stack.md
 DOES_NOT_OWN: provider legal terms themselves, learning/mastery semantics, public API wire shape, deployment implementation, pricing plans, historical provider candidates, internal runtime-boundary topology, or provider internal architecture

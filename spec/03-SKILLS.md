@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: the four-skill capability taxonomy, Skill Leaf identity, atomic objectives, skill/component membership, variant-specific capability overlays, and Skill-to-Skill prerequisite edges
 DEPENDS_ON: 02-IELTS-MODEL.md
 DOES_NOT_OWN: official task/question-family identity, Knowledge Object definitions or resolution, band thresholds, content-family coverage, cognitive/load heuristics, common-error/remediation content, practice types, assessment strategies, learner state, or curriculum ordering

@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: Bands 3–9 learning thresholds, per-skill proficiency expectations, variant-specific task thresholds, task/skill exit criteria, residual-error boundaries, and higher-band exclusions
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md
 DOES_NOT_OWN: official IELTS test format or conversion rules, Skill Leaf definitions, Knowledge Object definitions, evidence sufficiency, learner state transitions, curriculum ordering

@@ -1,18 +1,14 @@
 # Data
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL DATA AUTHORITY**
 >
-> `TASK-0005` revision 1 established the base DATA migration; `TASK-0014` revision 1 extends only the detailed feature DATA relations. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
->
-> Canonical detailed-feature authority snapshot: `phatnguyen03022001/ilets@a3f093c70d1c6e6d732c6714ac594cd53fd69eda`.
->
-> Model pin: `phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07` (accepted unreleased V1 candidate).
+> Canonical within the DATA authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
-This draft migrates only the material DATA semantics required by the accepted target-to-evidence-to-next-action behavior slice and its accepted detailed learner/privileged feature surface. `docs/catalog/project.json` owns the `DAT-*` inventory, kinds, ownership, and feature relations; this file explains the migrated DATA semantics. It does not define database tables/columns, API payloads, provider identities, exact retention periods, cache authority, or a new learning/evidence model.
+This document preserves the material DATA semantics required by the target-to-evidence-to-next-action behavior surface and its detailed learner/privileged feature surface. `docs/catalog/project.json` owns the `DAT-*` inventory, kinds, ownership, and feature relations; this file explains the DATA semantics. It does not define database tables/columns, API payloads, provider identities, exact retention periods, cache authority, or a new learning/evidence model.
 
 ## DATA-ENTITIES Material data identities and ownership
 
-All `DAT-*` identities in this bounded slice are owned by `SYS-002` Core API. Canonical architecture makes Core the only application runtime with authoritative product persistence. Web may collect or display data and Evaluator may return bounded candidate results/provenance, but neither becomes the authoritative owner of learner, content, evidence, progression, entitlement, authorization, policy, work, or privileged-audit state.
+All `DAT-*` identities in this bounded surface are owned by `SYS-002` Core API. Architecture makes Core the only application runtime with authoritative product persistence. Web may collect or display data and Evaluator may return bounded candidate results/provenance, but neither becomes the authoritative owner of learner, content, evidence, progression, entitlement, authorization, policy, work, or privileged-audit state.
 
 ### DAT-001 TargetProfile and target-context revision
 
@@ -56,9 +52,9 @@ Sources: `spec/08-ASSESSMENT.md` — EvidenceFact; `spec/10-CONTENT-MODEL.md` �
 
 ### DAT-006 ReadinessEvaluation
 
-`ReadinessEvaluation` is a material current Assessment interpretation for one scoped claim. Its canonical outcomes preserve `INSUFFICIENT_EVIDENCE`, `CONFLICTING_EVIDENCE`, `STALE_EVIDENCE`, `NOT_YET_SUPPORTED`, and `SUPPORTED` rather than collapsing them into one score or learner weakness.
+`ReadinessEvaluation` is a material current Assessment interpretation for one scoped claim. Its outcomes preserve `INSUFFICIENT_EVIDENCE`, `CONFLICTING_EVIDENCE`, `STALE_EVIDENCE`, `NOT_YET_SUPPORTED`, and `SUPPORTED` rather than collapsing them into one score or learner weakness.
 
-This catalog treats the evaluation as `MATERIAL_EPHEMERAL`: the canonical owners require the interpretation and its policy/provenance to be reconstructable, but do not require this migration to invent a dedicated durable storage record.
+This catalog treats the evaluation as `MATERIAL_EPHEMERAL`: the authority requires the interpretation and its policy/provenance to be reconstructable, but does not require a dedicated durable storage record.
 
 Sources: `spec/08-ASSESSMENT.md` — ReadinessEvaluation; `spec/09-PROGRESSION.md` — Claim interpretation boundary.
 
@@ -72,7 +68,7 @@ Sources: `spec/09-PROGRESSION.md` — MasteryEstimate.
 
 ### DAT-008 BandCertificationState
 
-`BandCertificationState` is the current certification state for a specific `(skill, band)` claim. A current claim may be `not_started`, `in_progress`, or `certified` under the canonical Assessment/Progression rules. Loss of current support can move the current state back to `in_progress` without deleting or rewriting historical certification.
+`BandCertificationState` is the current certification state for a specific `(skill, band)` claim. A current claim may be `not_started`, `in_progress`, or `certified` under the Assessment/Progression rules. Loss of current support can move the current state back to `in_progress` without deleting or rewriting historical certification.
 
 This state is not an official IELTS result and cannot be created from completion count, planner state, AI output, or one narrow EvidenceFact.
 
@@ -88,7 +84,7 @@ Sources: `spec/08-ASSESSMENT.md` — historical attainment / external result; `s
 
 ### DAT-010 GapEvaluation
 
-`GapEvaluation` is Progression's material current classification of the demonstrated or unresolved condition that matters for next action, including evidence, conflict, staleness, prerequisite, ability, scaffold, transfer, fluency, or exam-condition cases defined by the canonical owner.
+`GapEvaluation` is Progression's material current classification of the demonstrated or unresolved condition that matters for next action, including evidence, conflict, staleness, prerequisite, ability, scaffold, transfer, fluency, or exam-condition cases defined by the owner.
 
 Missing evidence, provider/evaluator failure, or product coverage inability cannot be converted into `ABILITY_GAP`. This catalog treats `GapEvaluation` as `MATERIAL_EPHEMERAL`; the semantic result is material to planning, while exact durable representation is not asserted here.
 
@@ -106,15 +102,15 @@ Sources: `spec/09-PROGRESSION.md` — ActionIntent and Next-action explanation; 
 
 A `DailyPlan` is the current recommendation snapshot produced after target/support resolution, evidence/progression interpretation, hard eligibility, candidate construction, ranking, and coherent load composition. Its provenance can include target-context revision, learner/progression state references, due-review state, policy/configuration identity, eligible content revisions, and unresolved conditions.
 
-A plan is not assignment authority. Current mutable hard eligibility is rechecked before actual assignment/exposure, so a stale saved plan cannot force execution. The canonical owners do not require this migration to choose a durable plan schema; the catalog therefore records it as `MATERIAL_EPHEMERAL`.
+A plan is not assignment authority. Current mutable hard eligibility is rechecked before actual assignment/exposure, so a stale saved plan cannot force execution. The owners do not require this authority to choose a durable plan schema; the catalog therefore records it as `MATERIAL_EPHEMERAL`.
 
 Sources: `design/04-application-flows.md` — Planner decision contract, Stage 7, and Flow B.
 
 ### DAT-013 FeedbackArtifact
 
-A `FeedbackArtifact` is the material learner-facing guidance derived from an Attempt/Observation under the canonical feedback-focus policy. It can preserve observed performance, selected feedback targets, deferred observations, error/remediation references, recommended action intent, provenance, and uncertainty without becoming EvidenceFact, learner weakness, or mastery authority.
+A `FeedbackArtifact` is the material learner-facing guidance derived from an Attempt/Observation under the feedback-focus policy. It can preserve observed performance, selected feedback targets, deferred observations, error/remediation references, recommended action intent, provenance, and uncertainty without becoming EvidenceFact, learner weakness, or mastery authority.
 
-This catalog treats it as `MATERIAL_EPHEMERAL`: the feedback object is a real semantic boundary used by review/revision/re-record behavior, while current canonical truth does not require a universal durable feedback-history contract.
+This catalog treats it as `MATERIAL_EPHEMERAL`: the feedback object is a real semantic boundary used by review/revision/re-record behavior, while current truth does not require a universal durable feedback-history contract.
 
 Sources: `spec/10-CONTENT-MODEL.md` — FeedbackArtifact; `spec/07-PRACTICE.md` — Feedback focus and noise control.
 
@@ -136,7 +132,7 @@ Sources: `design/03-media-youtube.md` — MediaSource product contract and sourc
 
 ### DAT-016 ContentCandidate
 
-`ContentCandidate` is persistent mutable authoring/generation input state before an established immutable `ContentRevision` exists. It preserves candidate identity/provenance and review/processing context needed by the content workflow without pretending a draft is released content or canonical learning truth.
+`ContentCandidate` is persistent mutable authoring/generation input state before an established immutable `ContentRevision` exists. It preserves candidate identity/provenance and review/processing context needed by the content workflow without pretending a draft is released content or learning truth.
 
 Acceptance/materialization creates or binds an established `ContentRevision`; it does not mutate the candidate identity into historical learner content. Exact authoring package, repository shard, queue, or storage schema remains outside this DATA identity.
 
@@ -160,7 +156,7 @@ Sources: `design/04-application-flows.md` — content report/quarantine/revalida
 
 ### DAT-019 Effective entitlement state
 
-`Effective entitlement state` is the persistent Core-owned commercial-access truth after accepted entitlement facts and any pending reconciliation are interpreted. It may distinguish current effective access from pending/expired/restored commercial state where canonical behavior requires that distinction.
+`Effective entitlement state` is the persistent Core-owned commercial-access truth after accepted entitlement facts and any pending reconciliation are interpreted. It may distinguish current effective access from pending/expired/restored commercial state where behavior requires that distinction.
 
 Entitlement never grants an authorization role/capability, changes learner evidence or Band semantics, makes unsupported product capability valid, or deletes retained learner history when access expires.
 
@@ -168,11 +164,11 @@ Sources: `design/04-application-flows.md` — entitlement reconciliation; `desig
 
 ### DAT-020 Learner/account support-managed product state
 
-This persistent identity is the bounded non-evidence learner/account product state that authorized support operations may legitimately correct or reconcile. It exists because canonical privileged behavior permits support mutations but explicitly forbids fabricating learner activity/evidence or using support access as blanket protected-data authority.
+This persistent identity is the bounded non-evidence learner/account product state that authorized support operations may legitimately correct or reconcile. It exists because privileged behavior permits support mutations but explicitly forbids fabricating learner activity/evidence or using support access as blanket protected-data authority.
 
 `TargetProfile`, Attempt/Observation/EvidenceFact, entitlement, authorization grants, and policy revisions remain their own DATA identities; this support-managed state does not absorb them. Exact account fields, identity-provider metadata, or support-case schema are not defined here.
 
-Sources: `design/04-application-flows.md` — support operations and privileged capability boundaries; `docs/BEHAVIOR.md#FTR-048` — migrated behavior only, authority NONE.
+Sources: `design/04-application-flows.md` — support operations and privileged capability boundaries; `docs/BEHAVIOR.md#FTR-048` — current BEHAVIOR authority.
 
 ### DAT-021 Authorization grant state
 
@@ -184,7 +180,7 @@ Sources: `design/04-application-flows.md` — RBAC / capability model; `design/0
 
 ### DAT-022 Typed operating policy revision
 
-A `Typed operating policy revision` is persistent Core-owned approved runtime policy whose value can legitimately change product admission/operation without redeploy while staying inside already-authorized canonical semantics. Consequential revisions remain reconstructable where required.
+A `Typed operating policy revision` is persistent Core-owned approved runtime policy whose value can legitimately change product admission/operation without redeploy while staying inside already-authorized semantics. Consequential revisions remain reconstructable where required.
 
 This identity excludes secrets and bootstrap/deployment environment, does not provide a raw environment-variable editor, and cannot redefine Band/Skill/Knowledge/evidence/content/progression semantics or provider calibration eligibility.
 
@@ -226,15 +222,15 @@ Sources: `design/04-application-flows.md` — legal lifecycle state and realtime
 
 A `CoverageGap` is the material current product inability or unresolved product-support condition for a scoped target/condition. It is categorically separate from learner `GapEvaluation`: product inability, missing evaluator/content/runtime support, or calibration/reliability failure cannot become learner weakness.
 
-This catalog treats CoverageGap as `MATERIAL_EPHEMERAL`: the current gap plus source/version provenance is material to planner/learner explanation, while exact durable representation and support-declaration storage remain outside this bounded migration.
+This catalog treats CoverageGap as `MATERIAL_EPHEMERAL`: the current gap plus source/version provenance is material to planner/learner explanation, while exact durable representation and support-declaration storage remain outside this DATA authority.
 
 Sources: `design/08-coverage-and-support.md` — CoverageGap and product-support status; `design/00-learning-experience.md` — learner-visible CoverageGap separation.
 
 ## DATA-LIFECYCLE Lifecycle and persistence
 
-- Core API is the authoritative application owner for the target/content/attempt/evidence/progression, media/content operational, entitlement/authorization/policy, work/session/mock, support-managed account, and privileged-audit semantics in this slice. Web/Next.js presentation state and Evaluator/provider candidate output are non-authoritative until accepted through Core.
-- `DAT-001` through `DAT-005`, `DAT-007` through `DAT-009`, and `DAT-015` through `DAT-026` are persistent semantic identities because canonical truth requires durable current/history, recoverability, or exact-lineage reconstruction. Their catalog identities do not imply one-table-per-DAT or any table/column layout.
-- `DAT-006`, `DAT-010` through `DAT-014`, and `DAT-027` are material current boundary/snapshot values whose exact durable representation is not required by current canonical truth. They may be reconstructed or persisted by implementation without changing their semantic owner.
+- Core API is the authoritative application owner for the target/content/attempt/evidence/progression, media/content operational, entitlement/authorization/policy, work/session/mock, support-managed account, and privileged-audit semantics in this surface. Web/Next.js presentation state and Evaluator/provider candidate output are non-authoritative until accepted through Core.
+- `DAT-001` through `DAT-005`, `DAT-007` through `DAT-009`, and `DAT-015` through `DAT-026` are persistent semantic identities because the authority requires durable current/history, recoverability, or exact-lineage reconstruction. Their catalog identities do not imply one-table-per-DAT or any table/column layout.
+- `DAT-006`, `DAT-010` through `DAT-014`, and `DAT-027` are material current boundary/snapshot values whose exact durable representation is not required by current authority. They may be reconstructed or persisted by implementation without changing their semantic owner.
 - A mutable `ContentCandidate` does not become an immutable ContentRevision by in-place reinterpretation. Validation decisions append historical decision records, while current content release/operational eligibility may change without rewriting either the revision or prior validation history.
 - Accepted asynchronous evaluator/content/entitlement work becomes product truth only after Core validates current logical-work/execution association and current legal state. Required downstream Observation/EvidenceFact/Progression or other semantic continuation is committed or made durably recoverable before semantic completion.
 - Consequential authorization/policy/content/entitlement/support/security mutations preserve the required durable audit boundary; operational telemetry cannot substitute for that audit history.
@@ -244,7 +240,7 @@ Sources: `design/04-application-flows.md` — authoritative mutation/asynchronou
 
 ## DATA-RETENTION Retention and deletion
 
-Current canonical truth defines deletion/retention boundaries but does not define a universal retention duration. This migration therefore records the boundary without inventing days, legal periods, or provider-specific policy.
+Current authority defines deletion/retention boundaries but does not define a universal retention duration. This section therefore records the boundary without inventing days, legal periods, or provider-specific policy.
 
 - One authoritative product retention/deletion decision governs the affected data scope and is propagated to authoritative state and applicable derived/external copies under their owning policies.
 - Current deletion/tombstone eligibility participates in asynchronous dispatch/result reconciliation. A late evaluator/provider result cannot resurrect deleted learner data, recreate active artifact references, or create new Observation/EvidenceFact state from data no longer eligible for use.
@@ -264,16 +260,16 @@ Source: `design/06-implementation-stack.md` — Data lifecycle and deletion boun
 - Duplicate/superseded/late evaluator/provider results are fenced against current authoritative work/deletion/content eligibility; replay cannot create duplicate Attempt, Observation, EvidenceFact, learner-state transitions, entitlement outcomes, or released content state.
 - Assignment uses the exact current eligible content revision and rechecks mutable hard gates at the decisive reservation/assignment boundary. Historical Attempt/evidence lineage continues to reference the revision actually delivered.
 - Current effective entitlement, authorization grants, approved policy, content operational eligibility, and support/deletion fences are checked by their owning mutation/admission boundaries rather than cached/preflight state being treated as authority.
-- Consequential privileged mutations couple required audit materialization to the protected outcome when canonical policy requires the audit as a transactional precondition.
+- Consequential privileged mutations couple required audit materialization to the protected outcome when policy requires the audit as a transactional precondition.
 - Network/provider calls are not one database transaction. The exact SQL/table/index/locking design remains implementation-owned.
 
 Sources: `design/04-application-flows.md` — Authoritative durable mutation and asynchronous work; `design/06-implementation-stack.md` — Persistence/migration discipline and Admin/privileged actor boundary.
 
 ## DATA-MIGRATION Migration and backfill
 
-Current canonical implementation truth requires explicit, ordered, versioned schema migrations once a schema exists and application/schema compatibility across the selected rollout window. The database schema and migration files remain derived implementation, not DATA semantic authority.
+Implementation truth requires explicit, ordered, versioned schema migrations once a schema exists and application/schema compatibility across the selected rollout window. The database schema and migration files remain derived implementation, not DATA semantic authority.
 
-For this migrated semantic slice:
+For this semantic surface:
 
 - migration/deploy recovery preserves already committed accepted learner and privileged work;
 - a migration, backfill, recomputation, or materializer may not manufacture missing evidence, broaden an Observation/EvidenceFact inference, rewrite historical Attempts/attainment/validation/audit/mock history, or silently turn stale/conflicting/unknown state into supported/weak state;
@@ -281,13 +277,13 @@ For this migrated semantic slice:
 - canonical registry materialization preserves source-owner identity/fingerprint/revision and does not create new semantic objects by scanning incidental tokens;
 - content materialization preserves exact ContentRevision identity/lineage; candidate, validation, and release/operational identities remain distinct across migration.
 
-This is the complete L1 migration boundary supported by current truth; it deliberately does not define DDL, table names, backfill jobs, rollout commands, or a universal migration algorithm.
+This is the complete L1 data-migration boundary supported by current truth; it deliberately does not define DDL, table names, backfill jobs, rollout commands, or a universal migration algorithm.
 
 Sources: `design/06-implementation-stack.md` — Persistence/migration discipline, Canonical registry materialization, and Content authoring/released-materialization boundary.
 
 ## DATA-LINEAGE Provenance, lineage, and data quality
 
-The material learner/content lineage for this slice remains reconstructable without collapsing semantic layers:
+The material learner/content lineage remains reconstructable without collapsing semantic layers:
 
 ```text
 TargetProfile / target-context revision
@@ -331,8 +327,10 @@ Missing, stale, conflicting, pending/unusable, below-requirement, supported, pro
 
 Sources: `spec/01-LEARNER-MODEL.md`; `spec/08-ASSESSMENT.md`; `spec/09-PROGRESSION.md`; `spec/10-CONTENT-MODEL.md`; `design/03-media-youtube.md`; `design/04-application-flows.md`; `design/06-implementation-stack.md`; `design/08-coverage-and-support.md`.
 
-## Migration boundary
+## Authority and closure boundary
 
-`docs/DATA.md`, `docs/PRODUCT.md`, `docs/BEHAVIOR.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`, and `docs/catalog/project.json` remain migration artifacts with **authority NONE**. `TASK-0014` resolved `UNK-006` after complete typed DATA mapping for `FTR-007..FTR-053`. Later bounded migrations resolved `UNK-007`, `UNK-008`, and `UNK-009` without changing DATA semantics; `UNK-001..UNK-009` are now `RESOLVED`.
+`docs/DATA.md`, its legal DATA shard, and `docs/catalog/project.json` are current canonical DATA authority under `README.md` precedence. `TASK-0014` resolved `UNK-006` after complete typed DATA mapping for `FTR-007..FTR-053`; later bounded work resolved `UNK-007`, `UNK-008`, and `UNK-009` without changing DATA semantics. `UNK-001..UNK-009` remain `RESOLVED`.
 
-Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. `DOCS_READY` is derived by the pinned documentation model rather than owned or stored here. This file does not cut over canonical ownership, redefine IFC/EXT/CAP mappings, materialize exact contracts/providers/storage schema, or declare design lock, implementation/assurance/promotion/release readiness.
+Current milestone scope state is owned exclusively by `docs/catalog/project.json`; `DOCS_READY` is derived by the pinned documentation model. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority; `contracts/**` retains scoped exact machine-contract authority; historical `spec/**`/`design/**` authority wording is provenance only.
+
+This cutover does not redefine IFC/EXT/CAP mappings, materialize or redesign exact contracts/providers/storage schema, change DESIGN LOCK semantics, or declare standards/assurance, implementation, provider activation, promotion, or release readiness.

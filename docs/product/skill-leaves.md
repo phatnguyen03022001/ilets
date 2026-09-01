@@ -1,8 +1,8 @@
 # SKILL-LEAF-ONTOLOGY — Skill Leaves
 
-> **SUCCESSOR PRODUCT SHARD — NON-CUTOVER**
+> **CANONICAL PRODUCT AUTHORITY**
 >
-> This shard preserves the locked learning-ontology truth owned canonically by `spec/03-SKILLS.md` at `3c923e44c206ee6a02e8cf5b4e90d8594d9c3c3a`. It is structurally referenced inside the successor `PRODUCT` authority domain, but it does not demote or supersede legacy authority. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until a separately authorized cutover.
+> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
 ## Purpose and ownership
 

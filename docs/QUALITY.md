@@ -1,20 +1,16 @@
 # Quality
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL QUALITY AUTHORITY**
 >
-> Created by `TASK-0007` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
->
-> Canonical target snapshot: `phatnguyen03022001/ilets@0af34c5036bff0526e52e2c22932b49f08c23e37`.
->
-> Model pin: `phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07` (accepted unreleased V1 candidate).
+> Canonical within the QUALITY authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
-This draft migrates only the current quality constraints needed by the bounded product/runtime design. `docs/PRODUCT.md`, `docs/BEHAVIOR.md`, `docs/DATA.md`, and `docs/INTERFACES.md` retain their neighboring migration ownership; this file does not duplicate their permission matrices, learner/evidence semantics, retention values, interface inventory, or exact contract shape. It creates no provider inventory, `EXT-*`, `CAP-*`, `DEC-*`, deployment topology, workflow, implementation, assurance result, or numeric SLO.
+This document preserves the current quality constraints needed by the bounded product/runtime design. `docs/PRODUCT.md`, `docs/BEHAVIOR.md`, `docs/DATA.md`, and `docs/INTERFACES.md` retain neighboring ownership; this file does not duplicate their permission matrices, learner/evidence semantics, retention values, interface inventory, or exact contract shape. It creates no provider inventory, `EXT-*`, `CAP-*`, `DEC-*`, deployment topology, workflow, implementation, assurance result, or numeric SLO.
 
 ## QUALITY-AUTHENTICATION Authentication
 
 The selected external identity/session route owns credential custody, authentication, and session issuance/revocation mechanics only. Core owns the stable internal actor/learner association and remains the product authority after authentication. Protected public operations use the selected short-lived bearer/session transport; Core verifies the authenticity and configured security conditions required by that transport before mapping the external principal to the stable Core actor. Auth tokens are not persisted in browser `localStorage`.
 
-Durable learner state requires authenticated durable identity. Anonymous access exists only for product paths that their owning behavior/API semantics explicitly allow; this draft does not create durable anonymous identity or a second session system. Service-to-service authentication is distinct from learner/admin transport and must establish an authorized caller identity rather than treating network placement as authentication.
+Durable learner state requires authenticated durable identity. Anonymous access exists only for product paths that their owning behavior/API semantics explicitly allow; this authority does not create durable anonymous identity or a second session system. Service-to-service authentication is distinct from learner/admin transport and must establish an authorized caller identity rather than treating network placement as authentication.
 
 Sources: `design/05-api.md` — Auth/session transport selection and request/access ordering; `docs/INTERFACES.md` — `INTERFACES-TRUST`.
 
@@ -22,7 +18,7 @@ Sources: `design/05-api.md` — Auth/session transport selection and request/acc
 
 Core owns product authorization, capability checks, entitlements, and authoritative product persistence. External identity roles/metadata, Web/browser state, Evaluator output, provider state, cache state, transport success, or internal reachability cannot grant product authority. Browser/Web input remains untrusted; Web calls the Core public API and does not bypass Core to authoritative persistence or Evaluator. Core is the only application runtime allowed to read/write authoritative product persistence.
 
-Evaluator is a bounded internal capability. Its caller must be authenticated/authorized under the selected service trust boundary; private addressing, co-location, or an `internal` label is insufficient by itself. Evaluator cannot become a public product API, read/write Core-owned product persistence directly, or turn its result into learner/evidence/content/progression truth before Core validates current work association and owning policy. Privileged operations likewise go through Core and the behavioral capability rules already owned by `docs/BEHAVIOR.md`; this section does not restate the role/permission matrix.
+Evaluator is a bounded internal capability. Its caller must be authenticated/authorized under the selected service trust boundary; private addressing, co-location, or an `internal` label is insufficient by itself. Evaluator cannot become a public product API, read/write Core-owned product persistence directly, or turn its result into learner/evidence/content/progression truth before Core validates current work association and owning policy. Privileged operations likewise go through Core and the behavioral capability rules owned by `docs/BEHAVIOR.md`; this section does not restate the role/permission matrix.
 
 Sources: `design/05-api.md`; `design/06-implementation-stack.md` — material trust boundaries; `docs/BEHAVIOR.md` — `BEHAVIOR-INVARIANTS`; `docs/INTERFACES.md` — `INTERFACES-CONTRACTS`, `INTERFACES-TRUST`.
 
@@ -66,7 +62,7 @@ The initial public API planning envelope is approximately **up to 1.5 million re
 
 Performance work follows measured evidence: observe the actual bottleneck, remove obvious query/code/contention inefficiency, tune bounded concurrency/pooling/admission, then increase vertical or horizontal capacity inside downstream bounds; topology changes require demonstrated need. Cache and derived projections may improve delivery only while access/freshness/correctness remain intact, and they never become product authority. Under exhaustion, latency and optional capability are sacrificed before correctness, durable learner/product state, evidence integrity, privacy, or security.
 
-Exact RPS, latency targets, pool sizes, instance counts, concurrency limits, autoscaling maxima, backlog limits, and SLO/RPO/RTO numbers remain deployment/load-test/operational policy. This migration introduces no Kubernetes, Kafka-class broker, service mesh, multi-region active-active design, second queue/cache, replica/sharding scheme, or other new infrastructure.
+Exact RPS, latency targets, pool sizes, instance counts, concurrency limits, autoscaling maxima, backlog limits, and SLO/RPO/RTO numbers remain deployment/load-test/operational policy. This authority introduces no Kubernetes, Kafka-class broker, service mesh, multi-region active-active design, second queue/cache, replica/sharding scheme, or other new infrastructure.
 
 Sources: `design/06-implementation-stack.md` — reliability/recovery/performance/deployment and capacity relations; `design/07-third-party-services.md` — Initial production planning envelope.
 
@@ -84,7 +80,7 @@ Repository-native local verification is the correctness procedure; the current r
 
 Verification fixtures use synthetic, owned/licensed, or appropriately de-identified material. Normal fixtures do not contain production learner credentials, real provider/auth secrets, unnecessary production learner responses/audio, copied production databases, live provider credentials, or unauthorized copyrighted material.
 
-Tests, logs, metrics, CI mechanics, and repository verification are evidence about implementation/repository behavior; they are not product truth, learning/evidence authority, or an `agent-standards` PASS/maturity claim. CI may invoke the same repository-native verification contract when separately authorized, but this migration creates no workflow or second correctness procedure.
+Tests, logs, metrics, CI mechanics, and repository verification are evidence about implementation/repository behavior; they are not product truth, learning/evidence authority, or an `agent-standards` PASS/maturity claim. CI may invoke the same repository-native verification contract when separately authorized, but this authority creates no workflow or second correctness procedure.
 
 Sources: `design/06-implementation-stack.md` — Verification fixture/data boundary, Native verification baseline, Root verification.
 
@@ -101,12 +97,14 @@ The operating target guides forecasting, alerts, quotas, and optional-capability
 
 A new cost-bearing logical operation conservatively estimates/reserves spend and is admitted atomically/serializably against available discretionary allowance before paid execution; later usage reconciles that same logical reservation. Retry, repair, fallback, escalation, replacement execution, continuation, period rollover, timeout, or ambiguous outcome cannot obtain fresh independent allowance that bypasses the original logical operation's cost policy. If current pricing/cost-policy state cannot be established safely, new discretionary paid work fails closed, remains pending/delayed, or is truthfully unavailable while healthy deterministic/near-zero-cost integrity and learner-state paths remain eligible under their own dependencies.
 
-Cost pressure may reduce availability, batch/delay optional work, or deny new discretionary spend. It never lowers evidence/evaluator/content/privacy/security quality, substitutes an unqualified route for the same consequence, fabricates learner weakness/readiness, or discards durable learner state. Provider pricing, billing plans, and universal scaling thresholds remain outside this migration.
+Cost pressure may reduce availability, batch/delay optional work, or deny new discretionary spend. It never lowers evidence/evaluator/content/privacy/security quality, substitutes an unqualified route for the same consequence, fabricates learner weakness/readiness, or discards durable learner state. Provider pricing, billing plans, and universal scaling thresholds remain outside this authority.
 
 Sources: `design/06-implementation-stack.md` — Financial operating policy and concurrency-safe admission; `design/07-third-party-services.md` — Initial production planning envelope and external-resource economy.
 
-## Migration boundary
+## Authority and closure boundary
 
-`docs/QUALITY.md` and the existing `docs/*` migration set remain **AUTHORITY NONE**. This file preserves the ten V1 QUALITY coverage concerns backed by the sections above. Neighboring architecture/interface/delivery/decision concerns are now migrated by their own bounded owners, and `UNK-001..UNK-009` are `RESOLVED`; this reconciliation changes none of those requirements or relations.
+`docs/QUALITY.md` is current canonical QUALITY authority. It preserves the ten V1 QUALITY coverage concerns above; neighboring architecture/interface/delivery/decision concerns remain owned by their corresponding canonical docs domains and catalog identities, and `UNK-001..UNK-009` remain `RESOLVED`.
 
-Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. `DOCS_READY` is derived by the pinned documentation model rather than owned or stored here. This QUALITY reconciliation creates or changes no provider inventory or provider lifecycle state, no `EXT-*`/`CAP-*`/`DEC-*` identity, no exact OpenAPI/wire schema, no implementation, no workflow, no numerical SLO, no `agent-standards` PASS/level, no design lock, no implementation-readiness claim, no provider activation, no promotion, and no release claim.
+Current milestone scope state is owned exclusively by `docs/catalog/project.json`; `DOCS_READY` is derived by the pinned documentation model. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, `contracts/**` retains scoped exact machine-contract authority, and historical `spec/**`/`design/**` authority wording is provenance only.
+
+This cutover creates or changes no provider inventory/lifecycle state, `EXT-*`/`CAP-*`/`DEC-*` identity, exact OpenAPI/wire schema, implementation, workflow, numerical SLO, `agent-standards` PASS/level, DESIGN LOCK semantics, implementation-readiness claim, provider activation, promotion, or release claim.

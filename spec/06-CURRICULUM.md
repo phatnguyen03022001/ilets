@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: canonical learning pathway, Curriculum Node identity, recommended ordering, prerequisite classification for sequence, variant route overlays, and Band-3-to-9 orchestration of Skill and Knowledge objects
 DEPENDS_ON: 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
 DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, practice types, assessment sufficiency, learner-state transitions, product TargetProfile semantics, content-instance/context IDs, or uncalibrated duration/load estimates

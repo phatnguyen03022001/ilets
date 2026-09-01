@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: external IELTS test structure, standard variants, delivery modes, section/overall scoring facts, official task/question-family identity, official assessment criteria, and exam/administrative facts the learning system must respect
 DEPENDS_ON: 00-PRODUCT.md
 DOES_NOT_OWN: pedagogical skill decomposition, learning-band overlays, curriculum, practice strategy, evidence sufficiency, learner progression, content-instance identity, product-support policy, or UI/runtime behavior

@@ -1,8 +1,8 @@
 # CURRICULUM-COVERAGE Curriculum and product-support semantics
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL PRODUCT AUTHORITY**
 >
-> This legal PRODUCT shard preserves accepted TASK-0028 residuals RES-003 and RES-013 for a later canonical cutover. During TASK-0029, `spec/06-CURRICULUM.md` and `design/08-coverage-and-support.md` remain canonical. It changes no locked product meaning or catalog identity model.
+> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
 ## Curriculum semantics
 

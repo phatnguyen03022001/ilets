@@ -1,12 +1,10 @@
 # Product
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL PRODUCT AUTHORITY**
 >
-> Originally created for `TASK-0001` revision 1 and extended by `TASK-0012`, `TASK-0013`, and `TASK-0025` revision 1. This file remains non-authoritative until a later explicit canonical cutover. It cannot override `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, or `design/**`; those existing owners remain canonical.
->
-> Target source snapshot: `phatnguyen03022001/ilets@23fa05c8586a9f295a3c0fe90774b78b248d61f7`.
+> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
-This draft maps existing IELTS product truth into the `PRODUCT` authority domain of the adopted `agent-documents` V1 candidate. `TASK-0012` established the actor/RBAC/entitlement and learner/admin surface foundation; `TASK-0013` materializes the complete minimal feature-completeness surface already owned by canonical design; `TASK-0025` restores the canonical guardian/legal-representative/payer participant boundary omitted from the accepted frozen migration. `docs/catalog/project.json` owns the migration identities and current mutable milestone scope state. This file does not independently own that state, cut over authority, activate providers, or change canonical product semantics.
+This document preserves the accepted IELTS product truth in the `PRODUCT` authority domain of the adopted `agent-documents` V1 model. Historical `TASK-0012`, `TASK-0013`, and `TASK-0025` work established the actor/RBAC/entitlement, complete feature-completeness surface, and guardian/legal-representative/payer participant boundary now carried here. `docs/catalog/project.json` owns catalog identities, typed relations, coverage, and current milestone scope state. This file does not independently own that mutable state, activate providers, or change locked product semantics.
 
 ## Objective
 
@@ -44,7 +42,7 @@ Where applicable, a guardian or legal representative is a human participant iden
 
 Guardian or representative status alone grants no unrestricted access to learner history, recordings, AI conversations, evidence, gap/weakness information, or other protected learner information. Any protected-data access and any representative consent, export, or deletion action must remain purpose-scoped, policy-governed, and limited to the rights actually applicable to that action. Learner transparency and unnecessary-disclosure minimization remain product constraints.
 
-Age thresholds, minor status, representative eligibility, consent requirements, and representative rights vary by jurisdiction and remain external mutable policy/compliance evidence rather than frozen IELTS semantics. This migration does not make a legal determination.
+Age thresholds, minor status, representative eligibility, consent requirements, and representative rights vary by jurisdiction and remain external mutable policy/compliance evidence rather than frozen IELTS semantics. This document does not make a legal determination.
 
 **Source:** `design/00-learning-experience.md` — Minor-safe learner experience boundary.
 
@@ -66,7 +64,7 @@ This is a participation role, not an automatic authorization bundle. A first-par
 
 ### Optional human expert role
 
-Human expert input may be used for preference or coaching, or may enter as external evidence when the canonical Assessment rules admit it. Mandatory human scoring is not a prerequisite for the ordinary supported learning route merely to manufacture a consequence that the product itself cannot safely support.
+Human expert input may be used for preference or coaching, or may enter as external evidence when the Assessment rules admit it. Mandatory human scoring is not a prerequisite for the ordinary supported learning route merely to manufacture a consequence that the product itself cannot safely support.
 
 Optional human learning support is likewise a participation role, not an automatic privileged authorization bundle.
 
@@ -96,17 +94,17 @@ One actor may hold several compatible grants, and a narrower explicit capability
 
 ### Commercial entitlement
 
-Commercial entitlement is a separate product-availability dimension. This migration may describe learner-visible `FREE` and `PRO` availability states, but those labels are not `ROL-*` identities and V1 defines no entitlement identity class. Entitlement may unlock otherwise eligible cost-intensive experiences, but it cannot change IELTS/Band/evidence truth, target/prerequisite semantics, learner history/data rights, or administrative privilege.
+Commercial entitlement is a separate product-availability dimension. This authority may describe learner-visible `FREE` and `PRO` availability states, but those labels are not `ROL-*` identities and V1 defines no entitlement identity class. Entitlement may unlock otherwise eligible cost-intensive experiences, but it cannot change IELTS/Band/evidence truth, target/prerequisite semantics, learner history/data rights, or administrative privilege.
 
-The ungated route remains a genuinely usable IELTS learning system. Eligible `PRO` entitlement may make realtime AI Speaking available only after authoritative entitlement reconciliation and only when the required provider/capability/product-support gates are actually satisfied. Exact pricing, quotas, payment-provider behavior, and commercial packaging remain outside this migration slice.
+The ungated route remains a genuinely usable IELTS learning system. Eligible `PRO` entitlement may make realtime AI Speaking available only after authoritative entitlement reconciliation and only when the required provider/capability/product-support gates are actually satisfied. Exact pricing, quotas, payment-provider behavior, and commercial packaging remain outside this product-authority slice.
 
 **Sources:** `design/00-learning-experience.md` — Entitlement-visible availability, Speaking interaction experience; `design/04-application-flows.md` — learner-entitlement lifecycle versus operational authorization.
 
 ## Product-level features and capabilities
 
-The material feature-completeness surface is now explicit. `FTR-001..FTR-006` remain historical macro route anchors for prior accepted migration traceability; they are not counted as the detailed completeness units. The detailed inventory is:
+The material feature-completeness surface is explicit. `FTR-001..FTR-006` remain historical macro route anchors for prior accepted traceability; they are not counted as the detailed completeness units. The detailed inventory is:
 
-| Detailed FTR range | Canonical source aliases | Material capability count |
+| Detailed FTR range | Historical source aliases | Material capability count |
 | --- | --- | ---: |
 | `FTR-007..FTR-014` | `L-F01..L-F08` Listening | 8 |
 | `FTR-015..FTR-022` | `R-F01..R-F08` Reading | 8 |
@@ -115,7 +113,7 @@ The material feature-completeness surface is now explicit. `FTR-001..FTR-006` re
 | `FTR-041..FTR-046` | `X-F01..X-F06` Shared | 6 |
 | `FTR-047..FTR-053` | privileged/admin/BOPS surface families | 7 |
 
-The 40 learner identities are the exact named capability surface from `design/01-skill-features.md`. The seven privileged identities are the minimum material surface families already admitted by `TASK-0012` and `design/04-application-flows.md`: content/review/release; user support; entitlement reconciliation; operations/provider/work visibility; approved policy administration; security/access administration; and audit.
+The 40 learner identities are the exact named capability surface preserved from `design/01-skill-features.md`. The seven privileged identities are the minimum material surface families established by `TASK-0012` and preserved from `design/04-application-flows.md`: content/review/release; user support; entitlement reconciliation; operations/provider/work visibility; approved policy administration; security/access administration; and audit.
 
 This decomposition intentionally does **not** inflate the FTR catalog with neighboring abstractions:
 
@@ -129,13 +127,13 @@ This decomposition intentionally does **not** inflate the FTR catalog with neigh
 
 Academic/General Training and delivery differences configure the same detailed feature where the learner interaction/capability is materially shared. They do not create duplicate feature identities or a different Band standard. One Skill Retake remains selected-skill focus, not a fifth Skill or duplicated feature family.
 
-The exact detailed names, source aliases, flow grouping, and acceptance grouping are owned by `docs/BEHAVIOR.md` plus `docs/catalog/project.json` for migration purposes. Detailed DATA/IFC/EXT/CAP relations were resolved by the bounded relation-domain migrations in `TASK-0014..TASK-0017`; those mappings preserve exact accepted refs or demonstrated N/A only where supported and introduce no speculative neighboring-domain relation.
+The exact detailed names, source aliases, flow grouping, and acceptance grouping are owned by `docs/BEHAVIOR.md` plus `docs/catalog/project.json`. Detailed DATA/IFC/EXT/CAP relations were resolved by the bounded relation-domain migrations in `TASK-0014..TASK-0017`; those mappings preserve exact accepted refs or demonstrated N/A only where supported and introduce no speculative neighboring-domain relation.
 
 **Sources:** `design/01-skill-features.md`; `design/02-practice-catalog.md`; `design/03-media-youtube.md`; `design/04-application-flows.md`.
 
 ## Scope
 
-Current mutable documentation-migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. The bounded DATA/IFC/EXT/CAP relation migrations and `UNK-001..UNK-009` are resolved. `DOCS_READY` is derived by the pinned documentation model from the combined migrated set and catalog state; it is not owned or stored by this document.
+Current mutable documentation milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. The bounded DATA/IFC/EXT/CAP relation work and `UNK-001..UNK-009` are resolved. `DOCS_READY` is derived by the pinned documentation model from the combined canonical set and catalog state; it is not owned or stored by this document.
 
 The intended complete standard-IELTS learning scope is:
 
@@ -158,7 +156,7 @@ IELTS for UKVI Academic/General Training reuses the corresponding learning const
 
 ## Non-goals
 
-This migration draft preserves the current exclusions. The repository does not currently freeze:
+This authority preserves the current exclusions. The repository does not currently freeze:
 
 - a final cloud/hosting provider;
 - a final PostgreSQL provider;
@@ -190,19 +188,19 @@ The product owner also does not define exact pricing, acquisition or retention m
 
 **Sources:** `OBJECTIVE.md` — Purpose, Learner route, Coverage and support, Media, Application/runtime design; `spec/00-PRODUCT.md` — Product principles, Delivery-overlay boundary, Language/localization boundary, Human-support boundary, Commercial access boundary, Implementation boundary, Model completeness vs product support, Promise boundary.
 
-## Migration boundary and unresolved items
+## Authority and closure boundary
 
-No authority conflict was found between the consulted canonical PRODUCT owners for this bounded decomposition slice.
+No authority conflict was found across the preserved PRODUCT source provenance for this cutover.
 
-`docs/**` remains **MIGRATION DRAFT / AUTHORITY NONE**. `docs/catalog/project.json` is the sole owner of current migration milestone scope state; this file does not restate that mutable value. `UNK-001..UNK-009` and the bounded detailed DATA/IFC/EXT/CAP relation work are resolved in the catalog. `DOCS_READY`, when derived by the pinned model, is documentation-closure evidence only and does not cut over canonical authority.
+Current normative project-documentation authority is the eight `docs/*.md` domain roots, their legal catalog-referenced one-level shards, and `docs/catalog/project.json`, under the read-order precedence in `README.md`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority. `contracts/**` retains exact authority only for its scoped machine contracts. `spec/**` and `design/**` remain tracked as legacy provenance/reference and do not create equal authority even where historical local status or ownership wording says otherwise.
 
-Documentation closure does not establish design lock, canonical cutover, standards/assurance status, exact contracts, provider activation, implementation readiness, promotion, or release readiness.
+`docs/catalog/project.json` is the sole owner of current documentation milestone scope state; `UNK-001..UNK-009` and the bounded detailed DATA/IFC/EXT/CAP relation work are resolved there. `DOCS_READY`, when derived by the pinned model, is documentation-closure evidence only. Documentation closure/cutover does not itself establish a new DESIGN LOCK, standards/assurance status, provider activation, implementation readiness, promotion, or release readiness.
 
 **Sources:** `.agent/tasks/TASK-0013/task.yaml@07f409f37243f80695fcb98333f3ddd728960e7b`; `.agent/tasks/TASK-0025/task.yaml@0f07168ce65424b3411ac07d6b1fb122a97d2037`; `agent-documents@acb3f02616e700190586681306a86905792e4c07` — V1 feature/relation/unknown semantics.
 
 ## Traceability summary
 
-| PRODUCT concern | Current canonical source at the authorized base | Draft section |
+| PRODUCT concern | Historical/source provenance | Canonical section |
 | --- | --- | --- |
 | objective | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Objective |
 | actors / roles | `OBJECTIVE.md`; `spec/00-PRODUCT.md`; `design/00-learning-experience.md`; `design/04-application-flows.md` | Actors and roles |
@@ -210,4 +208,4 @@ Documentation closure does not establish design lock, canonical cutover, standar
 | scope / non-goals | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Scope; Non-goals |
 | domain / external constraints | `OBJECTIVE.md`; `spec/00-PRODUCT.md` | Domain and external constraints |
 
-The original PRODUCT migration references remain traceable to their recorded source snapshot. `TASK-0012` actor/RBAC/entitlement foundation remains derived from canonical `design/00-learning-experience.md` and `design/04-application-flows.md`; `TASK-0013` detailed feature identities are derived from canonical `design/01-skill-features.md` and the privileged surface/capability boundaries in `design/04-application-flows.md` at the accepted target authority `b60034a50d9a5ee5f197887ed14e7b917e919660`. `TASK-0025` restores the canonical minor-safe guardian/legal-representative/payer distinction from `design/00-learning-experience.md` without creating a guardian/payer RBAC bundle or implementation subsystem. This traceability is migration evidence only and does not change source authority.
+The original PRODUCT migration references remain traceable to their recorded source snapshots. `TASK-0012` actor/RBAC/entitlement foundation remains derived from `design/00-learning-experience.md` and `design/04-application-flows.md`; `TASK-0013` detailed feature identities were derived from `design/01-skill-features.md` and privileged surface/capability boundaries in `design/04-application-flows.md` at the accepted target authority `b60034a50d9a5ee5f197887ed14e7b917e919660`. `TASK-0025` restored the minor-safe guardian/legal-representative/payer distinction from `design/00-learning-experience.md` without creating a guardian/payer RBAC bundle or implementation subsystem. These references are provenance only; current authority follows the docs/catalog/README precedence above.

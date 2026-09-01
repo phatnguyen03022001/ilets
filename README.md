@@ -1,120 +1,85 @@
 # IELTS Learning System
 
-This repository is self-describing. It contains canonical IELTS learning truth, canonical product/runtime design, and non-canonical research/evidence/history used to support or explain those owners.
+This repository is self-describing. `README.md` is orientation only; it does not create a second specification or override an owning authority.
 
 ## Read order
 
-1. `CONSTITUTION.md` — governance, authority, ownership, naming, topology, and cross-language rules.
+1. `CONSTITUTION.md` — repository governance, authority, ownership, topology, naming, and change rules.
 2. `OBJECTIVE.md` — project intent, scope, quality target, and success condition.
-3. `spec/00-PRODUCT.md`, `spec/01-LEARNER-MODEL.md`, `spec/02-IELTS-MODEL.md` — product-learning boundary, learner representation, and external IELTS reality.
-4. Read the relevant `spec/` owner for learning truth.
-5. Read the relevant `design/` owner for product/runtime translation.
-6. Read `design/08-coverage-and-support.md` before making any completeness, support, or readiness-of-product claim.
-7. Use `spec/DECISIONS.md` for rationale only.
-8. Use `research/` and `evidence/` for provenance/validation only.
+3. Read the relevant canonical project-documentation root under `docs/`: `PRODUCT.md`, `BEHAVIOR.md`, `ARCHITECTURE.md`, `DATA.md`, `INTERFACES.md`, `QUALITY.md`, `DELIVERY.md`, or `DECISIONS.md`.
+4. Follow any legal shard referenced by that root and `docs/catalog/project.json`; the shard refines only its owning docs domain.
+5. Use `docs/catalog/project.json` for the canonical machine-readable project inventory, typed identities, relations, milestone state, and support references.
+6. Use `contracts/` for scoped exact machine-interface authority where an exact contract has been materialized.
+7. Use `spec/` and `design/` only as superseded non-canonical legacy reference retained for provenance; they no longer provide equal project-documentation authority.
+8. Use `research/` and `evidence/` for supporting provenance/validation only.
 
 ## Authority
+
+The active precedence path is unambiguous:
 
 ```text
 USER
   ↓
-CONSTITUTION.md
+CONSTITUTION.md                 governance authority
   ↓
-OBJECTIVE.md
+OBJECTIVE.md                    project intent/scope authority
   ↓
-spec/      canonical learning truth
-  ↓
-design/    canonical product/runtime translation
-  ↓
-contracts/ exact machine-interface truth once materialized
+docs/                           canonical project-documentation authority
+  ├─ eight domain roots
+  ├─ legal referenced shards
+  └─ docs/catalog/project.json
+
+contracts/                      scoped exact machine-contract authority
+spec/ and design/               superseded non-canonical legacy reference
+research/ and evidence/         supporting material only
 ```
 
-`README.md` is navigation only. It does not own product status, canonical inventory counts, learning policy, runtime policy, or implementation readiness.
+`contracts/` owns exact wire/schema details only for its declared boundary. It does not redefine product, learning, evidence, lifecycle, provider, or other semantic authority owned by `CONSTITUTION.md`, `OBJECTIVE.md`, or `docs/`. Conversely, prose must not silently redefine an exact materialized machine contract inside that contract's scoped wire/schema authority.
 
-## Active learning specification
+## Canonical project-documentation domains
 
 ```text
-spec/
-├── 00-PRODUCT.md
-├── 01-LEARNER-MODEL.md
-├── 02-IELTS-MODEL.md
-├── 03-SKILLS.md
-├── 04-KNOWLEDGE.md
-├── 05-BANDS.md
-├── 06-CURRICULUM.md
-├── 07-PRACTICE.md
-├── 08-ASSESSMENT.md
-├── 09-PROGRESSION.md
-├── 10-CONTENT-MODEL.md
-├── 11-GLOSSARY.md
-└── DECISIONS.md
+docs/
+├── PRODUCT.md
+├── BEHAVIOR.md
+├── ARCHITECTURE.md
+├── DATA.md
+├── INTERFACES.md
+├── QUALITY.md
+├── DELIVERY.md
+├── DECISIONS.md
+└── catalog/project.json
 ```
 
-Use the owner named in each file's `OWNS` metadata. `DECISIONS.md` is supporting rationale, not a canonical learning owner.
+Legal shards under `docs/product/`, `docs/behavior/`, `docs/architecture/`, `docs/data/`, `docs/interfaces/`, and other referenced docs subtrees are canonical only through their owning domain and catalog support references. They do not create a ninth authority domain.
 
-## Active product/runtime design
+## Legacy specification and design
 
-```text
-design/
-├── 00-learning-experience.md
-├── 01-skill-features.md
-├── 02-practice-catalog.md
-├── 03-media-youtube.md
-├── 04-application-flows.md
-├── 05-api.md
-├── 06-implementation-stack.md
-├── 07-third-party-services.md
-└── 08-coverage-and-support.md
-```
+`spec/**` and `design/**` are retained unchanged except for authority demotion. Their historical semantics remain useful for provenance, but active canonical truth is now represented by the successor `docs/**` authority plane. If legacy wording differs from its successor owner, the successor authority wins.
 
-Use these owners by responsibility:
-
-- learner journey and `TargetProfile` → `design/00-learning-experience.md`;
-- skill-facing product capabilities → `design/01-skill-features.md`;
-- user-facing practice modes → `design/02-practice-catalog.md`;
-- media/YouTube product semantics → `design/03-media-youtube.md`;
-- planner/system flows and runtime lifecycle → `design/04-application-flows.md`;
-- API resource/operation semantics → `design/05-api.md`;
-- deployables, languages, frameworks, canonical materialization, verification → `design/06-implementation-stack.md`;
-- external provider boundaries → `design/07-third-party-services.md`;
-- current coverage/support declarations and gates → `design/08-coverage-and-support.md`.
+Do not delete, rename, archive, or treat the legacy trees as current equal-canonical owners merely because their detailed historical prose remains present.
 
 ## Implementation navigation
 
 Before implementing a bounded slice:
 
-1. read `CONSTITUTION.md` and `OBJECTIVE.md`;
-2. read the relevant `spec/` semantic owners;
-3. read the relevant `design/` product/runtime owners;
-4. read `design/05-api.md` before materializing a shared HTTP boundary;
-5. read `design/06-implementation-stack.md` for runtime ownership, canonical-registry materialization, and repository verification rules;
-6. read `design/08-coverage-and-support.md` before making an implementation-readiness, coverage, or product-support claim.
+1. resolve `CONSTITUTION.md` and `OBJECTIVE.md`;
+2. resolve the relevant `docs/**` domain owner, referenced shard, and catalog identities/relations;
+3. resolve the applicable exact `contracts/**` boundary before implementing a shared machine interface;
+4. preserve canonical IDs and applicability semantics across generated bindings and implementation;
+5. use coverage/support state from the canonical docs/catalog plane rather than inferring readiness from code, file count, or this README.
 
-Navigation warnings:
+Generated bindings, database schemas, UI types, prompts, provider outputs, caches, metrics, migrations, and runtime configuration are derived implementation artifacts unless an owning authority explicitly says otherwise.
 
-- `MODELLED` does not mean implementation-ready or `COVERED`;
-- do not independently hand-author equivalent DTO/schema truth across parallel runtimes before the exact machine contract exists;
-- generated registries/bindings are derived artifacts, not canonical authority.
-
-The detailed rules remain owned by the referenced canonical documents; this section only points to them.
-
-## Supporting and historical material
+## Supporting material
 
 ```text
-research/   current non-canonical research/provenance; never canonical
-
-evidence/   source/evidence records supporting current canonical claims; never canonical
+research/   non-canonical research/provenance
+evidence/   source/evidence records supporting canonical claims
 ```
 
-Historical reviews, migration reports, superseded structures, and retired workflow artifacts live in Git history rather than the active tree unless a current provenance, legal, or recovery need requires them to remain tracked.
+Historical reviews, migration reports, superseded structures, and retired workflow artifacts remain provenance, not active project-documentation authority.
 
 ## Current project state
 
-Do not infer current coverage or implementation readiness from this README.
-
-- project intent → `OBJECTIVE.md`;
-- current product coverage/support → `design/08-coverage-and-support.md`;
-- external IELTS facts → `spec/02-IELTS-MODEL.md`;
-- exact machine contracts → `contracts/` once materialized.
-
-If a summary conflicts with its owner, the owner wins.
+Do not infer coverage, implementation readiness, DESIGN LOCK, or release status from this README. Resolve those states through their owning canonical docs/catalog/task authority. If a summary conflicts with an owner, the owner wins.

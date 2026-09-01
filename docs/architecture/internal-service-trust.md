@@ -1,9 +1,5 @@
 # INTERNAL-SERVICE-TRUST Internal service trust boundary
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
->
-> This legal ARCHITECTURE shard preserves accepted TASK-0028 residual RES-011 for a later canonical cutover. During TASK-0029, `design/06-implementation-stack.md` remains canonical. Exact HTTP wire/schema authority remains under the existing scoped machine contracts; this shard changes neither deployment nor trust policy.
-
 ## Core → Evaluator authority boundary
 
 Go Core API owns authoritative product work identity/state and is the permitted product caller. Python Evaluator owns bounded evaluation/media/content-analysis capabilities behind the existing internal HTTP machine contract. Evaluator is an internal capability, never a public API or independent product-state authority, and it does not read/write authoritative product persistence directly.

@@ -1,9 +1,5 @@
 # EVIDENCE-PROGRESSION-CONTENT Evidence, progression, and content semantics
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
->
-> This legal DATA shard preserves accepted TASK-0028 residuals RES-005, RES-006 and RES-007 for a later canonical cutover. During TASK-0029, `spec/08-ASSESSMENT.md`, `spec/09-PROGRESSION.md` and `spec/10-CONTENT-MODEL.md` remain canonical. This shard creates no new DATA identity class, storage schema, wire contract, or learning rule.
-
 ## Assessment evidence semantics
 
 The semantic pipeline is:

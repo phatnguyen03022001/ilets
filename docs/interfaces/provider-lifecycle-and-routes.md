@@ -1,9 +1,5 @@
 # PROVIDER-LIFECYCLE-ROUTES Provider lifecycle and selected external routes
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
->
-> This legal INTERFACES shard preserves accepted TASK-0028 residual RES-012 for a later canonical cutover. During TASK-0029, `design/07-third-party-services.md` remains canonical. Provider selection is preserved exactly as locked; no provider is activated, configured, replaced or granted broader authority here.
-
 ## Provider boundary and lifecycle
 
 External capability use remains behind a provider-neutral boundary:

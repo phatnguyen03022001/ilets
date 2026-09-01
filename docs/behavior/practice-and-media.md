@@ -1,8 +1,8 @@
 # PRACTICE-MEDIA Practice, learner-visible modes, and media semantics
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL BEHAVIOR AUTHORITY**
 >
-> This legal BEHAVIOR shard preserves accepted TASK-0028 residuals RES-004, RES-008 and RES-009. During TASK-0029, `spec/07-PRACTICE.md`, `design/02-practice-catalog.md` and `design/03-media-youtube.md` remain canonical. No practice, evidence or media rule is redesigned here.
+> Canonical within the BEHAVIOR authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are pre-cutover provenance only and do not create equal authority.
 
 ## Learning phases
 
@@ -91,6 +91,32 @@ Practice strategy is revisable only from comparable history scoped by canonical 
 Too little/incomparable history keeps effectiveness unresolved; lack of improvement alone does not prove greater weakness/regression/prerequisite gap; technical/content/evaluator/provider failure is excluded from learner-efficacy inference; effective repetition may continue; justified diminishing returns may change an existing mechanism/type/scaffold/context/difficulty/load/frequency/sequence while preserving target and Required prerequisites; diagnostic uncertainty routes to discriminating evidence. Strategy change never rewrites Attempts/Observations/EvidenceFacts or the target/Band standard, and intervention history is not Assessment evidence unless separately admitted.
 
 Practice completion is not mastery. Same-item retry is mainly recovery, not automatic transfer evidence. Learner preference/friction may influence planning but not target truth or ability evidence.
+
+## Beginner L1-to-English Speaking scaffold
+
+L1 support is a temporary, adaptive scaffold for a learner who cannot yet use an English-only Speaking prompt reliably. It reuses the existing Speaking targets, Practice Types, Learning Mechanisms, feedback, Assessment, and readiness semantics; it creates no new Speaking feature, curriculum, mechanism, or competence standard.
+
+The staged path is:
+
+```text
+L1 situation / meaning cue
+→ learner-produced English
+→ concise correction / model / contrast / hint
+→ repeat or vary with less L1/support
+→ English-only prompt
+→ spontaneous English response
+→ fresh transfer to the appropriate Speaking target
+```
+
+Rules:
+
+- L1 supplies meaning or task context only; the learner's target production remains English.
+- A simple L1 explanation, constrained cue, partial model, contrast, or requested clarification may be used when it enables the learner to perform the English target operation. The support must not silently perform that operation for the learner.
+- Scaffolding should fade as stable performance permits. Adaptive behavior may strengthen or reintroduce support when justified; support level is not a learner badge or a replacement proficiency scale.
+- Material L1 assistance, supplied models, hints, corrections, prior-answer exposure, and other carrying support are recorded as attempt conditions. L1/model-supported performance cannot masquerade as independent Speaking evidence.
+- Normal Assessment and readiness rules remain unchanged: a claim requiring independent/unseen/spontaneous production needs fresh evidence that satisfies its actual assistance, exposure, evaluator, provenance, and transfer conditions.
+- Weak L1 translation or task-understanding quality is not a Speaking weakness unless the English capability itself was validly measured. Product/translation failure likewise cannot become learner evidence.
+- The scaffold may support rapid response, role-play/Q&A, retell/summarize, or other targeted productive practice tied to a canonical Speaking target. It must not expand into a generic conversation curriculum disconnected from that target.
 
 ## Learner-visible Practice Mode registry
 

@@ -1,8 +1,8 @@
 # IELTS-EXAM-BANDS IELTS external exam and Band semantics
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL PRODUCT AUTHORITY**
 >
-> This legal PRODUCT shard preserves accepted TASK-0028 residuals RES-001 and RES-002 for a later canonical cutover. During TASK-0029, `spec/02-IELTS-MODEL.md` and `spec/05-BANDS.md` remain canonical. This shard changes no product/design truth, external authority, catalog identity class, or machine contract.
+> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are pre-cutover provenance only and do not create equal authority.
 
 ## External IELTS construct
 
@@ -41,6 +41,28 @@ These IDs identify external exam families, not Skills, Practice Types, product f
 | `IELTS-S-P3` | Speaking Part 3 — extended discussion |
 
 A Skill Leaf may serve several official families and one family may require several Skills. Academic Task-1 visual presentation subformats remain content-presentation coverage dimensions, not extra scored Writing tasks. Speaking remains a holistic Band construct even though Parts 1–3 have stable family identities for coverage.
+
+## External-truth epistemic contract
+
+Every statement that carries external IELTS or Band meaning uses the strongest class its provenance actually supports:
+
+- **Official Evidence** — a fact, descriptor, scoring rule/guidance, format requirement, or other external truth directly established by an authoritative IELTS source.
+- **Evidence-Based Interpretation** — a close educational interpretation grounded in official or other material evidence, but not itself a direct official IELTS statement.
+- **Blueprint Inference** — pedagogical detail introduced by this product blueprint beyond what IELTS explicitly publishes.
+
+Evidence-Based Interpretation and Blueprint Inference must never be presented as direct Official Evidence. Mutable Official Evidence keeps dated provenance so the product can distinguish a preserved historical baseline from a currently rechecked external fact.
+
+### Owner-first external IELTS change propagation
+
+When authoritative external IELTS truth changes:
+
+1. update this external-truth owner first;
+2. refresh the dated provenance/evidence for the changed fact;
+3. review every affected downstream Skill, Band, Curriculum, Assessment, Content, coverage, behavior, and system-design consequence before changing derived behavior;
+4. preserve a stable official-family ID only when the external family remains materially the same; and
+5. never preserve an obsolete external fact merely because implementation, content, configuration, or another downstream artifact encoded it.
+
+Downstream owners may interpret or operationalize external truth within their scope, but they do not override the external-truth owner or silently redefine IELTS competence.
 
 ### Delivery and administrative baseline
 

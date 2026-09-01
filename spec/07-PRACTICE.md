@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: how capability is trained, learning phases, Learning Mechanism taxonomy, Practice Type taxonomy, type-level phase/mode/scope/binding semantics, feedback timing, feedback-focus/noise-control policy for learning, and intervention-effectiveness semantics for adapting practice strategy
 DEPENDS_ON: 03-SKILLS.md, 04-KNOWLEDGE.md, 06-CURRICULUM.md, 09-PROGRESSION.md
 DOES_NOT_OWN: Skill/Knowledge definitions, band thresholds, assessment sufficiency/certification, learner-state transitions, concrete generated exercise instances, or product/runtime feedback delivery workflow

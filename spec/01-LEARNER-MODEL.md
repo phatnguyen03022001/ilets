@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: conceptual learner representation, learner dimensions, starting and target state semantics, learner constraints and epistemic conditions that affect planning
 DEPENDS_ON: 00-PRODUCT.md, 02-IELTS-MODEL.md
 DOES_NOT_OWN: IELTS band definitions, canonical skill or knowledge objects, curriculum ordering, assessment sufficiency, runtime state transitions, certification rules

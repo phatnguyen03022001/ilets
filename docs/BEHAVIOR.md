@@ -1,14 +1,10 @@
 # Behavior
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL BEHAVIOR AUTHORITY**
 >
-> `TASK-0003` revision 1 created this migration artifact; `TASK-0012` added the product-experience foundation; `TASK-0013` materializes the complete minimal learner/admin feature surface already owned by canonical design. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
->
-> Canonical target authority: `phatnguyen03022001/ilets@b60034a50d9a5ee5f197887ed14e7b917e919660`.
->
-> Model pin: `phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07` (unreleased V1 candidate).
+> Canonical within the BEHAVIOR authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
-This draft preserves the six accepted macro route anchors and adds the detailed feature-completeness surface. `FTR-001..FTR-006` remain historical/macro anchors; `FTR-007..FTR-046` are exactly the 40 named learner capabilities from `design/01-skill-features.md`; `FTR-047..FTR-053` are the seven minimum privileged/admin/BOPS surface families already established by canonical authorization design. Practice modes, micro-skills, media source states, entitlements, providers/models, and the AI tutor overlay remain in their proper neighboring abstractions.
+This document preserves the six accepted macro route anchors and the detailed feature-completeness surface. `FTR-001..FTR-006` remain historical/macro anchors; `FTR-007..FTR-046` are exactly the 40 named learner capabilities preserved from `design/01-skill-features.md`; `FTR-047..FTR-053` are the seven minimum privileged/admin/BOPS surface families established by the locked authorization design. Practice modes, micro-skills, media source states, entitlements, providers/models, and the AI tutor overlay remain in their proper neighboring abstractions.
 
 ## BEHAVIOR-FUNCTIONAL Functional behavior
 
@@ -36,7 +32,7 @@ An Attempt may produce an Observation, but only claim-scoped Assessment admissio
 
 AI may explain, hint, generate bounded practice, or summarize feedback, but the learner performs the target operation. Assistance is reduced or disabled where independent evidence requires it. AI output cannot create a Band claim, EvidenceFact, learner gap, or next-action truth by assertion. The ordinary supported route does not require a teacher; optional human expert input gains evidence consequence only through normal Assessment admission.
 
-The six records above remain macro route anchors for accepted prior migration relations. They are not the detailed feature-count/completeness surface below.
+The six records above remain macro route anchors for accepted prior traceability. They are not the detailed feature-count/completeness surface below.
 
 ### FTR-007 L-F01 — IELTS Section Player
 
@@ -246,7 +242,7 @@ Browser-microphone behavior preserves capability limits: capture failure is a pr
 - Diagnostic conditions may be sampled, not sampled, unusable, pending, conflicting, or stale.
 - A Daily Plan is a recommendation snapshot; assignment rechecks current eligibility.
 - Learner activity creates Attempt history; measurement creates Observation; claim-scoped admission creates EvidenceFact.
-- Current claim interpretation remains one of the canonical Assessment states, and Progression changes interpretation only from justified Assessment state while retaining history.
+- Current claim interpretation remains one of the Assessment states, and Progression changes interpretation only from justified Assessment state while retaining history.
 - Detailed FTR identity does not create a second learner-state ontology: practice mode, micro-skill/Skill Leaf, Knowledge Object, media source, entitlement, provider route, and AI assistance state remain separate dimensions.
 - Authorization grants/bundles and effective commercial entitlement are independent product state; changing either does not change target, learner evidence, Band, mastery/readiness, or historical attainment.
 - Pending, expired, downgraded, or unavailable entitlement affects only eligible gated product access after authoritative reconciliation; it is not an Assessment state.
@@ -301,13 +297,13 @@ Eligible measurement → Observation → claim-scoped Assessment admission/evalu
 
 Authenticated privileged actor → resolve effective capability plus resource/purpose/action scope → validate current state and hard semantic/security preconditions → inspect or perform only the legal Core-owned operation → persist required mutation/work marker where applicable → return the actual authorized outcome. A UI role label or internal network position never bypasses this boundary; denied or out-of-scope work does not execute.
 
-The detailed DATA/IFC/EXT mappings for the privileged surfaces are now resolved in the migration catalog. This flow continues to describe only the already-canonical Web/Core semantic ownership; the resolved typed relations remain owned by the catalog and are not redefined here.
+The detailed DATA/IFC/EXT mappings for the privileged surfaces are resolved in the catalog. This flow describes only the Web/Core semantic ownership; the resolved typed relations remain owned by the catalog and are not redefined here.
 
 ### FLW-006 Consequential privileged audit reconciliation
 
 A consequential privileged attempt and its authoritative outcome → capture reconstructable actor identity/class, effective role/capability, target, reason, material prior/resulting state where applicable, and outcome → retain the durable audit required by policy. Audit cannot authorize the operation retroactively, rewrite immutable history, or become learning/evidence truth.
 
-The audit DATA/interface/external-dependency representation is resolved by the bounded relation migrations: durable audit DATA is typed, the Core-internal interface/dependency cases are demonstrated N/A where applicable, and this flow does not redefine those catalog relations.
+The audit DATA/interface/external-dependency representation is resolved by the bounded relation work: durable audit DATA is typed, the Core-internal interface/dependency cases are demonstrated N/A where applicable, and this flow does not redefine those catalog relations.
 
 ## BEHAVIOR-ACCEPTANCE Acceptance criteria
 
@@ -337,15 +333,15 @@ AI/human support cannot bypass Assessment admission or become learning/evidence 
 
 ### ACC-007 Promise boundary
 
-No migrated behavior claims that product use, a favorable diagnostic/mock, internal support, or readiness guarantees a future official IELTS result.
+No behavior claims that product use, a favorable diagnostic/mock, internal support, or readiness guarantees a future official IELTS result.
 
 ### ACC-008 Detailed feature identity boundary
 
-The detailed learner feature surface contains exactly the canonical 40 `L-F*`/`R-F*`/`W-F*`/`S-F*`/`X-F*` capabilities. Navigation labels, the 28 practice modes, Skill Leaves/micro-skills, Knowledge Objects, media/source/transcript states, `FREE`/`PRO`, provider/model routes, and the AI tutoring overlay do not create extra FTR identities.
+The detailed learner feature surface contains exactly the preserved 40 `L-F*`/`R-F*`/`W-F*`/`S-F*`/`X-F*` capabilities. Navigation labels, the 28 practice modes, Skill Leaves/micro-skills, Knowledge Objects, media/source/transcript states, `FREE`/`PRO`, provider/model routes, and the AI tutoring overlay do not create extra FTR identities.
 
 ### ACC-009 Variant and delivery integrity
 
-Academic/GT or delivery/input differences configure an existing feature when learner capability/interaction identity remains the same; genuine canonical task differences remain explicit. Packaging never changes the underlying Band standard, invents a hidden variant, or duplicates a feature solely for a label.
+Academic/GT or delivery/input differences configure an existing feature when learner capability/interaction identity remains the same; genuine task differences remain explicit. Packaging never changes the underlying Band standard, invents a hidden variant, or duplicates a feature solely for a label.
 
 ### ACC-010 Learning and evidence authority boundary
 
@@ -361,7 +357,7 @@ Speaking features fail closed at the actual capture/transcription/acoustic/realt
 
 ### ACC-013 Media and knowledge-layer boundary
 
-Media-backed and Knowledge/SRS features reuse existing practice semantics and canonical learning targets. Source rights/transcript eligibility and Knowledge Object/micro-skill identity remain separate layers, and unavailable source material never fabricates transcript-dependent scoring or a new IELTS construct.
+Media-backed and Knowledge/SRS features reuse existing practice semantics and learning targets. Source rights/transcript eligibility and Knowledge Object/micro-skill identity remain separate layers, and unavailable source material never fabricates transcript-dependent scoring or a new IELTS construct.
 
 ### ACC-014 Privileged capability and entitlement boundary
 
@@ -377,10 +373,10 @@ The learner controls explicit target changes and may choose among eligible study
 
 Privileged operations remain capability-scoped and reconstructably audited; learner entitlement remains separate from authorization. Neither an admin surface nor a paid learner state creates authority to rewrite learning/evidence truth, bypass hard gates, or expose protected learner data without the applicable purpose-scoped authorization.
 
-## Migration boundary
+## Authority and closure boundary
 
-This file, `docs/PRODUCT.md`, `docs/DECISIONS.md`, and `docs/catalog/project.json` remain migration artifacts with **authority NONE**. The catalog owns `ACT-*`, `ROL-*`, `FTR-*`, `ACC-*`, `FLW-*`, `DEC-*`, and `UNK-*` migration identities and typed relations.
+This file, `docs/PRODUCT.md`, `docs/DECISIONS.md`, relevant legal shards, and `docs/catalog/project.json` are current canonical project-documentation authority under the read order in `README.md`. The catalog owns `ACT-*`, `ROL-*`, `FTR-*`, `ACC-*`, `FLW-*`, `DEC-*`, and `UNK-*` identities and typed relations.
 
-`TASK-0013` resolves `UNK-005` because the material learner/admin feature inventory is now complete under current canonical design: the six prior FTRs remain macro anchors, the 40 canonical learner capabilities are mapped one-for-one, the seven privileged surface families are materialized without capability/role inflation, and grouped learner/privileged flow plus acceptance traceability exists.
+`TASK-0013` resolved `UNK-005` by materializing the complete learner/admin feature inventory; later bounded DATA/IFC/EXT/CAP relation work resolved `UNK-001..UNK-009`. No blocking relation unknown or `unresolved_ref` remains. Current milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. `DOCS_READY` is derived by the pinned documentation model rather than owned or stored here.
 
-Detailed DATA/IFC/EXT/CAP relations and `UNK-001..UNK-009` are resolved by the bounded relation-domain migrations; no blocking relation unknown or `unresolved_ref` remains. Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. No false N/A or speculative provider/data/contract identity is used to manufacture closure. `DOCS_READY` is derived by the pinned documentation model rather than owned or stored here. Documentation closure does not imply design lock, canonical cutover, implementation readiness, assurance status, provider activation, promotion, or release readiness.
+`CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority; `contracts/**` retains scoped exact machine-contract authority. Historical `spec/**`/`design/**` status or ownership text is provenance only and cannot override this docs authority plane. Documentation closure/cutover does not itself change the already-locked DESIGN semantics, establish standards/assurance status, activate providers, authorize implementation, promote, or release.

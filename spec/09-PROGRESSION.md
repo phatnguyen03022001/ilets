@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: learner-state semantics, MasteryEstimate, GapEvaluation, ActionIntent, per-skill Band advancement/regression, prerequisite-gating semantics, semantic review state, certification history/current state, and Exam Preparation mode semantics
 DEPENDS_ON: 01-LEARNER-MODEL.md, 05-BANDS.md, 06-CURRICULUM.md, 08-ASSESSMENT.md
 DOES_NOT_OWN: Skill/Knowledge definitions, Band thresholds, curriculum ordering, Practice selection, Assessment eligibility/scoring, product planner candidate eligibility/ranking, UX scheduling, or storage schema

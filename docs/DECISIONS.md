@@ -1,58 +1,58 @@
 # Decisions
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
+> **CANONICAL DECISIONS AUTHORITY**
 >
-> Created by `TASK-0003` revision 1 and extended through `TASK-0017` revision 1. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until an explicit later cutover.
->
-> Current CAP/build-buy migration authority snapshot: `phatnguyen03022001/ilets@09504f4d782a5a53f9f8c57e750cc28274525667`; current accepted product-experience authority: `phatnguyen03022001/ilets@b60034a50d9a5ee5f197887ed14e7b917e919660`.
+> Canonical within the DECISIONS authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
 ## Documentation-model adoption
 
-**Draft outcome:** this migration uses `phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07`, the accepted unreleased V1 candidate after the relation-model correction. This target pin supersedes the earlier pilot pin only for continuing the IELTS migration; it does not globally stabilize or release `agent-documents`.
+**Outcome:** this project uses `phatnguyen03022001/agent-documents@acb3f02616e700190586681306a86905792e4c07`, the accepted unreleased V1 candidate after the relation-model correction. This target pin supersedes the earlier pilot pin only for this project-documentation model; it does not globally stabilize or release `agent-documents`.
 
-The corrected feature relation state distinguishes typed `refs`, genuine demonstrated `na`, and `unresolved_ref` to an existing `OPEN` `DESIGN` `UNK-*`. Migration incompleteness is not N/A. An unresolved relation blocks documentation closure without creating a substitute neighboring-domain identity.
+The corrected feature relation state distinguishes typed `refs`, genuine demonstrated `na`, and `unresolved_ref` to an existing `OPEN` `DESIGN` `UNK-*`. Incompleteness is not N/A. An unresolved relation blocks documentation closure without creating a substitute neighboring-domain identity.
 
-## Catalog migration boundary
+## Catalog authority boundary
 
-`docs/catalog/project.json` exists only as a migration artifact with **authority NONE**. Its pathname does not grant canonical target authority. The catalog owns migration identities/typed relations; `docs/BEHAVIOR.md` owns migrated behavior explanation.
+`docs/catalog/project.json` is canonical catalog authority for project-documentation identities, typed relations, milestone scope state, and coverage support references. `docs/BEHAVIOR.md` owns behavior explanation; the other seven domain roots and legal catalog-referenced shards own their corresponding semantics.
 
-The migration includes the previously accepted `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, and `CAP-*` inventories plus the existing material `DEC-*` records. `TASK-0013` adds only the decomposition decision required to resolve the already-approved `DECISION_REQUIRED` feature blocker and bounded relation-domain unknowns for detailed relations that current neighboring inventories do not yet fully support. `TASK-0014` extends only the DATA inventory/relations required to resolve `UNK-006`. `TASK-0015` resolves only the privileged detailed IFC relations and `UNK-007`; it preserves both accepted IFC identities and does not alter EXT/CAP mappings. `TASK-0016` resolves only the privileged detailed EXT relations and `UNK-008`, adding the minimum external dependency identities justified by current privileged behavior. `TASK-0017` resolves only the 47 detailed CAP relations and `UNK-009`, preserving `CAP-001..CAP-005` and adding only the three distinct build/buy boundaries supported by accepted `EXT-005..EXT-007`. These records remain authority-NONE migration state and cannot override canonical legacy owners.
+The catalog preserves the accepted `SYS-*`, `DAT-*`, `IFC-*`, `EXT-*`, and `CAP-*` inventories plus the material `DEC-*` records. Historical `TASK-0013..TASK-0017` work established the detailed feature decomposition and bounded DATA/IFC/EXT/CAP relation closure now represented there. Those historical task boundaries remain provenance; they do not create parallel authority outside the current docs/catalog plane.
 
 ## Engineering claim and evidence semantics adoption
 
-IELTS continues to pin `phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee` for generic engineering claim/evidence semantics. This migration performs no standards assessment and claims no requirement `PASS`, maturity level, assurance `N/A`, exception, implementation readiness, promotion readiness, or release readiness. Coverage depth is documentation treatment, not engineering maturity.
+IELTS continues to pin `phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee` for generic engineering claim/evidence semantics. This cutover performs no standards assessment and claims no requirement `PASS`, maturity level, assurance `N/A`, exception, implementation readiness, promotion readiness, or release readiness. Coverage depth is documentation treatment, not engineering maturity.
 
-## Ownership and cutover boundary
+## Authority and cutover boundary
 
-Actual IELTS truth remains with the existing canonical legacy documents. `docs/PRODUCT.md`, this file, `docs/BEHAVIOR.md`, and `docs/catalog/project.json` remain authority-NONE migration artifacts. Current migration milestone scope state is owned exclusively by `docs/catalog/project.json`, and `DOCS_READY` is derived by the pinned documentation model rather than owned or stored by this Markdown. Documentation closure does not itself declare canonical cutover, documentation/design lock, generated PROGRAM, implementation readiness, standards/assurance status, provider activation, promotion, or release.
+Current normative project-documentation authority is the eight `docs/*.md` domain roots, their legal catalog-referenced one-level shards, and `docs/catalog/project.json`, under `README.md` precedence. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority. `contracts/**` retains scoped exact machine-contract authority. Historical local status, ownership, or “canonical” wording inside `spec/**` and `design/**` is provenance only and cannot create equal authority.
 
-## Migration unknowns
+Current milestone scope state is owned exclusively by `docs/catalog/project.json`, and `DOCS_READY` is derived by the pinned documentation model rather than owned or stored by this Markdown. This authority cutover preserves the existing DESIGN LOCK semantics and does not itself create a new design lock, generated PROGRAM, implementation readiness, standards/assurance status, provider activation, promotion, or release.
 
-All material feature relations covered by `UNK-001..UNK-009` are now migrated: those unknowns are `RESOLVED` and the catalog has no remaining `unresolved_ref` for those bounded relation domains. The resolved mappings use correctly typed refs or demonstrated N/A as accepted by their owning migrations. Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json`; this section intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. `DOCS_READY` is derived from the pinned model and catalog state rather than claimed by this section.
+## Resolved relation unknowns
+
+All material feature relations covered by `UNK-001..UNK-009` are `RESOLVED` and the catalog has no remaining `unresolved_ref` for those bounded relation domains. The resolved mappings use correctly typed refs or demonstrated N/A as accepted by their owning work. Current mutable milestone scope state is owned exclusively by `docs/catalog/project.json`; this section intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. `DOCS_READY` is derived from the pinned model and catalog state rather than claimed by this section.
 
 ## UNK-001 DATA relation resolution
 
-`UNK-001` is resolved for the bounded six-macro behavior slice migrated by `TASK-0003`/`TASK-0005`. The current canonical owners support a material DATA inventory consisting of target/target-context revision, exact content revision, Attempt, Observation, EvidenceFact, current Assessment/Progression interpretations, historical attainment, and DailyPlan snapshot identities as materialized by `DAT-001` through `DAT-012` in `docs/catalog/project.json`.
+`UNK-001` is resolved for the bounded six-macro behavior slice established by `TASK-0003`/`TASK-0005`. The preserved owners support a material DATA inventory consisting of target/target-context revision, exact content revision, Attempt, Observation, EvidenceFact, current Assessment/Progression interpretations, historical attainment, and DailyPlan snapshot identities as materialized by `DAT-001` through `DAT-012` in `docs/catalog/project.json`.
 
 Each affected macro feature uses typed `DAT-*` references rather than `unresolved_ref` or false N/A. `DAT-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution itself is the complete typed macro feature-data mapping plus the DATA sections in `docs/DATA.md`, not a claim that `TargetProfile` alone covers every detailed feature.
 
-This resolution does not assert database tables, API/event payloads, provider identities, exact retention durations, a durable representation for every material ephemeral value, or global DATA closure beyond that migrated slice. The new detailed feature inventory introduced later by `TASK-0013` is intentionally not projected onto these macro mappings without a dedicated DATA migration.
+This resolution does not assert database tables, API/event payloads, provider identities, exact retention durations, a durable representation for every material ephemeral value, or global DATA closure beyond that slice. The detailed feature inventory introduced later was mapped independently rather than projected onto these macro mappings.
 
 ## UNK-002 INTERFACES relation resolution
 
-`UNK-002` is resolved for the bounded six-macro behavior slice migrated by `TASK-0003`/`TASK-0006`. Current canonical flow/API/runtime owners support exactly two material interface identities for this slice: `IFC-001` Core public product API and `IFC-002` Core-to-Evaluator bounded capability API.
+`UNK-002` is resolved for the bounded six-macro behavior slice established by `TASK-0003`/`TASK-0006`. The preserved flow/API/runtime owners support exactly two material interface identities for this slice: `IFC-001` Core public product API and `IFC-002` Core-to-Evaluator bounded capability API.
 
-Each affected macro feature uses typed `IFC-*` references rather than `unresolved_ref` or false N/A. Flow `interface_refs` identify which of those two boundaries each migrated flow actually traverses. `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution is the complete typed macro feature/flow interface mapping plus the semantic contract sections in `docs/INTERFACES.md`, not a claim that the public API alone covers every future detailed privileged boundary.
+Each affected macro feature uses typed `IFC-*` references rather than `unresolved_ref` or false N/A. Flow `interface_refs` identify which of those two boundaries each flow actually traverses. `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution is the complete typed macro feature/flow interface mapping plus the semantic contract sections in `docs/INTERFACES.md`, not a claim that the public API alone covers every future detailed privileged boundary.
 
-The async/job/command concern is resolved at L1 through the durable acceptance, logical-work, dispatch-fencing, retry, reconciliation, and recoverable-continuation semantics already owned by the two interfaces. No separate queue/job/provider interface identity is created because current canonical truth does not require an independently owned third boundary for the accepted macro slice.
+The async/job/command concern is resolved at L1 through the durable acceptance, logical-work, dispatch-fencing, retry, reconciliation, and recoverable-continuation semantics already owned by the two interfaces. No separate queue/job/provider interface identity is created because current truth does not require an independently owned third boundary for the accepted macro slice.
 
-This resolution does not materialize OpenAPI or exact wire schemas, generated bindings, provider authentication identities, or another semantic owner.
+This resolution does not redesign or rematerialize OpenAPI or exact wire schemas, generated bindings, provider authentication identities, or another semantic owner.
 
 ## UNK-003 External dependency relation resolution
 
-`UNK-003` is resolved for the bounded six-macro behavior slice migrated by `TASK-0003`/`TASK-0009`. Current canonical third-party/API/runtime owners support exactly four material dependency identities for this slice: `EXT-001` Clerk identity/session service, `EXT-002` Neon Launch PostgreSQL hosting, `EXT-003` Google Cloud Tasks bounded dispatch, and `EXT-004` the external Evaluator AI/speech provider boundary.
+`UNK-003` is resolved for the bounded six-macro behavior slice established by `TASK-0003`/`TASK-0009`. The preserved third-party/API/runtime owners support exactly four material dependency identities for this slice: `EXT-001` Clerk identity/session service, `EXT-002` Neon Launch PostgreSQL hosting, `EXT-003` Google Cloud Tasks bounded dispatch, and `EXT-004` the external Evaluator AI/speech provider boundary.
 
-The first three identities preserve the concrete routes already selected for implementation by canonical design. `EXT-004` is boundary-sized rather than model-alias-sized: the exact selected provider/model route matrix and any canonical `TBD` sub-capability remain owned by `design/07-third-party-services.md`. In particular, this migration does not turn a `TBD` pronunciation/acoustic route into a selected or available provider.
+The first three identities preserve the concrete routes already selected for implementation by the locked design. `EXT-004` is boundary-sized rather than model-alias-sized: the exact selected provider/model route matrix and any `TBD` sub-capability are owned by `docs/interfaces/provider-lifecycle-and-routes.md`. In particular, this authority does not turn a `TBD` pronunciation/acoustic route into a selected or available provider.
 
 All six affected macro features use typed `EXT-*` references because each participates in the material `FLW-001` target-to-next-action loop. That feature-level relation records the material dependency footprint of its related flows; it does not claim every individual operation invokes every external service. Flow dependency references narrow the actual flow footprint: `FLW-001` and `FLW-003` use all four identities, `FLW-002` uses `EXT-001` and `EXT-002`, and `FLW-004` uses `EXT-002`, `EXT-003`, and `EXT-004`.
 
@@ -60,7 +60,7 @@ All six affected macro features use typed `EXT-*` references because each partic
 
 This resolution preserves provider lifecycle and authority boundaries: `SELECTED_FOR_IMPLEMENTATION` is not `ACTIVE`; provider output remains non-authoritative until Core/Evaluator validation and owning policy interpretation; fallback requires an independently equivalent consequence floor; timeout remains ambiguous; deletion/export and provider-held copies require reconciliation; and exit relies on stable Core identity, PostgreSQL-native portability, durable Core work identity, and provider-neutral Evaluator capability boundaries rather than speculative multi-provider infrastructure.
 
-No provider is activated or configured here. The detailed privileged dependency relation that `TASK-0013` left open is resolved separately by `TASK-0016` under `UNK-008`; that later mapping does not rewrite this older macro relation footprint.
+No provider is activated or configured here. The detailed privileged dependency relation is resolved separately under `UNK-008`; that mapping does not rewrite this older macro relation footprint.
 
 ## DEC-BUILD-BUY Material build/buy decisions
 
@@ -68,7 +68,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ### DEC-001 Core product authority remains project-owned
 
-**Context.** Canonical runtime design assigns learner/admin product behavior, product authorization, authoritative work state, deterministic Assessment/Progression/Planner policy, and final result interpretation to Core. External AI/provider output is explicitly non-authoritative.
+**Context.** Runtime design assigns learner/admin product behavior, product authorization, authoritative work state, deterministic Assessment/Progression/Planner policy, and final result interpretation to Core. External AI/provider output is explicitly non-authoritative.
 
 **Selected outcome.** Build the authoritative product policy/orchestration capability in `SYS-002` (`CAP-001`) instead of delegating product semantics to an external platform or model provider.
 
@@ -82,7 +82,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ### DEC-002 Commodity infrastructure stays behind Core-owned authority
 
-**Context.** The current implementation selects external identity/session service, managed PostgreSQL hosting, and bounded task dispatch, while canonical design separately preserves stable Core identity/authorization, PostgreSQL product-state semantics, and durable Core logical-work/reconciliation state.
+**Context.** The current implementation selects external identity/session service, managed PostgreSQL hosting, and bounded task dispatch, while design separately preserves stable Core identity/authorization, PostgreSQL product-state semantics, and durable Core logical-work/reconciliation state.
 
 **Selected outcome.** Use `EXT-001`, `EXT-002`, and `EXT-003` as bounded external execution/custody inside the `CAP-002`/`CAP-003`/`CAP-004` hybrid capabilities. Core keeps the authority that makes each provider replaceable.
 
@@ -96,7 +96,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ### DEC-003 Evaluator stays project-owned with external execution adapters
 
-**Context.** The Evaluator is the internal bounded capability owner. Canonical third-party design selects some external productive-evaluation/speech routes while leaving pronunciation/acoustic evaluation `TBD`, and requires provider-neutral boundaries, provenance, validation, and consequence-specific calibration.
+**Context.** The Evaluator is the internal bounded capability owner. Third-party design selects some external productive-evaluation/speech routes while leaving pronunciation/acoustic evaluation `TBD`, and requires provider-neutral boundaries, provenance, validation, and consequence-specific calibration.
 
 **Selected outcome.** Implement `CAP-005` as `HYBRID`: keep the bounded evaluator contract/validation surface in `SYS-003`, and use `EXT-004` for selected-or-TBD external AI/speech execution behind adapters.
 
@@ -110,21 +110,21 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ### DEC-004 Detailed product feature completeness surface
 
-**Context.** Accepted `TASK-0012` reopened the milestone because the migration catalog had only six macro behavior anchors while canonical `design/01-skill-features.md` already defines 40 material learner feature capabilities and `design/04-application-flows.md` defines the material privileged surface/capability families. The pinned V1 model classifies `UNK-005` as `DECISION_REQUIRED`, so a truthful resolution requires a dedicated `DEC-*` attribution rather than pointing at an unrelated build/buy decision.
+**Context.** Accepted `TASK-0012` reopened the milestone because the catalog had only six macro behavior anchors while `design/01-skill-features.md` already defined 40 material learner feature capabilities and `design/04-application-flows.md` defined the material privileged surface/capability families. The pinned V1 model classifies `UNK-005` as `DECISION_REQUIRED`, so a truthful resolution requires a dedicated `DEC-*` attribution rather than pointing at an unrelated build/buy decision.
 
 **Selected outcome.** Treat `FTR-007..FTR-046` as the exact 40 learner detailed feature-completeness units mapped one-for-one to `L-F01..L-F08`, `R-F01..R-F08`, `W-F01..W-F09`, `S-F01..S-F09`, and `X-F01..X-F06`. Treat `FTR-047..FTR-053` as the minimum seven privileged/admin/BOPS feature families: content/review/release, user support, entitlement reconciliation, operations/provider/work visibility, approved policy administration, security/access administration, and consequential audit. Retain `FTR-001..FTR-006` unchanged as historical/macro route anchors rather than completeness units.
 
 **Alternative rejected.** Continue treating six macro anchors as the complete product feature inventory, or inflate the catalog by converting navigation labels, 28 practice modes, Skill Leaves/micro-skills, Knowledge Objects, media/transcript states, `FREE`/`PRO`, providers/models, individual permissions, or the cross-feature AI tutor overlay into duplicate FTR identities.
 
-**Rationale.** Canonical design already owns the decomposition and its abstraction boundaries. One-to-one learner capability mapping plus seven genuinely distinct privileged behavior families is the smallest complete product feature surface that preserves those owners without inventing a second ontology or capability matrix.
+**Rationale.** The locked design owns the decomposition and its abstraction boundaries. One-to-one learner capability mapping plus seven genuinely distinct privileged behavior families is the smallest complete product feature surface that preserves those semantics without inventing a second ontology or capability matrix.
 
-**Consequences.** Feature/flow/acceptance completeness can resolve independently of neighboring DATA/IFC/EXT/CAP migration completeness. Existing macro relation resolutions remain historically valid for `FTR-001..FTR-006`; newly detailed relations were resolved independently by `TASK-0014..TASK-0017` using exact refs or demonstrated N/A where justified. Current mutable migration milestone scope state is catalog-owned and intentionally not restated here; this decision remains feature-decomposition provenance rather than milestone-state authority.
+**Consequences.** Feature/flow/acceptance completeness can resolve independently of neighboring DATA/IFC/EXT/CAP completeness. Existing macro relation resolutions remain historically valid for `FTR-001..FTR-006`; detailed relations were resolved independently by `TASK-0014..TASK-0017` using exact refs or demonstrated N/A where justified. Current mutable milestone scope state is catalog-owned and intentionally not restated here; this decision remains feature-decomposition provenance rather than milestone-state authority.
 
-**Reversibility.** `COSTLY`. The mapping can evolve only when canonical product design materially changes; renumbering or collapsing these stable migration identities later would require explicit traceability migration rather than cosmetic editing.
+**Reversibility.** `COSTLY`. The mapping can evolve only when product design materially changes; renumbering or collapsing these stable catalog identities later would require explicit traceability migration rather than cosmetic editing.
 
 ### DEC-005 Governed object/media custody stays behind Core artifact authority
 
-**Context.** Canonical implementation and third-party design permit large or retained content/media bytes to live in the accepted `EXT-005` object/media storage boundary while Core remains authoritative for artifact identity, metadata/reference, eligibility, access, lifecycle, retention/deletion, integrity/provenance reconciliation, and product usability.
+**Context.** Implementation and third-party design permit large or retained content/media bytes to live in the accepted `EXT-005` object/media storage boundary while Core remains authoritative for artifact identity, metadata/reference, eligibility, access, lifecycle, retention/deletion, integrity/provenance reconciliation, and product usability.
 
 **Selected outcome.** Implement `CAP-006` as `HYBRID`: keep governed artifact semantics and lifecycle in `SYS-002`, and use `EXT-005` only for external byte custody and bounded transfer behind Core authorization/reconciliation.
 
@@ -138,7 +138,7 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 ### DEC-006 Effective commercial entitlement remains Core-owned
 
-**Context.** Canonical privileged behavior defines entitlement reconciliation as accepting bounded commercial/provider facts and committing effective product access in Core. The accepted `EXT-006` boundary supplies payment/subscription observations only; learner commercial entitlement is separate from RBAC and learning/evidence truth.
+**Context.** Privileged behavior defines entitlement reconciliation as accepting bounded commercial/provider facts and committing effective product access in Core. The accepted `EXT-006` boundary supplies payment/subscription observations only; learner commercial entitlement is separate from RBAC and learning/evidence truth.
 
 **Selected outcome.** Implement `CAP-007` as `HYBRID`: keep effective entitlement, stable learner association, and product-access consequence in `SYS-002`, while `EXT-006` supplies externally observed payment/subscription facts and provider events that Core reconciles.
 
@@ -146,13 +146,13 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 **Rationale.** Commercial processing can be bought, but the meaning of paid access inside this product cannot. Reconciliation, replay/idempotency, downgrade/expiry semantics, and exit from a commerce provider are materially different from general product policy or storage custody.
 
-**Consequences.** Provider observations remain untrusted external facts until authenticated/associated/reconciled. No checkout, webhook, billing credential, price, provider activation, spend, or commercial policy is created by this migration.
+**Consequences.** Provider observations remain untrusted external facts until authenticated/associated/reconciled. No checkout, webhook, billing credential, price, provider activation, spend, or commercial policy is created by this cutover.
 
 **Reversibility.** `COSTLY`. Provider change preserves Core-owned effective entitlement/history while outstanding callbacks, refunds/cancellations, ambiguous events, and provider-account association are reconciled before cutover.
 
 ### DEC-007 Secret custody remains external while security authority stays in Core
 
-**Context.** Canonical runtime design separates secrets, Core-owned typed runtime policy, and deployment/bootstrap configuration. `EXT-007` is the accepted external secret-custody boundary, while canonical privileged behavior reserves credential creation/rotation/switching and other security-sensitive operations for stronger authorization plus reconstructable audit.
+**Context.** Runtime design separates secrets, Core-owned typed runtime policy, and deployment/bootstrap configuration. `EXT-007` is the accepted external secret-custody boundary, while privileged behavior reserves credential creation/rotation/switching and other security-sensitive operations for stronger authorization plus reconstructable audit.
 
 **Selected outcome.** Implement `CAP-008` as `HYBRID`: keep security authorization and typed secret-operation policy in `SYS-002`, and use `EXT-007` only to custody/version credential material behind least-privilege runtime access.
 
@@ -160,17 +160,17 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 **Rationale.** Secret material has disclosure/rotation/revocation and least-privilege exit semantics that differ materially from ordinary operating policy, content objects, commercial observations, or identity/session mechanics. Core must retain the permission/audit meaning even if custody changes.
 
-**Consequences.** Routine administration exposes only minimum safe metadata; plaintext read/export is not introduced. No secret, credential, provider activation, environment edit, deployment configuration, or spend is materialized by this migration.
+**Consequences.** Routine administration exposes only minimum safe metadata; plaintext read/export is not introduced. No secret, credential, provider activation, environment edit, deployment configuration, or spend is materialized by this cutover.
 
 **Reversibility.** `COSTLY`. Exit requires controlled rotation or rebinding of references and runtime identities, reconciliation/revocation of old versions, and preservation of Core-owned authorization/audit semantics rather than routine plaintext migration through the admin surface.
 
-## UNK-INVENTORY Migration unknown inventory after TASK-0017
+## UNK-INVENTORY Resolved unknown inventory after TASK-0017
 
-`UNK-001..UNK-009` are resolved for their authorized migration slices. All 47 detailed feature relations now use typed CAP references, and no blocking design unknown or `unresolved_ref` remains. Current mutable migration milestone scope state is catalog-owned and intentionally not restated here; no Markdown-local `SCOPE_OPEN` or `DOCS_READY` ownership is created.
+`UNK-001..UNK-009` are resolved for their authorized slices. All 47 detailed feature relations now use typed CAP references, and no blocking design unknown or `unresolved_ref` remains. Current mutable milestone scope state is catalog-owned and intentionally not restated here; no Markdown-local `SCOPE_OPEN` or `DOCS_READY` ownership is created.
 
 ### UNK-004 Capability/build-buy relation resolution
 
-`UNK-004` is resolved for all six original affected macro features because canonical runtime ownership plus the accepted `EXT-001..EXT-004` inventory supports a complete, typed, non-speculative capability mapping:
+`UNK-004` is resolved for all six original affected macro features because runtime ownership plus the accepted `EXT-001..EXT-004` inventory supports a complete, typed, non-speculative capability mapping:
 
 - every macro feature uses `CAP-001` for Core-owned authoritative product policy/orchestration;
 - every macro feature uses `CAP-002` and `CAP-003` because authenticated durable product state remains a hybrid of Core authority with the selected identity/session and managed PostgreSQL boundaries;
@@ -179,22 +179,22 @@ No provider is activated or configured here. The detailed privileged dependency 
 
 `CAP-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question; the resolution is the complete typed macro feature-capability mapping plus `docs/ARCHITECTURE.md#ARCH-BUILD-BUY`, not a claim that one capability covers every newly decomposed feature consequence.
 
-This resolution creates no pure `BUY` capability because the external dependencies do not own the whole capability boundary, and it creates no feature-referenced `DEFER` capability. Provider lifecycle remains canonical in `design/07-third-party-services.md`: selected routes remain only `SELECTED_FOR_IMPLEMENTATION`, pronunciation/acoustic evaluation remains `TBD`, and no provider/model is activated, calibrated, configured, or made authoritative here.
+This resolution creates no pure `BUY` capability because the external dependencies do not own the whole capability boundary, and it creates no feature-referenced `DEFER` capability. Provider lifecycle remains represented in `docs/interfaces/provider-lifecycle-and-routes.md`: selected routes remain only `SELECTED_FOR_IMPLEMENTATION`, pronunciation/acoustic evaluation remains `TBD`, and no provider/model is activated, calibrated, configured, or made authoritative here.
 
 ## UNK-005 Full learner/admin feature decomposition resolution
 
-`UNK-005` is resolved by `DEC-004` because current canonical design now maps completely into the migration feature surface without abstraction inflation:
+`UNK-005` is resolved by `DEC-004` because the locked design maps completely into the feature surface without abstraction inflation:
 
-- `FTR-007..FTR-046` map one-for-one to all 40 canonical learner capability aliases in `design/01-skill-features.md`;
-- `FTR-047..FTR-053` cover every material privileged/admin/BOPS surface family admitted by `TASK-0012` and `design/04-application-flows.md` without creating one feature per permission or role bundle;
+- `FTR-007..FTR-046` map one-for-one to all 40 preserved learner capability aliases from `design/01-skill-features.md`;
+- `FTR-047..FTR-053` cover every material privileged/admin/BOPS surface family admitted by `TASK-0012` and preserved from `design/04-application-flows.md` without creating one feature per permission or role bundle;
 - `FTR-001..FTR-006` remain unchanged historical macro anchors, so prior accepted unknown/relation lineage remains intact;
 - learner detailed features reuse the existing macro learner flows where truthful, while only two new grouped privileged flows are added for capability-gated operations and consequential audit;
 - grouped `ACC-008..ACC-015`, together with the existing acceptance anchors where applicable, preserve feature-identity boundaries, variant/delivery truth, evidence authority, Speaking capture/realtime limitations, media/knowledge layering, entitlement/RBAC separation, Core-only privilege, and audit requirements; and
 - navigation, practice modes, ontology nodes, media/source states, entitlement states, provider/model routes, and AI tutoring remain explicitly outside FTR identity.
 
-`DEC-004` is the required `resolved_by_ref` attribution because the pinned V1 model requires a `DECISION_REQUIRED` unknown to resolve through a `DEC-*`. This is a decomposition/migration decision only; it does not create new canonical product authority.
+`DEC-004` is the required `resolved_by_ref` attribution because the pinned V1 model requires a `DECISION_REQUIRED` unknown to resolve through a `DEC-*`. This decomposition decision preserves product semantics; it does not by itself create a second product authority outside `docs/PRODUCT.md` and the catalog.
 
-Resolving `UNK-005` does **not** imply neighboring relation closure. DATA, IFC, EXT, and CAP detailed relation domains were resolved independently by `TASK-0014..TASK-0017`. Current mutable migration milestone scope state and derived `DOCS_READY` are governed by the catalog/pinned model rather than this resolution paragraph; design lock, cutover, implementation readiness, standards PASS, provider activation, promotion, and release remain distinct and unclaimed.
+Resolving `UNK-005` does **not** imply neighboring relation closure. DATA, IFC, EXT, and CAP detailed relation domains were resolved independently by `TASK-0014..TASK-0017`. Current mutable milestone scope state and derived `DOCS_READY` are governed by the catalog/pinned model rather than this resolution paragraph; DESIGN LOCK semantics, implementation readiness, standards PASS, provider activation, promotion, and release remain distinct and unclaimed.
 
 ## Detailed relation-domain resolutions after TASK-0017
 
@@ -202,7 +202,7 @@ Resolving `UNK-005` does **not** imply neighboring relation closure. DATA, IFC, 
 
 `UNK-006` is resolved only after every `FTR-007..FTR-053` DATA relation is replaced with typed `DAT-*` references and the complete detailed mapping is semantically audited. No detailed feature requires a genuine DATA N/A: every one reads, creates, mutates, derives, or materially depends on at least one semantic DATA identity.
 
-The accepted `DAT-001..DAT-012` identities remain unchanged. Canonical detailed behavior requires the additional minimal identities `DAT-013..DAT-027`: FeedbackArtifact; ReviewState; MediaSource; ContentCandidate; ValidationDecision history; content release/operational eligibility; effective entitlement; support-managed learner/account product state; authorization grants; typed operating-policy revision; recoverable operational work; consequential privileged audit; MockRun; LearningSession; and CoverageGap. These are boundary-sized semantic identities, not features, screens, tables, DTOs, queue messages, provider states, caches, or one object per workflow.
+The accepted `DAT-001..DAT-012` identities remain unchanged. Detailed behavior requires the additional minimal identities `DAT-013..DAT-027`: FeedbackArtifact; ReviewState; MediaSource; ContentCandidate; ValidationDecision history; content release/operational eligibility; effective entitlement; support-managed learner/account product state; authorization grants; typed operating-policy revision; recoverable operational work; consequential privileged audit; MockRun; LearningSession; and CoverageGap. These are boundary-sized semantic identities, not features, screens, tables, DTOs, queue messages, provider states, caches, or one object per workflow.
 
 The mapping intentionally reuses existing learner/evidence/progression identities where they already own the meaning: learner-saved Knowledge/review material remains normal `ContentRevision` plus Knowledge-scoped `MasteryEstimate` and `ReviewState`; Error/Remediation semantics remain content/feedback references rather than new DATA ontologies; content candidate, immutable revision, validation history, and current release/operational state stay distinct because their lifecycle/history semantics differ; entitlement, authorization, and operating policy stay distinct because commercial access, privileged access, and runtime policy are different authorities; operational work does not become provider state; audit does not become authorization or telemetry; and CoverageGap never becomes learner `GapEvaluation`.
 
@@ -210,19 +210,19 @@ The mapping intentionally reuses existing learner/evidence/progression identitie
 
 ### UNK-007 Privileged detailed interface relation resolution
 
-Canonical API/runtime ownership proves that no additional semantic IFC is material for the seven privileged surface families. The existing `IFC-001` Core public product API already owns the learner/admin-facing Web-to-Core boundary, including capability-gated privileged reads and mutations; route grouping, role labels, buttons, DTOs, provider calls, and audit records do not create another runtime/trust/ownership boundary.
+API/runtime ownership proves that no additional semantic IFC is material for the seven privileged surface families. The existing `IFC-001` Core public product API already owns the learner/admin-facing Web-to-Core boundary, including capability-gated privileged reads and mutations; route grouping, role labels, buttons, DTOs, provider calls, and audit records do not create another runtime/trust/ownership boundary.
 
 `FTR-047..FTR-052` therefore use `IFC-001`. Their grouped `FLW-005` crosses `SYS-001` Web to `SYS-002` Core and uses `IFC-001`; authentication, effective capability/scope checks, legal preconditions, Core-owned reads/mutations, durable work/audit markers, and the actual authorized outcome all remain inside that same public product API contract.
 
-`FTR-053` is genuinely interface-N/A at this feature layer. Its only grouped flow, `FLW-006`, is a `SYS-002`-internal reconciliation of a consequential privileged attempt/outcome into durable reconstructable audit. Canonical design demonstrates no separate caller/callee, runtime, trust, or ownership boundary for that reconciliation, so `FLW-006.interface_refs` remains empty instead of fabricating a cross-runtime IFC. The initiating privileged operation that may require audit is already represented by the applicable `FTR-047..FTR-052` relation and `FLW-005` crossing through `IFC-001`.
+`FTR-053` is genuinely interface-N/A at this feature layer. Its only grouped flow, `FLW-006`, is a `SYS-002`-internal reconciliation of a consequential privileged attempt/outcome into durable reconstructable audit. Design demonstrates no separate caller/callee, runtime, trust, or ownership boundary for that reconciliation, so `FLW-006.interface_refs` remains empty instead of fabricating a cross-runtime IFC. The initiating privileged operation that may require audit is already represented by the applicable `FTR-047..FTR-052` relation and `FLW-005` crossing through `IFC-001`.
 
 `IFC-001` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. The resolution is the complete seven-feature mapping plus the affected grouped-flow interface refs, not a claim that every privileged consequence itself crosses Web/Core. `IFC-002` remains exclusively the Core-to-Evaluator bounded capability boundary and is not added to privileged relations without an actual evaluator crossing.
 
-This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` and `UNK-009` were resolved independently by later bounded relation migrations; current mutable milestone scope state remains catalog-owned and is not restated here.
+This resolution creates no admin API identity, exact route, OpenAPI/wire schema, DTO, webhook/provider contract, queue/command contract, implementation code, or new runtime. `UNK-008` and `UNK-009` were resolved independently by later bounded relation work; current mutable milestone scope state remains catalog-owned and is not restated here.
 
 ### UNK-008 Privileged detailed external-dependency relation resolution
 
-Canonical privileged behavior plus current third-party/runtime ownership support exactly three additional material dependency identities for the seven privileged surface families: `EXT-005` external object/media storage for content operations that handle governed large/retained artifacts, `EXT-006` external payment/subscription observations for entitlement reconciliation, and `EXT-007` external secret custody for explicitly authorized secret-sensitive security operations. The accepted `EXT-001..EXT-004` identities remain unchanged and are not reused merely because a privileged actor authenticates, work can be asynchronous, Core state is hosted externally, or AI exists elsewhere.
+Privileged behavior plus current third-party/runtime ownership support exactly three additional material dependency identities for the seven privileged surface families: `EXT-005` external object/media storage for content operations that handle governed large/retained artifacts, `EXT-006` external payment/subscription observations for entitlement reconciliation, and `EXT-007` external secret custody for explicitly authorized secret-sensitive security operations. The accepted `EXT-001..EXT-004` identities remain unchanged and are not reused merely because a privileged actor authenticates, work can be asynchronous, Core state is hosted externally, or AI exists elsewhere.
 
 The complete detailed mapping is intentionally sparse. `FTR-047` uses `EXT-005`; `FTR-049` uses `EXT-006`; and `FTR-052` uses `EXT-007`. `FTR-048`, `FTR-050`, `FTR-051`, and `FTR-053` use demonstrated dependency N/A because their current semantic operation remains Core-owned and no material external crossing is required: support mutates Core product/account state; provider/work visibility consumes Core-owned operational state while external telemetry remains optional operational evidence; typed policy administration explicitly excludes raw secret editing; and consequential audit reconciliation is Core-internal.
 
@@ -230,11 +230,11 @@ The complete detailed mapping is intentionally sparse. `FTR-047` uses `EXT-005`;
 
 `EXT-005` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. Resolution is the complete seven-feature dependency mapping plus the three structural EXT sections and failure/fallback/exit treatment in `docs/INTERFACES.md`, not a claim that object/media storage alone covers privileged dependencies.
 
-The broader canonical provider inventory is deliberately not promoted: no transactional-email EXT is justified by current support semantics; selected external operational telemetry does not become a product dependency merely because operations can display provider/work state; deferred AI generation/model-assisted validation does not justify `EXT-004` reuse; and neither authentication, persistence hosting nor possible asynchronous dispatch is attached without a material feature-specific dependency crossing. Provider lifecycle remains owned by `design/07-third-party-services.md`; catalog identity does not make any route `ACTIVE`, approve data egress, authorize spend, configure credentials, or materialize webhook/OpenAPI/DTO contracts.
+The broader provider inventory is deliberately not promoted: no transactional-email EXT is justified by current support semantics; selected external operational telemetry does not become a product dependency merely because operations can display provider/work state; deferred AI generation/model-assisted validation does not justify `EXT-004` reuse; and neither authentication, persistence hosting nor possible asynchronous dispatch is attached without a material feature-specific dependency crossing. Provider lifecycle is owned by `docs/interfaces/provider-lifecycle-and-routes.md`; catalog identity does not make any route `ACTIVE`, approve data egress, authorize spend, configure credentials, or materialize webhook/OpenAPI/DTO contracts.
 
 ### UNK-009 Expanded detailed feature capability/build-buy relation resolution
 
-`UNK-009` is resolved only after every `FTR-007..FTR-053` capability relation is replaced with exact `CAP-*` references and the resulting boundary inventory is audited against canonical runtime, detailed behavior, accepted DATA/IFC/EXT relations, and pinned V1 build/buy semantics.
+`UNK-009` is resolved only after every `FTR-007..FTR-053` capability relation is replaced with exact `CAP-*` references and the resulting boundary inventory is audited against runtime, detailed behavior, accepted DATA/IFC/EXT relations, and pinned V1 build/buy semantics.
 
 All 40 detailed learner features use `CAP-001`, `CAP-002`, and `CAP-003`: Core owns their product behavior/policy, protected product access uses the existing identity/session-plus-Core-authorization capability, and their durable authoritative learner/content/evidence/product state remains behind the Core-owned managed-PostgreSQL capability. This is not a mechanical copy of macro mappings: `CAP-004`/`CAP-005` are added only to the eight detailed learner features whose current semantics materially require recoverable bounded evaluator/media work rather than merely sharing broad learner flows: `FTR-030`, `FTR-031`, `FTR-035`, `FTR-038`, `FTR-039`, `FTR-040`, `FTR-045`, and `FTR-046`. The remaining 32 detailed learner features remain usable through Core-owned deterministic/content/capture behavior without making optional AI tutoring, realtime interaction, or a broader flow footprint into a required capability relation.
 
@@ -250,6 +250,6 @@ The seven privileged mappings remain equally sparse and feature-specific:
 
 Exactly three new capability identities are required. `CAP-006`, `CAP-007`, and `CAP-008` are all `HYBRID` because `SYS-002` retains semantic authority while accepted `EXT-005`, `EXT-006`, and `EXT-007` supply distinct external execution/custody. They are not merged because object/media bytes, commercial observations/effective-entitlement reconciliation, and sensitive credential custody have different responsibility and exit semantics. They are not split further by feature, role, provider, bucket, webhook, credential, model, endpoint, table, queue, permission, or UI surface.
 
-`CAP-006` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. `DEC-005..DEC-007` record only the new material build/buy choices; `DEC-001..DEC-004` and `CAP-001..CAP-005` remain unchanged. Selected/TBD provider lifecycle remains owned by canonical `design/07-third-party-services.md`: this relation resolution does not activate/configure any provider, authorize spend/data egress, choose the unresolved pronunciation route, or create exact contracts, schema, implementation code, deployment topology, or new runtime components.
+`CAP-006` is the catalog `resolved_by_ref` attribution anchor for this non-decision question. `DEC-005..DEC-007` record only the new material build/buy choices; `DEC-001..DEC-004` and `CAP-001..CAP-005` remain unchanged. Selected/TBD provider lifecycle remains owned by `docs/interfaces/provider-lifecycle-and-routes.md`: this relation resolution does not activate/configure any provider, authorize spend/data egress, choose the unresolved pronunciation route, or create exact contracts, schema, implementation code, deployment topology, or new runtime components.
 
-With all 47 detailed CAP relations typed and `UNK-009` resolved, there is no remaining `UNRESOLVED_RELATION`, blocking unknown, or CAP/build-buy resolution defect in the migration catalog. Current mutable migration milestone scope state is owned exclusively by `docs/catalog/project.json` and intentionally not restated here. `DOCS_READY` is derived by the pinned documentation model rather than owned by this resolution. Documentation closure does not itself imply design lock, canonical cutover, implementation readiness, standards PASS, provider activation, promotion, or release.
+With all 47 detailed CAP relations typed and `UNK-009` resolved, there is no remaining `UNRESOLVED_RELATION`, blocking unknown, or CAP/build-buy resolution defect in the catalog. Current mutable milestone scope state is owned exclusively by `docs/catalog/project.json` and intentionally not restated here. `DOCS_READY` is derived by the pinned documentation model rather than owned by this resolution. Documentation closure/cutover does not itself change DESIGN LOCK semantics, imply implementation readiness, claim standards PASS, activate providers, promote, or release.

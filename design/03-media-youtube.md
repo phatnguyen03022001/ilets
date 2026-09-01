@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: media-learning product semantics, YouTube eligibility, authorized transcript paths, media lesson creation, player-compliance rules, and media-to-practice mapping
 DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/10-CONTENT-MODEL.md, 01-skill-features.md, 02-practice-catalog.md
 DOES_NOT_OWN: YouTube platform policy itself, Skill/Band truth, Assessment sufficiency, arbitrary media-downloading rights, API wire shape, provider legal terms, or framework selection

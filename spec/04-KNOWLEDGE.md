@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: enabling language knowledge, atomic Knowledge Object identity, concise definitions, Knowledge→Knowledge prerequisite edges, and Skill→Knowledge resolution
 DEPENDS_ON: 03-SKILLS.md
 DOES_NOT_OWN: band thresholds, curriculum sequence, practice activities, assessment sufficiency, learner knowledge state, examples, misconception catalogs, remediation scripts, or soft peer-association graphs without a learning consequence

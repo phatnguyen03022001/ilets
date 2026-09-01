@@ -1,12 +1,12 @@
 # KNOWLEDGE-OBJECT-ONTOLOGY — Knowledge Objects
 
-> **SUCCESSOR PRODUCT SHARD — NON-CUTOVER**
+> **CANONICAL PRODUCT AUTHORITY**
 >
-> This shard preserves the locked learning-ontology truth owned canonically by `spec/04-KNOWLEDGE.md` at `3c923e44c206ee6a02e8cf5b4e90d8594d9c3c3a`. It is structurally referenced inside the successor `PRODUCT` authority domain, but it does not demote or supersede legacy authority. `CONSTITUTION.md`, `OBJECTIVE.md`, `spec/**`, and `design/**` remain canonical until a separately authorized cutover.
+> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
 
 ## Purpose and ownership
 
-Define **what must be known** to support the capabilities preserved in `docs/product/skill-leaves.md` from canonical `spec/03-SKILLS.md`.
+Define **what must be known** to support the capabilities preserved in `docs/product/skill-leaves.md` from historical `spec/03-SKILLS.md` provenance.
 
 Knowledge is enabling language content, not a fifth IELTS skill. The canonical domains are Grammar, Vocabulary, and Phonology.
 
@@ -34,11 +34,11 @@ A Knowledge Object canonically owns:
 
 The following are intentionally not canonical object fields unless future evidence promotes them:
 
-- examples and worked instances → canonical `spec/10-CONTENT-MODEL.md`;
-- misconception/remediation catalogs → canonical `spec/10-CONTENT-MODEL.md`;
+- examples and worked instances → historical `spec/10-CONTENT-MODEL.md` provenance and current DATA/content authority;
+- misconception/remediation catalogs → historical `spec/10-CONTENT-MODEL.md` provenance and current DATA/content authority;
 - soft `related_to` associations with no gating/selection consequence → historical/supporting graph only;
-- band relevance → canonical `spec/05-BANDS.md` / `spec/06-CURRICULUM.md`;
-- learner acquisition state → canonical `spec/09-PROGRESSION.md`.
+- band relevance → current IELTS/Bands and Curriculum PRODUCT shards;
+- learner acquisition state → current DATA/BEHAVIOR authority.
 
 ## Grammar graph
 
@@ -88,7 +88,7 @@ The following are intentionally not canonical object fields unless future eviden
 | `K-VOC-040` | Register & formality | Lexical choice according to formal, neutral, informal and context-appropriate register. | `K-VOC-010` |
 | `K-VOC-041` | Synonymy & paraphrase resources | Lexical alternatives, connotation and usage constraints used to re-express meaning accurately. | `K-VOC-010` |
 
-`K-VOC-012` represents the topic-set system. Individual topic lexicons are concrete content under canonical `spec/10-CONTENT-MODEL.md`, not new canonical domains.
+`K-VOC-012` represents the topic-set system. Individual topic lexicons are concrete content under the current DATA/content authority, not new canonical domains.
 
 Learner-saved words, phrases, collocations, examples, and personal review cards are also concrete content/review instances. They may reference one or more canonical Knowledge Objects, but saving an item never creates a new `K-*` identity.
 
@@ -105,11 +105,11 @@ Learner-saved words, phrases, collocations, examples, and personal review cards 
 | `K-PHON-040` | Connected speech | Linking, reduction, assimilation, elision and weak-form behavior across word boundaries. | `K-PHON-010`, `K-PHON-011` |
 | `K-PHON-041` | Rhythm & chunking | Grouping speech into sense units and maintaining intelligible rhythmic organization. | `K-PHON-021`, `K-PHON-040` |
 
-The canonical phonology graph is L1-agnostic. L1-specific contrast priorities belong to localized/remediation content, not this graph.
+The phonology graph is L1-agnostic. L1-specific contrast priorities belong to localized/remediation content, not this graph.
 
 ## Skill→Knowledge resolution
 
-This is the sole successor PRODUCT representation of the canonical mapping from Skill Leaf knowledge needs to Knowledge Objects. Canonical authority remains `spec/04-KNOWLEDGE.md` until a separately authorized cutover.
+This is the sole PRODUCT authority for the mapping from Skill Leaf knowledge needs to Knowledge Objects. Historical `spec/04-KNOWLEDGE.md` remains provenance only.
 
 An edge in this mapping means the Knowledge Object is a **universal intrinsic prerequisite for the Skill Leaf across the leaf's applicable canonical scope**. It is therefore eligible to become a Required prerequisite downstream. Knowledge that is useful only for a particular variant, topic, presentation class, prompt, stimulus, or content instance does **not** belong in this universal mapping; Curriculum/Content may select it explicitly where material.
 
@@ -157,12 +157,12 @@ In particular, shared `R-COMP-06` does not universally require `K-VOC-011` Acade
 
 General Training Reading context diversity is a curriculum/content/evidence condition, not a separate Knowledge Object.
 
-Listening currently has no explicit Knowledge prerequisite edge in the frozen graph; its direct prerequisites are intra-skill capability edges in `docs/product/skill-leaves.md`, preserving canonical `spec/03-SKILLS.md`.
+Listening currently has no explicit Knowledge prerequisite edge in the frozen graph; its direct prerequisites are intra-skill capability edges in `docs/product/skill-leaves.md`.
 
 ## Dependency semantics
 
-This shard preserves universal Knowledge prerequisite edges. Canonical `spec/06-CURRICULUM.md` may add explicit context/variant learning targets and Recommended node ordering, but it may not reinterpret a context-specific useful Knowledge Object as an intrinsic Required edge for every instance of a shared Skill Leaf.
+This shard preserves universal Knowledge prerequisite edges. The Curriculum PRODUCT authority may add explicit context/variant learning targets and Recommended node ordering, but it may not reinterpret a context-specific useful Knowledge Object as an intrinsic Required edge for every instance of a shared Skill Leaf.
 
-Required / Recommended / Independent gate semantics are consumed by canonical `spec/06-CURRICULUM.md` and enforced by canonical `spec/09-PROGRESSION.md`.
+Required / Recommended / Independent gate semantics are consumed by the Curriculum PRODUCT authority and enforced by BEHAVIOR/DATA progression semantics.
 
 Object identity and prerequisite semantics are canonical. Difficulty, time-to-learn, frequency, examples, misconceptions, localization priority, context-specific lexical sets, and remediation catalogs are empirical/content concerns unless future evidence explicitly promotes them.

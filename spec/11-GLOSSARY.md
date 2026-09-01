@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: canonical terminology and term meanings used across the active learning specification
 DEPENDS_ON: 00-PRODUCT.md, 01-LEARNER-MODEL.md, 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md, 06-CURRICULUM.md, 07-PRACTICE.md, 08-ASSESSMENT.md, 09-PROGRESSION.md, 10-CONTENT-MODEL.md
 DOES_NOT_OWN: behavioral rules, object inventories, product-support statuses, API/runtime terminology, or external-provider semantics

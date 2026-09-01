@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: measurement semantics, Assessment Type taxonomy, Observation→EvidenceFact admission, claim classes and inference ceilings, diagnostic sampling semantics, claim-scoped EvidenceRequirement, confidence/calibration policy, readiness evaluation, and certification evidence construction
 DEPENDS_ON: 01-LEARNER-MODEL.md, 02-IELTS-MODEL.md, 03-SKILLS.md, 04-KNOWLEDGE.md, 05-BANDS.md
 DOES_NOT_OWN: Skill/Knowledge definitions, curriculum ordering, practice pedagogy, learner-state transitions, band-progression decisions, TargetProfile product composition, product coverage/support state, product UX durations, or concrete assessment-item storage

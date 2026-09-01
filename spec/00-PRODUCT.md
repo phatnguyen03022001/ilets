@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: product identity, learning-product scope, product principles, variant boundary, delivery-overlay boundary, and learning-system promise boundary
 DEPENDS_ON: ../OBJECTIVE.md
 DOES_NOT_OWN: live IELTS format/scoring/delivery facts, learner state, skill decomposition, Band thresholds, curriculum, practice, assessment, progression, coverage status, or implementation architecture

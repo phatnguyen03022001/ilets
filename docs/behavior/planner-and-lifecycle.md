@@ -1,9 +1,5 @@
 # PLANNER-LIFECYCLE Planner, assignment, flow, and lifecycle semantics
 
-> **MIGRATION DRAFT — AUTHORITY NONE**
->
-> This legal BEHAVIOR shard preserves accepted TASK-0028 residual RES-010. During TASK-0029, `design/04-application-flows.md` remains canonical. This representation does not alter planner behavior, runtime authority, or machine contracts.
-
 ## Seven-stage Planner decision contract
 
 Planning is staged; later stages never redefine truth produced upstream:

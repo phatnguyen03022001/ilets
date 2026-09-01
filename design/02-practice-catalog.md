@@ -1,4 +1,4 @@
-STATUS: CANONICAL
+STATUS: SUPERSEDED_NON_CANONICAL
 OWNS: initial user-facing practice-mode catalog, mode identity/count, default duration envelopes, mode-to-learning-role mapping, variant/delivery-aware packaging, and catalog change policy
 DEPENDS_ON: ../spec/07-PRACTICE.md, ../spec/08-ASSESSMENT.md, ../spec/09-PROGRESSION.md, ../spec/10-CONTENT-MODEL.md, 01-skill-features.md
 DOES_NOT_OWN: live IELTS facts, Learning Mechanism definitions, Practice Type semantics, evidence sufficiency, Skill/Band thresholds, concrete item content, planner eligibility/ranking, or scheduling implementation
