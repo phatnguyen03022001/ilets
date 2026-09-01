@@ -7,6 +7,7 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
   const activityRequests: Array<Record<string, unknown>> = [];
   const activityResponses: Array<Record<string, any>> = [];
   const submissionRequests: Array<Record<string, any>> = [];
+  const planResponses: Array<Record<string, any>> = [];
 
   page.on("request", (request) => {
     const url = request.url();
@@ -27,6 +28,13 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
       response.ok()
     ) {
       activityResponses.push(await response.json());
+    }
+    if (
+      response.url().includes("/v1/daily-plan") &&
+      response.request().method() === "GET" &&
+      response.ok()
+    ) {
+      planResponses.push(await response.json());
     }
   });
 
@@ -110,10 +118,33 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
     timing: [],
   });
 
-  await expect(
-    page.getByText(
-      "The sampled EvidenceFact exists, but the current runtime has no authorized Progression/ActionIntent transition for this bounded scope.",
+  await expect
+    .poll(() =>
+      [...planResponses].reverse().find((plan) =>
+        plan.coverage_gaps?.some(
+          (gap: Record<string, any>) =>
+            gap.gap_class === "TRANSITION" &&
+            gap.condition_status === "BLOCKED",
+        ),
+      ),
+    )
+    .toBeTruthy();
+  const postSubmissionPlan = [...planResponses].reverse().find((plan) =>
+    plan.coverage_gaps?.some(
+      (gap: Record<string, any>) =>
+        gap.gap_class === "TRANSITION" && gap.condition_status === "BLOCKED",
     ),
+  );
+  expect(postSubmissionPlan?.items).toHaveLength(0);
+  const transitionBlocker = postSubmissionPlan?.coverage_gaps.find(
+    (gap: Record<string, any>) =>
+      gap.gap_class === "TRANSITION" && gap.condition_status === "BLOCKED",
+  );
+  expect(transitionBlocker).toEqual(
+    expect.objectContaining({ blocking_consequence: expect.any(String) }),
+  );
+  await expect(
+    page.getByText(transitionBlocker.blocking_consequence),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Recommended next" }),
