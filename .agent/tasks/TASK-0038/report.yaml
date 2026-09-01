@@ -1,0 +1,186 @@
+protocol_version: 3
+task_id: TASK-0038
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: BLOCKED
+
+task_source:
+  path: ".agent/tasks/TASK-0038/task.yaml"
+  exact_base_head: "aa0efa25a4a5533d81a9b1235bc10eb38526edb1"
+  branch: "dev"
+
+scope:
+  authorized_operation: "bounded repository-subtraction pass over spec/**, design/**, research/**, and evidence/**"
+  prohibited_operations:
+    - "No archive/** or replacement history tree"
+    - "No product, design, standards, provider, or runtime-behavior redesign"
+    - "No prior task artifact edits"
+    - "No main/staging mutation or promotion/release"
+  archive_created: false
+
+remote_state_before_report:
+  dev: "aa0efa25a4a5533d81a9b1235bc10eb38526edb1"
+  main: "e707aeee43411cc8f99448b63220eb8beff552b6"
+  topology:
+    - "dev"
+    - "main"
+  topology_exact: true
+  report_path_absent_at_base: true
+
+authority_invariants:
+  source_map: "tools/canonical/source-map.json"
+  allowlisted_roots:
+    - "docs"
+  registry_owner_count: 9
+  registry_owners_all_under_docs: true
+  legacy_registry_owner_count: 0
+  forbidden_authority_sources:
+    - "spec"
+    - "design"
+    - "research"
+    - "evidence"
+    - "archive"
+  result: PASS
+
+audit:
+  search_scope:
+    - "README.md"
+    - "CONSTITUTION.md"
+    - "OBJECTIVE.md"
+    - "docs/**"
+    - "contracts/**"
+    - "tools/**"
+    - ".github/workflows/**"
+    - "tests/**"
+    - "runtime and service code"
+    - "generated inputs and artifacts"
+    - "active repository configuration"
+  historical_artifacts:
+    path_glob: ".agent/tasks/**/{task,report,review}.yaml"
+    treatment: "immutable historical evidence; excluded from active-dependency blocking"
+  exhaustive_search_completed: true
+  current_active_legacy_references_found:
+    - path: "services/core-api/internal/planner/kernel.go"
+      reference: "design/08-coverage-and-support.md@da6ba7c949d8e5288ae0c36beba10b5919d24ee8"
+      candidate_action: "repoint to docs/product/curriculum-and-coverage.md@7d8dc6a2c454a86542b35122c8012cb0bd871fb9"
+    - path: "tools/affected/classifier.py"
+      reference: "legacy design/ and spec/ critical-path policy entries"
+      candidate_action: "remove stale legacy-prefix policy; unknown paths remain full-scan"
+    - path: "tools/affected/test_classifier.py"
+      reference: "synthetic evidence/new-note.md fixture"
+      candidate_action: "replace synthetic deleted-root fixture with legacy/new-note.md"
+    - path: "tools/canonical/test_materialize.py"
+      reference: "synthetic research/fake.md, spec/a.md, and design/b.md fixtures"
+      candidate_action: "replace synthetic deleted-root fixtures with archive/fake.md and docs/a.md/docs/b.md"
+  no_dangling_reference_search: "PASS in local candidate after the bounded reference edits"
+  source_map_reconfirmation: "PASS"
+  product_semantics_changed: false
+  runtime_provider_behavior_changed: false
+  standards_claims_changed: false
+
+provenance_review:
+  research:
+    path: "research/learning-science-baseline.md"
+    unique_current_role: false
+    result: "eligible for deletion; canonical docs already carry the applicable policy material"
+  evidence:
+    path: "evidence/2026-08-22-ielts-official-baseline.md"
+    unique_current_role: false
+    canonical_owner: "docs/product/ielts-exam-and-bands.md"
+    result: "eligible for deletion after minimum provenance acknowledgement in the local candidate"
+    provenance_basis: "official IELTS Academic and General Training overviews, scoring, sample tests, delivery update, Writing on Paper, IELTS Online, and One Skill Retake guidance"
+    wholesale_prose_copied: false
+  retained_legacy:
+    - path: "spec/11-GLOSSARY.md"
+      reason: "current terminology authority with no equivalent canonical successor; retained as the minimum unique role"
+  archive_or_history_replacement_created: false
+
+proposed_bounded_subtraction:
+  deletion_count: 23
+  deleted_paths:
+    - "design/00-learning-experience.md"
+    - "design/01-skill-features.md"
+    - "design/02-practice-catalog.md"
+    - "design/03-media-youtube.md"
+    - "design/04-application-flows.md"
+    - "design/05-api.md"
+    - "design/06-implementation-stack.md"
+    - "design/07-third-party-services.md"
+    - "design/08-coverage-and-support.md"
+    - "evidence/2026-08-22-ielts-official-baseline.md"
+    - "research/learning-science-baseline.md"
+    - "spec/00-PRODUCT.md"
+    - "spec/01-LEARNER-MODEL.md"
+    - "spec/02-IELTS-MODEL.md"
+    - "spec/03-SKILLS.md"
+    - "spec/04-KNOWLEDGE.md"
+    - "spec/05-BANDS.md"
+    - "spec/06-CURRICULUM.md"
+    - "spec/07-PRACTICE.md"
+    - "spec/08-ASSESSMENT.md"
+    - "spec/09-PROGRESSION.md"
+    - "spec/10-CONTENT-MODEL.md"
+    - "spec/DECISIONS.md"
+  retained_paths:
+    - "spec/11-GLOSSARY.md"
+  active_reference_edits: "semantics-neutral rehome/removal only"
+  derived_artifacts: "local candidate materializer refresh was required after docs-source changes"
+
+local_verification:
+  local_checkout_head: "aa0efa25a4a5533d81a9b1235bc10eb38526edb1"
+  targeted_classifier_compile: PASS
+  targeted_classifier_tests:
+    command: "python3 -m unittest tools.affected.test_classifier"
+    result: "PASS; 24 tests"
+  full_verify_attempts:
+    - attempt: 1
+      result: BLOCKED
+      failure: "TabError in tools/affected/test_classifier.py caused by two candidate-local fixture indentation defects"
+      action: "fixed candidate-local indentation before retry"
+    - attempt: 2
+      result: BLOCKED
+      failure: "canonical materialization detected generated artifact drift"
+      action: "ran python3 tools/canonical/materialize.py in the local candidate"
+    - attempt: 3
+      result: BLOCKED
+      command: "./verify"
+      exit_code: 127
+      failure: "tools/contracts/validate.sh:14: gofmt: not found"
+  required_toolchain:
+    gofmt: MISSING
+    go: MISSING
+    docker_cli_or_daemon: MISSING
+  full_verify_passed: false
+  fail_closed: true
+
+publication:
+  implementation_commit_published: false
+  implementation_commit_sha: null
+  verification_boundary_child_published: false
+  verification_boundary_candidate_changed: false
+  github_actions_exact_candidate_run: "NOT_RUN; no implementation candidate or sentinel was published"
+  report_only_child: true
+  report_commit_sha: "resolved by the GitHub publication response"
+  main_changed: false
+  prior_task_artifacts_changed: false
+  result: "BLOCKED report published; implementation publication withheld"
+
+blockers:
+  - code: "LOCAL_PINNED_VERIFY_UNAVAILABLE"
+    detail: "The repository-pinned ./verify did not PASS locally: contract validation exited 127 because gofmt is unavailable. Docker is also unavailable, so the full verification surface cannot be completed."
+  - code: "NO_IMPLEMENTATION_EVIDENCE"
+    detail: "Because local ./verify did not PASS, no implementation commit or sentinel-only verification-boundary child was published, and Actions was not invoked."
+
+acceptance:
+  AC-1: PASS
+  AC-2: BLOCKED
+  AC-3: PASS
+  AC-4: BLOCKED
+  AC-5: PASS
+  AC-6: BLOCKED
+  AC-7: PASS
+
+next_action:
+  status: NEEDS_REVIEW
+  instruction: "Provide a repository-pinned environment with gofmt/go and Docker, rerun TASK-0038 from exact base aa0efa25a4a5533d81a9b1235bc10eb38526edb1, then repeat the bounded audit and full verification before any implementation publication."
