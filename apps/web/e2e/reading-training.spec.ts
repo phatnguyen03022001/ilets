@@ -120,21 +120,25 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
 
   await expect
     .poll(() =>
-      [...planResponses].reverse().find((plan) =>
-        plan.coverage_gaps?.some(
-          (gap: Record<string, any>) =>
-            gap.gap_class === "TRANSITION" &&
-            gap.condition_status === "BLOCKED",
+      [...planResponses]
+        .reverse()
+        .find((plan) =>
+          plan.coverage_gaps?.some(
+            (gap: Record<string, any>) =>
+              gap.gap_class === "TRANSITION" &&
+              gap.condition_status === "BLOCKED",
+          ),
         ),
-      ),
     )
     .toBeTruthy();
-  const postSubmissionPlan = [...planResponses].reverse().find((plan) =>
-    plan.coverage_gaps?.some(
-      (gap: Record<string, any>) =>
-        gap.gap_class === "TRANSITION" && gap.condition_status === "BLOCKED",
-    ),
-  );
+  const postSubmissionPlan = [...planResponses]
+    .reverse()
+    .find((plan) =>
+      plan.coverage_gaps?.some(
+        (gap: Record<string, any>) =>
+          gap.gap_class === "TRANSITION" && gap.condition_status === "BLOCKED",
+      ),
+    );
   expect(postSubmissionPlan?.items).toHaveLength(0);
   const transitionBlocker = postSubmissionPlan?.coverage_gaps.find(
     (gap: Record<string, any>) =>
