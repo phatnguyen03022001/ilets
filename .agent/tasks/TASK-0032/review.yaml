@@ -1,0 +1,53 @@
+protocol_version: 3
+
+task_id: TASK-0032
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0032/report.yaml
+  commit: "a1752ae969787deafdedeff3fe3aa0eaea0b2c17"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: BLOCKED_AS_REPORTED
+  verifier_evidence: PASS
+
+gap_disposition:
+  - gap_id: GAP-001
+    classification: BLOCKING
+    disposition: ACCEPTED
+    follow_up_task: TASK-0033
+  - gap_id: GAP-002
+    classification: LOCAL
+    disposition: ACCEPTED
+    follow_up_task: TASK-0033
+
+follow_up_tasks:
+  - TASK-0033
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "Repository subtraction is not complete. Canonical materializer inputs still depend on seven superseded legacy files and the exact base has generated-materialization drift; repository-native verification for a repaired candidate requires an explicitly authorized verification-boundary child."
+
+notes:
+  - "Exact refs were refreshed before review: dev=a1752ae969787deafdedeff3fe3aa0eaea0b2c17, main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main}."
+  - "Authorized base 9bbf0dfb4545aa5998b08804ae255581307124e9 -> report a1752ae969787deafdedeff3fe3aa0eaea0b2c17 is exactly one direct report-only commit adding only .agent/tasks/TASK-0032/report.yaml; no subtraction implementation was published."
+  - "tools/canonical/source-map.json still names exactly seven superseded spec/design files as live registry owners: design/01, design/02, spec/02, spec/03, spec/07, spec/08 and spec/10. These are live tool inputs, not canonical authority."
+  - "The verification workflow is intentionally boundary-triggered: it requires .github/verification-boundary/candidate in a child commit and verifies that boundary commit's parent. TASK-0032 did not authorize this third commit, so fail-closed termination was correct."
+  - "BASE-DRIFT-001 is independently reproduced: design/01-skill-features.md is blob 3916f63333fb00b5f3d0911932fd203bfe5732b9 while the generated reading registry still records fc0c5e9d0f66b935b63d23ddb40b4ceb0e2ff273 for owner R-F04."
+  - "The next task must first migrate materializer ownership to canonical docs/** without parser/framework redesign, regenerate derived artifacts, then use one explicitly authorized verification-boundary evidence child and require ./verify PASS before review. Repository subtraction resumes only after that recovery is accepted."
