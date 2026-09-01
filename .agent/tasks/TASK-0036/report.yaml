@@ -1,0 +1,206 @@
+protocol_version: 3
+
+task_id: TASK-0036
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: BLOCKED
+
+task_source:
+  path: .agent/tasks/TASK-0036/task.yaml
+  commit: "2a1bc21ec1d610078933161503660e6ebdd7e977"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "2a1bc21ec1d610078933161503660e6ebdd7e977"
+  pre_execution_head: "2a1bc21ec1d610078933161503660e6ebdd7e977"
+  final_execution_head: "2a1bc21ec1d610078933161503660e6ebdd7e977"
+  implementation_commits: 0
+  verification_boundaries_published: 0
+  repository_mutations_before_report: 0
+  semantic_mutations: 0
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+  observed_revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  continuation_scope_confirmed: true
+  task_revision_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  report_path_absent_at_base: true
+  no_branch_created: true
+  no_existing_file_mutation_before_report: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - repository_native_deterministic_verification_execution
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - repository_native_deterministic_verification_execution
+  missing: []
+  passed: true
+  evidence: >-
+    GitHub-native exact ref/content reads and authorized report publication were available.
+    This continuation did not re-attempt formatter execution or verification because the inherited
+    execution evidence had already failed the required deterministic formatter-equivalence gate.
+
+inherited_task_0035_evidence:
+  source_report: .agent/tasks/TASK-0035/report.yaml
+  implementation_commit: "736684e501cb01785eca09197183cdefd9f6eee2"
+  verification_boundary_commit: "0ce37fde0bc85c3e73c6db0e3ff380b4a6f94ca4"
+  workflow_run_id: 33506301465
+  exact_candidate_binding_proven: true
+  detached_checkout_proven: true
+  exact_head_gate_proven: true
+  full_verify_result: FAIL
+  failing_gate: prettier
+  failing_path: apps/web/e2e/reading-training.spec.ts
+  semantic_test_execution_reached: false
+  semantic_diagnosis_changed: false
+  diagnosis: PLAYWRIGHT_EXPECTATION_STALE_OR_OVER_SPECIFIC
+
+formatter_recovery:
+  authorized_path: apps/web/e2e/reading-training.spec.ts
+  repository_pinned_formatter_required: true
+  deterministic_formatter_output_obtained: false
+  exact_formatting_only_equivalence_proven: false
+  implementation_candidate_created: false
+  implementation_commit_created: false
+  verification_boundary_created: false
+  semantic_mutation_performed: false
+  task_0035_modified: false
+  continuation_formatter_attempted: false
+  blocker: >-
+    Deterministic repository-pinned formatter output and exact formatting-only equivalence were not
+    proven on the current execution surface. TASK-0036 requires fail-closed behavior when any
+    semantic or token-level uncertainty remains, so no formatter repair mutation was published.
+
+semantic_task_0035_diagnosis:
+  status: UNCHANGED
+  evidence: >-
+    TASK-0036 does not reopen the TASK-0035 case-2 diagnosis or its assertion semantics. No planner,
+    Progression, ActionIntent, EvidenceFact, CoverageGap, Today runtime, canonical documentation,
+    product semantic, or TASK-0035 artifact was modified.
+
+authoritative_verification:
+  required: true
+  mechanism: repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary
+  performed: false
+  result: NOT_RUN
+  evidence: >-
+    No TASK-0036 implementation candidate or verification boundary exists. Full exact-candidate
+    verification therefore was not run and no verification PASS is claimed.
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Inherited TASK-0035 report and run evidence identify Prettier on
+      apps/web/e2e/reading-training.spec.ts as the only failing gate before semantic E2E execution;
+      the semantic diagnosis was not reinterpreted.
+  - criterion_id: AC-2
+    status: BLOCKED
+    evidence: >-
+      Deterministic repository-pinned Prettier output and exact formatting-only equivalence to
+      TASK-0035 implementation 736684e501cb01785eca09197183cdefd9f6eee2 were not proven.
+      No repair mutation was made.
+  - criterion_id: AC-3
+    status: BLOCKED
+    evidence: >-
+      No repair implementation exists. Repository mutation before this report is zero, so no
+      unauthorized existing file was changed, but the required formatter-only repair candidate
+      cannot be claimed.
+  - criterion_id: AC-4
+    status: BLOCKED
+    evidence: >-
+      No TASK-0036 verification boundary or exact repair candidate exists, so full ./verify was not run.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      This canonical report truthfully records BLOCKED and does not claim NEEDS_REVIEW,
+      verification PASS, or formatter-equivalence PASS.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Immediately before report publication, dev equaled exact continuation base
+      2a1bc21ec1d610078933161503660e6ebdd7e977.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      No formatter retry, implementation candidate, verification boundary, semantic mutation,
+      TASK-0035 edit, or investigation expansion occurred in this continuation.
+  - check_id: CHECK-3
+    result: BLOCKED
+    evidence: >-
+      Exact formatting-only equivalence was not proven on the current execution surface.
+  - check_id: CHECK-4
+    result: NOT_RUN
+    evidence: >-
+      No exact repair candidate existed to bind and verify.
+
+changed_files:
+  execution: []
+  verification_boundary: []
+  report_only:
+    - .agent/tasks/TASK-0036/report.yaml
+
+commits_created: []
+
+publication:
+  implementation_published: false
+  verification_boundary_published: false
+  report_published: true
+  promoted_to_main: false
+  workflow_run_enqueued: false
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "GitHub-native continuation only; no local/runtime/Codex filesystem or temporary branch was used."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers:
+  - >-
+    DETERMINISTIC_FORMATTER_EQUIVALENCE_UNPROVEN: repository-pinned formatter output and exact
+    formatting-only equivalence for apps/web/e2e/reading-training.spec.ts were not proven on the
+    current execution surface, so TASK-0036 fails closed before any implementation mutation.
+
+pushed: true
+promoted_to_main: false
+result: BLOCKED
