@@ -1,0 +1,129 @@
+protocol_version: 3
+
+task_id: TASK-0037
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0036
+  gap_ids: [T36-DETERMINISTIC-FORMATTER-EQUIVALENCE]
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@423f2a8e5dbeed48709aa1d5a20559326009c3b0"
+    role: "Current dev truth after the canonical TASK-0036 BLOCKED report."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0036/report.yaml@423f2a8e5dbeed48709aa1d5a20559326009c3b0"
+    role: "Canonical inherited blocker: deterministic repository-pinned formatter output/equivalence was unavailable on the previous execution surface; no implementation or boundary was published."
+    precedence: 2
+  - source: ".agent/tasks/TASK-0035/report.yaml@a686f71c404382b5e27f98853bd5ed872e2e12ca"
+    role: "Canonical inherited semantic diagnosis and exact assertion content."
+    precedence: 3
+  - source: "apps/web/e2e/reading-training.spec.ts@736684e501cb01785eca09197183cdefd9f6eee2"
+    role: "Semantic assertion reference whose behavior must remain unchanged; only repository-pinned Prettier normalization is authorized."
+    precedence: 4
+
+objective: >-
+  Use a capable Codex/local execution surface to obtain deterministic repository-pinned Prettier output for apps/web/e2e/reading-training.spec.ts, prove the resulting diff is formatting-only relative to TASK-0035 implementation 736684e501cb01785eca09197183cdefd9f6eee2, publish exactly one formatter-only repair candidate and one sentinel-only verification boundary, run full exact-candidate verification, and publish a truthful canonical report.
+
+scope:
+  required_changes:
+    - "Refresh refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Use the repository-pinned Node/pnpm/Prettier toolchain from the exact base. Do not install or change formatter versions or configuration."
+    - "Treat TASK-0035 case-2 diagnosis and assertion semantics as fixed inherited evidence. Do not reopen planner, Progression, ActionIntent, EvidenceFact, CoverageGap, Today runtime, canonical docs, contracts, or product semantics."
+    - "Run the pinned formatter only on apps/web/e2e/reading-training.spec.ts and inspect the exact diff against TASK-0035 implementation 736684e501cb01785eca09197183cdefd9f6eee2."
+    - "Prove every diff hunk is formatter-only: no assertion, literal, selector, request, response predicate, identifier, control-flow decision, semantic ordering, or test intent may change."
+    - "If exact formatting-only equivalence cannot be proven, make no implementation mutation, publish a truthful BLOCKED report, and stop."
+    - "If proven, publish exactly one formatter-only implementation commit changing only apps/web/e2e/reading-training.spec.ts."
+    - "Before the verification boundary, run the narrow formatter check on the repaired file and any cheap local verification needed to establish the candidate is ready; do not broaden scope."
+    - "After the implementation commit, publish exactly one sentinel-only verification-boundary child changing only .github/verification-boundary/candidate to the implementation SHA."
+    - "Require GitHub Actions to prove boundary parent identity, detached exact candidate checkout, exact HEAD assertion, and full ./verify on that candidate."
+    - "Do not perform a second implementation mutation after the verification boundary. If full ./verify fails for any reason, publish the truthful BLOCKED report and stop."
+    - "Always publish exactly one canonical TASK-0037 report when report publication remains available. NEEDS_REVIEW is allowed only after exact-candidate full ./verify PASS."
+    - "Do not modify TASK-0035/TASK-0036 artifacts, workflow semantics, canonical docs/contracts, runtime/UI code, planner/progression code, dependencies, package versions, generated artifacts, main/staging, promotion, or release surfaces."
+
+allowed_existing_files:
+  - apps/web/e2e/reading-training.spec.ts
+  - .github/verification-boundary/candidate
+  - .agent/tasks/TASK-0037/task.yaml
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0037/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "TASK-0035 semantic diagnosis remains unchanged."
+  - "TASK-0036 remains a truthful historical BLOCKED terminal result and is not revised."
+  - "Only formatter representation may change before the sentinel boundary."
+  - "Repository-pinned formatter/toolchain is authoritative for formatting output."
+  - "Sentinel-bound verification remains fail closed."
+  - "No second implementation mutation occurs after the TASK-0037 verification boundary."
+  - "Report publication remains truthful on PASS or failure."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Repository-pinned formatter output is obtained deterministically on the capable execution surface."
+    evidence_required: "Report records exact toolchain versions/commands and successful formatter normalization/check for the target file without changing formatter config/version."
+  - id: AC-2
+    requirement: "Formatter repair is semantically identical to TASK-0035 implementation 736684e501cb01785eca09197183cdefd9f6eee2."
+    evidence_required: "Exact diff review proves all hunks are formatting-only and preserves assertions, literals, selectors, predicates, identifiers, control flow, ordering, and test intent."
+  - id: AC-3
+    requirement: "Mutation scope is minimal."
+    evidence_required: "Base-to-implementation changes only apps/web/e2e/reading-training.spec.ts."
+  - id: AC-4
+    requirement: "Verification is exact-candidate and full repository verification passes."
+    evidence_required: "Sole TASK-0037 boundary changes only the sentinel to the implementation SHA; Actions proves boundary parent identity, detached checkout, exact HEAD, and full ./verify PASS."
+  - id: AC-5
+    requirement: "Terminal reporting is durable and truthful."
+    evidence_required: "Separate report-only child; NEEDS_REVIEW only on exact-candidate ./verify PASS, otherwise BLOCKED."
+
+verification:
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
+    expected_signal: "exact candidate binding PASS and full ./verify PASS"
+
+capability_requirements:
+  EXECUTION: [exact_remote_ref_read, repository_content_read, local_repository_checkout, repository_pinned_toolchain_execution, exact_diff_inspection, repository_git_object_write, non_force_ref_update, repository_native_deterministic_verification_execution]
+  REVIEW: [exact_commit_report_resolution, repository_content_write]
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
