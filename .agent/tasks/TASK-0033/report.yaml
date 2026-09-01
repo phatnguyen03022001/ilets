@@ -1,0 +1,267 @@
+protocol_version: 3
+
+task_id: TASK-0033
+task_revision: 2
+report_revision: 1
+state: REPORTED
+terminal_status: BLOCKED
+
+task_source:
+  path: .agent/tasks/TASK-0033/task.yaml
+  commit: "eb3adce6aeb6ae85281fe6c556b975a1e82908fd"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "eb3adce6aeb6ae85281fe6c556b975a1e82908fd"
+  pre_execution_head: "eb3adce6aeb6ae85281fe6c556b975a1e82908fd"
+  preserved_implementation_commit: "0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+  preserved_verification_boundary_commit: "ed6910c2876d696ecce9e3f1bae156ce2a00d384"
+  verification_recovery_commit: "5393356844f4a57b9f390673e1cd442fc7ed0e79"
+  verification_recovery_parent: "eb3adce6aeb6ae85281fe6c556b975a1e82908fd"
+  final_execution_head: "5393356844f4a57b9f390673e1cd442fc7ed0e79"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+  observed_revision: "533eaef0dbed13c5bbfdad1195218d8382a38e5c"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  task_revision_confirmed: true
+  task_at_base_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  topology_confirmed: true
+  preserved_implementation_confirmed: true
+  preserved_boundary_confirmed: true
+  no_second_boundary_created: true
+  workflow_recovery_scope_confirmed: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - repository_native_deterministic_verification_execution
+  missing: []
+  passed: true
+  evidence: >-
+    GitHub-native object/ref reads and writes were available, Actions was enabled,
+    and the single workflow-recovery push enqueued repository-native verify run
+    33481375237. No local/runtime/Codex surface was used.
+
+preserved_candidate:
+  implementation_commit: "0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+  boundary_commit: "ed6910c2876d696ecce9e3f1bae156ce2a00d384"
+  rebuilt: false
+  second_boundary_created: false
+  source_map_policy:
+    allowlisted_roots:
+      - docs
+    forbidden_authority_sources:
+      - spec
+      - design
+      - research
+      - evidence
+      - archive
+    legacy_registry_owners_remaining: 0
+  evidence: >-
+    The preserved implementation source-map uses only docs/** owners and forbids
+    spec/design/research/evidence/archive authority. The preserved boundary remains
+    exactly one direct child of the implementation and changes only
+    .github/verification-boundary/candidate.
+
+verification_recovery:
+  workflow_path: .github/workflows/verify.yml
+  recovery_commit: "5393356844f4a57b9f390673e1cd442fc7ed0e79"
+  recovery_tree: "900f9b7a77fda240f12ecea7333747e08824ac6e"
+  parent: "eb3adce6aeb6ae85281fe6c556b975a1e82908fd"
+  changed_files:
+    - .github/workflows/verify.yml
+  diff_bounded: true
+  trigger:
+    workflow_dispatch_enabled: true
+    dev_push_retained: true
+    push_paths:
+      - .github/verification-boundary/candidate
+      - .github/workflows/verify.yml
+  binding_model:
+    fetch_depth: 0
+    latest_reachable_boundary_resolution: true
+    expected_boundary: "ed6910c2876d696ecce9e3f1bae156ce2a00d384"
+    boundary_changed_only_sentinel: true
+    sentinel_candidate: "0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+    boundary_parent: "0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+    expected_candidate: "0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+    detached_candidate_checkout_proven: true
+  evidence: >-
+    Run 33481375237 completed the binding step successfully and logged:
+    "Verified boundary ed6910c2876d696ecce9e3f1bae156ce2a00d384 -> exact candidate
+    0bc42d3f07f0f9893f10ad5093586f91b0bdc147". It then checked out detached HEAD
+    at 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 and passed the exact-HEAD assertion.
+
+authoritative_verification:
+  required: true
+  mechanism: repository-native GitHub Actions .github/workflows/verify.yml
+  performed: true
+  result: FAIL
+  workflow_run_id: 33481375237
+  workflow_run_event: push
+  workflow_run_head: "5393356844f4a57b9f390673e1cd442fc7ed0e79"
+  job_id: 99771534188
+  job_name: verify
+  job_conclusion: failure
+  exact_candidate: "0bc42d3f07f0f9893f10ad5093586f91b0bdc147"
+  failing_step:
+    number: 11
+    name: Run ./verify
+    conclusion: failure
+    exit_code: 1
+  failure_evidence:
+    repository_path: services/core-api/internal/progression/sampled_reading.go
+    verifier_path: internal/progression/sampled_reading.go
+    class: gofmt_drift
+    log_excerpt: >-
+      Go sources need gofmt: internal/progression/sampled_reading.go. The emitted
+      diff changes `NoActionIntent ActionIntent = ""` to the gofmt-aligned
+      `NoActionIntent  ActionIntent = ""`, after which ./verify exits 1.
+  candidate_mutated_after_failure: false
+
+verification_step_evidence:
+  - step: Checkout verification ref
+    conclusion: success
+  - step: Bind exact candidate from latest sentinel boundary
+    conclusion: success
+  - step: Checkout exact candidate
+    conclusion: success
+  - step: Assert exact candidate HEAD
+    conclusion: success
+  - step: Run actions/setup-go@v5
+    conclusion: success
+  - step: Run actions/setup-node@v4
+    conclusion: success
+  - step: Run actions/setup-python@v5
+    conclusion: success
+  - step: Run corepack enable && corepack prepare pnpm@11.21.0 --activate
+    conclusion: success
+  - step: Run chmod +x verify tools/contracts/validate.sh tools/contracts/generate.sh tools/db/generate.sh tools/db/migrate.sh
+    conclusion: success
+  - step: Run ./verify
+    conclusion: failure
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Preserved implementation 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 was not rebuilt or mutated;
+      its source-map retains docs-only materializer authority and forbids superseded/non-canonical roots.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      Recovery commit 5393356844f4a57b9f390673e1cd442fc7ed0e79 is one direct child of the
+      revision-2 base and changes only .github/workflows/verify.yml while retaining exact sentinel-bound verification.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      GitHub Actions proved boundary ed6910c2876d696ecce9e3f1bae156ce2a00d384 changed only the sentinel,
+      proved sentinel candidate equals its parent 0bc42d3f07f0f9893f10ad5093586f91b0bdc147,
+      checked out that exact commit detached, and passed the exact-HEAD assertion.
+  - criterion_id: AC-4
+    status: FAIL
+    evidence: >-
+      Repository-native ./verify executed on exact candidate 0bc42d3f07f0f9893f10ad5093586f91b0bdc147
+      and failed with exit code 1 because services/core-api/internal/progression/sampled_reading.go requires gofmt.
+  - criterion_id: AC-5
+    status: BLOCKED
+    evidence: >-
+      The required successful terminal history cannot be claimed because AC-4 failed. The preserved implementation,
+      sole boundary, revision-2 authority commit and sole workflow-recovery commit remain intact; main/topology are unchanged.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Pre-mutation dev equaled exact revision-2 base eb3adce6aeb6ae85281fe6c556b975a1e82908fd;
+      implementation and boundary identities were preserved; topology was exactly {dev, main}.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      Base-to-recovery comparison is exactly one commit and one changed file: .github/workflows/verify.yml.
+      Binding hard-codes the preserved boundary/candidate after resolving the latest reachable sentinel change.
+  - check_id: CHECK-3
+    result: PASS
+    evidence: >-
+      Run 33481375237/job 99771534188 shows successful boundary resolution, exact candidate checkout and exact-HEAD assertion.
+  - check_id: CHECK-4
+    result: FAIL
+    evidence: >-
+      Run 33481375237 step 11 `Run ./verify` concluded failure with exit code 1 on candidate gofmt drift.
+  - check_id: CHECK-5
+    result: PASS
+    evidence: >-
+      Before report publication, dev=5393356844f4a57b9f390673e1cd442fc7ed0e79,
+      main=e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly {dev, main};
+      the terminal report is constructed as the sole report-only child and makes no candidate mutation.
+
+changed_files:
+  execution:
+    - .github/workflows/verify.yml
+  report_only:
+    - .agent/tasks/TASK-0033/report.yaml
+
+commits_created:
+  - sha: "5393356844f4a57b9f390673e1cd442fc7ed0e79"
+    message: "ci(TASK-0033): recover exact-candidate verification"
+    role: verification-recovery
+
+publication:
+  verification_recovery_published: true
+  method: non_force_fast_forward
+  recovery_dev_head_verified: "5393356844f4a57b9f390673e1cd442fc7ed0e79"
+  workflow_run_enqueued: true
+  workflow_run_id: 33481375237
+  promoted_to_main: false
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "GitHub-native execution only; no local/runtime/Codex filesystem or temporary branch was used."
+
+discovered_gaps:
+  - gap_id: GAP-003
+    classification: BLOCKING
+    type: verification_candidate_defect
+    severity: high
+    description: >-
+      Exact preserved implementation candidate fails repository-native ./verify because
+      services/core-api/internal/progression/sampled_reading.go is not gofmt-clean.
+    impact: "TASK-0033 revision 2 cannot reach NEEDS_REVIEW; candidate mutation is explicitly forbidden after verification failure."
+    blocks_current_task: true
+    action_taken: "Published no candidate repair; terminal BLOCKED report only."
+    suggested_next_step: >-
+      A later separately authorized task/revision must decide whether to repair the candidate/descendant formatting defect
+      and re-establish an exact verification candidate without weakening sentinel-bound verification.
+
+deviations_from_task: []
+blockers:
+  - "VERIFY_FAILED: repository-native ./verify on exact candidate 0bc42d3f07f0f9893f10ad5093586f91b0bdc147 failed at gofmt for services/core-api/internal/progression/sampled_reading.go."
+
+pushed: true
+promoted_to_main: false
+result: BLOCKED
