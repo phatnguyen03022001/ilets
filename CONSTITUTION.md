@@ -1,8 +1,8 @@
 # Constitution
 
-This document is the highest governance contract for the repository. It defines how canonical learning truth, product/runtime design, machine contracts, naming, and implementation ownership are organized.
+This document is the highest governance contract for the repository. It defines how canonical project semantics, machine contracts, naming, and implementation ownership are organized.
 
-It is not an IELTS-learning specification and must not contain domain truth that belongs in `spec/`. It is not an API/product-design owner and must not absorb semantics that belong in `design/`.
+It is not a project-domain specification and must not absorb semantics owned by the canonical `docs/**` authority plane. Exact materialized wire/schema truth belongs to `contracts/**` only within its declared machine-interface boundary.
 
 ## 1. Authority
 
@@ -13,18 +13,21 @@ CONSTITUTION.md
   ↓
 OBJECTIVE.md
   ↓
-spec/       canonical learning truth
-  ↓
-design/     canonical product/runtime translation
-  ↓
-contracts/  exact machine interface truth once materialized
+docs/       canonical project-documentation authority
+  ├─ eight authority-domain roots
+  ├─ legal referenced shards
+  └─ docs/catalog/project.json
+  ↓ scoped materialization at genuine machine boundaries
+contracts/  exact machine-interface truth within the declared boundary
 ```
 
 The user is the final authority for constitutional changes.
 
 `README.md`, supporting decisions, research, evidence, historical material, generated code, vendor instructions, implementation artifacts, and tooling cannot override this hierarchy.
 
-A downstream owner may operationalize an upstream semantic but may not redefine it.
+`spec/**` and `design/**` are superseded non-canonical legacy material. They may remain as provenance until separately retired, but they do not own current project semantics and cannot override the canonical `docs/**` authority plane.
+
+A downstream owner may operationalize an upstream semantic but may not redefine it. A scoped machine contract may define exact wire/schema representation without becoming the owner of the project semantic it carries; conversely, prose must not silently redefine an exact materialized machine contract inside that contract's scoped boundary.
 
 ## 2. Repository self-description
 
@@ -52,97 +55,61 @@ If a rule appears to belong to two domains, ownership must be resolved explicitl
 
 Implementation code consumes canonical semantics; implementation does not become a competing owner merely because the rule is encoded there.
 
-## 4. Canonical Markdown metadata
+## 4. Canonical documentation ownership
 
-Every canonical Markdown owner under `spec/` or `design/` begins with exactly these four semantic-discovery fields:
+The canonical project-documentation plane is `docs/**`. Its top-level authority roots are exactly the eight domains named in section 13. A legal shard under `docs/**` is canonical only through its owning domain and the owning root/catalog references; a shard does not create another authority domain merely because it contains detailed semantics.
 
-```text
-STATUS: CANONICAL
-OWNS: ...
-DEPENDS_ON: ...
-DOES_NOT_OWN: ...
-```
+`docs/catalog/project.json` is the canonical machine-readable documentation inventory for the adopted documentation model, including typed identities, relations, milestone state, and support references. It does not become a ninth semantic authority domain.
 
-Metadata semantics are exact:
+Canonical ownership remains semantic rather than metadata-driven. Documents may use ownership/status metadata where useful, but no legacy `STATUS`/`OWNS`/`DEPENDS_ON`/`DOES_NOT_OWN` header convention under `spec/**` or `design/**` can confer current authority after the docs cutover.
 
-- `OWNS` names the semantic authority this document is allowed to define;
-- `DOES_NOT_OWN` names nearby semantics that must resolve elsewhere rather than being redefined here;
-- `DEPENDS_ON` lists the **direct canonical semantic-definition prerequisites** required to define or interpret this owner's own rules correctly.
+Direct semantic dependencies mean the prerequisites required to define or interpret an owner's rules correctly. They are not a runtime call graph, source-code import graph, transitive dependency closure, list of every file mentioned, or list of downstream consumers. A document may reference a downstream consumer, implementation artifact, evidence record, or supporting material without creating a reverse semantic dependency.
 
-`DEPENDS_ON` is **not** a runtime call graph, source-code import graph, transitive dependency closure, list of every file mentioned, or list of downstream consumers. A document may reference a downstream consumer, implementation artifact, evidence record, or supporting material without creating a reverse semantic dependency.
+The canonical semantic-definition dependency graph must remain acyclic. Tooling must not infer service startup order, package imports, network direction, or data-flow direction from semantic-document dependencies.
 
-Conversely, if this owner cannot define one of its canonical rules correctly without consuming another canonical owner's semantics, that direct owner belongs in `DEPENDS_ON` even when no runtime call exists.
-
-The canonical semantic-definition dependency graph must remain acyclic. Tooling must not infer service startup order, package imports, network direction, or data-flow direction from `DEPENDS_ON`.
-
-Do not add document bureaucracy such as author, editor, version, created-at, or last-reviewed metadata. Git is the history mechanism.
-
-`spec/DECISIONS.md` is supporting rationale and therefore uses supporting metadata instead.
+Do not add document bureaucracy such as author, editor, version, created-at, or last-reviewed metadata merely to signal authority. Git is the history mechanism.
 
 ## 5. Active authority surface
 
-The active Markdown architecture is intentionally bounded:
+The active authority architecture is intentionally bounded:
 
 ```text
 README.md               navigation only
 CONSTITUTION.md         governance authority
 OBJECTIVE.md            project-intent authority
-spec/                   12 canonical learning owners + 1 supporting decision ledger
-design/                 9 canonical product/runtime owners
+docs/                   canonical project-documentation authority
+  eight domain roots    PRODUCT, BEHAVIOR, ARCHITECTURE, DATA,
+                        INTERFACES, QUALITY, DELIVERY, DECISIONS
+  legal shards          same-domain refinements referenced by owner/catalog
+  catalog/project.json  canonical documentation inventory/relations/state
+contracts/              scoped exact machine-interface authority
 ```
 
-The structural baseline is **25 active Markdown files**.
+`spec/**` and `design/**` are superseded non-canonical legacy reference. `research/**` and `evidence/**` are non-canonical provenance material. Superseded history belongs in Git history by default unless a current provenance, legal, or recovery need justifies a tracked supporting artifact.
 
-A new canonical file requires a genuinely new authority domain, not merely a large section or a desire to split a document.
+A new canonical shard requires a real ownership or navigation need inside an existing domain; it does not create a new authority domain. A ninth authority domain requires an explicit constitutional/user decision establishing genuinely distinct ownership.
 
-Conversely, independently evolving semantics with genuinely distinct ownership may justify a new domain after an explicit constitutional/user decision.
+Implementation source files, generated code, research, evidence, legacy material, and historical material do not become authority merely because they are detailed or frequently referenced.
 
-The number 25 is a governance baseline, not a substitute for reasoning.
+## 6. Canonical semantic plane
 
-Implementation source files, machine contracts, generated code, research, evidence, and historical material do not count toward the active Markdown count.
-
-## 6. Learning plane vs design plane
-
-`spec/` owns learning truth:
+The eight `docs/**` domains jointly own the current project semantics:
 
 ```text
-what the learner is
-what IELTS requires
-what must be known
-what must be demonstrated
-Band thresholds
-curriculum prerequisites
-learning mechanisms and Practice Types
-Assessment/evidence/mastery semantics
-Progression semantics
-content reference semantics
-canonical vocabulary
+PRODUCT       product boundaries, learner/product ontology, IELTS/Band truth,
+              curriculum/coverage and product-level capability semantics
+BEHAVIOR      functional behavior, practice, planning, flows and lifecycle semantics
+ARCHITECTURE  runtime responsibility, topology, technology-family and build/buy boundaries
+DATA          data, evidence, progression and content semantics
+INTERFACES    interface, async and external-dependency/provider-boundary semantics
+QUALITY       security, privacy, reliability, performance, observability, testing and cost quality
+DELIVERY      environment, deployment, migration, rollback, backup, compatibility and operations
+DECISIONS     material decisions and unresolved-question ownership
 ```
 
-`design/` owns product/runtime translation:
+Detailed semantic groups such as Skills, Knowledge Objects, Bands, Curriculum Nodes, Practice Types, Assessment Types, Progression, content contexts, learner experience, provider lifecycle, or internal trust remain owned by the smallest applicable existing root or legal shard inside these eight domains. They do not create parallel top-level authority domains.
 
-```text
-how the learner experiences the app
-which skill features exist
-which practice modes the app exposes
-how media is used
-how end-to-end product/system flows work
-how API resources/operations are organized
-which runtime unit/language/framework owns implementation responsibility
-which external-service capabilities/providers are allowed and how they fail/exit
-how product coverage/support claims are evaluated and declared
-```
-
-A design document may use learning truth but cannot change it.
-
-Examples:
-
-- `design/02-practice-catalog.md` may expose 28 practice modes but cannot redefine `PT-*` semantics;
-- `design/01-skill-features.md` may define a Writing workspace but cannot redefine Writing Band thresholds;
-- `design/05-api.md` may carry `GapEvaluation` across HTTP but cannot redefine gap semantics;
-- `design/06-implementation-stack.md` may assign Go to Progression execution but cannot change Progression policy;
-- `design/07-third-party-services.md` may select a provider boundary but cannot make provider output learner truth;
-- `design/08-coverage-and-support.md` may declare a target uncovered/supported but cannot redefine the IELTS construct or learner readiness standard.
+Legacy `spec/**` and `design/**` material may be consulted as provenance but cannot define, amend, or override a current semantic. If legacy wording differs from the canonical successor owner, the canonical `docs/**` owner wins.
 
 ## 7. Collapse documents, not semantics
 
@@ -159,7 +126,7 @@ The following do not become canonical merely because they are detailed, frequent
 - research notes;
 - evidence summaries;
 - source captures;
-- decision rationale;
+- decision rationale outside its canonical decision owner;
 - coverage/consistency reviews;
 - archived documents;
 - generated code;
@@ -211,9 +178,9 @@ Material external claims require provenance sufficient to resolve the source and
 
 Conflicting or insufficient support remains unresolved until the owning domain has a justified resolution. Do not select the more convenient source, convert uncertainty into canonical truth, or silently promote an unresolved claim into an implementation requirement.
 
-External IELTS reality belongs in `spec/02-IELTS-MODEL.md`; pedagogical interpretation belongs in the appropriate learning owner.
+External IELTS reality and Band semantics belong to the canonical PRODUCT owner `docs/product/ielts-exam-and-bands.md`; pedagogical interpretation belongs in the smallest applicable canonical `docs/**` owner.
 
-External platform/legal policies such as YouTube remain external authority. `design/` records the product interpretation and re-check requirement; it does not pretend to replace those policies.
+External platform/legal policies such as YouTube remain external authority. The applicable canonical `docs/**` owner records the product interpretation and re-check requirement; repository documentation does not pretend to replace those external policies.
 
 ## 12. Research-led change
 
@@ -223,44 +190,36 @@ Product defaults such as session length, practice-mode count, feature count, or 
 
 The Constitution itself changes only by explicit user decision.
 
-## 13. Canonical learning domains
+## 13. Canonical documentation domains
+
+The top-level canonical project-documentation domains are exactly:
 
 ```text
-Product       why and learning-product boundaries
-Learner       learner representation and epistemic state requirements
-IELTS         external exam reality
-Skills        what must be demonstrated
-Knowledge     what must be known
-Bands         proficiency thresholds and exit criteria
-Curriculum    when canonical learning is sequenced
-Practice      how capability is trained
-Assessment    observation/evidence/claim semantics
-Progression   learner state, gaps, actions, advancement/regression
-Content Model concrete/supporting object reference semantics
-Glossary      terminology
+PRODUCT
+BEHAVIOR
+ARCHITECTURE
+DATA
+INTERFACES
+QUALITY
+DELIVERY
+DECISIONS
 ```
 
-A domain may depend on another without absorbing its semantics.
+A semantic belongs to the smallest correct owner inside one of these domains. A domain may depend on another without absorbing its semantics. Detailed learning/product/runtime taxonomies remain semantic groups inside the applicable owner; they are not additional top-level authority domains.
 
-## 14. Canonical product/runtime design domains
+## 14. Legal shards and scoped machine truth
 
-```text
-Learning Experience    end-to-end learner journey, TargetProfile and route behavior
-Skill Features         user-facing capabilities per skill/shared surface
-Practice Catalog       concrete product practice modes
-Media / YouTube        media eligibility and learning use
-Application Flows      end-to-end web/API/evaluator flows
-API                    public/internal resource and operation semantics
-Implementation Stack   deployable/language/framework ownership
-Third-Party Services   external capability/provider/portability/failure rules
-Coverage and Support   product-coverage gaps, support gates and target declarations
-```
+Legal `docs/**` shards refine only their owning domain and are canonical through the owning root and `docs/catalog/project.json` support references. They may evolve independently where ownership warrants it without creating a ninth domain.
 
-`design/` may be implementation-specific where the user has intentionally frozen a first-order architecture, but must remain separable from IELTS learning truth.
+`docs/catalog/project.json` owns the canonical machine-readable documentation inventory, typed identities, relations, milestone state, and support references for the adopted model.
+
+`contracts/**` owns exact machine-readable interface truth only for genuine materialized boundaries. A contract defines exact transport/schema shape, not product, learning, evidence, progression, provider, coverage, or other project-domain meaning unless the canonical semantic owner explicitly defines that meaning there within the scoped contract boundary.
+
+`spec/**` and `design/**` remain superseded non-canonical legacy reference and cannot own current semantics.
 
 ## 15. Stable identity and references
 
-Canonical learning objects use stable identifiers. Other domains reference those identifiers rather than creating parallel representations.
+Canonical project objects use stable identifiers. Other domains reference those identifiers rather than creating parallel representations.
 
 Structural refactors should preserve valid identifiers whenever possible.
 
@@ -270,7 +229,7 @@ Do not create synonym drift such as `student` in one subsystem and `learner` in 
 
 ## 16. Canonical vs runtime separation
 
-A Skill, Knowledge Object, Curriculum Node, Practice Type, Assessment Type, feature definition, practice-mode definition, provider capability definition, or coverage declaration is reusable canonical design.
+A Skill, Knowledge Object, Curriculum Node, Practice Type, Assessment Type, feature definition, practice-mode definition, provider capability definition, or coverage declaration is reusable canonical definition owned in the applicable `docs/**` domain.
 
 A learner's attempts, observations, evidence, mastery estimates, feedback, scheduling state, sessions, drafts, and certification history are runtime instances referencing canonical definitions.
 
@@ -310,22 +269,22 @@ Never solve a contradiction by adding `consistency-review.md`, `final-review.md`
 
 ## 19. Change rule
 
-A learning change should answer:
+A canonical semantic change should answer:
 
 - What semantic changes?
-- Which `spec/` owner owns it?
-- Which dependencies are affected?
+- Which of the eight `docs/**` authority domains owns it, and which smallest existing owner inside that domain defines it?
+- Which semantic dependencies are affected?
 - What evidence/user decision justifies it?
 - Does it duplicate another owner?
 
-A product/runtime design change should answer:
+A product/runtime implementation change should also answer:
 
-- Which `design/` owner owns it?
-- Does it alter learning truth or only translate it?
+- Which canonical BEHAVIOR, ARCHITECTURE, DATA, INTERFACES, QUALITY, DELIVERY, PRODUCT, or DECISIONS owner governs the affected consequence?
+- Does it alter canonical project meaning or only translate/implement it?
 - Which user/system flows are affected?
 - Which runtime unit owns execution?
 - Does it create/change a cross-language or third-party boundary?
-- Which contract/provider/coverage declaration must change?
+- Which scoped contract/provider/coverage declaration must change?
 
 An implementation-stack change should also answer:
 
@@ -348,7 +307,7 @@ Supporting formats/tooling such as SQL, shell, YAML, JSON, OpenAPI, JSON Schema,
 
 Adding another primary runtime/application language requires explicit user approval.
 
-First-order allocation is owned by `design/06-implementation-stack.md`.
+First-order runtime responsibility and technology-family allocation are owned by the canonical ARCHITECTURE authority, currently `docs/ARCHITECTURE.md` plus its legal referenced shards/catalog relations where applicable.
 
 ## 21. Repository topology follows responsibility, not language
 
@@ -374,9 +333,9 @@ ts/
 
 A unit is named for what it does, not what language implements it.
 
-Within a deployable, application code is organized primarily by product feature/capability ownership. Framework/transport shells and genuine cross-feature infrastructure remain at their owning boundaries; additional layers exist only for real dependency, invariant, or change boundaries. Pure horizontal layer-first organization and empty architecture layers are not repository defaults. Detailed source organization is owned by `design/06-implementation-stack.md`.
+Within a deployable, application code is organized primarily by product feature/capability ownership. Framework/transport shells and genuine cross-feature infrastructure remain at their owning boundaries; additional layers exist only for real dependency, invariant, or change boundaries. Pure horizontal layer-first organization and empty architecture layers are not repository defaults. Detailed source organization must remain consistent with the canonical ARCHITECTURE authority and existing coherent repository conventions; it cannot create competing semantic ownership.
 
-Initial approved deployable topology is defined in `design/06-implementation-stack.md`:
+Initial approved deployable topology is defined by `docs/ARCHITECTURE.md`:
 
 ```text
 apps/web
@@ -405,7 +364,7 @@ Go, Python, and TypeScript may not share application semantics by copy-pasting e
 Cross-language interaction must cross an explicit boundary:
 
 ```text
-canonical learning/design owner
+canonical docs semantic owner
       ↓
 implementation owner
       ↓
@@ -418,8 +377,8 @@ derived language binding/client
 
 Rules:
 
-1. contract defines transport/interface shape, not learning truth;
-2. domain meaning remains owned by `spec/`/`design/`;
+1. contract defines transport/interface shape, not project-domain truth;
+2. domain meaning remains owned by the applicable canonical `docs/**` owner;
 3. one interface has one contract authority;
 4. handwritten mirror schemas across languages are forbidden when shared contract generation/validation is viable;
 5. generated bindings are derived and not manually edited as authority;
@@ -439,7 +398,7 @@ media-analyzer
 
 This applies to deployable-unit directories and language-neutral architecture folders below `apps/`, `services/`, `contracts/`, and `tools/`.
 
-Canonical terminology from `spec/11-GLOSSARY.md` controls domain vocabulary. Case may change by language; concept names must not drift.
+Canonical terminology is owned by the canonical semantic owner that defines the concept. There is no independent glossary authority. Legacy `spec/11-GLOSSARY.md` is superseded non-canonical reference and cannot override a current `docs/**` owner. Case may change by language; concept names must not drift.
 
 Prefer concrete nouns/capabilities over filler such as:
 
@@ -465,7 +424,7 @@ WIRE IDENTITY IS EXACT.
 
 Canonical/domain vocabulary remains stable across Go, Python, TypeScript, storage references, and UI code while each implementation language uses its idiomatic package/module/file/identifier casing. Exact serialized HTTP/JSON/event names remain owned by the machine contract.
 
-Detailed language-specific source layout, naming, test placement, generated-code placement, and shared-code promotion rules are owned by `design/06-implementation-stack.md`.
+Detailed language-specific source layout, naming, test placement, generated-code placement, and shared-code promotion rules must remain consistent with the canonical ARCHITECTURE authority and repository conventions; they cannot create a second semantic owner.
 
 ## 25. Package and module ownership
 
@@ -518,8 +477,8 @@ A root PASS is authoritative only when it covers every affected language and rel
 
 A healthy repository lets a new session answer quickly:
 
-- Which learning owner defines this semantic?
-- Which design owner translates it into product/runtime behavior?
+- Which canonical `docs/**` owner defines this semantic?
+- Which canonical behavior/architecture/interface owner translates or carries it into product/runtime behavior where applicable?
 - Which runtime unit executes it?
 - Which primary language/framework implements that unit?
 - Which machine contract crosses the boundary?
@@ -527,7 +486,7 @@ A healthy repository lets a new session answer quickly:
 - Is this target MODELLED, COVERED, SUPPORTED_FOR_PRODUCT, or VALIDATED?
 - Is the semantic duplicated elsewhere?
 - Can material external claims be traced to inspectable provenance?
-- Can direct canonical semantic dependencies be identified without treating `DEPENDS_ON` as a runtime/import graph?
+- Can direct canonical semantic dependencies be identified without treating them as a runtime/import graph?
 - Can root verification prove the affected path?
 
-If the answer requires guessing from folders, reading hidden agent instructions, trusting AI/tool output as authority, reconciling three language-specific copies of one rule, or trusting an undeclared provider/coverage assumption, the architecture has regressed.
+If the answer requires guessing from folders, reading hidden agent instructions, trusting AI/tool output as authority, consulting superseded legacy owners for current truth, reconciling three language-specific copies of one rule, or trusting an undeclared provider/coverage assumption, the architecture has regressed.

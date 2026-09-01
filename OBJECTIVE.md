@@ -112,7 +112,7 @@ The active design must provide concrete, understandable learner surfaces for:
 - section and full mock flows;
 - focused preparation for One Skill Retake without inventing a fifth Skill ontology.
 
-Exact feature inventories, practice-mode inventories, durations, and UI defaults are owned by the relevant `design/` documents rather than this Objective.
+Exact feature inventories, practice-mode inventories, durations, and UI defaults are owned by the relevant canonical `docs/**` owners and `docs/catalog/project.json` rather than this Objective.
 
 ### Coverage and support
 
@@ -129,7 +129,7 @@ A scoped target is `COVERED` only when its executable chain is complete with no 
 
 No global “100% IELTS” percentage may hide a missing required condition.
 
-The current mutable coverage declaration is owned only by `design/08-coverage-and-support.md`; this Objective does not duplicate that status.
+Current mutable documentation coverage/support state is owned by the canonical `docs/**` authority plane and `docs/catalog/project.json`; this Objective does not duplicate that state.
 
 ### Media
 
@@ -147,7 +147,7 @@ The design must provide:
 - provider-neutral external capability boundaries;
 - repository-wide verification across every affected runtime and contract boundary.
 
-Exact framework versions, route inventories, provider selections, and deployment details are owned downstream by their `design/` or future machine-contract owners.
+Exact framework versions, route inventories, provider selections, and deployment details are owned downstream by the relevant canonical `docs/**` owners or scoped machine-contract owners.
 
 ## Non-goals
 
@@ -185,8 +185,7 @@ Optimize for:
 
 The project objective is satisfied when:
 
-- every major learning semantic has one canonical `spec/` owner;
-- every major first-order product/runtime semantic has one canonical `design/` owner;
+- every major project semantic has one canonical owner in the existing eight-domain `docs/**` authority plane;
 - Bands 3–9 form coherent learning progressions across all four skills;
 - Academic and General Training reach complete standard-IELTS modelling without duplicating shared constructs;
 - a `TargetProfile` can express real overall/per-skill constraints and material exam-delivery constraints when relevant;
