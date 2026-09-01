@@ -1,0 +1,155 @@
+protocol_version: 3
+
+task_id: TASK-0039
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0038
+  gap_ids:
+    - CONSTITUTION-DOCS-AUTHORITY-CONTRADICTION
+    - LEGACY-GLOSSARY-OWNERSHIP
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@5c58ed9f3fcb89e2c0f6ea98b8f3814f66213544"
+    role: "Current dev truth after truthful TASK-0038 BLOCKED report."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0031/review.yaml@5c58ed9f3fcb89e2c0f6ea98b8f3814f66213544"
+    role: "Accepted operator-approved documentation authority cutover: docs/** is the canonical project documentation plane; spec/** and design/** are superseded non-canonical."
+    precedence: 2
+  - source: ".agent/tasks/TASK-0031/report.yaml@5c58ed9f3fcb89e2c0f6ea98b8f3814f66213544"
+    role: "Accepted cutover evidence: eight docs domains plus legal shards/catalog are canonical; contracts retain scoped exact machine authority; all legacy spec/design owners were demoted."
+    precedence: 3
+  - source: "CONSTITUTION.md@5c58ed9f3fcb89e2c0f6ea98b8f3814f66213544"
+    role: "Highest current repository governance text; currently contains stale pre-cutover statements that still declare spec/** and design/** canonical, including canonical glossary ownership."
+    precedence: 4
+  - source: "tools/canonical/source-map.json@5c58ed9f3fcb89e2c0f6ea98b8f3814f66213544"
+    role: "Current machine corroboration: docs is the sole allowlisted authority root and spec/design/research/evidence/archive are forbidden authority sources."
+    precedence: 5
+  - source: ".agent/tasks/TASK-0038/report.yaml@5c58ed9f3fcb89e2c0f6ea98b8f3814f66213544"
+    role: "Fresh subtraction audit evidence that spec/11-GLOSSARY.md still appears to carry a unique current terminology role, exposing the cutover contradiction before deletion."
+    precedence: 6
+
+objective: >-
+  Reconcile the highest-level repository governance text with the already accepted docs-only authority cutover, remove stale constitutional claims that spec/** or design/** remain canonical, and resolve any unique terminology semantics still stranded in spec/11-GLOSSARY.md into the smallest correct existing docs owner(s) without creating a glossary framework or changing product meaning.
+
+scope:
+  required_changes:
+    - "Refresh refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Treat TASK-0031 ACCEPTED cutover as the already-authorized semantic direction; this task repairs contradictory authority representation and does not reopen that decision."
+    - "Audit CONSTITUTION.md for every stale pre-cutover authority statement, including hierarchy, active authority surface, canonical metadata rules, learning/design planes, evidence ownership, domain ownership, change rules, implementation-stack ownership, cross-language ownership, and terminology/glossary references. Do not patch only the first occurrence."
+    - "Rewrite only the minimum constitutional text necessary so the authority path is internally coherent: USER -> CONSTITUTION.md -> OBJECTIVE.md -> canonical docs/** owners/legal catalog-referenced shards/catalog, with contracts/** owning exact machine interface truth only inside scoped boundaries."
+    - "State clearly that spec/** and design/** are superseded/non-canonical legacy material and cannot own current semantics; research/** and evidence/** remain non-canonical provenance material; Git history remains the default home for superseded history."
+    - "Preserve the existing eight docs authority domains: PRODUCT, BEHAVIOR, ARCHITECTURE, DATA, INTERFACES, QUALITY, DELIVERY, DECISIONS. Do not create a ninth authority domain or a glossary framework."
+    - "Inspect spec/11-GLOSSARY.md against the current canonical docs plane. If every term is already materially owned by existing docs, remove constitutional dependence on the legacy glossary and make no duplicate copy. If any unique current terminology semantic exists, move only that exact semantic into the smallest correct existing docs owner(s), preserving meaning and stable vocabulary without introducing a new glossary file/domain."
+    - "Do not delete spec/** or design/** in this task. Repository subtraction remains a later task after this authority contradiction is repaired and reviewed."
+    - "Do not alter product behavior, IELTS learning truth, Band thresholds, planner/progression semantics, provider policy, runtime behavior, API/schema semantics, standards claims, feature scope, or DESIGN LOCK meaning."
+    - "Do not modify OBJECTIVE.md unless exact inspection proves it contains a directly contradictory stale authority statement. If changed, the edit must be authority-representation-only and semantics-preserving."
+    - "README.md should remain unchanged unless exact inspection proves a contradiction with the repaired Constitution; do not rewrite navigation merely for style."
+    - "Before publication, inspect the complete diff and prove every change is authority-representation/terminology-ownership reconciliation only, with no new semantic requirement."
+    - "Publish exactly one implementation commit, then exactly one canonical report-only child. No sentinel boundary or GitHub Actions run is required for this docs/governance-only correction."
+    - "If resolving the glossary would require choosing between materially different semantic meanings or inventing a new owner/domain, fail closed: make no semantic implementation mutation, publish a truthful BLOCKED report, and stop."
+
+allowed_existing_paths:
+  - CONSTITUTION.md
+  - OBJECTIVE.md
+  - README.md
+  - docs/**
+  - spec/11-GLOSSARY.md
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0039/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+  forbidden_new_paths:
+    - docs/GLOSSARY.md
+    - glossary/**
+    - archive/**
+
+invariants:
+  - "The accepted TASK-0031 docs-only authority cutover is preserved, not redesigned."
+  - "CONSTITUTION.md remains the highest repository governance authority below the user and OBJECTIVE.md remains project-intent authority."
+  - "Current project documentation semantics are owned only by the existing docs authority plane plus scoped contracts machine truth."
+  - "spec/** and design/** have no current canonical authority after this repair."
+  - "No new authority domain, glossary framework, identity class, product rule, or runtime behavior is introduced."
+  - "Terminology remains stable across Go, Python, TypeScript, contracts, storage, and UI unless an explicit boundary translates a user-facing label."
+  - "Historical .agent task/report/review artifacts are immutable and are not rewritten."
+  - "TASK-0038 remains a truthful historical BLOCKED result and is not revised."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "CONSTITUTION.md contains no active claim that spec/** or design/** are canonical current owners."
+    evidence_required: "Complete stale-reference audit plus exact final text demonstrates one internally coherent docs-only authority path."
+  - id: AC-2
+    requirement: "The accepted TASK-0031 authority model is represented accurately at the highest governance level."
+    evidence_required: "Constitution names the eight existing docs domains/legal shards/catalog as the canonical documentation plane and preserves scoped contracts authority without adding a new domain."
+  - id: AC-3
+    requirement: "Legacy glossary ownership is resolved without framework expansion."
+    evidence_required: "Report classifies spec/11-GLOSSARY.md term-by-term as already owned or minimally rehomed into existing docs owners; no new glossary file/domain is created and no terminology semantics are lost."
+  - id: AC-4
+    requirement: "No product/design/runtime semantics change."
+    evidence_required: "Exact implementation diff contains only constitutional authority representation and, if required, minimum terminology rehome into existing docs owners."
+  - id: AC-5
+    requirement: "Mutation scope and lineage are minimal."
+    evidence_required: "Exactly one implementation commit from the task base and one direct report-only child; no sentinel, Actions, legacy deletion, main mutation, promotion, or release."
+
+verification:
+  authoritative_verification:
+    required: false
+  required_checks:
+    - "Exact complete diff review against accepted TASK-0031 authority model."
+    - "Search final CONSTITUTION.md for stale active spec/** and design/** canonical-owner claims."
+    - "Search final active repository governance/navigation surface for direct dependence on spec/11-GLOSSARY.md."
+    - "Verify no new authority domain/path was created and no prior task artifact changed."
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
