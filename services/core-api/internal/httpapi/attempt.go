@@ -371,14 +371,21 @@ func canonicalAnswers(response public.AttemptResponse) ([]map[string]string, err
 	answers := make([]map[string]string, 0, len(response.Parts))
 	seen := map[string]struct{}{}
 	for _, part := range response.Parts {
-		if part.TaskId == "" || part.SelectedValues == nil || part.Text != nil || part.MediaReference != nil || len(*part.SelectedValues) != 1 {
-			return nil, fmt.Errorf("this bounded activity requires one selected value for each task")
+		if part.TaskId == "" || part.MediaReference != nil || (part.SelectedValues == nil && part.Text == nil) || (part.SelectedValues != nil && part.Text != nil) {
+			return nil, fmt.Errorf("each task requires exactly one text or selected-value response")
+		}
+		if part.SelectedValues != nil {
+			if len(*part.SelectedValues) != 1 {
+				return nil, fmt.Errorf("this bounded activity requires one selected value for each task")
+			}
+			answers = append(answers, map[string]string{"item_id": part.TaskId, "choice": (*part.SelectedValues)[0]})
+		} else {
+			answers = append(answers, map[string]string{"item_id": part.TaskId, "text": *part.Text})
 		}
 		if _, exists := seen[part.TaskId]; exists {
 			return nil, fmt.Errorf("duplicate response for %s", part.TaskId)
 		}
 		seen[part.TaskId] = struct{}{}
-		answers = append(answers, map[string]string{"item_id": part.TaskId, "choice": (*part.SelectedValues)[0]})
 	}
 	return answers, nil
 }
@@ -435,6 +442,9 @@ func validateScopedDelivery(v public.ScopedDeliveryMode) error {
 }
 
 func score(content map[string]any, answers []map[string]string) ([]any, int, int, error) {
+	if content["practice_mode_id"] == "PM-L03" {
+		return scoreListeningCompletion(content, answers)
+	}
 	items := content["items"].([]any)
 	answerMap := map[string]string{}
 	for _, answer := range answers {
@@ -475,4 +485,38 @@ func score(content map[string]any, answers []map[string]string) ([]any, int, int
 		return feedback[i].(map[string]any)["item_id"].(string) < feedback[j].(map[string]any)["item_id"].(string)
 	})
 	return feedback, rawScore, len(items), nil
+}
+
+func scoreListeningCompletion(content map[string]any, answers []map[string]string) ([]any, int, int, error) {
+	items, ok := content["items"].([]any)
+	if !ok || len(items) != 1 {
+		return nil, 0, 0, fmt.Errorf("Listening completion requires exactly one assigned item")
+	}
+	answerMap := map[string]string{}
+	seen := map[string]bool{}
+	for _, answer := range answers {
+		id := answer["item_id"]
+		if id == "" || seen[id] {
+			return nil, 0, 0, fmt.Errorf("duplicate answer for %s", id)
+		}
+		text, present := answer["text"]
+		if !present || answer["choice"] != "" {
+			return nil, 0, 0, fmt.Errorf("text response required for %s", id)
+		}
+		seen[id] = true
+		answerMap[id] = text
+	}
+	if len(answerMap) != len(items) {
+		return nil, 0, 0, fmt.Errorf("submission must answer every assigned item exactly once")
+	}
+	item := items[0].(map[string]any)
+	id := item["item_id"].(string)
+	learnerText := answerMap[id]
+	canonicalAnswer := item["answer"].(string)
+	correct := strings.EqualFold(strings.TrimSpace(learnerText), strings.TrimSpace(canonicalAnswer))
+	feedback := []any{map[string]any{"item_id": id, "learner_text": learnerText, "correct": correct}}
+	if correct {
+		return feedback, 1, 1, nil
+	}
+	return feedback, 0, 1, nil
 }

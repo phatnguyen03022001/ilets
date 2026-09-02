@@ -290,6 +290,40 @@ paths:
         '503':
           $ref: '#/components/responses/DependencyUnavailable'
 
+  /v1/practice-activities/{practice_activity_id}/media/{media_reference}:
+    get:
+      operationId: getPracticeActivityMedia
+      summary: Read one exact learner-owned PracticeActivity media reference
+      description: >-
+        Returns the immutable media bytes referenced by an assigned learner-owned activity.
+        The reference is opaque and is never interpreted as a filesystem path.
+      parameters:
+        - $ref: '#/components/parameters/PracticeActivityId'
+        - $ref: '#/components/parameters/MediaReference'
+      responses:
+        '200':
+          description: Exact immutable Ogg bytes for the assigned activity revision.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+          content:
+            audio/ogg:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFoundOrNotVisible'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+
   /v1/attempts:
     post:
       operationId: createAttempt
@@ -716,6 +750,12 @@ components:
         minimum: 0
     PracticeActivityId:
       name: practice_activity_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceId'
+    MediaReference:
+      name: media_reference
       in: path
       required: true
       schema:
@@ -1754,6 +1794,9 @@ components:
       properties:
         task_id:
           $ref: '#/components/schemas/ResourceId'
+        instruction:
+          type: string
+          maxLength: 20000
         prompt:
           type: string
           minLength: 1

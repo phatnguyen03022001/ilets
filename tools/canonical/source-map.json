@@ -30,6 +30,15 @@
       ]
     },
     {
+      "type": "feature",
+      "owner": "docs/BEHAVIOR.md",
+      "section": "#### Canonical materializer anchor — Listening detail and completion feature",
+      "kind": "markdown_table",
+      "ids": [
+        "L-F04"
+      ]
+    },
+    {
       "type": "practice_mode",
       "owner": "docs/behavior/practice-and-media.md",
       "section": "### Canonical materializer anchor — Reading classification mode",
@@ -45,6 +54,15 @@
       "kind": "markdown_table",
       "ids": [
         "PM-R04"
+      ]
+    },
+    {
+      "type": "practice_mode",
+      "owner": "docs/behavior/practice-and-media.md",
+      "section": "### Canonical materializer anchor — Listening detail and completion mode",
+      "kind": "markdown_table",
+      "ids": [
+        "PM-L03"
       ]
     },
     {
@@ -79,6 +97,26 @@
       ]
     },
     {
+      "type": "skill_leaf",
+      "owner": "docs/product/skill-leaves.md",
+      "parent_section": "## Listening",
+      "section": "### Canonical materializer anchor — Listening specific details capability",
+      "kind": "markdown_table",
+      "ids": [
+        "L-COMP-02"
+      ]
+    },
+    {
+      "type": "skill_leaf",
+      "owner": "docs/product/skill-leaves.md",
+      "parent_section": "## Listening",
+      "section": "### Canonical materializer anchor — Listening completion question type",
+      "kind": "markdown_table",
+      "ids": [
+        "L-QT-01"
+      ]
+    },
+    {
       "type": "official_family",
       "owner": "docs/product/ielts-exam-and-bands.md",
       "section": "#### Canonical materializer anchor — Reading classification families",
@@ -98,12 +136,30 @@
       ]
     },
     {
+      "type": "official_family",
+      "owner": "docs/product/ielts-exam-and-bands.md",
+      "section": "#### Canonical materializer anchor — Listening completion family",
+      "kind": "markdown_table",
+      "ids": [
+        "IELTS-L-QF-04"
+      ]
+    },
+    {
       "type": "content_context",
       "owner": "docs/data/evidence-progression-content.md",
       "section": "### Stable Content Context registry",
       "kind": "markdown_table",
       "ids": [
         "CTX-READING-ACADEMIC"
+      ]
+    },
+    {
+      "type": "content_context",
+      "owner": "docs/data/evidence-progression-content.md",
+      "section": "### Canonical materializer anchor — shared Listening content context",
+      "kind": "markdown_table",
+      "ids": [
+        "CTX-LISTENING-SHARED"
       ]
     },
     {

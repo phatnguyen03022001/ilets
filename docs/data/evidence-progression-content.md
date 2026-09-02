@@ -218,6 +218,12 @@ ExposureContext preserves whether item/stimulus revision was seen, prior feedbac
 | `CTX-WRITING-T2` | Writing Task 2 construct; prompt remains variant-scoped where material | shared/core |
 | `CTX-SPEAKING-SHARED` | shared IELTS Speaking construct | shared |
 
+### Canonical materializer anchor — shared Listening content context
+
+| ID | Meaning | Variant |
+|---|---|---|
+| `CTX-LISTENING-SHARED` | shared IELTS Listening construct/context | shared |
+
 IDs remain stable across content/manifests/contracts. New CTX requires materially distinct external/content inference context, never merely topic/difficulty/Band/delivery/screen. Delivery is orthogonal. Context-neutral Knowledge/foundation content may legitimately omit CTX; filler `CTX-GENERIC`/`CTX-KNOWLEDGE` is forbidden. When family/variant/task/section changes validity, coverage, scoring or inference, compatible CTX becomes required.
 
 ### Stable Content Presentation Class registry

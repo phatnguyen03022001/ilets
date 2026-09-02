@@ -73,6 +73,12 @@ AI tutoring is delivery/runtime capability, not a Learning Mechanism, and may no
 | `PT-13` | Comprehension question set | Co / Co, Re | individual / listening, reading | `LM-02`, `LM-04` | receptive comprehension/question-type work |
 | `PT-16` | Distractor/error review | Re / Re, Co | individual / listening, reading | `LM-04`, `LM-10` | discriminate why an alternative failed |
 
+### Canonical materializer anchor — Listening detail and completion mode
+
+| ID | Mode | Default duration | Learning role | Typical canonical backing |
+|---|---|---:|---|---|
+| `PM-L03` | Detail & Completion | 5–10m | explicit detail/completion/word limits | `PT-13`, `PT-19` |
+
 Concrete binding resolves target families to explicit stable Skill/Knowledge IDs before execution/evidence recording.
 
 ## Gap-to-practice selection

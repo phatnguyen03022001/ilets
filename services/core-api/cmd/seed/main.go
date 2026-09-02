@@ -37,7 +37,7 @@ type Fixture struct {
 
 func main() {
 	registryPath := getenv("CANONICAL_REGISTRY_PATH", "../../tools/canonical/generated/registry.json")
-	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json,internal/bootstrap/reading-assessment-001.json,internal/bootstrap/reading-assessment-002.json"), ",")
+	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json,internal/bootstrap/reading-assessment-001.json,internal/bootstrap/reading-assessment-002.json,internal/bootstrap/listening-training-001.json"), ",")
 	for _, fixturePath := range fixturePaths {
 		fixturePath = strings.TrimSpace(fixturePath)
 		if fixturePath != "" {
@@ -75,7 +75,11 @@ func seedPath(fixturePath, registryPath string) {
 			log.Fatalf("bootstrap content unknown canonical ref %s", id)
 		}
 	}
-	validateItems(fixture.SemanticPayload)
+	if fixture.SemanticPayload["practice_mode_id"] == "PM-L03" {
+		validateListeningFixture(fixture.SemanticPayload, fixture.Provenance)
+	} else {
+		validateItems(fixture.SemanticPayload)
+	}
 
 	semantic, err := json.Marshal(fixture.SemanticPayload)
 	if err != nil {
@@ -235,4 +239,51 @@ func validateItems(payload map[string]any) {
 			log.Fatalf("declared family %s has no executable item", family)
 		}
 	}
+}
+
+func validateListeningFixture(payload map[string]any, rawProvenance any) {
+	if payload["feature_id"] != "L-F04" || payload["practice_mode_id"] != "PM-L03" || payload["content_context_id"] != "CTX-LISTENING-SHARED" || payload["primary_activity_purpose"] != "TRAINING" || payload["evidence_candidacy"] != "NOT_EVIDENCE_CANDIDATE" {
+		log.Fatal("Listening bootstrap scope invalid")
+	}
+	if _, present := payload["test_variant"]; present {
+		log.Fatal("shared Listening content must not declare SHARED or a single test variant")
+	}
+	if !exactStrings(payload["practice_type_ids"], []string{"PT-13"}) || !exactStrings(payload["skill_target_ids"], []string{"L-COMP-02", "L-QT-01"}) || !exactStrings(payload["official_family_ids"], []string{"IELTS-L-QF-04"}) || !exactStrings(payload["applicable_test_variants"], []string{"ACADEMIC", "GENERAL_TRAINING"}) {
+		log.Fatal("Listening bootstrap canonical scope invalid")
+	}
+	stimulus, ok := payload["stimulus"].(map[string]any)
+	if !ok || stimulus["title"] != "Marsha introduction" || stimulus["media_reference"] != "hello-this-is-marsha" {
+		log.Fatal("Listening stimulus invalid")
+	}
+	if _, present := stimulus["text"]; present {
+		log.Fatal("Listening stimulus must be media-backed")
+	}
+	items, ok := payload["items"].([]any)
+	if !ok || len(items) != 1 {
+		log.Fatal("Listening bootstrap requires exactly one executable item")
+	}
+	item, ok := items[0].(map[string]any)
+	if !ok || len(item) != 5 || item["item_id"] != "listening_completion_001" || item["official_family_id"] != "IELTS-L-QF-04" || item["instruction"] != "Write ONE WORD ONLY." || item["prompt"] != "Name: ______" || item["answer"] != "Marsha" {
+		log.Fatal("Listening completion item invalid")
+	}
+	if _, present := item["choices"]; present {
+		log.Fatal("Listening completion must not use choices")
+	}
+	provenance, ok := rawProvenance.(map[string]any)
+	if !ok || provenance["source_page"] != "https://commons.wikimedia.org/wiki/File:Hello._This_is_Marsha._-_Yes,_Marsha.ogg" || provenance["source_file"] != "https://upload.wikimedia.org/wikipedia/commons/0/0d/Hello._This_is_Marsha._-_Yes%2C_Marsha.ogg" || provenance["title"] != "Hello. This is Marsha. - Yes, Marsha.ogg" || provenance["provider"] != "VOA Learning English" || provenance["rights_basis"] != "Wikimedia Commons Public Domain Mark; VOA Learning English public-domain basis" || provenance["media_type"] != "audio/ogg" || provenance["byte_length"] != float64(54891) || provenance["sha256"] != "1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765" {
+		log.Fatal("Listening media provenance invalid")
+	}
+}
+
+func exactStrings(raw any, want []string) bool {
+	values, ok := raw.([]any)
+	if !ok || len(values) != len(want) {
+		return false
+	}
+	for i, value := range values {
+		if value != want[i] {
+			return false
+		}
+	}
+	return true
 }

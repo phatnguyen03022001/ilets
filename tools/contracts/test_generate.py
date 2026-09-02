@@ -29,6 +29,7 @@ PUBLIC_OPERATIONS = (
     "listPracticeModes",
     "createPracticeActivity",
     "getPracticeActivity",
+    "getPracticeActivityMedia",
     "createAttempt",
     "getAttempt",
     "patchAttempt",

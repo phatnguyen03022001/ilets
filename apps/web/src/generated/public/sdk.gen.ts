@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAttemptData, CreateAttemptErrors, CreateAttemptResponses, CreatePracticeActivityData, CreatePracticeActivityErrors, CreatePracticeActivityResponses, GetAttemptData, GetAttemptErrors, GetAttemptResponses, GetCoreHealthData, GetCoreHealthErrors, GetCoreHealthResponses, GetDailyPlanData, GetDailyPlanErrors, GetDailyPlanResponses, GetEvaluationData, GetEvaluationErrors, GetEvaluationResponses, GetMeData, GetMeErrors, GetMeResponses, GetPracticeActivityData, GetPracticeActivityErrors, GetPracticeActivityResponses, GetProgressData, GetProgressErrors, GetProgressResponses, GetReviewQueueData, GetReviewQueueErrors, GetReviewQueueResponses, GetTargetProfileData, GetTargetProfileErrors, GetTargetProfileResponses, ListGapsData, ListGapsErrors, ListGapsResponses, ListPracticeModesData, ListPracticeModesErrors, ListPracticeModesResponses, PatchAttemptData, PatchAttemptErrors, PatchAttemptResponses, PutTargetProfileData, PutTargetProfileErrors, PutTargetProfileResponses, StreamResourceEventsData, StreamResourceEventsErrors, StreamResourceEventsResponse, StreamResourceEventsResponses, SubmitAttemptData, SubmitAttemptErrors, SubmitAttemptResponses } from './types.gen';
+import type { CreateAttemptData, CreateAttemptErrors, CreateAttemptResponses, CreatePracticeActivityData, CreatePracticeActivityErrors, CreatePracticeActivityResponses, GetAttemptData, GetAttemptErrors, GetAttemptResponses, GetCoreHealthData, GetCoreHealthErrors, GetCoreHealthResponses, GetDailyPlanData, GetDailyPlanErrors, GetDailyPlanResponses, GetEvaluationData, GetEvaluationErrors, GetEvaluationResponses, GetMeData, GetMeErrors, GetMeResponses, GetPracticeActivityData, GetPracticeActivityErrors, GetPracticeActivityMediaData, GetPracticeActivityMediaErrors, GetPracticeActivityMediaResponses, GetPracticeActivityResponses, GetProgressData, GetProgressErrors, GetProgressResponses, GetReviewQueueData, GetReviewQueueErrors, GetReviewQueueResponses, GetTargetProfileData, GetTargetProfileErrors, GetTargetProfileResponses, ListGapsData, ListGapsErrors, ListGapsResponses, ListPracticeModesData, ListPracticeModesErrors, ListPracticeModesResponses, PatchAttemptData, PatchAttemptErrors, PatchAttemptResponses, PutTargetProfileData, PutTargetProfileErrors, PutTargetProfileResponses, StreamResourceEventsData, StreamResourceEventsErrors, StreamResourceEventsResponse, StreamResourceEventsResponses, SubmitAttemptData, SubmitAttemptErrors, SubmitAttemptResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -103,6 +103,17 @@ export const createPracticeActivity = <ThrowOnError extends boolean = false>(opt
 export const getPracticeActivity = <ThrowOnError extends boolean = false>(options: Options<GetPracticeActivityData, ThrowOnError>): RequestResult<GetPracticeActivityResponses, GetPracticeActivityErrors, ThrowOnError> => (options.client ?? client).get<GetPracticeActivityResponses, GetPracticeActivityErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/v1/practice-activities/{practice_activity_id}',
+    ...options
+});
+
+/**
+ * Read one exact learner-owned PracticeActivity media reference
+ *
+ * Returns the immutable media bytes referenced by an assigned learner-owned activity. The reference is opaque and is never interpreted as a filesystem path.
+ */
+export const getPracticeActivityMedia = <ThrowOnError extends boolean = false>(options: Options<GetPracticeActivityMediaData, ThrowOnError>): RequestResult<GetPracticeActivityMediaResponses, GetPracticeActivityMediaErrors, ThrowOnError> => (options.client ?? client).get<GetPracticeActivityMediaResponses, GetPracticeActivityMediaErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/v1/practice-activities/{practice_activity_id}/media/{media_reference}',
     ...options
 });
 

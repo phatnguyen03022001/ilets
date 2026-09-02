@@ -76,7 +76,8 @@ func TestPublicGeneratedContractSurface(t *testing.T) {
 		"GET /v1/daily-plan":           "getDailyPlan",
 		"GET /v1/practice-modes":       "listPracticeModes",
 		"POST /v1/practice-activities": "createPracticeActivity",
-		"GET /v1/practice-activities/{practice_activity_id}": "getPracticeActivity",
+		"GET /v1/practice-activities/{practice_activity_id}":                         "getPracticeActivity",
+		"GET /v1/practice-activities/{practice_activity_id}/media/{media_reference}": "getPracticeActivityMedia",
 		"POST /v1/attempts":                          "createAttempt",
 		"GET /v1/attempts/{attempt_id}":              "getAttempt",
 		"PATCH /v1/attempts/{attempt_id}":            "patchAttempt",
@@ -91,6 +92,7 @@ func TestPublicGeneratedContractSurface(t *testing.T) {
 	requireParameter(t, doc, "/v1/practice-activities", "POST", "Idempotency-Key")
 	requireParameter(t, doc, "/v1/attempts/{attempt_id}", "PATCH", "Expected-Resource-Revision")
 	requireParameter(t, doc, "/v1/event-stream", "GET", "Last-Event-ID")
+	requireParameter(t, doc, "/v1/practice-activities/{practice_activity_id}/media/{media_reference}", "GET", "media_reference")
 
 	sse := doc.Paths.Value("/v1/event-stream").Get.Responses.Value("200")
 	if sse == nil || sse.Value == nil || sse.Value.Content["text/event-stream"] == nil {

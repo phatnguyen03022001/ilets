@@ -317,6 +317,7 @@ export type LearnerStimulusBlock = ({
 
 export type LearnerTask = {
     task_id: ResourceId;
+    instruction?: string;
     prompt: string;
     response_contract: LearnerResponseContract;
 };
@@ -550,6 +551,8 @@ export type IdempotencyKey = string;
 export type ExpectedResourceRevision = number;
 
 export type PracticeActivityId = ResourceId;
+
+export type MediaReference = ResourceId;
 
 export type AttemptId = ResourceId;
 
@@ -947,6 +950,54 @@ export type GetPracticeActivityResponses = {
 };
 
 export type GetPracticeActivityResponse = GetPracticeActivityResponses[keyof GetPracticeActivityResponses];
+
+export type GetPracticeActivityMediaData = {
+    body?: never;
+    path: {
+        practice_activity_id: ResourceId;
+        media_reference: ResourceId;
+    };
+    query?: never;
+    url: '/v1/practice-activities/{practice_activity_id}/media/{media_reference}';
+};
+
+export type GetPracticeActivityMediaErrors = {
+    /**
+     * A valid authenticated public principal could not be established.
+     */
+    401: ErrorEnvelope;
+    /**
+     * Authenticated actor lacks permission for the requested capability/scope.
+     */
+    403: ErrorEnvelope;
+    /**
+     * Resource is absent or not visible to this actor. The response deliberately does not disclose whether a protected resource exists outside the caller's access scope.
+     */
+    404: ErrorEnvelope;
+    /**
+     * Transport/abuse/capacity admission rejected this request temporarily.
+     */
+    429: ErrorEnvelope;
+    /**
+     * Core encountered an internal infrastructure/runtime failure and did not convert it into learner evidence, weakness, CoverageGap, or score.
+     */
+    500: ErrorEnvelope;
+    /**
+     * Required infrastructure cannot currently establish the intended authoritative result. This is never encoded as learner weakness, CoverageGap, or score zero.
+     */
+    503: ErrorEnvelope;
+};
+
+export type GetPracticeActivityMediaError = GetPracticeActivityMediaErrors[keyof GetPracticeActivityMediaErrors];
+
+export type GetPracticeActivityMediaResponses = {
+    /**
+     * Exact immutable Ogg bytes for the assigned activity revision.
+     */
+    200: Blob | File;
+};
+
+export type GetPracticeActivityMediaResponse = GetPracticeActivityMediaResponses[keyof GetPracticeActivityMediaResponses];
 
 export type CreateAttemptData = {
     body: CreateAttemptRequest;

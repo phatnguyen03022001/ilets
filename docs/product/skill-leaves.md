@@ -75,6 +75,18 @@ The following are intentionally not identity-level Skill authority:
 | `L-QT-04` | Map/plan/diagram labelling | Apply spatial and directional language to a visual. |
 | `L-QT-05` | Sentence completion & short answer | Produce concise answers from the recording within stated limits. |
 
+### Canonical materializer anchor — Listening specific details capability
+
+| ID | Capability | Atomic objective |
+|---|---|---|
+| `L-COMP-02` | Specific details | Capture targeted factual details accurately. |
+
+### Canonical materializer anchor — Listening completion question type
+
+| ID | Capability | Atomic objective |
+|---|---|---|
+| `L-QT-01` | Form/note/table/flow-chart/summary completion | Fill structured completion gaps from the recording while respecting layout, grammar, and stated word limits. |
+
 ### Listening prerequisite edges
 
 | Dependent | Requires Skill Leaves |

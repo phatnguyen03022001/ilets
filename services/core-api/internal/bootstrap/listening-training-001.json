@@ -1,0 +1,45 @@
+{
+  "content_id": "listening-bootstrap-completion-001",
+  "revision_id": "listening-bootstrap-completion-001-r1",
+  "provenance": {
+    "source_page": "https://commons.wikimedia.org/wiki/File:Hello._This_is_Marsha._-_Yes,_Marsha.ogg",
+    "source_file": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Hello._This_is_Marsha._-_Yes%2C_Marsha.ogg",
+    "title": "Hello. This is Marsha. - Yes, Marsha.ogg",
+    "provider": "VOA Learning English",
+    "rights_basis": "Wikimedia Commons Public Domain Mark; VOA Learning English public-domain basis",
+    "media_type": "audio/ogg",
+    "byte_length": 54891,
+    "sha256": "1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765"
+  },
+  "validation": {
+    "decision_id": "vd_bootstrap_listening_training_v1",
+    "policy_version": "bootstrap-listening-training-v1",
+    "intended_use": "TRAINING_LOW_CONSEQUENCE",
+    "result": "PASS",
+    "findings": ["canonical_refs_valid", "structure_executable", "shared_listening_context", "public_domain_media_attributed", "answer_key_complete", "learner_projection_hides_answers", "deterministic_text_scoring_consistent"]
+  },
+  "semantic_payload": {
+    "feature_id": "L-F04",
+    "practice_mode_id": "PM-L03",
+    "practice_type_ids": ["PT-13"],
+    "skill_target_ids": ["L-COMP-02", "L-QT-01"],
+    "official_family_ids": ["IELTS-L-QF-04"],
+    "content_context_id": "CTX-LISTENING-SHARED",
+    "primary_activity_purpose": "TRAINING",
+    "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
+    "applicable_test_variants": ["ACADEMIC", "GENERAL_TRAINING"],
+    "stimulus": {
+      "title": "Marsha introduction",
+      "media_reference": "hello-this-is-marsha"
+    },
+    "items": [
+      {
+        "item_id": "listening_completion_001",
+        "official_family_id": "IELTS-L-QF-04",
+        "instruction": "Write ONE WORD ONLY.",
+        "prompt": "Name: ______",
+        "answer": "Marsha"
+      }
+    ]
+  }
+}

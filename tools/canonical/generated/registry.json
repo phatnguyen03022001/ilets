@@ -1,12 +1,12 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:120309b7ad257ef8a7911316fc1a5b57748c9890e422e2e0d710ff02658d3072",
+  "canonical_source_revision": "canonical-source-revision/v1:e32dc488dba4971a48ff653e5f7265474faa622854fffeb8a04e05351964caa7",
   "entries": [
     {
       "cells": [],
       "id": "ASSESSMENT",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -17,7 +17,7 @@
       "cells": [],
       "id": "TRAINING",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -33,7 +33,7 @@
       ],
       "id": "AT-02",
       "source": {
-        "git_blob": "d65401b8c0772500724e33260fc3f25b565506cb",
+        "git_blob": "32cb4622618105ac71b6726766000a311fb6537f",
         "owner": "docs/data/evidence-progression-content.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 objective receptive assessment"
@@ -42,12 +42,26 @@
     },
     {
       "cells": [
+        "shared IELTS Listening construct/context",
+        "shared"
+      ],
+      "id": "CTX-LISTENING-SHARED",
+      "source": {
+        "git_blob": "32cb4622618105ac71b6726766000a311fb6537f",
+        "owner": "docs/data/evidence-progression-content.md",
+        "parent_section": null,
+        "section": "### Canonical materializer anchor \u2014 shared Listening content context"
+      },
+      "type": "content_context"
+    },
+    {
+      "cells": [
         "Academic Reading passage/set context",
         "Academic"
       ],
       "id": "CTX-READING-ACADEMIC",
       "source": {
-        "git_blob": "d65401b8c0772500724e33260fc3f25b565506cb",
+        "git_blob": "32cb4622618105ac71b6726766000a311fb6537f",
         "owner": "docs/data/evidence-progression-content.md",
         "parent_section": null,
         "section": "### Stable Content Context registry"
@@ -58,7 +72,7 @@
       "cells": [],
       "id": "ASSESSMENT_MAY_ADMIT",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
@@ -69,12 +83,27 @@
       "cells": [],
       "id": "NOT_EVIDENCE_CANDIDATE",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
       },
       "type": "evidence_candidacy"
+    },
+    {
+      "cells": [
+        "Detail & Completion Drill",
+        "exercises explicit detail extraction, completion constraints, and word-limit control against eligible listening content",
+        "bounded Listening observation"
+      ],
+      "id": "L-F04",
+      "source": {
+        "git_blob": "e404662a1ecf78826d11d8c45051be8b2a8e395e",
+        "owner": "docs/BEHAVIOR.md",
+        "parent_section": null,
+        "section": "#### Canonical materializer anchor \u2014 Listening detail and completion feature"
+      },
+      "type": "feature"
     },
     {
       "cells": [
@@ -84,7 +113,7 @@
       ],
       "id": "R-F04",
       "source": {
-        "git_blob": "cc782ac2839b9520bd5c4e9567501ef310e8e2a2",
+        "git_blob": "e404662a1ecf78826d11d8c45051be8b2a8e395e",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "### FTR-018 R-F04 \u2014 T/F/NG + Y/N/NG Lab"
@@ -99,7 +128,7 @@
       ],
       "id": "R-F05",
       "source": {
-        "git_blob": "cc782ac2839b9520bd5c4e9567501ef310e8e2a2",
+        "git_blob": "e404662a1ecf78826d11d8c45051be8b2a8e395e",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading headings and structure feature"
@@ -108,11 +137,24 @@
     },
     {
       "cells": [
+        "Listening \u2014 Form / note / table / flow-chart / summary completion"
+      ],
+      "id": "IELTS-L-QF-04",
+      "source": {
+        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
+        "owner": "docs/product/ielts-exam-and-bands.md",
+        "parent_section": null,
+        "section": "#### Canonical materializer anchor \u2014 Listening completion family"
+      },
+      "type": "official_family"
+    },
+    {
+      "cells": [
         "Identifying information \u2014 True / False / Not Given"
       ],
       "id": "IELTS-R-QF-02",
       "source": {
-        "git_blob": "caf563a3ba0f067e92abf25559f78e9dab17c795",
+        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -125,7 +167,7 @@
       ],
       "id": "IELTS-R-QF-03",
       "source": {
-        "git_blob": "caf563a3ba0f067e92abf25559f78e9dab17c795",
+        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -138,12 +180,28 @@
       ],
       "id": "IELTS-R-QF-05",
       "source": {
-        "git_blob": "caf563a3ba0f067e92abf25559f78e9dab17c795",
+        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading matching headings family"
       },
       "type": "official_family"
+    },
+    {
+      "cells": [
+        "Detail & Completion",
+        "5\u201310m",
+        "explicit detail/completion/word limits",
+        "`PT-13`, `PT-19`"
+      ],
+      "id": "PM-L03",
+      "source": {
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "owner": "docs/behavior/practice-and-media.md",
+        "parent_section": null,
+        "section": "### Canonical materializer anchor \u2014 Listening detail and completion mode"
+      },
+      "type": "practice_mode"
     },
     {
       "cells": [
@@ -154,7 +212,7 @@
       ],
       "id": "PM-R03",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading classification mode"
@@ -170,7 +228,7 @@
       ],
       "id": "PM-R04",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading headings and structure mode"
@@ -187,7 +245,7 @@
       ],
       "id": "PT-13",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
@@ -204,7 +262,7 @@
       ],
       "id": "PT-16",
       "source": {
-        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
@@ -213,12 +271,40 @@
     },
     {
       "cells": [
+        "Specific details",
+        "Capture targeted factual details accurately."
+      ],
+      "id": "L-COMP-02",
+      "source": {
+        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "owner": "docs/product/skill-leaves.md",
+        "parent_section": "## Listening",
+        "section": "### Canonical materializer anchor \u2014 Listening specific details capability"
+      },
+      "type": "skill_leaf"
+    },
+    {
+      "cells": [
+        "Form/note/table/flow-chart/summary completion",
+        "Fill structured completion gaps from the recording while respecting layout, grammar, and stated word limits."
+      ],
+      "id": "L-QT-01",
+      "source": {
+        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "owner": "docs/product/skill-leaves.md",
+        "parent_section": "## Listening",
+        "section": "### Canonical materializer anchor \u2014 Listening completion question type"
+      },
+      "type": "skill_leaf"
+    },
+    {
+      "cells": [
         "Matching headings",
         "Match paragraph meaning to headings by main idea rather than keyword coincidence."
       ],
       "id": "R-QT-01",
       "source": {
-        "git_blob": "61994086a592860f7a1268ca8ba31217f2d2ca83",
+        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -232,7 +318,7 @@
       ],
       "id": "R-QT-02",
       "source": {
-        "git_blob": "61994086a592860f7a1268ca8ba31217f2d2ca83",
+        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -246,7 +332,7 @@
       ],
       "id": "R-QT-03",
       "source": {
-        "git_blob": "61994086a592860f7a1268ca8ba31217f2d2ca83",
+        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -255,5 +341,5 @@
     }
   ],
   "schema_version": 1,
-  "source_map_sha256": "9284c5d00004582081ee4caadfd1dee4fa6b25e347a68890393c17a2cb9e6799"
+  "source_map_sha256": "e741c66eaff854798895fe310a5f09ee8e8cf422d6a84b4ded4b899b8ed68ec7"
 }

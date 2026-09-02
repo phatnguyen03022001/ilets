@@ -113,6 +113,7 @@ func newWithClerkAuthorizationOptions(pool *pgxpool.Pool, cfg Config, logger *sl
 		r.Get("/v1/practice-modes", wrapper.ListPracticeModes)
 		r.Post("/v1/practice-activities", wrapper.CreatePracticeActivity)
 		r.Get("/v1/practice-activities/{practice_activity_id}", wrapper.GetPracticeActivity)
+		r.Get("/v1/practice-activities/{practice_activity_id}/media/{media_reference}", wrapper.GetPracticeActivityMedia)
 		r.Post("/v1/attempts", wrapper.CreateAttempt)
 		r.Get("/v1/attempts/{attempt_id}", wrapper.GetAttempt)
 		r.Post("/v1/attempts/{attempt_id}/submissions", wrapper.SubmitAttempt)
@@ -158,6 +159,9 @@ func (g *generatedServer) CreatePracticeActivity(w http.ResponseWriter, r *http.
 }
 func (g *generatedServer) GetPracticeActivity(w http.ResponseWriter, r *http.Request, id public.PracticeActivityId) {
 	g.server.getPracticeActivity(w, r, id)
+}
+func (g *generatedServer) GetPracticeActivityMedia(w http.ResponseWriter, r *http.Request, id public.PracticeActivityId, mediaReference public.MediaReference) {
+	g.server.getPracticeActivityMedia(w, r, id, mediaReference)
 }
 func (g *generatedServer) CreateAttempt(w http.ResponseWriter, r *http.Request, params public.CreateAttemptParams) {
 	g.server.createAttempt(w, r, params)

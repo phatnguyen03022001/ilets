@@ -50,6 +50,12 @@ Trains rapid identification of topic, purpose, speaker intent, and main idea fro
 
 Exercises explicit detail extraction, completion constraints, and word-limit control against eligible listening content. Attempt results remain bounded observations until normal Assessment admission gives them evidence consequence.
 
+#### Canonical materializer anchor — Listening detail and completion feature
+
+| ID | Feature | Learner experience | Primary output |
+|---|---|---|---|
+| `L-F04` | Detail & Completion Drill | exercises explicit detail extraction, completion constraints, and word-limit control against eligible listening content | bounded Listening observation |
+
 ### FTR-011 L-F05 — Paraphrase & Distractor Lab
 
 Trains recognition of paraphrase, contrast, correction, and distractor patterns without reducing the task to keyword matching. Explanations may identify the relevant evidence but cannot invent learner weakness from a product/evaluator failure.
