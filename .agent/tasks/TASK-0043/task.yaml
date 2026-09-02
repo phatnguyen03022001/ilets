@@ -1,0 +1,234 @@
+protocol_version: 3
+
+task_id: TASK-0043
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: discovered_gap
+  task_id: TASK-0042
+  gap_id: "SINGLE_READING_SLICE_MATERIALIZER_COUPLING"
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+structure_authority:
+  status: RESOLVED
+  source: >-
+    Current accepted TASK-0042 state plus canonical four-skill Objective and the concrete dev materializer implementation.
+  rationale: >-
+    The next product-breadth step is the first Listening slice. Canonical Listening feature, practice-mode, skill-leaf,
+    official-family, content-context, and AT-02 authority already exists, but tools/canonical/materialize.py hard-codes
+    tools/slice/reading-training.json and reading-specific generated registry/trace paths. Adding Listening directly would
+    either place cross-skill authority inside a misleading Reading-named global artifact or duplicate the materializer.
+    The smallest sufficient correction is to generalize this existing materialization seam before adding Listening.
+
+objective: >-
+  Remove the single-Reading-slice coupling from canonical materialization with the smallest deterministic design so the
+  existing global canonical registry can support multiple bounded slice descriptors without changing current Reading
+  product semantics. Preserve the current Reading slice exactly, create no Listening slice yet, and leave a simple
+  deterministic path for TASK-0044 to materialize the first Listening slice.
+
+scope:
+  required_changes:
+    - >-
+      Make tools/canonical/generated/registry.json the sole generated global canonical registry output. Remove the legacy
+      generated tools/canonical/generated/reading-training-registry.json after all repository references have moved.
+    - >-
+      Generalize tools/canonical/materialize.py so it deterministically discovers source slice descriptors from exactly
+      tools/slice/*.json, sorted by path/name, validates every slice reference against the same global canonical registry,
+      and writes/checks each trace at tools/slice/generated/<slice-stem>-trace.json.
+    - >-
+      Keep tools/canonical/source-map.json as the sole explicit canonical-source map. Do not add auto-discovery of canonical
+      docs, plugin hooks, registries of registries, configuration frameworks, or a second materializer.
+    - >-
+      Preserve tools/slice/reading-training.json unchanged and require its generated
+      tools/slice/generated/reading-training-trace.json to remain semantically and, unless an unavoidable deterministic
+      path-independent serialization change is proven, byte-for-byte unchanged.
+    - >-
+      Update services/core-api/cmd/seed/main.go only as required to use the new global registry path by default. Preserve
+      seed behavior, fixture behavior, content semantics, idempotency, and governance-state preservation.
+    - >-
+      Extend tools/canonical/test_materialize.py with focused tests proving deterministic multi-slice discovery/output,
+      shared global-registry reference validation, and preservation of existing source-map authority boundaries.
+    - >-
+      Regenerate only deterministic canonical outputs required by the new materializer shape. Do not add any Listening
+      feature/mode/family/content/context to source-map or generated artifacts in this task.
+    - >-
+      Construct and verify one implementation candidate. Use repository-native verification locally/native through Codex
+      when available. After the candidate is stable, create one sentinel-only child updating
+      .github/verification-boundary/candidate and require exactly one fresh GitHub Actions full ./verify PASS bound to the
+      exact candidate. Publish one report-only child only after authoritative PASS, then stop at NEEDS_REVIEW.
+
+  allowed_existing_files_or_components:
+    - tools/canonical/materialize.py
+    - tools/canonical/test_materialize.py
+    - tools/canonical/generated/reading-training-registry.json
+    - tools/slice/reading-training.json
+    - tools/slice/generated/reading-training-trace.json
+    - services/core-api/cmd/seed/main.go
+    - .github/verification-boundary/candidate
+    - .agent/tasks/TASK-0043/task.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "No learner-visible, Planner, Assessment, Progression, API, DB, Web, content, or IELTS semantic changes."
+  - "No Listening slice or Listening canonical source-map entries are introduced by TASK-0043."
+  - "tools/canonical/source-map.json remains unchanged and remains the explicit canonical-source authority map."
+  - "tools/slice/reading-training.json remains unchanged."
+  - "The global canonical registry content remains derived only from source-map + canonical owner blobs."
+  - "Each source slice descriptor is validated independently against the same generated global registry."
+  - "Slice discovery is bounded to tools/slice/*.json and deterministic; generated/ is output only."
+  - "No plugin system, loader framework, manifest-of-manifests, registry service, database, queue, workflow, or new dependency."
+  - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
+
+forbidden_changes:
+  - "Do not modify canonical docs, source-map.json, OBJECTIVE.md, CONSTITUTION.md, contracts, public/internal API semantics, DB schema/queries, Planner, Assessment, Progression, Web, content/bootstrap fixtures, providers, dependencies, or workflow definitions."
+  - "Do not add tools/slice/listening-*.json or any Listening implementation in this task."
+  - "Do not preserve reading-training-registry.json as a second generated compatibility copy after migration; there must be one global generated registry owner."
+  - "Do not make materialization recursively scan arbitrary repository JSON or canonical docs."
+  - "Do not use GitHub Actions as an iterative debugger; one fresh exact-candidate proof only after narrower verification passes."
+
+structure_policy:
+  expected_new_files:
+    - tools/canonical/generated/registry.json
+    - .agent/tasks/TASK-0043/report.yaml
+  allowed_existing_files:
+    - tools/canonical/materialize.py
+    - tools/canonical/test_materialize.py
+    - tools/canonical/generated/reading-training-registry.json
+    - tools/slice/reading-training.json
+    - tools/slice/generated/reading-training-trace.json
+    - services/core-api/cmd/seed/main.go
+    - .github/verification-boundary/candidate
+    - .agent/tasks/TASK-0043/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Canonical registry is global rather than Reading-named."
+    evidence_required: >-
+      registry.json is the sole generated global canonical registry; all live code/tool references use it and
+      reading-training-registry.json is absent from the exact candidate tree.
+  - id: AC-2
+    requirement: "Materializer supports multiple bounded slice descriptors deterministically."
+    evidence_required: >-
+      Focused tests prove sorted tools/slice/*.json discovery, deterministic per-slice trace paths, independent reference
+      validation against one global registry, and deterministic repeated output.
+  - id: AC-3
+    requirement: "Current Reading semantics do not drift."
+    evidence_required: >-
+      tools/slice/reading-training.json is unchanged; its trace retains the same slice payload and canonical reference
+      meaning; no learner/runtime/content/API semantic file changes beyond the seed registry-path wiring.
+  - id: AC-4
+    requirement: "Canonical authority boundaries remain explicit and narrow."
+    evidence_required: >-
+      source-map.json is unchanged; forbidden-source and duplicate-ID tests remain PASS; materializer does not discover
+      canonical authority outside the existing explicit source map.
+  - id: AC-5
+    requirement: "Seed behavior is unchanged except registry filename."
+    evidence_required: >-
+      Exact diff in services/core-api/cmd/seed/main.go is limited to the default canonical registry path and full repository
+      verification proves existing seed/idempotency/governance-state behavior.
+  - id: AC-6
+    requirement: "No framework expansion or premature Listening implementation occurs."
+    evidence_required: >-
+      Candidate adds no dependencies, docs/source-map changes, slice manifest framework, plugins, Listening descriptor,
+      Listening runtime/content, new services, or unrelated refactor.
+  - id: AC-7
+    requirement: "Exact candidate receives one bounded authoritative proof."
+    evidence_required: >-
+      One sentinel-only child binds the immutable implementation candidate; exactly one fresh GitHub Actions run checks out
+      that candidate detached, asserts exact HEAD, and completes full ./verify PASS before report publication.
+  - id: AC-8
+    requirement: "Publication lineage is reconstructible."
+    evidence_required: >-
+      Implementation candidate is a direct child of the exact handoff base; sentinel is sentinel-only; report is report-only
+      and a direct child of the successful sentinel; topology remains exactly {dev, main}.
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Verify exact TASK-0043 revision 1 handoff base, dev/main topology, pinned agent-skills revision, structure authority, and current execution capability before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run focused canonical materializer tests including new multi-slice cases and materialize/check determinism."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Inspect exact base-to-candidate diff and prove source-map.json and reading-training.json are unchanged, legacy registry is removed, registry.json is sole global registry, and seed change is path-only."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run repository-native ./verify on the exact candidate through the available native Codex execution surface before remote proof when feasible."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Create exactly one sentinel-only child and require exactly one fresh GitHub Actions full ./verify PASS bound to the exact candidate."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Publish one report-only child after PASS and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via one sentinel boundary"
+    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, canonical materialization PASS, generated drift checks PASS, Go/seed/integration PASS, Web/Playwright/build PASS, and full ./verify PASS"
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - native_repository_command_execution
+    - github_actions_run_read
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_read
+    - repository_content_write
+    - github_actions_run_read
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - STALE_STATE
+    - REVIEW_REQUIRED
+    - USER_STOP
+
+blocking_decisions: []
+execution_ready: true
