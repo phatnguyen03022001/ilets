@@ -1,7 +1,7 @@
 protocol_version: 3
 
 task_id: TASK-0041
-task_revision: 3
+task_revision: 4
 state: APPROVED
 
 origin:
@@ -11,6 +11,7 @@ origin:
     - POST_SAMPLED_PROGRESSION_HANDOFF
     - GENERATED_CANONICAL_ARTIFACT_DRIFT
     - GENERATED_TRACE_ARTIFACT_DRIFT
+    - PRETTIER_FORMATTER_DRIFT
 
 architect_binding:
   target_repository: phatnguyen03022001/ilets
@@ -42,36 +43,39 @@ inherited_evidence:
   rev2_handoff_base: "6cd3d2c548329dc1a20df5c98ee691f0253f1cc2"
   rev2_result: AUTHORITY_REQUIRED
   rev2_additional_required_path: "tools/slice/generated/reading-training-trace.json"
-  canonical_source_revision_before_materialization: "canonical-source-revision/v1:413fdd16ddb35e0861c8782bdef4999ee31cf746d9e210c721f33c9f82bd3bd3"
-  canonical_source_revision_expected_from_current_owner_blobs: "canonical-source-revision/v1:0fc217f4357068c4e0c5014fc1730876b920d266da032ec882a23f476c9ba864"
+  generated_candidate_rev3: "f92f51a35f45fc51737a5610f9670e65837ffaa0"
+  failed_boundary_rev3: "c4ab93ef0b95a3aec581bd8b3b0b18f4da0e9050"
+  failed_actions_run_rev3: 33598246073
+  rev3_binding_result: "exact boundary binding PASS; detached exact candidate checkout PASS; exact HEAD assertion PASS"
+  rev3_failure: "prettier --check . reported formatting issue at apps/web/src/features/today/today.test.tsx"
+  formatter_version_observed_in_authoritative_run: "prettier 3.9.6"
 
 objective: >-
-  Complete TASK-0041 without changing the revision-1 product semantics by running the repository-native
-  deterministic materializer and admitting exactly the two generated outputs that it is proven to render
-  from one shared canonical_source_revision: the Reading training registry and the Reading training trace.
-  Then verify the resulting exact immutable candidate through one new sentinel boundary and publish the
+  Complete TASK-0041 without changing its product behavior or generated provenance by applying only the
+  repository-pinned deterministic Prettier normalization required for apps/web/src/features/today/today.test.tsx,
+  then verify the resulting exact immutable candidate through one new sentinel boundary and publish the
   canonical terminal report.
 
 scope:
   required_changes:
-    - "Refresh exact refs/topology/task and require dev equals the exact revision-3 handoff base with topology exactly {dev, main}."
-    - "Preserve semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b exactly. Do not modify, amend, replay, reformat, reinterpret, or revert its seven semantic files."
-    - "Run the repository-native deterministic canonical materializer against the current tree."
-    - "Authorize exactly these generated tracked outputs from that materialization: tools/canonical/generated/reading-training-registry.json and tools/slice/generated/reading-training-trace.json."
-    - "Require both outputs to share the same newly computed canonical_source_revision derived from the exact current canonical owner blobs."
-    - "Require generated provenance to bind current canonical owners exactly; do not hand-edit generated semantic entries or revision fields."
-    - "If materialization changes any tracked file beyond those exact two generated paths, stop AUTHORITY_REQUIRED and report the additional path set."
-    - "Create exactly one revision-3 correction candidate from the exact handoff base. Its only non-task changes must be the two generated outputs above."
-    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-3 correction candidate SHA."
-    - "Require one new repository-native GitHub Actions verify run to bind that exact candidate, checkout detached, assert exact HEAD, and complete ./verify PASS."
-    - "Do not rerun or mutate the failed revision-1 run; revision 3 uses one new exact verification boundary/run."
+    - "Refresh exact refs/topology/task and require dev equals the exact revision-4 handoff base with topology exactly {dev, main}."
+    - "Treat semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b as the product-semantic reference and generated candidate f92f51a35f45fc51737a5610f9670e65837ffaa0 as the accepted deterministic generated-state reference."
+    - "Apply the repository-pinned Prettier formatter used by ./verify to exactly apps/web/src/features/today/today.test.tsx. Do not hand-format or edit assertions, literals, identifiers, test ordering, mocks, callbacks, expected learner copy, or behavior."
+    - "The formatter correction must be semantics-neutral and exactly formatter-produced. No product, test-intent, assertion, or runtime meaning may change."
+    - "Do not modify the two generated outputs from revision 3; tools/canonical/generated/reading-training-registry.json and tools/slice/generated/reading-training-trace.json must remain byte-identical to f92f51a35f45fc51737a5610f9670e65837ffaa0."
+    - "Do not modify the other six revision-1 semantic files. The only revision-1 path permitted to differ is apps/web/src/features/today/today.test.tsx, and only by deterministic Prettier normalization."
+    - "Create exactly one revision-4 formatter correction candidate from the exact handoff base. Its only non-task changed path must be apps/web/src/features/today/today.test.tsx."
+    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-4 candidate SHA."
+    - "Require one new repository-native GitHub Actions verify run to bind that exact candidate, checkout detached, assert exact HEAD, and complete full ./verify PASS including canonical materialization and prettier --check ."
+    - "Do not rerun or mutate prior failed runs. Revision 4 gets one new exact verification boundary/run."
     - "Only after authoritative PASS publish exactly one report-only direct child at .agent/tasks/TASK-0041/report.yaml and stop at NEEDS_REVIEW."
 
   forbidden_changes:
-    - "Do not modify docs/data/evidence-progression-content.md, docs/behavior/planner-and-lifecycle.md, services/core-api/internal/progression/sampled_reading.go, services/core-api/internal/progression/sampled_reading_test.go, services/core-api/internal/planner/kernel_test.go, services/core-api/internal/httpapi/planner_integration_test.go, or apps/web/src/features/today/today.test.tsx."
-    - "Do not modify Assessment, Planner production kernel, content/bootstrap fixtures, seed supply, Skill Leaf IDs, public API/schema/generated API bindings, DB schema/migrations/queries, auth, providers, workflows, validator/materializer code, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, topology, main, tags, releases, or deployment."
+    - "Do not semantically edit apps/web/src/features/today/today.test.tsx; formatter output only."
+    - "Do not modify docs/data/evidence-progression-content.md, docs/behavior/planner-and-lifecycle.md, services/core-api/internal/progression/sampled_reading.go, services/core-api/internal/progression/sampled_reading_test.go, services/core-api/internal/planner/kernel_test.go, or services/core-api/internal/httpapi/planner_integration_test.go."
+    - "Do not modify tools/canonical/generated/reading-training-registry.json or tools/slice/generated/reading-training-trace.json in revision 4."
+    - "Do not modify Assessment, Planner production kernel, content/bootstrap fixtures, seed supply, Skill Leaf IDs, public API/schema/generated API bindings, DB schema/migrations/queries, auth, providers, workflows, validator/materializer code, formatter configuration, package/dependency versions, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, topology, main, tags, releases, or deployment."
     - "Do not add content supply or infer Band, mastery, readiness, learner weakness, score thresholds, calibration, recency, quantity, diversity, or confidence rules."
-    - "Do not hand-edit generated outputs to force verification; use repository-native deterministic materialization only."
     - "Do not perform unrelated cleanup, formatting sweeps, framework expansion, or iterative CI debugging loops."
 
 structure_policy:
@@ -79,8 +83,7 @@ structure_policy:
     - .agent/tasks/TASK-0041/report.yaml
   allowed_existing_files:
     - .agent/tasks/TASK-0041/task.yaml
-    - tools/canonical/generated/reading-training-registry.json
-    - tools/slice/generated/reading-training-trace.json
+    - apps/web/src/features/today/today.test.tsx
     - .github/verification-boundary/candidate
   unlisted_new_files:
     allowed: false
@@ -88,45 +91,42 @@ structure_policy:
   allow_new_top_level_directories: false
 
 invariants:
-  - "Revision-1 semantic bytes remain unchanged and continue to define TASK-0041 product semantics."
-  - "Revision 3 is deterministic generated-artifact reconciliation only, not semantic redesign."
-  - "Registry and trace are rendered together from one canonical_source_revision and must agree on that revision."
-  - "No tracked path outside the exact generated pair may change in the correction candidate."
+  - "TASK-0041 product semantics remain those established by 84139d4433bf62635aa501c57c8bcb19dc8e0b3b; revision 4 changes formatting only."
+  - "Generated registry and trace remain exact to f92f51a35f45fc51737a5610f9670e65837ffaa0."
+  - "Only apps/web/src/features/today/today.test.tsx may change in the formatter correction candidate."
+  - "Repository-pinned Prettier, not manual judgment, determines the correction bytes."
   - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "Revision-1 semantic bytes remain exact."
-    evidence_required: "No revision-1 semantic path changes after 84139d4433bf62635aa501c57c8bcb19dc8e0b3b."
+    requirement: "Formatter correction is exactly bounded and semantics-neutral."
+    evidence_required: "Diff from revision-4 handoff base to correction candidate changes only apps/web/src/features/today/today.test.tsx and matches repository-pinned Prettier output without assertion/test-intent changes."
   - id: AC-2
-    requirement: "Repository-native materialization produces exactly the authorized generated pair."
-    evidence_required: "Diff from revision-3 handoff base to correction candidate changes only tools/canonical/generated/reading-training-registry.json and tools/slice/generated/reading-training-trace.json."
+    requirement: "Prior semantic and generated state remains intact."
+    evidence_required: "Candidate ancestry preserves 84139d4433bf62635aa501c57c8bcb19dc8e0b3b and f92f51a35f45fc51737a5610f9670e65837ffaa0; the six other semantic files plus both generated files are byte-identical to their inherited references."
   - id: AC-3
-    requirement: "Generated provenance is coherent."
-    evidence_required: "Registry and trace share canonical-source-revision/v1:0fc217f4357068c4e0c5014fc1730876b920d266da032ec882a23f476c9ba864 or the exact repository-native equivalent recomputed from unchanged current owner blobs, and provenance references current canonical source blobs."
+    requirement: "Formatting gate is closed."
+    evidence_required: "Repository-native prettier --check . PASSes on the exact candidate."
   - id: AC-4
-    requirement: "Original TASK-0041 product behavior remains intact."
-    evidence_required: "Candidate ancestry preserves semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b and no later semantic mutation exists."
+    requirement: "Authoritative full verification passes."
+    evidence_required: "One new sentinel-only boundary binds the correction candidate; detached checkout, exact HEAD assertion, canonical materialization, formatter check, and full ./verify all PASS."
   - id: AC-5
-    requirement: "Authoritative exact-candidate verification passes."
-    evidence_required: "One new sentinel-only boundary binds the correction candidate; detached checkout, exact HEAD assertion, canonical materialization, and full ./verify all PASS."
-  - id: AC-6
     requirement: "Terminal publication is report-only."
     evidence_required: "report.yaml is a direct child of the successful sentinel boundary and its only changed file."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Verify exact revision-3 handoff base, topology {dev, main}, task revision 3, semantic candidate identity, failed rev1 evidence, and rev2 AUTHORITY_REQUIRED evidence."
+      command_or_check: "Verify exact revision-4 handoff base, topology {dev, main}, task revision 4, inherited semantic/generated candidate identities, and failed rev3 run evidence."
       required: true
     - id: CHECK-2
-      command_or_check: "Run repository-native materializer and require the tracked diff to contain exactly the registry and trace generated paths, with no third path."
+      command_or_check: "Run repository-pinned Prettier only on apps/web/src/features/today/today.test.tsx; require the tracked diff to contain exactly that path and prove no semantic/test-intent edit."
       required: true
     - id: CHECK-3
-      command_or_check: "Create one correction candidate and independently prove semantic paths unchanged and generated provenance/revision coherent."
+      command_or_check: "Create one formatter correction candidate; independently verify generated pair and six other semantic files are unchanged."
       required: true
     - id: CHECK-4
-      command_or_check: "Create one sentinel-only verification child and require one new GitHub Actions verify run with exact binding, detached exact candidate HEAD, and ./verify PASS."
+      command_or_check: "Create one sentinel-only verification child and require one new GitHub Actions verify run with exact binding, detached exact candidate HEAD, and full ./verify PASS."
       required: true
     - id: CHECK-5
       command_or_check: "Publish report-only child and stop at NEEDS_REVIEW."
@@ -134,7 +134,7 @@ verification:
   authoritative_verification:
     required: true
     mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
-    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, canonical materialization PASS, and ./verify PASS"
+    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, canonical materialization PASS, prettier --check . PASS, and full ./verify PASS"
 
 capability_requirements:
   EXECUTION:
@@ -143,6 +143,7 @@ capability_requirements:
     - repository_git_object_write
     - non_force_ref_update
     - exact_diff_inspection
+    - repository_pinned_formatter_execution
     - repository_native_deterministic_verification_execution
     - github_actions_run_read
   REVIEW:
