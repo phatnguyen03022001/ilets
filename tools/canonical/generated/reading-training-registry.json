@@ -1,6 +1,6 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:413fdd16ddb35e0861c8782bdef4999ee31cf746d9e210c721f33c9f82bd3bd3",
+  "canonical_source_revision": "canonical-source-revision/v1:0fc217f4357068c4e0c5014fc1730876b920d266da032ec882a23f476c9ba864",
   "entries": [
     {
       "cells": [],
@@ -33,7 +33,7 @@
       ],
       "id": "AT-02",
       "source": {
-        "git_blob": "c200edf700c6821178c4407881ad91f5417dff58",
+        "git_blob": "d65401b8c0772500724e33260fc3f25b565506cb",
         "owner": "docs/data/evidence-progression-content.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 objective receptive assessment"
@@ -47,7 +47,7 @@
       ],
       "id": "CTX-READING-ACADEMIC",
       "source": {
-        "git_blob": "c200edf700c6821178c4407881ad91f5417dff58",
+        "git_blob": "d65401b8c0772500724e33260fc3f25b565506cb",
         "owner": "docs/data/evidence-progression-content.md",
         "parent_section": null,
         "section": "### Stable Content Context registry"
