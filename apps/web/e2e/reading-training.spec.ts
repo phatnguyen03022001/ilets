@@ -160,7 +160,9 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
     }),
   );
   expect(supplyBlocker.blocking_consequence).toMatch(/\S/);
-  await expect(page.getByText(supplyBlocker.blocking_consequence)).toBeVisible();
+  await expect(
+    page.getByText(supplyBlocker.blocking_consequence),
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Recommended next" }),
   ).toHaveCount(0);
