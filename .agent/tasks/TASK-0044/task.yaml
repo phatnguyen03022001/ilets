@@ -1,7 +1,7 @@
 protocol_version: 3
 
 task_id: TASK-0044
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
@@ -223,9 +223,10 @@ scope:
     - tools/canonical/generated/registry.json
     - tools/slice/generated/reading-training-trace.json
     - contracts/http/public.openapi.yaml
-    - apps/web/src/generated/public-v1.ts
+    - apps/web/src/generated/public/**
     - services/core-api/cmd/seed/main.go
     - services/core-api/internal/generated/openapi/public/public.gen.go
+    - services/core-api/internal/generated/openapi/bindings_test.go
     - services/core-api/internal/httpapi/server.go
     - services/core-api/internal/httpapi/activity.go
     - services/core-api/internal/httpapi/attempt.go
@@ -277,9 +278,10 @@ structure_policy:
     - tools/canonical/generated/registry.json
     - tools/slice/generated/reading-training-trace.json
     - contracts/http/public.openapi.yaml
-    - apps/web/src/generated/public-v1.ts
+    - apps/web/src/generated/public/**
     - services/core-api/cmd/seed/main.go
     - services/core-api/internal/generated/openapi/public/public.gen.go
+    - services/core-api/internal/generated/openapi/bindings_test.go
     - services/core-api/internal/httpapi/server.go
     - services/core-api/internal/httpapi/activity.go
     - services/core-api/internal/httpapi/attempt.go
@@ -351,7 +353,7 @@ acceptance_criteria:
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Verify exact TASK-0044 revision 1 handoff base, dev/main topology, pinned agent-skills revision, read-only agent-documents/agent-standards v1.0.0 identities, external Commons source availability/rights, structure authority, and native execution capability before mutation."
+      command_or_check: "Verify exact TASK-0044 revision 2 handoff base, dev/main topology, pinned agent-skills revision, read-only agent-documents/agent-standards v1.0.0 identities, external Commons source availability/rights, structure authority, and native execution capability before mutation."
       required: true
     - id: CHECK-2
       command_or_check: "Run canonical materialization and focused multi-slice checks; prove the Listening trace uses the corrected binding and Reading slice payload is unchanged apart from deterministic global revision/hash metadata."
