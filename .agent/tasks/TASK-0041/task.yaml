@@ -1,13 +1,16 @@
 protocol_version: 3
 
 task_id: TASK-0041
-task_revision: 2
+task_revision: 3
 state: APPROVED
 
 origin:
   type: correction
   task_id: TASK-0041
-  gap_ids: [POST_SAMPLED_PROGRESSION_HANDOFF, GENERATED_CANONICAL_ARTIFACT_DRIFT]
+  gap_ids:
+    - POST_SAMPLED_PROGRESSION_HANDOFF
+    - GENERATED_CANONICAL_ARTIFACT_DRIFT
+    - GENERATED_TRACE_ARTIFACT_DRIFT
 
 architect_binding:
   target_repository: phatnguyen03022001/ilets
@@ -32,51 +35,44 @@ execution_skills:
   recommended: []
 
 inherited_evidence:
-  revision_1_semantic_candidate: "84139d4433bf62635aa501c57c8bcb19dc8e0b3b"
-  revision_1_failed_boundary: "b321b4aefab00a3b6247f16ed78bb7fbdb508eed"
-  revision_1_actions_run: 33590220228
-  failure_class: GENERATED_CANONICAL_ARTIFACT_DRIFT
-  exact_failure: "canonical materialization failed: generated artifact drift: tools/canonical/generated/reading-training-registry.json"
-  binding_status: >-
-    Exact boundary binding, detached candidate checkout, and exact HEAD assertion passed before ./verify failed.
-    Revision 2 must preserve the revision-1 semantic bytes and correct only the deterministic generated artifact
-    required by canonical materialization.
-
-authority_sources:
-  - source: "phatnguyen03022001/ilets@84139d4433bf62635aa501c57c8bcb19dc8e0b3b"
-    role: "Immutable revision-1 semantic implementation candidate to preserve exactly."
-    precedence: 1
-  - source: "GitHub Actions run 33590220228 attempt 1"
-    role: "Authoritative proof that revision 1 failed only at generated canonical artifact drift after exact candidate binding."
-    precedence: 2
-  - source: "phatnguyen03022001/ilets@84139d4433bf62635aa501c57c8bcb19dc8e0b3b:docs/data/evidence-progression-content.md"
-    role: "Canonical source whose blob/provenance changed and requires deterministic registry rematerialization."
-    precedence: 3
+  semantic_candidate_rev1: "84139d4433bf62635aa501c57c8bcb19dc8e0b3b"
+  failed_boundary_rev1: "b321b4aefab00a3b6247f16ed78bb7fbdb508eed"
+  failed_actions_run_rev1: 33590220228
+  rev1_failure: "canonical materialization failed: generated artifact drift: tools/canonical/generated/reading-training-registry.json"
+  rev2_handoff_base: "6cd3d2c548329dc1a20df5c98ee691f0253f1cc2"
+  rev2_result: AUTHORITY_REQUIRED
+  rev2_additional_required_path: "tools/slice/generated/reading-training-trace.json"
+  canonical_source_revision_before_materialization: "canonical-source-revision/v1:413fdd16ddb35e0861c8782bdef4999ee31cf746d9e210c721f33c9f82bd3bd3"
+  canonical_source_revision_expected_from_current_owner_blobs: "canonical-source-revision/v1:0fc217f4357068c4e0c5014fc1730876b920d266da032ec882a23f476c9ba864"
 
 objective: >-
-  Complete TASK-0041 without changing its accepted semantic design by rematerializing the deterministic
-  canonical generated registry required by the revision-1 canonical-doc mutation, then verify the resulting
-  exact immutable candidate through one new sentinel boundary and publish the terminal report.
+  Complete TASK-0041 without changing the revision-1 product semantics by running the repository-native
+  deterministic materializer and admitting exactly the two generated outputs that it is proven to render
+  from one shared canonical_source_revision: the Reading training registry and the Reading training trace.
+  Then verify the resulting exact immutable candidate through one new sentinel boundary and publish the
+  canonical terminal report.
 
 scope:
   required_changes:
-    - "Refresh exact refs/topology/task and require dev equals the exact revision-2 handoff base with topology exactly {dev, main}."
-    - "Treat revision-1 semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b as immutable semantic evidence. Do not amend, revert, replay, reformat, or reinterpret its seven semantic files."
-    - "Generate repository-native deterministic canonical materialization for the current tree and update tools/canonical/generated/reading-training-registry.json to exactly the output required by the canonical materializer."
-    - "The generated correction must reflect current canonical source revision/provenance, including the changed docs/data/evidence-progression-content.md source blob, without hand-editing semantic registry entries."
-    - "If repository-native materialization deterministically changes any additional already-tracked file beyond tools/canonical/generated/reading-training-registry.json, stop AUTHORITY_REQUIRED and report the exact additional path instead of expanding scope silently."
-    - "Create exactly one revision-2 implementation candidate from the exact handoff base. Its only non-task semantic/derived change must be tools/canonical/generated/reading-training-registry.json."
-    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-2 candidate SHA."
-    - "Require repository-native GitHub Actions verify to bind the exact new candidate, checkout it detached, assert exact HEAD, and complete ./verify PASS."
-    - "Do not rerun or mutate the failed revision-1 run; revision 2 gets one new exact verification boundary/run."
-    - "Only after authoritative PASS publish exactly one report-only child at .agent/tasks/TASK-0041/report.yaml and stop at NEEDS_REVIEW."
+    - "Refresh exact refs/topology/task and require dev equals the exact revision-3 handoff base with topology exactly {dev, main}."
+    - "Preserve semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b exactly. Do not modify, amend, replay, reformat, reinterpret, or revert its seven semantic files."
+    - "Run the repository-native deterministic canonical materializer against the current tree."
+    - "Authorize exactly these generated tracked outputs from that materialization: tools/canonical/generated/reading-training-registry.json and tools/slice/generated/reading-training-trace.json."
+    - "Require both outputs to share the same newly computed canonical_source_revision derived from the exact current canonical owner blobs."
+    - "Require generated provenance to bind current canonical owners exactly; do not hand-edit generated semantic entries or revision fields."
+    - "If materialization changes any tracked file beyond those exact two generated paths, stop AUTHORITY_REQUIRED and report the additional path set."
+    - "Create exactly one revision-3 correction candidate from the exact handoff base. Its only non-task changes must be the two generated outputs above."
+    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-3 correction candidate SHA."
+    - "Require one new repository-native GitHub Actions verify run to bind that exact candidate, checkout detached, assert exact HEAD, and complete ./verify PASS."
+    - "Do not rerun or mutate the failed revision-1 run; revision 3 uses one new exact verification boundary/run."
+    - "Only after authoritative PASS publish exactly one report-only direct child at .agent/tasks/TASK-0041/report.yaml and stop at NEEDS_REVIEW."
 
   forbidden_changes:
-    - "Do not modify any of the seven revision-1 semantic files: docs/data/evidence-progression-content.md, docs/behavior/planner-and-lifecycle.md, services/core-api/internal/progression/sampled_reading.go, services/core-api/internal/progression/sampled_reading_test.go, services/core-api/internal/planner/kernel_test.go, services/core-api/internal/httpapi/planner_integration_test.go, apps/web/src/features/today/today.test.tsx."
-    - "Do not modify Assessment, Planner production kernel, content/bootstrap fixtures, seed supply, Skill Leaf IDs, API/schema/generated bindings, DB schema/migrations/queries, auth, providers, workflows, validator/materializer code, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, topology, main, tags, releases, or deployment."
+    - "Do not modify docs/data/evidence-progression-content.md, docs/behavior/planner-and-lifecycle.md, services/core-api/internal/progression/sampled_reading.go, services/core-api/internal/progression/sampled_reading_test.go, services/core-api/internal/planner/kernel_test.go, services/core-api/internal/httpapi/planner_integration_test.go, or apps/web/src/features/today/today.test.tsx."
+    - "Do not modify Assessment, Planner production kernel, content/bootstrap fixtures, seed supply, Skill Leaf IDs, public API/schema/generated API bindings, DB schema/migrations/queries, auth, providers, workflows, validator/materializer code, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, topology, main, tags, releases, or deployment."
     - "Do not add content supply or infer Band, mastery, readiness, learner weakness, score thresholds, calibration, recency, quantity, diversity, or confidence rules."
-    - "Do not hand-edit generated semantic entries to force verification; use repository-native deterministic materialization only."
-    - "Do not perform unrelated cleanup, formatting sweeps, framework expansion, or CI debugging loops."
+    - "Do not hand-edit generated outputs to force verification; use repository-native deterministic materialization only."
+    - "Do not perform unrelated cleanup, formatting sweeps, framework expansion, or iterative CI debugging loops."
 
 structure_policy:
   expected_new_files:
@@ -84,6 +80,7 @@ structure_policy:
   allowed_existing_files:
     - .agent/tasks/TASK-0041/task.yaml
     - tools/canonical/generated/reading-training-registry.json
+    - tools/slice/generated/reading-training-trace.json
     - .github/verification-boundary/candidate
   unlisted_new_files:
     allowed: false
@@ -91,39 +88,42 @@ structure_policy:
   allow_new_top_level_directories: false
 
 invariants:
-  - "Revision-1 semantic candidate bytes remain unchanged and continue to define TASK-0041 product semantics."
-  - "Revision 2 is a deterministic generated-artifact correction, not a semantic redesign."
-  - "Generated registry output must be reproducible from current canonical sources and must not contain manual semantic invention."
-  - "The final verified candidate still contains the revision-1 Progression handoff semantics and no new product scope."
+  - "Revision-1 semantic bytes remain unchanged and continue to define TASK-0041 product semantics."
+  - "Revision 3 is deterministic generated-artifact reconciliation only, not semantic redesign."
+  - "Registry and trace are rendered together from one canonical_source_revision and must agree on that revision."
+  - "No tracked path outside the exact generated pair may change in the correction candidate."
   - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "Revision-1 semantic bytes are preserved exactly."
-    evidence_required: "Diff from revision-2 handoff base to revision-2 candidate changes only tools/canonical/generated/reading-training-registry.json."
+    requirement: "Revision-1 semantic bytes remain exact."
+    evidence_required: "No revision-1 semantic path changes after 84139d4433bf62635aa501c57c8bcb19dc8e0b3b."
   - id: AC-2
-    requirement: "Canonical generated artifact is deterministically rematerialized."
-    evidence_required: "Repository-native materializer/check reports no generated artifact drift and registry provenance/current canonical-source revision match the current canonical source tree."
+    requirement: "Repository-native materialization produces exactly the authorized generated pair."
+    evidence_required: "Diff from revision-3 handoff base to correction candidate changes only tools/canonical/generated/reading-training-registry.json and tools/slice/generated/reading-training-trace.json."
   - id: AC-3
-    requirement: "Original TASK-0041 product semantics remain intact."
-    evidence_required: "Exact candidate ancestry contains 84139d4433bf62635aa501c57c8bcb19dc8e0b3b unchanged; no seven semantic files are modified after that candidate."
+    requirement: "Generated provenance is coherent."
+    evidence_required: "Registry and trace share canonical-source-revision/v1:0fc217f4357068c4e0c5014fc1730876b920d266da032ec882a23f476c9ba864 or the exact repository-native equivalent recomputed from unchanged current owner blobs, and provenance references current canonical source blobs."
   - id: AC-4
-    requirement: "Authoritative verification passes on the new immutable candidate."
-    evidence_required: "New sentinel-only boundary binds exact revision-2 candidate; detached checkout + exact HEAD assertion + ./verify all PASS."
+    requirement: "Original TASK-0041 product behavior remains intact."
+    evidence_required: "Candidate ancestry preserves semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b and no later semantic mutation exists."
   - id: AC-5
+    requirement: "Authoritative exact-candidate verification passes."
+    evidence_required: "One new sentinel-only boundary binds the correction candidate; detached checkout, exact HEAD assertion, canonical materialization, and full ./verify all PASS."
+  - id: AC-6
     requirement: "Terminal publication is report-only."
-    evidence_required: "report.yaml is a direct child of the successful sentinel boundary and is its only changed file."
+    evidence_required: "report.yaml is a direct child of the successful sentinel boundary and its only changed file."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Verify exact handoff base, topology {dev, main}, inherited revision-1 candidate/boundary/run identities, and current task revision 2."
+      command_or_check: "Verify exact revision-3 handoff base, topology {dev, main}, task revision 3, semantic candidate identity, failed rev1 evidence, and rev2 AUTHORITY_REQUIRED evidence."
       required: true
     - id: CHECK-2
-      command_or_check: "Run repository-native canonical materialization/check locally on the execution surface if available; require the only tracked generated correction to be tools/canonical/generated/reading-training-registry.json."
+      command_or_check: "Run repository-native materializer and require the tracked diff to contain exactly the registry and trace generated paths, with no third path."
       required: true
     - id: CHECK-3
-      command_or_check: "Create one correction candidate; prove its diff from exact handoff base changes only the generated registry and preserves revision-1 semantic files byte-for-byte."
+      command_or_check: "Create one correction candidate and independently prove semantic paths unchanged and generated provenance/revision coherent."
       required: true
     - id: CHECK-4
       command_or_check: "Create one sentinel-only verification child and require one new GitHub Actions verify run with exact binding, detached exact candidate HEAD, and ./verify PASS."
