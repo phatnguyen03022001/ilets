@@ -1,0 +1,255 @@
+protocol_version: 3
+
+task_id: TASK-0042
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0041
+  gap_ids:
+    - FRESH_SAMPLED_READING_SUPPLY
+    - HARDCODED_SAMPLED_ASSESSMENT_IDENTITY
+    - CONTENT_DERIVED_SAMPLED_SCOPE
+    - PUBLIC_CONTRACT_CONTENT_REVISION_EXPANSION
+    - DETERMINISTIC_DERIVED_ARTIFACT_UPDATE
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Accepted dev truth after TASK-0041 review; classification sampled Reading path is verified and the remaining post-sample blocker is fresh eligible content supply."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0041/review.yaml@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Accepted evidence that one admitted sampled Reading observation remains coverage-only NEEDS_MORE_EVIDENCE and that no Band/readiness/mastery inference is authorized."
+    precedence: 2
+  - source: "docs/product/skill-leaves.md@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Canonical Reading Skill Leaf authority including R-QT-01 for matching-headings question-type strategy."
+    precedence: 3
+  - source: "docs/behavior/practice-and-media.md@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Canonical practice authority: PM-R04 Headings & Structure is backed by PT-13; ASSESSMENT and ASSESSMENT_MAY_ADMIT remain the bounded activity/evidence roles."
+    precedence: 4
+  - source: "docs/BEHAVIOR.md@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Canonical feature authority containing R-F05 Headings & Structure."
+    precedence: 5
+  - source: "docs/product/ielts-exam-and-bands.md@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Canonical IELTS family authority containing IELTS-R-QF-05 Matching headings."
+    precedence: 6
+  - source: "docs/data/evidence-progression-content.md@636fff42a3059199b784b5186d6e3aee94ef20b3"
+    role: "Canonical Assessment/Evidence authority: AT-02 permits keyed objective receptive measurement and admitted evidence is scoped to what was actually measured."
+    precedence: 7
+
+objective: >-
+  Close the first real fresh-sample continuation after the accepted Academic Reading classification sample. Materialize one additional owned synthetic AT-02 Matching Headings assessment revision and generalize only the existing sampled Reading path from one hard-coded classification revision/scope to content-derived canonical scope plus deterministic fresh-revision selection. After assessment-001 has already been assigned/submitted, Planner must be able to recommend and assign assessment-002 when it is current, PASS, ACTIVE, assignment-eligible, and unseen for that learner. Submission of assessment-002 may admit evidence only for its measured R-QT-01 scope and must not infer Band, readiness, mastery, weakness, or broader Reading ability. When no eligible unseen sampled revision remains, the existing FreshSampleContentGap behavior remains authoritative.
+
+execution_routing:
+  operator_environment: "phone-only; macOS unavailable; Codex available"
+  primary_surface: "ChatGPT + GitHub"
+  agent_runtime:
+    permitted: false
+  codex:
+    permitted: true
+    required_for:
+      - "Repository-native deterministic generation for canonical registry/trace, sqlc outputs, and public OpenAPI bindings."
+      - "Repository-pinned formatting plus focused Go/TypeScript/Playwright verification that cannot be executed on the phone-only primary surface."
+      - "Assembling the exact atomic implementation candidate when multi-file Git-object construction cannot be truthfully reproduced through the primary surface."
+    forbidden_for:
+      - "Product redesign, Band/readiness policy changes, new assessment frameworks, or unrelated cleanup."
+      - "Agent Runtime probing or use."
+      - "Changing dependencies, workflow topology, deployment, provider architecture, or unrelated product surfaces."
+    return_to_primary_surface_after_candidate: true
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task and require dev equals the exact TASK-0042 revision-1 handoff base with topology exactly {dev, main}."
+    - "Preserve the entire accepted TASK-0041 lineage and semantics. Existing reading-assessment-001 fixture identity, provenance, validation decision, learner-visible classification behavior, and admitted R-QT-02/R-QT-03 evidence semantics are immutable and must remain compatible."
+    - "Add exactly one new owned synthetic bootstrap assessment fixture at services/core-api/internal/bootstrap/reading-assessment-002.json with content_id reading-bootstrap-assessment-002 and revision_id reading-bootstrap-assessment-002-r1."
+    - "The new fixture must remain Academic Reading, primary_activity_purpose ASSESSMENT, evidence_candidacy ASSESSMENT_MAY_ADMIT, assessment_type_ref AT-02, content_context_id CTX-READING-ACADEMIC, feature_id R-F05, practice_mode_id PM-R04, practice_type_ids [PT-13], skill_target_ids [R-QT-01], and official_family_ids [IELTS-R-QF-05]."
+    - "Use repository-owned original synthetic passage/item material only. Do not copy or closely reproduce official IELTS questions/passages. Provide at least two keyed single-selection matching-headings items compatible with the existing learner-safe material shape; hidden correct choices/explanations remain server-side until the existing reveal/evaluation path permits them."
+    - "Keep validation policy version bootstrap-reading-assessment-v1 for bootstrap schema/invariant continuity. Give the new immutable validation decision its own identity and use an assessment-specific intended-use token that truthfully denotes sampled headings rather than mislabeling it as classification. Do not mutate the existing assessment-001 validation decision."
+    - "Extend the seed default fixture list to include reading-assessment-002.json. Generalize seed item validation only as far as required for supported sampled Reading objective single-selection families: preserve exact T/F/NG and Y/N/NG checks for IELTS-R-QF-02/03, permit the new IELTS-R-QF-05 keyed choices, require correct_choice membership, and continue rejecting malformed/unknown canonical refs."
+    - "Extend tools/canonical/source-map.json to materialize the already-canonical IDs R-F05, PM-R04, R-QT-01, and IELTS-R-QF-05 from existing canonical docs sections. Reuse PT-13 and existing AT-02/context/purpose/candidacy registries. Do not add synthetic anchor prose merely to satisfy the materializer when an existing canonical table already owns the row."
+    - "Run the repository-native canonical materializer and commit every deterministic output it actually changes. At minimum this includes tools/canonical/generated/reading-training-registry.json and tools/slice/generated/reading-training-trace.json with one shared current canonical_source_revision. Do not hand-edit generated bytes."
+    - "Generalize sampled AT-02 interpretation so admitted evidence scope is supplied from the exact assigned content/activity canonical target IDs rather than hard-coded R-QT-02/R-QT-03. Preserve BroaderClaimEvaluated=false and the existing admission conditions/policy. The function must defensively preserve exact measured scope and must not manufacture targets that were not on the assigned content."
+    - "Generalize learner-safe assessment activity projection to derive practice_mode_id, practice_type_ids, canonical_target_ids, official_family_ids, context, and learner task material from the validated assigned content payload instead of hard-coding classification IDs. Preserve the existing direct PM-R03 training behavior."
+    - "Generalize sampled assessment runtime validation only enough to accept the two bounded canonical bootstrap assessment shapes. It must still require Academic, AT-02, ASSESSMENT, ASSESSMENT_MAY_ADMIT, current PASS validation, ACTIVE operational state, assignment eligibility, canonical refs, safe learner material, and existing assistance/exposure facts."
+    - "Replace planner/content-selection semantics that equate any prior sampled assignment with no fresh supply. Planner must select one current eligible sampled Reading assessment revision that has not previously been assigned to this learner, deterministically. If assessment-001 was assigned and assessment-002 remains eligible/unseen, the next DailyPlan must contain assessment-002 rather than FreshSampleContentGap."
+    - "Remove the planner kernel dependency on the literal reading-bootstrap-assessment-001-r1. Model the relevant evidence input as fresh eligible sampled supply, not merely prior sampled assignment. Preserve General Training/target-unresolved behavior and preserve FreshSampleContentGap exactly when no eligible unseen sampled assessment revision exists."
+    - "Generalize SQL/sqlc queries used for sampled planning, current-content recheck, prior-assignment protection, and evidence lookup so they do not pin reading-bootstrap-assessment-001-r1. Exclude revisions already assigned to the learner; do not infer actual exposure beyond stored assignment/exposure facts. Use deterministic ordering for fresh selection."
+    - "Planned assignment must recheck the exact plan-item content revision against current validation/use state and reject stale/ineligible content. It must block re-assignment of the same revision while allowing a different fresh eligible sampled revision."
+    - "Generalize submission/evidence recording only where required to carry the exact content-derived AT-02 target scope into the admitted EvidenceFact. Existing assessment-001 submission must still produce only R-QT-02/R-QT-03 scope; assessment-002 submission must produce only R-QT-01 scope."
+    - "Update canonical planner/evidence docs only where current text says the first prior sampled assignment necessarily implies fresh-content supply blockage. New canonical wording must say FreshSampleContentGap is a product-supply condition reached when no eligible unseen sampled revision is available, not a learner weakness or evidence threshold."
+    - "Extend contracts/http/public.openapi.yaml only to admit reading-bootstrap-assessment-002-r1 anywhere the exact ContentRevision ID is enumerated. Do not redesign schemas or broaden unrelated enums. Regenerate repository-native Go/TypeScript OpenAPI outputs; do not hand-edit generated bindings."
+    - "Update focused planner/assessment/http integration tests first so they prove: initial plan can choose assessment-001; after assessment-001 assignment/submission and admitted scoped evidence, the next plan chooses assessment-002; assignment of assessment-002 succeeds while duplicate assignment of the same revision is blocked; assessment-002 submission records only R-QT-01; after both bounded revisions are no longer fresh, FreshSampleContentGap returns."
+    - "Update the existing Playwright sampled Reading path to the new authoritative post-assessment-001 outcome: Today shows a fresh recommended assessment-002 item instead of the old content_assets blocker. Continue using stable metadata/identity assertions rather than long learner-visible copy. If the E2E continues through assessment-002, it must prove the final no-fresh-supply blocker without inventing broader learner conclusions."
+    - "Use repository-native generators, gofmt, repository-pinned Prettier, focused tests, and materializer checks before publishing the candidate. Do not hand-normalize generated or formatter-owned output."
+    - "Publish exactly one atomic TASK-0042 implementation candidate from the exact handoff base. The candidate may contain only the authorized semantic files, the new fixture, and deterministic generated outputs. No intermediate implementation commits may be pushed to dev."
+    - "After local/Codex focused checks are green, create exactly one sentinel-only child changing only .github/verification-boundary/candidate to the implementation candidate SHA."
+    - "Require exactly one new repository-native GitHub Actions verify run for revision 1. It must bind the sentinel parent as the exact candidate, checkout detached, assert exact HEAD, and PASS full ./verify including canonical materialization, formatting, generated-contract/sqlc checks, Go tests, DB seed/migrations, web tests/build, and Playwright. Do not use Actions as an iterative debugger."
+    - "Only after authoritative PASS publish exactly one report-only direct child at .agent/tasks/TASK-0042/report.yaml and stop at NEEDS_REVIEW. If the single remote run fails or any required deterministic generator changes an unauthorized path, stop and return the exact blocking evidence without expanding authority."
+
+  forbidden_changes:
+    - "Do not change Band calculation, target resolution, readiness, mastery, learner-gap classification, score thresholds, evidence quantity thresholds, or any broader learner-state inference."
+    - "Do not change Assessment admission conditions for independence/unseen/no-scaffolding/no-prior-feedback except to pass the exact measured canonical target scope into interpretation."
+    - "Do not mutate services/core-api/internal/bootstrap/reading-assessment-001.json or historical EvidenceFacts/Attempts/PracticeActivities."
+    - "Do not add a third sampled assessment, full Reading diagnostic, calibrated Band EvidenceRequirement, full mock, new skill leaves, new IELTS families, or new practice-mode semantics."
+    - "Do not make PM-R04 directly assignable as a general training mode unless that is already independently supported; this task only needs it as the canonical mode identity of the planned assessment-002 content."
+    - "Do not modify main, create branches/PRs/issues/tags/releases, change workflows, dependencies, auth, providers, DB schema/migrations, deployment, or repository metadata."
+    - "Do not modify canonical PRODUCT/BEHAVIOR rows for R-F05, PM-R04, PT-13, R-QT-01, IELTS-R-QF-05, AT-02, or CTX-READING-ACADEMIC; they are already authoritative. Only planner/evidence explanatory docs may change as specified."
+    - "Do not hand-edit canonical generated registry/trace, sqlc output, OpenAPI generated Go/TypeScript bindings, or formatter-owned layout."
+    - "Do not perform broad refactors, framework extraction, generalized content engines, ranking systems, or iterative remote-CI debugging loops."
+
+structure_policy:
+  expected_new_files:
+    - services/core-api/internal/bootstrap/reading-assessment-002.json
+    - .agent/tasks/TASK-0042/report.yaml
+  allowed_existing_files:
+    - .agent/tasks/TASK-0042/task.yaml
+    - docs/behavior/planner-and-lifecycle.md
+    - docs/data/evidence-progression-content.md
+    - tools/canonical/source-map.json
+    - tools/canonical/generated/reading-training-registry.json
+    - tools/slice/generated/reading-training-trace.json
+    - contracts/http/public.openapi.yaml
+    - apps/web/src/generated/**
+    - apps/web/e2e/reading-training.spec.ts
+    - services/core-api/cmd/seed/main.go
+    - services/core-api/internal/assessment/interpretation.go
+    - services/core-api/internal/assessment/interpretation_test.go
+    - services/core-api/internal/planner/kernel.go
+    - services/core-api/internal/planner/kernel_test.go
+    - services/core-api/internal/db/queries/activity.sql
+    - services/core-api/internal/db/sqlc/**
+    - services/core-api/internal/httpapi/generated/**
+    - services/core-api/internal/httpapi/activity.go
+    - services/core-api/internal/httpapi/attempt.go
+    - services/core-api/internal/httpapi/planner.go
+    - services/core-api/internal/httpapi/integration_test.go
+    - services/core-api/internal/httpapi/planner_integration_test.go
+    - .github/verification-boundary/candidate
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "reading-assessment-001 remains immutable and behaviorally compatible."
+  - "Freshness is revision-specific: prior assignment of one sampled revision does not by itself block a different eligible unseen sampled revision."
+  - "Assignment history is not automatically equivalent to actual exposure; existing exposure conditions remain the evidence source."
+  - "Assessment-001 admitted evidence scope is exactly R-QT-02/R-QT-03; assessment-002 admitted evidence scope is exactly R-QT-01."
+  - "Both samples remain partial Reading evidence and never establish Band, readiness, mastery, weakness, or broader Reading ability."
+  - "FreshSampleContentGap remains a product/content-supply state and appears only when no eligible unseen bounded sampled revision remains."
+  - "Canonical docs stay the only semantic authority; source-map/generated artifacts are derived and may not redefine canonical IDs."
+  - "All generated artifacts are repository-native deterministic output."
+  - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Second bounded sampled Reading supply is canonical and seedable."
+    evidence_required: "reading-assessment-002-r1 is original synthetic Academic AT-02 content bound to R-F05/PM-R04/PT-13/R-QT-01/IELTS-R-QF-05/CTX-READING-ACADEMIC; seed validation passes and assessment-001 remains byte-for-byte unchanged."
+  - id: AC-2
+    requirement: "Planner selects fresh revision rather than blocking on any prior sample."
+    evidence_required: "Focused kernel + DB/HTTP integration evidence shows assessment-001 first, assessment-002 after assessment-001 is already assigned/submitted, and FreshSampleContentGap only after no eligible unseen sample remains."
+  - id: AC-3
+    requirement: "Assignment freshness is exact-revision scoped."
+    evidence_required: "Current plan-item revision is revalidated; duplicate assignment of the same revision is rejected; a different current eligible unseen revision is assignable."
+  - id: AC-4
+    requirement: "Evidence claim scope is content-derived and bounded."
+    evidence_required: "Assessment-001 still admits only R-QT-02/R-QT-03 and assessment-002 admits only R-QT-01 with BroaderClaimEvaluated=false and no Band/readiness/mastery/weakness inference."
+  - id: AC-5
+    requirement: "Public and generated contracts include the new immutable revision without schema redesign."
+    evidence_required: "public.openapi.yaml adds only reading-bootstrap-assessment-002-r1 where exact revision enums require it; repository-native generated Go/TypeScript outputs match generators and compile."
+  - id: AC-6
+    requirement: "Canonical registry/trace are current and deterministic."
+    evidence_required: "source-map materializes the new already-canonical IDs and repository-native materialization reproduces registry + trace byte-for-byte with one shared canonical_source_revision."
+  - id: AC-7
+    requirement: "Learner-visible Today/E2E follows authoritative Core planning."
+    evidence_required: "After assessment-001, Playwright observes a recommended fresh assessment-002 plan item rather than CONTENT_OR_ASSET/content_assets blocker; if the test exhausts assessment-002, the blocker reappears only after fresh supply is gone."
+  - id: AC-8
+    requirement: "Authoritative exact-candidate verification passes once."
+    evidence_required: "One sentinel-only child binds the exact atomic TASK-0042 candidate; one new detached exact-candidate GitHub Actions run passes full ./verify."
+  - id: AC-9
+    requirement: "Terminal publication is report-only."
+    evidence_required: "report.yaml is the only changed path in the direct child of the successful sentinel boundary."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Verify exact TASK-0042 handoff base, topology {dev, main}, task revision 1, TASK-0041 ACCEPTED lineage, and current immutable assessment-001 identity."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Write/update focused failing tests first for fresh revision selection, exact-revision duplicate protection, content-derived AT-02 scope, and post-assessment-001 Today/E2E behavior; confirm failures reproduce the current hard-coded limitations before implementation."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Implement only the bounded fixture/seed/materializer/Planner/Assessment/HTTP/contract changes authorized above."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run repository-native canonical materialization, public OpenAPI generation, sqlc generation, gofmt, repository-pinned Prettier, focused Go tests, focused web tests, and focused Playwright where available. Require deterministic generated output and inspect the exact candidate diff before publication."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Publish one atomic implementation candidate only after focused local/Codex checks pass; prove no unauthorized path changed and assessment-001 is unchanged."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Publish one sentinel-only child and require exactly one new GitHub Actions verify run with exact candidate binding, detached exact HEAD, all generators/checks/tests/Playwright, and full ./verify PASS."
+      required: true
+    - id: CHECK-7
+      command_or_check: "After authoritative PASS publish report-only child and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
+    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, canonical materialization PASS, generated contract/sqlc checks PASS, formatter checks PASS, Go/DB/web/Playwright PASS, and full ./verify PASS"
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - exact_diff_inspection
+    - repository_native_deterministic_generation
+    - repository_pinned_formatter_execution
+    - focused_go_typescript_playwright_execution
+    - codex_execution_surface
+    - atomic_repository_git_candidate_write
+    - non_force_ref_update
+    - repository_native_deterministic_verification_execution
+    - github_actions_run_read
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_read
+    - repository_content_write
+    - github_actions_run_read
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
