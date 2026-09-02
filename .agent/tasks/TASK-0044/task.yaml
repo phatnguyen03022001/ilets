@@ -1,0 +1,422 @@
+protocol_version: 3
+
+task_id: TASK-0044
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: continuation
+  task_id: TASK-0043
+  gap_id: "FIRST_REAL_LISTENING_CORE_SLICE"
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Accepted dev truth after TASK-0043 review."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0043/review.yaml@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Accepted proof that canonical materialization now supports multiple bounded slice descriptors against one global registry."
+    precedence: 2
+  - source: "docs/BEHAVIOR.md@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Canonical feature authority. FTR-010 already defines L-F04 Detail & Completion Drill."
+    precedence: 3
+  - source: "docs/behavior/practice-and-media.md@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Canonical practice/media authority. PM-L03 Detail & Completion and PT-13 receptive comprehension already exist; media-source and rights semantics remain bounded here."
+    precedence: 4
+  - source: "docs/product/skill-leaves.md@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Canonical Listening capability authority. L-COMP-02 is Specific details; L-QT-01 is form/note/table/flow-chart/summary completion and requires L-COMP-02."
+    precedence: 5
+  - source: "docs/product/ielts-exam-and-bands.md@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Canonical external-exam authority. Listening is shared across Academic/General Training and IELTS-L-QF-04 is form/note/table/flow-chart/summary completion."
+    precedence: 6
+  - source: "docs/product/curriculum-and-coverage.md@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Canonical curriculum authority. Basic receptive curriculum already uses L-COMP-02 and L-QT-01 for detail/completion work."
+    precedence: 7
+  - source: "docs/data/evidence-progression-content.md@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Canonical content/evidence authority. CTX-LISTENING-SHARED exists and TRAINING observations remain distinct from EvidenceFact admission."
+    precedence: 8
+  - source: "contracts/http/public.openapi.yaml@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Exact public machine-contract authority. MEDIA_REFERENCE learner stimuli and TEXT attempt responses already exist; this task materializes those existing capabilities rather than redesigning their schemas."
+    precedence: 9
+  - source: "tools/canonical/source-map.json@b1b6e33a6882a70c51e1f4d265510e6291cc3fcd"
+    role: "Current explicit canonical-source routing. Listening references are not materialized yet."
+    precedence: 10
+  - source: "phatnguyen03022001/agent-documents@6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+    role: "agent-documents v1.0.0. Used only for authority-domain/closure discipline: project truth stays in the existing target document domains; no new catalog identity is invented for a bounded route or embedded asset."
+    precedence: 11
+  - source: "phatnguyen03022001/agent-standards@3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    role: "agent-standards v1.0.0. Used only as engineering-property/evidence obligations, not as target architecture or IELTS domain authority. Applicable task-level lenses are COR, SEC, SUP, and ASR; no maturity certification or Level-4/5 independence claim is made by this task."
+    precedence: 12
+
+structure_authority:
+  status: RESOLVED
+  source: "Operator-approved corrected TASK-0044 design plus accepted TASK-0043 state"
+  rationale: >-
+    The first real Listening slice must be executable rather than a descriptor-only trace. The corrected semantic binding is
+    L-F04 -> PM-L03 -> PT-13 -> L-COMP-02 + L-QT-01 -> IELTS-L-QF-04 -> CTX-LISTENING-SHARED -> TRAINING ->
+    NOT_EVIDENCE_CANDIDATE. Existing OpenAPI already supports MEDIA_REFERENCE stimuli and TEXT responses, so the smallest
+    vertical slice is to materialize one owned/vendor-licensed short Ogg asset, one bounded Core assignment path, authenticated
+    activity-scoped media delivery, one deterministic text-completion scorer, and a normal Observation. No new schema family,
+    provider abstraction, object-storage route, Planner behavior, Assessment admission, Progression rule, or Web UI is required.
+    agent-documents does not justify a new catalog identity because FTR-010 and IFC-001 already own this behavior/interface;
+    agent-standards does not justify a separate pre-task assessor because this bounded training slice makes no highest-consequence
+    Level-4/5 assurance claim. Its applicable lower-level engineering obligations are embedded directly in the acceptance evidence.
+
+objective: >-
+  Materialize the first executable bounded Listening Core/API training slice using the already-canonical Detail & Completion
+  semantics. Assign the same immutable Listening ContentRevision under either Academic or General Training TargetProfile,
+  deliver its exact embedded Ogg bytes only through the authenticated learner-owned PracticeActivity media reference, accept a
+  real TEXT completion response, score it deterministically, and persist an Observation while creating no EvidenceFact.
+  Preserve the accepted Reading path and stop before Planner, Assessment, Progression, Web, external storage, TTS/provider
+  integration, or generic media infrastructure.
+
+execution_routing:
+  operator_environment: "Phone-first operator; ChatGPT + GitHub available. Native repository execution may use Codex. Agent Runtime is not assumed."
+  primary_surface: "Codex"
+  codex:
+    permitted: true
+    model: "Luna"
+    effort: "xhigh"
+    reason: >-
+      TASK-0044 requires exact binary vendoring, Go embed/build/test execution, migration/sqlc/OpenAPI generation, repository-pinned
+      formatting, and full repository verification. These are materially repository-native operations rather than GitHub-only text edits.
+  agent_runtime:
+    permitted: false
+    reason: "Do not depend on Agent Runtime availability for this program."
+
+scope:
+  required_changes:
+    - >-
+      Require live dev HEAD to equal the exact TASK-0044 handoff base and topology exactly {dev, main} before mutation. Resolve
+      the pinned agent-skills revision and the read-only agent-documents v1.0.0 / agent-standards v1.0.0 revisions above before execution.
+    - >-
+      Under FTR-010 in docs/BEHAVIOR.md, add one dedicated canonical materializer anchor containing exactly one L-F04 markdown-table
+      row that faithfully restates the existing Detail & Completion semantics. Do not change FTR-010 product meaning.
+    - >-
+      Extend tools/canonical/source-map.json only enough to materialize L-F04, PM-L03, L-COMP-02, L-QT-01,
+      IELTS-L-QF-04, and CTX-LISTENING-SHARED. Reuse the already-materialized PT-13, TRAINING, and
+      NOT_EVIDENCE_CANDIDATE identities. Prefer existing canonical tables/sections when uniquely machine-resolvable; add no
+      duplicate semantic owners merely for convenience.
+    - >-
+      Add tools/slice/listening-detail-completion.json as one bounded implementation descriptor with exact semantic binding:
+      L-F04, PM-L03, PT-13, L-COMP-02, L-QT-01, IELTS-L-QF-04, CTX-LISTENING-SHARED, TRAINING,
+      NOT_EVIDENCE_CANDIDATE, runtime owner services/core-api, and content revision listening-bootstrap-completion-001-r1.
+      The generalized materializer must generate tools/slice/generated/listening-detail-completion-trace.json automatically.
+    - >-
+      Preserve tools/canonical/materialize.py unchanged unless a concrete defect in the already-accepted TASK-0043 multi-slice
+      behavior is reproduced. A desire to refactor, generalize, or improve style is not authority to modify it.
+    - >-
+      Add exactly one Listening bootstrap ContentRevision fixture at
+      services/core-api/internal/bootstrap/listening-training-001.json with content_id listening-bootstrap-completion-001 and
+      revision_id listening-bootstrap-completion-001-r1. It is shared Listening content, not a third TestVariant: represent
+      applicability to the existing exact Academic and General Training values without inventing SHARED as a TestVariant.
+    - >-
+      The Listening fixture must contain one bounded completion item whose learner instruction is "Write ONE WORD ONLY." and
+      whose visible completion prompt is "Name: ______". Its hidden canonical answer is "Marsha". Bind the item to
+      IELTS-L-QF-04 and the exact slice scope above. It must not expose answer, transcript, validator instructions, or provenance
+      through the learner-safe activity projection.
+    - >-
+      Vendor exactly the short Ogg source identified by Wikimedia Commons as "Hello. This is Marsha. - Yes, Marsha.ogg" and
+      attributed there to VOA Learning English under the Commons/VOA public-domain basis. Before vendoring, re-resolve the live
+      Commons source page and fail closed if the source identity, rights basis, or downloadable Ogg cannot be established.
+      Do not silently substitute another recording or generated TTS.
+    - >-
+      Store source-page identity, upstream title/provider attribution, rights/public-domain basis, media type audio/ogg, exact
+      vendored byte length, and SHA-256 of the exact vendored Ogg in immutable bootstrap provenance. Add a deterministic test
+      proving the embedded bytes match that recorded SHA-256. This satisfies the bounded SUP/ASR provenance requirement for
+      this task without building a generic asset provenance system.
+    - >-
+      Embed the exact vendored Ogg with Go //go:embed through the smallest Core-local implementation. Do not use filesystem
+      deployment lookup, R2, signed URLs, provider adapters, a media service, asset registry framework, Range support, transcoding,
+      or streaming infrastructure for this 3.9-second bootstrap asset.
+    - >-
+      Extend the exact public OpenAPI with GET /v1/practice-activities/{practice_activity_id}/media/{media_reference}, using the
+      existing naming and learner-owned PracticeActivity boundary. Successful response is exact embedded bytes with Content-Type
+      audio/ogg. Anonymous access returns 401. Missing/foreign activity, wrong media_reference, or a reference that is not owned
+      by the assigned ContentRevision fails closed as 404. media_reference is an opaque exact resource reference, never a filesystem path.
+    - >-
+      Regenerate repository-native public Go and TypeScript bindings from the exact OpenAPI. No Web component, route, hook,
+      playback UI, or learner-facing browser behavior may be added. The generated TypeScript diff is contract derivation only.
+    - >-
+      Add PM-L03 Detail & Completion to the existing stable practice-mode API projection and allow direct PracticeActivity
+      creation for exactly PM-L03 in addition to the existing PM-R03 path. Preserve PM-R03 behavior and rejection semantics.
+    - >-
+      PM-L03 assignment requires a TargetProfile whose test variant is explicitly PRESENT and exactly Academic or General
+      Training. Unknown/missing variant is rejected; do not invent a default. The same listening-bootstrap-completion-001-r1
+      ContentRevision is used for both variants.
+    - >-
+      Add the next migration only as needed to widen practice_activities.test_variant from its current Academic-only constraint
+      to exactly the existing DB values ACADEMIC | GENERAL_TRAINING. Store the current TargetProfile variant on the assigned
+      PracticeActivity. Do not add SHARED, a third variant, a media table, or another persistence abstraction.
+    - >-
+      Add only the bounded SQL/query support needed to select the eligible PM-L03 Listening bootstrap revision, create a
+      learner-owned PM-L03 PracticeActivity with the explicit target variant, and reload that stored variant with the activity.
+      Preserve the current PM-R03 Reading SQL path and exact-revision Reading assessment paths.
+    - >-
+      Extend bootstrap seed defaults and validation only enough to admit the new Listening fixture while preserving all current
+      Reading fixture validation. Listening TEXT completion validation must reject malformed family/scope, missing prompt/answer,
+      choices-based cosplay, extra/missing executable item structure outside the bounded fixture contract, and unknown canonical refs.
+    - >-
+      Materialize the already-existing OpenAPI TEXT response capability for the Listening item. Learner projection must expose a
+      MEDIA_REFERENCE stimulus and a TEXT response contract; it must not convert the completion into SINGLE_SELECTION or expose
+      answer options. Preserve existing Reading TEXT stimulus + SINGLE_SELECTION projection byte/behavior semantics where applicable.
+    - >-
+      Extend attempt response parsing/scoring with one bounded deterministic completion policy: trim surrounding whitespace and
+      compare case-insensitively against the exact canonical answer. Do not add fuzzy matching, stemming, punctuation heuristics,
+      edit distance, synonym acceptance, generalized IELTS marking, or provider/model evaluation. Existing selected-value Reading
+      scoring remains unchanged.
+    - >-
+      A valid PM-L03 TRAINING submission must continue through the normal Attempt -> Observation path with scoring_method
+      deterministic/keyed as appropriate and exact Listening scope. It must never create an EvidenceFact, Assessment result,
+      Mastery/Readiness/Band inference, GapEvaluation, or Progression consequence.
+    - >-
+      Add focused Core integration evidence proving both Academic and General Training TargetProfiles can assign the same immutable
+      Listening revision; the returned PracticeActivity reports the stored current target variant; its learner material contains
+      MEDIA_REFERENCE + TEXT completion; media delivery returns exact audio/ogg bytes; anonymous access is 401; foreign learner,
+      wrong ref, and missing resource are 404; valid "Marsha", case variants, and surrounding-whitespace variants score correct;
+      an incorrect text scores incorrect; an Observation is persisted; no EvidenceFact is persisted.
+    - >-
+      Preserve current Reading PM-R03 direct training as a regression oracle, including assignment, learner-safe material,
+      selected-value scoring, Observation behavior, and existing Reading integration/E2E expectations.
+    - >-
+      Apply agent-standards v1.0.0 only as task-level evidence obligations, not maturity certification: COR-1.2/COR-1.3/COR-2.1
+      for positive/negative/boundary behavior; SEC-1.2/SEC-2.4 for authenticated activity-scoped media fail-closed access;
+      SUP-1.1/SUP-2.2/SUP-2.3 for vendored Ogg source identity and integrity; ASR-1.1/ASR-1.2/ASR-2.2/ASR-2.3 for exact-revision
+      evidence, external-source attribution, repeatability, and unresolved-evidence fail-closed behavior. Do not claim Level 4/5,
+      independent review, independent reproduction, or repository-wide maturity from this task.
+    - >-
+      Apply agent-documents v1.0.0 only as ownership/closure discipline. FTR-010 remains the feature identity and IFC-001 remains
+      the public product API identity. Do not modify docs/catalog/project.json or invent a new feature/interface/data identity for
+      this bounded route or embedded asset. If execution discovers that a genuinely new authority identity is required, stop with
+      AUTHORITY_REQUIRED rather than silently expanding the catalog.
+    - >-
+      Construct one exact implementation candidate from the handoff base. Run focused materializer, Go, DB/migration, OpenAPI,
+      generated-code, and integration verification plus repository-native ./verify locally/native through Codex when feasible.
+      After the candidate is stable, create exactly one sentinel-only direct child and require exactly one fresh GitHub Actions
+      full ./verify PASS bound to the exact detached candidate. Publish report.yaml only after PASS, then stop at NEEDS_REVIEW.
+
+  allowed_existing_files_or_components:
+    - .agent/tasks/TASK-0044/task.yaml
+    - docs/BEHAVIOR.md
+    - tools/canonical/source-map.json
+    - tools/canonical/generated/registry.json
+    - tools/slice/generated/reading-training-trace.json
+    - contracts/http/public.openapi.yaml
+    - apps/web/src/generated/public-v1.ts
+    - services/core-api/cmd/seed/main.go
+    - services/core-api/internal/generated/openapi/public/public.gen.go
+    - services/core-api/internal/httpapi/server.go
+    - services/core-api/internal/httpapi/activity.go
+    - services/core-api/internal/httpapi/attempt.go
+    - services/core-api/internal/httpapi/integration_test.go
+    - services/core-api/internal/db/queries/activity.sql
+    - services/core-api/internal/db/sqlc/**
+    - .github/verification-boundary/candidate
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Semantic binding is exactly L-F04 -> PM-L03 -> PT-13 -> L-COMP-02 + L-QT-01 -> IELTS-L-QF-04 -> CTX-LISTENING-SHARED -> TRAINING -> NOT_EVIDENCE_CANDIDATE."
+  - "No L-QT-02 or IELTS-L-QF-01 binding is introduced by the Listening slice."
+  - "The Listening ContentRevision is one shared immutable revision reused for Academic and General Training; SHARED is not a TestVariant value."
+  - "The assigned PracticeActivity stores the explicit current TargetProfile variant as ACADEMIC or GENERAL_TRAINING."
+  - "The learner-facing Listening item is a real TEXT completion, never a choice-list simulation."
+  - "Media access is authenticated, activity-owned, exact-reference-bound, and fail-closed; the media reference is never interpreted as a filesystem path."
+  - "The vendored Ogg is exact, provenance-attributed, SHA-256-bound, and delivered with Content-Type audio/ogg."
+  - "No Range handling, media service, R2, TTS, provider abstraction, generated-audio path, or storage abstraction is introduced."
+  - "TRAINING produces an Observation only; no EvidenceFact admission or broader learner-state inference occurs."
+  - "PM-R03 Reading behavior and existing Reading generated slice payload remain semantically unchanged. Canonical source revision/hash metadata may update deterministically because the source map/global registry gains Listening authority."
+  - "No Planner, Assessment, Progression, Web behavior, external provider activation, deployment, main, release, branch topology, workflow, or repository metadata change."
+  - "agent-documents and agent-standards remain read-only external authorities; this task mutates only ilets/dev."
+
+forbidden_changes:
+  - "Do not use L-QT-02, IELTS-L-QF-01, Multiple Choice, or selected-option UI semantics for the Listening completion item."
+  - "Do not add Listening Assessment, AT-02 admission, EvidenceFact logic, Band/readiness/mastery/weakness inference, Planner recommendation, Progression, or Web playback."
+  - "Do not add or activate WaveNet/Neural2, R2, Cloud Tasks, a media provider, a media database/table, signed URLs, Range support, transcoding, CDN logic, generic storage interfaces, or provider fallback."
+  - "Do not add SHARED to the TestVariant enum/schema/database."
+  - "Do not expose transcript, answer key, validation findings, source provenance, or hidden scoring fields in learner-safe activity or media responses."
+  - "Do not implement fuzzy or generalized text scoring."
+  - "Do not alter current Reading PM-R03 scoring/assignment semantics or sampled Reading Assessment/Planner/Evidence behavior."
+  - "Do not change docs/catalog/project.json, create new catalog identities, or redesign the eight documentation authority domains."
+  - "Do not claim agent-standards maturity level, Level-4/5 assurance, independent review, or independent reproduction from TASK-0044."
+  - "Do not mutate agent-skills, agent-standards, agent-documents, architect-profile, main, workflows, dependencies, deployment, tags, releases, PRs, issues, or repository metadata."
+  - "Do not use GitHub Actions as an iterative debugger; exactly one fresh authoritative run is allowed after narrower verification stabilizes the candidate."
+
+structure_policy:
+  expected_new_files:
+    - tools/slice/listening-detail-completion.json
+    - tools/slice/generated/listening-detail-completion-trace.json
+    - services/core-api/internal/bootstrap/listening-training-001.json
+    - services/core-api/internal/httpapi/listening_media.go
+    - services/core-api/internal/httpapi/media/hello-this-is-marsha.ogg
+    - services/core-api/migrations/0008_listening_training.sql
+    - .agent/tasks/TASK-0044/report.yaml
+  allowed_existing_files:
+    - docs/BEHAVIOR.md
+    - tools/canonical/source-map.json
+    - tools/canonical/generated/registry.json
+    - tools/slice/generated/reading-training-trace.json
+    - contracts/http/public.openapi.yaml
+    - apps/web/src/generated/public-v1.ts
+    - services/core-api/cmd/seed/main.go
+    - services/core-api/internal/generated/openapi/public/public.gen.go
+    - services/core-api/internal/httpapi/server.go
+    - services/core-api/internal/httpapi/activity.go
+    - services/core-api/internal/httpapi/attempt.go
+    - services/core-api/internal/httpapi/integration_test.go
+    - services/core-api/internal/db/queries/activity.sql
+    - services/core-api/internal/db/sqlc/**
+    - .github/verification-boundary/candidate
+    - .agent/tasks/TASK-0044/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Listening canonical binding is semantically correct and deterministically materialized."
+    evidence_required: >-
+      Exact source-map/registry/trace evidence resolves L-F04, PM-L03, PT-13, L-COMP-02, L-QT-01, IELTS-L-QF-04,
+      CTX-LISTENING-SHARED, TRAINING, and NOT_EVIDENCE_CANDIDATE from canonical docs. No L-QT-02/IELTS-L-QF-01
+      binding exists. reading-training slice payload remains unchanged.
+  - id: AC-2
+    requirement: "One exact, attributable, integrity-bound Ogg bootstrap asset backs the slice."
+    evidence_required: >-
+      The candidate contains exactly the authorized Ogg asset; immutable fixture provenance records the live-resolved Commons
+      source identity, VOA attribution/public-domain basis, byte length, MIME type, and SHA-256; a deterministic test recomputes
+      the embedded bytes SHA-256 and matches provenance. No provider/storage abstraction is introduced.
+  - id: AC-3
+    requirement: "PM-L03 is a real shared Listening Core assignment for both existing IELTS variants."
+    evidence_required: >-
+      Focused DB/Core tests prove an Academic TargetProfile and a General Training TargetProfile each assign the same
+      listening-bootstrap-completion-001-r1 revision through PM-L03, while PracticeActivity stores and returns the explicit
+      corresponding target variant. Unknown/missing variant fails without defaulting. PM-R03 regression passes.
+  - id: AC-4
+    requirement: "Listening material is MEDIA_REFERENCE plus real TEXT completion, not completion cosplay."
+    evidence_required: >-
+      Learner-safe assigned activity exposes the exact media reference and a TEXT response contract for "Name: ______" /
+      "Write ONE WORD ONLY." with no options, transcript, answer, provenance, or validator leakage. Existing Reading
+      SINGLE_SELECTION material remains behaviorally unchanged.
+  - id: AC-5
+    requirement: "Authenticated audio delivery is exact-reference-bound and fail-closed."
+    evidence_required: >-
+      GET /v1/practice-activities/{practice_activity_id}/media/{media_reference} returns exact embedded bytes with audio/ogg only
+      for the authenticated owner and exact assigned revision reference. Anonymous is 401; foreign learner, missing activity,
+      wrong ref, and non-owned ref are 404. No filesystem interpretation or Range/media framework exists.
+  - id: AC-6
+    requirement: "Bounded TEXT completion scoring is deterministic and preserves Reading scoring."
+    evidence_required: >-
+      Focused tests prove trim + case-insensitive exact comparison accepts Marsha/case/outer-whitespace equivalents and rejects
+      incorrect text, with no fuzzy/generalized marking. Existing selected-value Reading scoring tests remain PASS.
+  - id: AC-7
+    requirement: "Listening training records Observation only."
+    evidence_required: >-
+      Submission persists the normal Attempt/Observation result with exact Listening content/skill/family/context scope and
+      creates zero EvidenceFact rows. No Assessment, Progression, Band/readiness/mastery/weakness or planner consequence is added.
+  - id: AC-8
+    requirement: "Applicable standards/document obligations are met without ceremony inflation."
+    evidence_required: >-
+      Exact task/candidate evidence demonstrates COR-1.2/1.3/2.1, SEC-1.2/2.4, SUP-1.1/2.2/2.3, and
+      ASR-1.1/1.2/2.2/2.3 at the bounded task scope. Target documentation continues to route through existing FTR-010/IFC-001
+      ownership with no project catalog identity changes. No maturity or independent-review claim is made.
+  - id: AC-9
+    requirement: "Exact candidate receives one authoritative repository proof and reconstructible publication lineage."
+    evidence_required: >-
+      Candidate is a direct child of the exact handoff base; focused/native verification is stable; one sentinel-only direct
+      child binds that candidate; exactly one fresh GitHub Actions run checks out the exact candidate detached and completes full
+      ./verify PASS; report is report-only after PASS; topology remains exactly {dev, main} and main is unchanged.
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Verify exact TASK-0044 revision 1 handoff base, dev/main topology, pinned agent-skills revision, read-only agent-documents/agent-standards v1.0.0 identities, external Commons source availability/rights, structure authority, and native execution capability before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run canonical materialization and focused multi-slice checks; prove the Listening trace uses the corrected binding and Reading slice payload is unchanged apart from deterministic global revision/hash metadata."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run deterministic asset-integrity/provenance checks and focused OpenAPI/media authorization tests, including owner success, anonymous 401, foreign/wrong/missing 404, exact audio/ogg bytes, and no Range/filesystem behavior."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run focused DB/seed/sqlc/Core integration tests for Academic+GT shared Listening assignment, TEXT completion scoring, Observation-only persistence, and Reading PM-R03 regression."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Regenerate OpenAPI Go/TypeScript and sqlc outputs only through repository-native generators; run gofmt/repository-pinned formatting and repository-native ./verify on the exact candidate through Codex when feasible."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Inspect exact base-to-candidate diff for forbidden Planner/Assessment/Progression/Web/provider/storage/framework/catalog/maturity-claim expansion and prove only authorized files/artifacts changed."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Create exactly one sentinel-only child and require exactly one fresh GitHub Actions full ./verify PASS bound to the exact candidate; do not rerun a failed authoritative run."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Publish one report-only child after authoritative PASS using the pinned IMPLEMENTATION_REPORT contract/template and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via one sentinel boundary"
+    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, canonical generation/drift PASS, Go/DB/migration/seed/integration PASS, OpenAPI/generated bindings PASS, Reading regression PASS, Web existing checks/build PASS, and full ./verify PASS"
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - native_repository_command_execution
+    - external_public_asset_fetch
+    - repository_native_deterministic_generation
+    - repository_pinned_formatter_execution
+    - github_actions_run_read
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_read
+    - repository_content_write
+    - github_actions_run_read
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - STALE_STATE
+    - REVIEW_REQUIRED
+    - USER_STOP
+
+blocking_decisions: []
+execution_ready: true
