@@ -125,7 +125,8 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
         .find((plan) =>
           plan.coverage_gaps?.some(
             (gap: Record<string, any>) =>
-              gap.gap_class === "TRANSITION" &&
+              gap.gap_class === "CONTENT_OR_ASSET" &&
+              gap.condition_id === "content_assets" &&
               gap.condition_status === "BLOCKED",
           ),
         ),
@@ -136,20 +137,30 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
     .find((plan) =>
       plan.coverage_gaps?.some(
         (gap: Record<string, any>) =>
-          gap.gap_class === "TRANSITION" && gap.condition_status === "BLOCKED",
+          gap.gap_class === "CONTENT_OR_ASSET" &&
+          gap.condition_id === "content_assets" &&
+          gap.condition_status === "BLOCKED",
       ),
     );
   expect(postSubmissionPlan?.items).toHaveLength(0);
-  const transitionBlocker = postSubmissionPlan?.coverage_gaps.find(
+  const supplyBlocker = postSubmissionPlan?.coverage_gaps.find(
     (gap: Record<string, any>) =>
-      gap.gap_class === "TRANSITION" && gap.condition_status === "BLOCKED",
+      gap.gap_class === "CONTENT_OR_ASSET" &&
+      gap.condition_id === "content_assets" &&
+      gap.condition_status === "BLOCKED",
   );
-  expect(transitionBlocker).toEqual(
-    expect.objectContaining({ blocking_consequence: expect.any(String) }),
+  expect(supplyBlocker).toEqual(
+    expect.objectContaining({
+      gap_class: "CONTENT_OR_ASSET",
+      condition_id: "content_assets",
+      condition_status: "BLOCKED",
+      blocking_consequence: expect.any(String),
+      dependencies: ["fresh eligible sampled Reading assessment content"],
+      demand_class: "content/assets/supply route",
+    }),
   );
-  await expect(
-    page.getByText(transitionBlocker.blocking_consequence),
-  ).toBeVisible();
+  expect(supplyBlocker.blocking_consequence).toMatch(/\S/);
+  await expect(page.getByText(supplyBlocker.blocking_consequence)).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Recommended next" }),
   ).toHaveCount(0);
