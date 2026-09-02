@@ -69,6 +69,8 @@ SUPPORTED
 
 Missing required evidence → `INSUFFICIENT_EVIDENCE`; materially incompatible valid evidence → `CONFLICTING_EVIDENCE`; previously adequate evidence failing current recency → `STALE_EVIDENCE`; sufficient current evidence positively establishing a scoped requirement is not met → `NOT_YET_SUPPORTED`; all applicable conditions satisfied → `SUPPORTED`. `NOT_YET_SUPPORTED` is not a convenience fallback for missing/uncalibrated evaluation. Product/evaluator inability leaves the learner claim unresolved and is represented separately as CoverageGap/product state. These states never collapse into one mastery/readiness percentage; `SUPPORTED` is not an external IELTS guarantee.
 
+A proven construct-coverage lower bound may establish only the current evidence-sufficiency state without completing a broader EvidenceRequirement. When canonical scope already proves that required coverage for a consequential claim extends beyond the admitted evidence, the missing coverage is sufficient to classify the current evaluation as `INSUFFICIENT_EVIDENCE` even while threshold/support evaluation remains unresolved. This lower bound does not invent the missing EvidenceRequirement, evaluate the broader claim as met or unmet, produce `NOT_YET_SUPPORTED`, infer Band support, or establish task/section/full-IELTS readiness. For the bounded Academic Reading `AT-02` sample over only `R-QT-02` and `R-QT-03`, the remaining canonical Reading construct is therefore a current evidence gap, not evidence of learner weakness.
+
 ### Assessment Type registry
 
 | ID | Type | Primary role | Scope | Certification relation |
@@ -108,6 +110,8 @@ Confidence is meaningful only when calibrated against relevant outcomes. Model s
 ## Progression semantics
 
 Progression consumes Assessment claim class/ReadinessEvaluation and never broadens inference. MasteryEstimate is current uncertainty-aware interpretation of one scoped Skill/Knowledge target with support states `unknown`, `learning`, `currently_supported`; `unknown` includes unresolved/stale/conflicting/insufficient/pending cases but underlying reasons remain explicit. `currently_supported` is current evidence interpretation, not permanent mastery.
+
+For bounded sampled evidence, Progression may apply the construct-coverage lower bound above while preserving Assessment's narrow interpretation. An admitted Academic Reading `AT-02` EvidenceFact over `R-QT-02` and `R-QT-03` leaves known canonical Reading coverage missing, so the authorized consequence remains `EVIDENCE_GAP` → `COLLECT_EVIDENCE`; this does not mean Assessment evaluated any broader Band/readiness claim or that Progression inferred learner weakness.
 
 Per `(skill, band)`, current `BandCertificationState` is exactly:
 

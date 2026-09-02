@@ -14,6 +14,7 @@ const (
 	CollectEvidence ActionIntent = "COLLECT_EVIDENCE"
 
 	SampledReadingNeedsEvidence               SampledReadingState = "NEEDS_EVIDENCE"
+	SampledReadingNeedsMoreEvidence           SampledReadingState = "NEEDS_MORE_EVIDENCE"
 	SampledReadingNoAuthorizedNextConsequence SampledReadingState = "NO_AUTHORIZED_NEXT_CONSEQUENCE"
 )
 
@@ -32,8 +33,13 @@ func InterpretSampledReadingAT02(interpretation assessment.SampledReadingInterpr
 		}
 	}
 
-	// This bounded sampled EvidenceFact does not have an authorized broader
-	// EvidenceRequirement. Preserve that uncertainty instead of manufacturing a
-	// learner deficit, mastery state, Band, readiness, or advancement intent.
-	return SampledReadingConsequence{State: SampledReadingNoAuthorizedNextConsequence}
+	// The admitted sample covers only R-QT-02 and R-QT-03 while the canonical
+	// Reading construct contains additional capabilities. That known missing
+	// construct coverage is enough to preserve an evidence gap without evaluating
+	// a broader learner claim, inventing a Band threshold, or asserting readiness.
+	return SampledReadingConsequence{
+		State:         SampledReadingNeedsMoreEvidence,
+		GapEvaluation: EvidenceGap,
+		ActionIntent:  CollectEvidence,
+	}
 }

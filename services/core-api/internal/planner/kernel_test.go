@@ -20,9 +20,13 @@ func TestDecideBoundedSampledReadingPathConsumesProgressionAuthority(t *testing.
 		t.Fatalf("prior-assignment freshness decision=%v", got)
 	}
 
-	noAuthorizedNext := progression.SampledReadingConsequence{State: progression.SampledReadingNoAuthorizedNextConsequence}
-	if got := Decide(academic, EvidenceState{ContentEligible: true}, noAuthorizedNext); got != ProgressionTransitionGap {
-		t.Fatalf("post-evidence decision=%v", got)
+	needsMoreEvidence := progression.SampledReadingConsequence{
+		State:         progression.SampledReadingNeedsMoreEvidence,
+		GapEvaluation: progression.EvidenceGap,
+		ActionIntent:  progression.CollectEvidence,
+	}
+	if got := Decide(academic, EvidenceState{ContentEligible: true, PriorSampledAssignment: true}, needsMoreEvidence); got != FreshSampleContentGap {
+		t.Fatalf("post-evidence fresh-supply decision=%v", got)
 	}
 
 	gt := Target{Configured: true, Resolved: true, Variant: "GENERAL_TRAINING", ReadingRelevant: true}
@@ -34,16 +38,17 @@ func TestDecideBoundedSampledReadingPathConsumesProgressionAuthority(t *testing.
 	}
 }
 
-func TestPlannerCannotPromoteRawEvidenceExistence(t *testing.T) {
-	state := EvidenceState{ContentEligible: true}
-	if state.PriorSampledAssignment {
-		t.Fatal("test setup unexpectedly has prior assignment")
-	}
+func TestPlannerCannotPromoteBoundedEvidenceExistence(t *testing.T) {
+	state := EvidenceState{ContentEligible: true, PriorSampledAssignment: true}
 	// EvidenceState intentionally has no admitted-evidence field. The planner can
-	// only react to the consequence supplied by Progression.
-	consequence := progression.SampledReadingConsequence{State: progression.SampledReadingNoAuthorizedNextConsequence}
+	// only react to the consequence supplied by Progression and current supply.
+	consequence := progression.SampledReadingConsequence{
+		State:         progression.SampledReadingNeedsMoreEvidence,
+		GapEvaluation: progression.EvidenceGap,
+		ActionIntent:  progression.CollectEvidence,
+	}
 	academic := Target{Configured: true, Resolved: true, Variant: "ACADEMIC", ReadingRelevant: true}
-	if got := Decide(academic, state, consequence); got != ProgressionTransitionGap {
-		t.Fatalf("planner ignored progression authority: %v", got)
+	if got := Decide(academic, state, consequence); got != FreshSampleContentGap {
+		t.Fatalf("planner ignored progression/supply authority: %v", got)
 	}
 }

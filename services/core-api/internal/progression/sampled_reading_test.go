@@ -12,11 +12,16 @@ func TestInterpretSampledReadingAT02OwnsBoundedLearnerConsequence(t *testing.T) 
 		t.Fatalf("pre-evidence consequence=%#v", pre)
 	}
 
-	post := InterpretSampledReadingAT02(assessment.InterpretSampledReadingAT02(true))
-	if post.State != SampledReadingNoAuthorizedNextConsequence {
-		t.Fatalf("post-evidence consequence=%#v", post)
+	interpretation := assessment.InterpretSampledReadingAT02(true)
+	if interpretation.BroaderClaimEvaluated {
+		t.Fatalf("sampled assessment broadened learner claim: %#v", interpretation)
 	}
-	if post.GapEvaluation != NoGapEvaluation || post.ActionIntent != NoActionIntent {
-		t.Fatalf("sampled evidence invented learner gap/action: %#v", post)
+	if interpretation.Scope.AssessmentTypeID != "AT-02" || interpretation.Scope.TestVariant != "Academic" || len(interpretation.Scope.CanonicalTargetIDs) != 2 || interpretation.Scope.CanonicalTargetIDs[0] != "R-QT-02" || interpretation.Scope.CanonicalTargetIDs[1] != "R-QT-03" {
+		t.Fatalf("sampled assessment scope changed: %#v", interpretation)
+	}
+
+	post := InterpretSampledReadingAT02(interpretation)
+	if post.State != SampledReadingNeedsMoreEvidence || post.GapEvaluation != EvidenceGap || post.ActionIntent != CollectEvidence {
+		t.Fatalf("post-evidence consequence=%#v", post)
 	}
 }

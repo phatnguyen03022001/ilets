@@ -26,6 +26,8 @@ Expand known target constraints into per-skill/variant/external-purpose conditio
 
 Consume Assessment and Progression outputs. Planner never rescores Observations, reinterprets evaluator output, broadens inference, or creates another GapEvaluation taxonomy.
 
+For the bounded Academic Reading `AT-02` path, an admitted EvidenceFact remains scoped only to `R-QT-02` and `R-QT-03` and Assessment does not evaluate a broader Band/readiness claim. When Progression therefore returns the authorized lower-bound consequence `EVIDENCE_GAP` → `COLLECT_EVIDENCE` because known canonical Reading coverage remains missing, Planner consumes that consequence unchanged. If the one bounded sample was already assigned and no fresh eligible independent sample exists, the existing supply path exposes the truthful `content_assets` CoverageGap rather than a progression-transition blocker; Planner does not invent supply, relax freshness/independence, or infer readiness.
+
 ### Stage 4 — hard eligibility
 
 Remove candidates violating any applicable hard condition: Required prerequisite; target variant/task compatibility; material delivery-mode compatibility; product coverage/support; primary-purpose/evidence-candidacy compatibility; exact current ContentRevision validation/release/operational eligibility for the intended use; learner exposure/novelty/independence; rights/privacy/source; accessibility/capture feasibility; immutable lifecycle; or known purpose/acceptance restrictions. A ranker cannot rescue an ineligible candidate.

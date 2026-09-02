@@ -400,19 +400,21 @@ describe("Today canonical consumer", () => {
   it("preserves assigned conditions, uses bounded assessment copy, and refreshes post-submission plan", async () => {
     const activity = assessmentActivity();
     const blocker =
-      "The sampled EvidenceFact exists, but the current runtime has no authorized Progression/ActionIntent transition for this bounded scope.";
+      "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued.";
     sdk.getDailyPlan.mockResolvedValueOnce({ data: plan() }).mockResolvedValue({
       data: plan({
         items: [],
         coverage_gaps: [
           {
-            gap_class: "TRANSITION",
+            gap_class: "CONTENT_OR_ASSET",
             scoped_target_ids: ["R-QT-02", "R-QT-03"],
-            condition_id: "progression_transition",
+            condition_id: "content_assets",
             condition_status: "BLOCKED",
             blocking_consequence: blocker,
-            dependencies: ["sampled evidence"],
-            demand_class: "learner flow/transition",
+            dependencies: [
+              "fresh eligible sampled Reading assessment content",
+            ],
+            demand_class: "content/assets/supply route",
             provenance_version: "planner-v1",
           },
         ],
@@ -452,10 +454,9 @@ describe("Today canonical consumer", () => {
     expect(screen.queryByText(/Band improved/i)).not.toBeInTheDocument();
     await waitFor(() => expect(sdk.getDailyPlan).toHaveBeenCalledTimes(2));
     expect(await screen.findByText(blocker)).toBeVisible();
-    expect(
-      screen.queryByText("progression_transition"),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText("TRANSITION")).not.toBeInTheDocument();
+    expect(screen.queryByText("content_assets")).not.toBeInTheDocument();
+    expect(screen.queryByText("CONTENT_OR_ASSET")).not.toBeInTheDocument();
+    expect(screen.queryByText(/readiness/i)).not.toBeInTheDocument();
   });
 
   it("keeps direct PM-R03 training secondary and non-evidence", async () => {

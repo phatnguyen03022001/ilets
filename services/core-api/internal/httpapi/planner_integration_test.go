@@ -465,11 +465,19 @@ func TestSampledAT02AttemptEvidenceLifecycle(t *testing.T) {
 	}
 	gaps := postEvidence["coverage_gaps"].([]any)
 	if len(gaps) != 1 {
-		t.Fatalf("post-evidence progression inability missing: %#v", postEvidence)
+		t.Fatalf("post-evidence content-supply gap missing: %#v", postEvidence)
 	}
 	gap := gaps[0].(map[string]any)
-	if gap["gap_class"] != "TRANSITION" || gap["condition_id"] != "progression_transition" || gap["condition_status"] != "BLOCKED" || gap["demand_class"] != "learner flow/transition" {
+	if gap["gap_class"] != "CONTENT_OR_ASSET" || gap["condition_id"] != "content_assets" || gap["condition_status"] != "BLOCKED" || gap["demand_class"] != "content/assets/supply route" {
 		t.Fatalf("post-evidence gap fabricated/wrong: %#v", gap)
+	}
+	wantConsequence := "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued."
+	if gap["blocking_consequence"] != wantConsequence {
+		t.Fatalf("post-evidence supply blocker=%#v want=%q", gap["blocking_consequence"], wantConsequence)
+	}
+	gapBytes := []byte(strings.ToLower(gap["blocking_consequence"].(string)))
+	if bytes.Contains(gapBytes, []byte("band")) || bytes.Contains(gapBytes, []byte("readiness")) {
+		t.Fatalf("post-evidence supply gap inferred Band/readiness: %#v", gap)
 	}
 }
 
