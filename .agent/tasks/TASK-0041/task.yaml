@@ -1,7 +1,7 @@
 protocol_version: 3
 
 task_id: TASK-0041
-task_revision: 6
+task_revision: 7
 state: APPROVED
 
 origin:
@@ -14,6 +14,7 @@ origin:
     - PRETTIER_FORMATTER_DRIFT
     - STALE_E2E_POST_SAMPLED_ORACLE
     - E2E_PRETTIER_FORMATTER_DRIFT
+    - FORMATTER_EXECUTION_CAPABILITY_UNAVAILABLE
 
 architect_binding:
   target_repository: phatnguyen03022001/ilets
@@ -44,31 +45,46 @@ inherited_evidence:
   e2e_oracle_candidate_rev5: "38222fb3f9048a2f89c598f89e633bade7dad5b2"
   failed_boundary_rev5: "e2a38aee00703ae2416c5b84e1e57abc4ed3e25e"
   failed_actions_run_rev5: 33603681848
-  rev5_binding_result: "exact boundary binding PASS; detached exact candidate checkout PASS; exact HEAD assertion PASS"
-  rev5_failure: >-
-    Repository-native ./verify stopped at prettier --check . because apps/web/e2e/reading-training.spec.ts
-    was not in canonical Prettier 3.9.6 form. Playwright did not execute, so revision 5 produced no new
-    evidence against the E2E oracle semantics.
-  formatter_version_observed_in_authoritative_run: "prettier 3.9.6"
+  revision_6_handoff_base: "2ac9a0b4772fd1d16149d61e9cd660fe0885fde8"
+  revision_6_result: CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+  revision_6_capability_failure: >-
+    The phone-only ChatGPT execution surface could inspect repository state but could not execute the exact
+    repository-pinned Prettier 3.9.6 binary. Its sandbox also could not fetch npm/CDN dependencies because
+    outbound DNS was unavailable. No revision-6 candidate, sentinel, Actions run, report, or repository
+    mutation was produced.
 
 objective: >-
-  Complete the already-authorized revision-5 E2E oracle correction without changing its test intent or product
-  semantics by applying only the repository-pinned deterministic Prettier normalization to
-  apps/web/e2e/reading-training.spec.ts, then verify one new exact immutable candidate through one new sentinel
-  boundary and publish the canonical terminal report only after authoritative PASS.
+  Complete the already-authorized revision-5 E2E oracle correction without changing product semantics or test
+  intent by routing only the exact repository-pinned Prettier 3.9.6 formatting predicate through Codex, then
+  publishing one immutable formatter candidate, verifying it through one new sentinel-bound GitHub Actions run,
+  and publishing the canonical terminal report only after authoritative PASS.
+
+execution_routing:
+  operator_environment: "phone-only; macOS unavailable"
+  primary_surface: "ChatGPT + GitHub"
+  codex:
+    permitted: true
+    required_for:
+      - "Execute the repository-pinned Prettier 3.9.6 formatter against apps/web/e2e/reading-training.spec.ts when the primary phone-only surface cannot provide the executable."
+    forbidden_for:
+      - "Product redesign or semantic edits."
+      - "Broad codebase refactoring or cleanup."
+      - "Changing formatter configuration, dependencies, workflows, runtime, docs, generated artifacts, or content supply."
+    return_to_primary_surface_after_formatter: true
 
 scope:
   required_changes:
-    - "Refresh exact refs/topology/task and require dev equals the exact revision-6 handoff base with topology exactly {dev, main}."
-    - "Treat revision-5 candidate 38222fb3f9048a2f89c598f89e633bade7dad5b2 as the exact semantic/test-intent reference for apps/web/e2e/reading-training.spec.ts."
-    - "Apply the repository-pinned Prettier formatter used by ./verify to exactly apps/web/e2e/reading-training.spec.ts."
-    - "Do not hand-format or alter assertions, literals, identifiers, expected gap metadata, request capture, test ordering, test setup, timing, learner-visible expectations, or any other test intent."
-    - "Require the formatter result to preserve the revision-5 oracle semantics: CONTENT_OR_ASSET/content_assets/BLOCKED, zero plan items, Core blocking_consequence rendered by Today, and no Recommended next heading."
-    - "Create exactly one revision-6 formatter correction candidate from the exact handoff base. Its only non-task changed path must be apps/web/e2e/reading-training.spec.ts."
-    - "Prove the changed E2E file is exactly repository-pinned Prettier output derived from the revision-5 candidate content and that all non-format semantic tokens/test assertions are unchanged."
-    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-6 candidate SHA."
-    - "Require one new repository-native GitHub Actions verify run to bind the exact candidate, checkout detached, assert exact HEAD, and complete full ./verify PASS including Playwright E2E."
-    - "Do not rerun or mutate prior failed runs. Revision 6 gets one new exact verification boundary/run."
+    - "Refresh exact refs/topology/task and require dev equals the exact revision-7 handoff base with topology exactly {dev, main}."
+    - "Treat revision-5 candidate 38222fb3f9048a2f89c598f89e633bade7dad5b2 as the exact semantic and test-intent reference for apps/web/e2e/reading-training.spec.ts."
+    - "Use Codex only as the execution surface required to run the repository-pinned Prettier 3.9.6 formatter on exactly apps/web/e2e/reading-training.spec.ts."
+    - "Require Codex to resolve and use the repository-pinned formatter from the repository dependency graph; do not use a globally different Prettier version and do not update dependencies."
+    - "Apply only deterministic Prettier normalization to the revision-5 E2E content. Do not hand-format or alter assertions, literals, identifiers, expected gap metadata, request capture, test ordering, setup, timing, learner-visible expectations, or test intent."
+    - "Require the formatted result to preserve CONTENT_OR_ASSET/content_assets/BLOCKED, zero plan items, Core blocking_consequence rendered by Today, and absence of Recommended next."
+    - "Create exactly one revision-7 formatter candidate from the exact handoff base. Its only non-task changed path must be apps/web/e2e/reading-training.spec.ts."
+    - "Prove the candidate file is exact repository-pinned Prettier 3.9.6 output derived from revision-5 content and that no semantic/test-intent change occurred."
+    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-7 candidate SHA."
+    - "Require exactly one new repository-native GitHub Actions verify run to bind that candidate, checkout detached, assert exact HEAD, and complete full ./verify PASS including Playwright E2E."
+    - "Do not rerun or mutate prior failed runs. Revision 7 gets one new exact verification boundary/run."
     - "Only after authoritative PASS publish exactly one report-only direct child at .agent/tasks/TASK-0041/report.yaml and stop at NEEDS_REVIEW."
 
   forbidden_changes:
@@ -76,7 +92,8 @@ scope:
     - "Do not modify production runtime, Planner, Progression, Assessment, Today implementation, Today unit tests, canonical docs, generated registry/trace, content/bootstrap fixtures, seed supply, Skill Leaf IDs, API/schema/generated bindings, DB schema/migrations/queries, auth, providers, workflows, validator/materializer code, formatter configuration, package/dependency versions, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, topology, main, tags, releases, or deployment."
     - "Do not restore TRANSITION/progression_transition behavior or add fresh content supply."
     - "Do not infer Band, mastery, readiness, learner weakness, score threshold, evidence quantity, or broader learner state."
-    - "Do not perform unrelated cleanup, formatting sweeps, framework expansion, or iterative CI debugging loops."
+    - "Do not use Codex for unrelated investigation or framework expansion."
+    - "Do not perform iterative CI debugging loops."
 
 structure_policy:
   expected_new_files:
@@ -91,25 +108,26 @@ structure_policy:
   allow_new_top_level_directories: false
 
 invariants:
-  - "TASK-0041 product/runtime semantics remain unchanged by revision 6."
-  - "Revision-5 E2E oracle semantics remain byte-equivalent modulo repository-pinned Prettier layout."
+  - "TASK-0041 product/runtime semantics remain unchanged by revision 7."
+  - "Revision-5 E2E oracle semantics remain unchanged modulo repository-pinned Prettier layout."
   - "Only apps/web/e2e/reading-training.spec.ts may change in the formatter correction candidate."
-  - "Repository-pinned Prettier, not manual judgment, determines correction bytes."
+  - "The formatter bytes are produced by exact repository-pinned Prettier 3.9.6, not by manual whitespace judgment."
+  - "Codex use is bounded to satisfying the formatter execution predicate unavailable on the phone-only primary surface."
   - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "Revision-6 correction is exactly formatting-only."
-    evidence_required: "Diff from revision-6 handoff base to candidate changes only apps/web/e2e/reading-training.spec.ts and matches repository-pinned Prettier output derived from revision-5 content without assertion/test-intent changes."
+    requirement: "Revision-7 correction is exact formatter output only."
+    evidence_required: "Diff from revision-7 handoff base to candidate changes only apps/web/e2e/reading-training.spec.ts and exact Prettier 3.9.6 reproduction from revision-5 source produces the same bytes."
   - id: AC-2
-    requirement: "Revision-5 oracle semantics are preserved."
-    evidence_required: "Formatted E2E still asserts CONTENT_OR_ASSET/content_assets/BLOCKED, zero plan items, non-empty Core blocking_consequence rendered by Today, and absence of Recommended next."
+    requirement: "Revision-5 E2E oracle semantics are preserved."
+    evidence_required: "Formatted E2E still asserts CONTENT_OR_ASSET/content_assets/BLOCKED, zero plan items, non-empty Core blocking_consequence rendered by Today, and no Recommended next heading."
   - id: AC-3
     requirement: "Formatting gate is closed."
     evidence_required: "Repository-native prettier --check . PASSes on the exact candidate."
   - id: AC-4
     requirement: "Authoritative full verification passes."
-    evidence_required: "One new sentinel-only boundary binds the revision-6 candidate; detached checkout, exact HEAD assertion, canonical materialization, formatting checks, focused tests, Playwright E2E, and full ./verify all PASS."
+    evidence_required: "One new sentinel-only boundary binds the revision-7 candidate; detached checkout, exact HEAD assertion, canonical materialization, formatting checks, focused tests, Playwright E2E, and full ./verify all PASS."
   - id: AC-5
     requirement: "Terminal publication is report-only."
     evidence_required: "report.yaml is a direct child of the successful sentinel boundary and its only changed file."
@@ -117,16 +135,16 @@ acceptance_criteria:
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Verify exact revision-6 handoff base, topology {dev, main}, task revision 6, inherited candidate identities, and failed revision-5 run evidence."
+      command_or_check: "Verify exact revision-7 handoff base, topology {dev, main}, task revision 7, inherited revision-5 candidate identity, and revision-6 capability-unavailable evidence."
       required: true
     - id: CHECK-2
-      command_or_check: "Run repository-pinned Prettier only on apps/web/e2e/reading-training.spec.ts and prove the output is formatting-only relative to revision-5 candidate content."
+      command_or_check: "On Codex, resolve repository-pinned Prettier 3.9.6 and format only apps/web/e2e/reading-training.spec.ts starting from the exact revision-5 content; prove exact version and output equivalence."
       required: true
     - id: CHECK-3
-      command_or_check: "Create one formatter correction candidate and independently prove its only non-task changed path is apps/web/e2e/reading-training.spec.ts."
+      command_or_check: "Create one formatter correction candidate and independently prove its only non-task changed path is apps/web/e2e/reading-training.spec.ts with unchanged test intent."
       required: true
     - id: CHECK-4
-      command_or_check: "Create one sentinel-only verification child and require one new GitHub Actions verify run with exact binding, detached exact candidate HEAD, prettier PASS, Playwright PASS, and full ./verify PASS."
+      command_or_check: "Create one sentinel-only verification child and require exactly one new GitHub Actions verify run with exact binding, detached exact candidate HEAD, prettier PASS, Playwright PASS, and full ./verify PASS."
       required: true
     - id: CHECK-5
       command_or_check: "Publish report-only child and stop at NEEDS_REVIEW."
@@ -144,6 +162,7 @@ capability_requirements:
     - non_force_ref_update
     - exact_diff_inspection
     - repository_pinned_formatter_execution
+    - codex_execution_surface
     - repository_native_deterministic_verification_execution
     - github_actions_run_read
   REVIEW:
