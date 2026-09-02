@@ -411,9 +411,7 @@ describe("Today canonical consumer", () => {
             condition_id: "content_assets",
             condition_status: "BLOCKED",
             blocking_consequence: blocker,
-            dependencies: [
-              "fresh eligible sampled Reading assessment content",
-            ],
+            dependencies: ["fresh eligible sampled Reading assessment content"],
             demand_class: "content/assets/supply route",
             provenance_version: "planner-v1",
           },
