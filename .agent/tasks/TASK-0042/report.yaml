@@ -1,0 +1,253 @@
+protocol_version: 3
+
+task_id: TASK-0042
+task_revision: 3
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0042/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "2efe4fafc5f943ec421b2347f62c50e7d3e25d68"
+  pre_execution_head: "2efe4fafc5f943ec421b2347f62c50e7d3e25d68"
+  final_execution_head: "c78f39540aab419c2b108c29b965f17c6290defa"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+  observed_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external:
+    - superpowers/using-superpowers
+    - superpowers/systematic-debugging
+    - superpowers/verification-before-completion
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: false
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - exact_diff_inspection
+    - agent_runtime_execution_surface
+    - repository_native_deterministic_generation
+    - repository_pinned_formatter_execution
+    - focused_go_typescript_playwright_execution
+    - atomic_repository_git_candidate_write
+    - non_force_ref_update
+    - github_actions_run_read
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - exact_diff_inspection
+    - agent_runtime_execution_surface
+    - repository_native_deterministic_generation
+    - repository_pinned_formatter_execution
+    - focused_go_typescript_playwright_execution
+    - atomic_repository_git_candidate_write
+    - non_force_ref_update
+    - github_actions_run_read
+  missing: []
+  passed: true
+
+operational_timing:
+  started_at_utc: "2026-09-02T17:05:38Z"
+  terminal_decision_at_utc: "2026-09-02T17:22:28Z"
+
+authoritative_verification:
+  required: true
+  performed: true
+  result: PASS
+  evidence: "GitHub Actions verify run 33659963949 (run #13, attempt 1) was the only new run after the sentinel boundary; it bound sentinel fd7ae61e4a862eb2379080bcccf400809228ca8e to exact candidate c78f39540aab419c2b108c29b965f17c6290defa, checked out the candidate detached, and completed full ./verify successfully. Repository Actions count changed exactly from 11 to 12."
+
+local_hygiene:
+  result: PASS
+  run_root: "/Users/tienphat/Developer/ilets"
+  cleanup_performed: true
+  retained: []
+  evidence: "Run-owned Docker Compose projects, detached red-check worktrees, and the run-created core-api build binary were removed; production Next build restored next-env.d.ts before candidate assembly."
+
+changed_files:
+  - path: apps/web/e2e/reading-training.spec.ts
+    summary: "Verify Today continues from assessment-001 to the fresh PM-R04/R-QT-01 assessment-002 and exposes the content-assets blocker only after bounded supply exhaustion."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/BEHAVIOR.md
+    summary: "Add the dedicated R-F05 Headings & Structure canonical materializer anchor."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/behavior/practice-and-media.md
+    summary: "Add the dedicated PM-R04 Headings & Structure canonical materializer anchor."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/ielts-exam-and-bands.md
+    summary: "Add the dedicated IELTS-R-QF-05 Matching headings canonical materializer anchor."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/cmd/seed/main.go
+    summary: "Seed assessment-002 and validate bounded sampled item families and answer keys generically."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/bootstrap/reading-assessment-002.json
+    summary: "Add original synthetic Academic AT-02 headings assessment revision bound exactly to R-F05/PM-R04/PT-13/R-QT-01/IELTS-R-QF-05."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/db/queries/activity.sql
+    summary: "Select fresh bounded assessment revisions, recheck exact revision eligibility, detect admitted bounded evidence, and insert content-derived assessment assignments."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/db/sqlc/activity.sql.go
+    summary: "Regenerate sqlc bindings from the authorized activity queries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/activity.go
+    summary: "Assign planned assessments from exact validated content metadata while preserving direct practice assignment as PM-R03-only."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/attempt.go
+    summary: "Derive bounded EvidenceFact canonical target, family, and context scope from the exact assigned content revision."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/planner.go
+    summary: "Plan the next eligible unseen bounded sampled revision and emit FreshSampleContentGap only after fresh supply is exhausted."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/planner_integration_test.go
+    summary: "Cover exact-revision freshness, duplicate protection, second-sample evidence scope, exhaustion, and preserved assessment-001 behavior."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/planner/kernel.go
+    summary: "Make Planner consume current content eligibility rather than treating any prior sampled assignment as supply exhaustion."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/planner/kernel_test.go
+    summary: "Verify fresh eligible supply remains collectible and only exhausted supply becomes FreshSampleContentGap."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/generated/reading-training-registry.json
+    summary: "Regenerate canonical Reading registry with R-F05, PM-R04, R-QT-01, and IELTS-R-QF-05 entries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/source-map.json
+    summary: "Register dedicated materializer source anchors for R-F05, PM-R04, existing R-QT-01, and IELTS-R-QF-05 without changing materializer code."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/generated/reading-training-trace.json
+    summary: "Regenerate the Reading training trace against current canonical registry provenance."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "c78f39540aab419c2b108c29b965f17c6290defa"
+    message: "feat(TASK-0042): add fresh sampled reading continuation"
+  - sha: "fd7ae61e4a862eb2379080bcccf400809228ca8e"
+    message: "ci(TASK-0042): bind candidate for verification"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Dedicated anchors and source-map entries resolve R-F05, PM-R04, existing R-QT-01, and IELTS-R-QF-05. tools/canonical/test_materialize.py passed 11/11, materialize write/check passed, and tools/canonical/materialize.py remained byte-for-byte identical to base."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "reading-bootstrap-assessment-002-r1 seeded idempotently twice in disposable PostgreSQL and is bound exactly to R-F05/PM-R04/PT-13/R-QT-01/IELTS-R-QF-05/CTX-READING-ACADEMIC. reading-assessment-001.json remained blob 28c79351e721a56837adb21fca0166384afc3e82, identical to base."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Focused planner/HTTP integration and Playwright green runs proved assessment-001 first, assessment-002 next, and FreshSampleContentGap only after both eligible revisions were consumed."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Focused integration proved same exact revision duplicate assignment becomes UNAVAILABLE while a different fresh revision remains assignable; per-learner FOR UPDATE serialization preserves concurrent duplicate protection without schema changes."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Integration evidence preserved assessment-001 claims at R-QT-02/R-QT-03 and admitted assessment-002 only at R-QT-01/IELTS-R-QF-05. BroaderClaimEvaluated remains false and no Band/readiness/mastery/weakness learner inference was introduced."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Repository-native canonical generation, contract validation/generation, sqlc generation twice, Prettier, lint, typecheck, unit tests, build, gofmt/vet/build, and generated-drift checks passed. Public ContentRevisionId remains a string, so OpenAPI required no semantic change and regenerated bindings had no drift."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Playwright passed the single Today scenario: after assessment-001 the UI showed Recommended next Headings & Structure, assigned reading-bootstrap-assessment-002-r1, then showed the authoritative content_assets blocker only after second submission."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "One implementation candidate c78f39540aab419c2b108c29b965f17c6290defa and one sentinel-only direct child fd7ae61e4a862eb2379080bcccf400809228ca8e produced exactly one new Actions verify run 33659963949; run attempt 1 completed success with full ./verify."
+  - criterion_id: AC-9
+    status: PASS
+    evidence: "This report instantiates the pinned report template and is published as the only changed path in the direct child of successful sentinel fd7ae61e4a862eb2379080bcccf400809228ca8e."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Live dev and local HEAD were exactly 2efe4fafc5f943ec421b2347f62c50e7d3e25d68 before candidate work; remote topology was exactly {dev, main}; TASK-0042 revision 3 was APPROVED/execution-ready; TASK-0041 review lineage resolved to ACCEPTED at 636fff42a3059199b784b5186d6e3aee94ef20b3; no prior revision-3 remote candidate/report/sentinel mutation existed."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Before accepting the inherited revision-3 worktree, exact anchor/source-map diff was inspected; canonical materializer tests, materialize write, and --check passed; no materializer implementation change exists."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Regression RED was reproduced against exact base with test-only diffs: integration failed because base blocked after assessment-001 instead of recommending assessment-002, and Today/E2E failed at missing Recommended next. The same focused tests were GREEN on the candidate."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Only authorized bounded content/Planner/Assessment/HTTP/doc/generated paths changed. Canonical, contract, OpenAPI, and sqlc generators were run through Agent Runtime; no hand-edited generated drift remained."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Pinned Node 24.19.0, pnpm 11.21.0, Go 1.27.0, gofmt, repository-pinned Prettier, focused static Go/web checks, disposable-DB integration, and real Playwright all passed. Candidate diff was exactly 17 authorized paths; assessment-001 and materialize.py were byte-identical to base."
+  - check_id: CHECK-6
+    result: PASS
+    evidence: "Exactly one atomic candidate and one sentinel-only child were published. Actions count moved 11 to 12 with only verify run 33659963949; no rerun and no second candidate were created."
+  - check_id: CHECK-7
+    result: PASS
+    evidence: "Authoritative verify run 33659963949 passed before report creation; this report is the sole report-only child artifact and terminal result is NEEDS_REVIEW."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "Clean after report-only commit; dev contains candidate, sentinel boundary, and canonical Executor report while main remains unchanged."
+
+result: NEEDS_REVIEW
