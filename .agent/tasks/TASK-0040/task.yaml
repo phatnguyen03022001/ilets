@@ -1,0 +1,188 @@
+protocol_version: 3
+
+task_id: TASK-0040
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0039
+  gap_ids:
+    - LEGACY-ROOT-SUBTRACTION
+    - REMOTE-EXACT-CANDIDATE-VERIFY
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@dd633b13910550d11bc9616a3f87b457c8810dfc"
+    role: "Current accepted dev truth after TASK-0039 review."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0039/review.yaml@dd633b13910550d11bc9616a3f87b457c8810dfc"
+    role: "Accepted constitutional reconciliation: docs/** is the canonical project documentation plane; spec/** and design/** are superseded non-canonical; the legacy glossary has no unique current semantic role."
+    precedence: 2
+  - source: ".agent/tasks/TASK-0038/report.yaml@dd633b13910550d11bc9616a3f87b457c8810dfc"
+    role: "Exhaustive bounded subtraction audit: identifies the exact legacy roots, four active-reference/test-fixture edits, eligible research/evidence deletion, and prior local-toolchain blocker."
+    precedence: 3
+  - source: ".github/workflows/verify.yml@dd633b13910550d11bc9616a3f87b457c8810dfc"
+    role: "Existing exact-candidate GitHub Actions verifier: sentinel-only boundary binds a parent candidate and runs repository-pinned ./verify on ubuntu-latest with pinned Go, Node, Python and pnpm setup."
+    precedence: 4
+  - source: "docs/product/ielts-exam-and-bands.md@dd633b13910550d11bc9616a3f87b457c8810dfc"
+    role: "Canonical PRODUCT owner already preserves dated official IELTS provenance; no additional provenance migration is required for deleting evidence/**."
+    precedence: 5
+
+objective: >-
+  Complete the already-audited repository subtraction now that TASK-0039 removed the final glossary-authority contradiction and an existing remote exact-candidate verification boundary can run the full repository verifier. Delete all remaining files under spec/**, design/**, research/**, and evidence/**; apply only the four semantics-neutral active-reference/test-fixture corrections established by TASK-0038; prove the exact immutable candidate with one GitHub Actions ./verify run; publish the canonical terminal report; and stop at NEEDS_REVIEW.
+
+scope:
+  required_changes:
+    - "Refresh refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Reuse TASK-0038 exhaustive subtraction audit rather than repeating a broad repository audit. Revalidate only drift since TASK-0038: current accepted history from aa0efa25a4a5533d81a9b1235bc10eb38526edb1 to dd633b13910550d11bc9616a3f87b457c8810dfc changes only TASK-0038/TASK-0039 artifacts plus CONSTITUTION.md and OBJECTIVE.md; no audited runtime/tool/docs surface changed."
+    - "Treat TASK-0039 ACCEPTED glossary audit as closure that spec/11-GLOSSARY.md has no unique current semantic role. Delete it with the rest of spec/**; do not create a replacement glossary file or terminology framework."
+    - "Delete every current file under spec/**, design/**, research/**, and evidence/**. Expected current deletion count is 24 files: the 23 TASK-0038 deletion candidates plus spec/11-GLOSSARY.md. If exact current enumeration differs, fail closed before mutation unless the difference is explained entirely by immutable task-history paths outside those roots."
+    - "Do not create archive/**, legacy/**, history/**, backup/**, or any replacement retained-history tree. Git history is the history mechanism."
+    - "Apply only these four active-surface corrections already established by TASK-0038: (1) repoint services/core-api/internal/planner/kernel.go from the legacy design/08 coverage reference to the existing canonical docs/product/curriculum-and-coverage.md owner; (2) remove stale design/ and spec/ critical-path policy entries from tools/affected/classifier.py while preserving unknown-path full-scan behavior; (3) replace the synthetic evidence/new-note.md fixture in tools/affected/test_classifier.py with a non-deleted-root fixture that preserves the same classification intent; (4) replace synthetic research/spec/design deleted-root fixtures in tools/canonical/test_materialize.py with non-authority/non-deleted-root fixtures that preserve the same validator intent."
+    - "Do not modify docs/product/ielts-exam-and-bands.md: current canonical text already preserves the dated official IELTS provenance required before deleting evidence/**."
+    - "Do not modify CONSTITUTION.md or OBJECTIVE.md: TASK-0039 already reconciled those owners and this task is subtraction only."
+    - "After constructing the candidate, inspect the exact base-to-candidate diff and require that it contains only the 24 legacy deletions plus the four authorized semantics-neutral edits. No product, planner behavior, contract, provider, Band, curriculum, API/schema, DESIGN LOCK, or standards semantics may change."
+    - "Publish the implementation candidate as exactly one atomic Git commit from the exact task base. Use repository Git-object writes plus one non-force dev ref update when the execution surface would otherwise create one commit per file. Do not create a temporary branch."
+    - "Do not require unavailable local Go/Docker verification before candidate publication. This task explicitly uses the existing repository-owned GitHub Actions exact-candidate boundary as the full-verification surface."
+    - "Immediately after publishing the exact candidate, publish exactly one single-parent sentinel-only child that changes only .github/verification-boundary/candidate to the exact candidate SHA. The sentinel child must have the candidate as its only parent."
+    - "Allow at most one GitHub Actions verification run for this task. The run must be the existing verify workflow triggered by the sentinel boundary, bind the sentinel parent as the exact candidate, detach-checkout that candidate, and PASS full ./verify. Do not use Actions as an iterative debugger."
+    - "If the single remote verification run fails, do not publish a corrective implementation in this task. Publish a truthful terminal BLOCKED/REVERIFY_REQUIRED report containing the exact candidate, boundary, run identity and failure evidence, then stop."
+    - "If the remote verification run passes, publish exactly one report-only direct child of the sentinel boundary and stop at NEEDS_REVIEW."
+    - "Historical .agent task/report/review artifacts remain immutable and are excluded from active legacy-reference blocking."
+
+allowed_existing_paths:
+  - spec/**
+  - design/**
+  - research/**
+  - evidence/**
+  - services/core-api/internal/planner/kernel.go
+  - tools/affected/classifier.py
+  - tools/affected/test_classifier.py
+  - tools/canonical/test_materialize.py
+  - .github/verification-boundary/candidate
+  - .github/workflows/verify.yml
+  - tools/canonical/source-map.json
+  - docs/product/curriculum-and-coverage.md
+  - docs/product/ielts-exam-and-bands.md
+  - .agent/tasks/TASK-0038/**
+  - .agent/tasks/TASK-0039/**
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0040/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+  forbidden_new_paths:
+    - archive/**
+    - legacy/**
+    - history/**
+    - backup/**
+    - docs/GLOSSARY.md
+    - glossary/**
+
+invariants:
+  - "Canonical project documentation authority remains docs/** plus scoped contracts machine truth under the TASK-0039 accepted Constitution/Objectives model."
+  - "After accepted implementation, spec/**, design/**, research/**, and evidence/** have zero current files."
+  - "No replacement legacy/history tree is created."
+  - "No product, learning, Band, planner/progression, provider, runtime, API/schema, contract, standards, or DESIGN LOCK semantic changes are introduced."
+  - "Unknown/unclassified affected paths continue to fail closed to full-scan verification."
+  - "Historical task/report/review evidence remains immutable."
+  - "main remains unchanged; no promotion, tag, release, PR, issue, or branch-topology mutation occurs."
+  - "Remote verification evidence applies to the exact immutable implementation candidate, not the sentinel boundary commit."
+  - "At most one GitHub Actions verification run is consumed by this task."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "All superseded legacy/provenance roots are physically subtracted without replacement archive structure."
+    evidence_required: "Exact candidate tree contains no files under spec/**, design/**, research/**, or evidence/** and creates no archive/legacy/history/backup replacement."
+  - id: AC-2
+    requirement: "All active references to deleted roots are repaired without semantic redesign."
+    evidence_required: "Exact diff shows only the four audited semantics-neutral edits; bounded active-surface search after candidate construction finds no dangling current dependency on deleted roots outside immutable .agent history."
+  - id: AC-3
+    requirement: "Canonical authority and provenance remain complete after subtraction."
+    evidence_required: "TASK-0039 accepted docs-only authority remains unchanged; current docs/product/ielts-exam-and-bands.md retains the dated official IELTS provenance baseline; no glossary/provenance replacement file is required."
+  - id: AC-4
+    requirement: "The implementation candidate is minimal and immutable."
+    evidence_required: "Exactly one atomic candidate commit from the task base changes only 24 legacy deletions plus four authorized edits."
+  - id: AC-5
+    requirement: "The exact candidate passes the full repository verifier."
+    evidence_required: "Exactly one GitHub Actions verify run is triggered by a sentinel-only child, binds its parent as the exact candidate, and concludes success after ./verify."
+  - id: AC-6
+    requirement: "Lifecycle/reporting boundaries remain exact."
+    evidence_required: "Candidate -> sentinel-only child -> report-only child lineage is proven; dev ends at report commit, main remains unchanged, and result stops at NEEDS_REVIEW."
+
+verification:
+  authoritative_verification:
+    required: true
+    mechanism: "Existing .github/workflows/verify.yml exact-candidate sentinel boundary"
+    expected_signal: "One workflow run whose boundary child points to the exact candidate SHA and whose verify job concludes success after ./verify."
+  required_checks:
+    - "Exact current enumeration of spec/**, design/**, research/**, evidence/** before mutation; require expected 24 files or fail closed."
+    - "Exact base-to-candidate diff review: only 24 deletions plus four authorized edits."
+    - "Bounded post-candidate search for active references to spec/, design/, research/, evidence/ excluding immutable .agent history and explicit non-authoritative historical prose if any."
+    - "Confirm docs/product/ielts-exam-and-bands.md is unchanged and still contains dated official IELTS provenance baseline."
+    - "Confirm .github/workflows/verify.yml is unchanged and the sentinel child changes only .github/verification-boundary/candidate."
+    - "Resolve the single Actions run, exact boundary SHA, exact candidate SHA, checkout/assertion evidence and final ./verify conclusion."
+    - "Verify final report-only child and final refs/topology; main unchanged."
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - github_actions_run_read
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+blocking_decisions: []
+execution_ready: true
