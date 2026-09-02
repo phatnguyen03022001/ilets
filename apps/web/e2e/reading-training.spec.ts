@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("Today consumes the real Core plan through sampled AT-02 then shows the authoritative blocker", async ({
+test("Today consumes fresh sampled AT-02 supply before showing the authoritative blocker", async ({
   page,
 }) => {
   const activityRequests: Array<Record<string, unknown>> = [];
@@ -118,6 +118,68 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
     timing: [],
   });
 
+  await expect(
+    page.getByRole("heading", { name: "Recommended next" }),
+  ).toBeVisible();
+  await expect(page.getByText("Headings & Structure")).toBeVisible();
+  await expect(page.getByText("content_assets")).toHaveCount(0);
+  await expect(page.getByText("CONTENT_OR_ASSET", { exact: true })).toHaveCount(
+    0,
+  );
+
+  const postFirstSubmissionPlan = [...planResponses]
+    .reverse()
+    .find(
+      (plan) =>
+        plan.items?.length === 1 &&
+        plan.items[0]?.practice_mode_id === "PM-R04",
+    );
+  expect(postFirstSubmissionPlan).toBeTruthy();
+  expect(postFirstSubmissionPlan?.items[0]).toEqual(
+    expect.objectContaining({
+      practice_mode_id: "PM-R04",
+      canonical_target_ids: ["R-QT-01"],
+    }),
+  );
+  expect(postFirstSubmissionPlan?.coverage_gaps).toEqual([]);
+
+  await page
+    .getByRole("button", { name: "Start recommended activity" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Cooling the block" }),
+  ).toBeVisible();
+
+  const headingsAssignment = activityResponses[1];
+  expect(headingsAssignment.outcome).toBe("ASSIGNED");
+  expect(headingsAssignment.activity.content_revision_id).toBe(
+    "reading-bootstrap-assessment-002-r1",
+  );
+  expect(headingsAssignment.activity.practice_mode_id).toBe("PM-R04");
+  expect(headingsAssignment.activity.canonical_target_ids).toEqual(["R-QT-01"]);
+  expect(headingsAssignment.activity.official_family_ids).toEqual({
+    state: "PRESENT",
+    values: ["IELTS-R-QF-05"],
+  });
+  expect(JSON.stringify(headingsAssignment)).not.toContain("correct_choice");
+  expect(JSON.stringify(headingsAssignment)).not.toContain("explanation");
+
+  const headingItems = page.locator("[data-testid^='item-']");
+  await expect(headingItems).toHaveCount(2);
+  await headingItems
+    .nth(0)
+    .getByRole("radio", {
+      name: "Cooling roofs without rebuilding",
+      exact: true,
+    })
+    .click();
+  await headingItems
+    .nth(1)
+    .getByRole("radio", { name: "Shade where passengers wait", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Submit answers" }).click();
+  await expect(page.getByTestId("result")).toBeVisible();
+
   await expect
     .poll(() =>
       [...planResponses]
@@ -132,7 +194,7 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
         ),
     )
     .toBeTruthy();
-  const postSubmissionPlan = [...planResponses]
+  const exhaustedPlan = [...planResponses]
     .reverse()
     .find((plan) =>
       plan.coverage_gaps?.some(
@@ -142,8 +204,8 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
           gap.condition_status === "BLOCKED",
       ),
     );
-  expect(postSubmissionPlan?.items).toHaveLength(0);
-  const supplyBlocker = postSubmissionPlan?.coverage_gaps.find(
+  expect(exhaustedPlan?.items).toHaveLength(0);
+  const supplyBlocker = exhaustedPlan?.coverage_gaps.find(
     (gap: Record<string, any>) =>
       gap.gap_class === "CONTENT_OR_ASSET" &&
       gap.condition_id === "content_assets" &&
@@ -178,11 +240,11 @@ test("Today consumes the real Core plan through sampled AT-02 then shows the aut
       "This is training. It does not count as Reading Band evidence.",
     ),
   ).toBeVisible();
-  expect(activityRequests[1]).toEqual({ practice_mode_id: "PM-R03" });
-  expect(activityResponses[1].activity.primary_activity_purpose).toBe(
+  expect(activityRequests[2]).toEqual({ practice_mode_id: "PM-R03" });
+  expect(activityResponses[2].activity.primary_activity_purpose).toBe(
     "TRAINING",
   );
-  expect(activityResponses[1].activity.evidence_candidacy).toBe(
+  expect(activityResponses[2].activity.evidence_candidacy).toBe(
     "NOT_EVIDENCE_CANDIDATE",
   );
 

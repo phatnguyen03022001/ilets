@@ -11,23 +11,16 @@ import (
 	"github.com/jackc/pgx/v5"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
-	plannercore "github.com/phatnguyen03022001/ilets/services/core-api/internal/planner"
 )
 
 func (s *Server) listPracticeModes(w http.ResponseWriter, r *http.Request) {
 	if _, ok := s.requireLearner(w, r); !ok {
 		return
 	}
-	writeJSON(w, http.StatusOK, public.PracticeModeList{Modes: []public.PracticeMode{practiceMode()}})
-}
-
-func practiceMode() public.PracticeMode {
-	return public.PracticeMode{
-		PracticeModeId:  "PM-R03",
-		Label:           "T/F/NG + Y/N/NG",
-		PracticeTypeIds: []public.CanonicalId{"PT-13", "PT-16"},
-		DurationLabel:   "6–12 min",
-	}
+	writeJSON(w, http.StatusOK, public.PracticeModeList{Modes: []public.PracticeMode{
+		{PracticeModeId: "PM-R03", Label: "T/F/NG + Y/N/NG", PracticeTypeIds: []public.CanonicalId{"PT-13", "PT-16"}, DurationLabel: "6–12 min"},
+		{PracticeModeId: "PM-R04", Label: "Headings & Structure", PracticeTypeIds: []public.CanonicalId{"PT-13"}, DurationLabel: "6–12 min"},
+	}})
 }
 
 func (s *Server) createPracticeActivity(w http.ResponseWriter, r *http.Request, params public.CreatePracticeActivityParams) {
@@ -203,12 +196,12 @@ func (s *Server) createPlannedAssessmentActivity(w http.ResponseWriter, r *http.
 		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "The current target no longer matches the plan snapshot.")
 		return
 	}
-	if item.ContentRevisionID != plannercore.SampledAssessmentRevision || item.ValidationPolicyVersion != "bootstrap-reading-assessment-v1" || item.ValidationIntendedUse != "ASSESSMENT_SAMPLED_CLASSIFICATION" || item.PlannedOperationalState != "ACTIVE" || !item.PlannedAssignmentEligible {
+	if item.ValidationPolicyVersion != "bootstrap-reading-assessment-v1" || !validSampledAssessmentIntendedUse(item.ContentRevisionID, item.ValidationIntendedUse) || item.PlannedOperationalState != "ACTIVE" || !item.PlannedAssignmentEligible {
 		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "The stored plan item no longer satisfies the bounded assessment invariants.")
 		return
 	}
 
-	current, err := queries.GetSampledReadingAssessmentForPlanning(r.Context())
+	current, err := queries.GetSampledReadingAssessmentRevision(r.Context(), item.ContentRevisionID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CONTENT_UNAVAILABLE"), nil, "The sampled assessment content is not currently assignable.")
 		return
@@ -226,7 +219,7 @@ func (s *Server) createPlannedAssessmentActivity(w http.ResponseWriter, r *http.
 		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CONTENT_UNAVAILABLE"), nil, "The sampled assessment content failed current assignment invariants.")
 		return
 	}
-	priorAssignment, err := queries.HasPriorSampledReadingAssignment(r.Context(), learner)
+	priorAssignment, err := queries.HasPriorAssessmentRevisionAssignment(r.Context(), sqlcdb.HasPriorAssessmentRevisionAssignmentParams{LearnerID: learner, ContentRevisionID: item.ContentRevisionID})
 	if err != nil {
 		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot recheck prior sampled assignment")
 		return
@@ -237,8 +230,9 @@ func (s *Server) createPlannedAssessmentActivity(w http.ResponseWriter, r *http.
 	}
 
 	activityID := newID("activity_")
-	assignedAt, err := queries.InsertAssessmentPracticeActivity(r.Context(), sqlcdb.InsertAssessmentPracticeActivityParams{
-		PracticeActivityID: activityID, LearnerID: learner, ContentRevisionID: current.RevisionID, DailyPlanItemID: &planItemID,
+	assignedAt, err := queries.InsertBoundedAssessmentPracticeActivity(r.Context(), sqlcdb.InsertBoundedAssessmentPracticeActivityParams{
+		PracticeActivityID: activityID, LearnerID: learner, ContentRevisionID: current.RevisionID,
+		FeatureID: content["feature_id"].(string), PracticeModeID: content["practice_mode_id"].(string), DailyPlanItemID: &planItemID,
 	})
 	if errors.Is(err, pgx.ErrNoRows) {
 		s.finishPlannedUnavailability(w, r, tx, queries, learner, key, public.PracticeActivityUnavailabilityReason("CURRENT_ELIGIBILITY_BLOCKED"), nil, "This exact assessment sample has already been assigned; fresh/unseen eligibility can no longer be proven for another independent opportunity.")
@@ -352,13 +346,15 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 			ResponseContract: public.LearnerResponseContract{Kind: kind, Options: &options},
 		})
 	}
-	contextValues := []public.CanonicalId{"CTX-READING-ACADEMIC"}
-	familyValues := []public.CanonicalId{"IELTS-R-QF-02", "IELTS-R-QF-03"}
+	contextValues := []public.CanonicalId{public.CanonicalId(content["content_context_id"].(string))}
+	familyValues := canonicalIDs(content["official_family_ids"])
+	practiceTypeIDs := canonicalIDs(content["practice_type_ids"])
+	targetIDs := canonicalIDs(content["skill_target_ids"])
 	academic := public.TestVariant("Academic")
-	presentationReason := "No additional material presentation class is defined for this bounded Reading classification content."
+	presentationReason := "No additional material presentation class is defined for this bounded Reading content."
 	purpose := public.ActivityPurpose(content["primary_activity_purpose"].(string))
 	candidacy := public.EvidenceCandidacy(content["evidence_candidacy"].(string))
-	deliveryReason := "This bounded Reading training activity has no delivery-mode-specific interaction."
+	deliveryReason := "This bounded Reading activity has no delivery-mode-specific interaction."
 	assistance := []public.ConditionFact{}
 	exposure := []public.ConditionFact{}
 	if purpose == public.ActivityPurpose("ASSESSMENT") {
@@ -373,9 +369,9 @@ func safeActivity(id, revision string, assigned time.Time, content map[string]an
 	return public.PracticeActivity{
 		PracticeActivityId:     id,
 		ContentRevisionId:      revision,
-		PracticeModeId:         "PM-R03",
-		PracticeTypeIds:        []public.CanonicalId{"PT-13", "PT-16"},
-		CanonicalTargetIds:     []public.CanonicalId{"R-QT-02", "R-QT-03"},
+		PracticeModeId:         public.CanonicalId(content["practice_mode_id"].(string)),
+		PracticeTypeIds:        practiceTypeIDs,
+		CanonicalTargetIds:     targetIDs,
 		TestVariant:            public.ScopedTestVariant{State: public.ApplicabilityState("PRESENT"), Value: &academic},
 		ContentContextIds:      public.ScopedCanonicalIds{State: public.ApplicabilityState("PRESENT"), Values: &contextValues},
 		OfficialFamilyIds:      public.ScopedCanonicalIds{State: public.ApplicabilityState("PRESENT"), Values: &familyValues},

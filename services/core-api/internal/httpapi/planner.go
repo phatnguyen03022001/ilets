@@ -43,38 +43,34 @@ func (s *Server) getDailyPlan(w http.ResponseWriter, r *http.Request) {
 	queries := sqlcdb.New(s.db)
 	evidence := plannercore.EvidenceState{}
 	admittedSample := false
+	var assessment sqlcdb.GetFreshSampledReadingAssessmentForPlanningRow
+	var assessmentContent map[string]any
 	if target.Configured && target.Resolved && target.ReadingRelevant && target.Variant == "ACADEMIC" {
-		admittedSample, err = queries.HasAdmittedSampledReadingEvidence(r.Context(), learner)
-		if err == nil {
-			evidence.PriorSampledAssignment, err = queries.HasPriorSampledReadingAssignment(r.Context(), learner)
-		}
+		admittedSample, err = queries.HasAdmittedBoundedSampledReadingEvidence(r.Context(), learner)
 		if err != nil {
 			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve sampled evidence state")
 			return
 		}
-	}
-
-	var assessment sqlcdb.GetSampledReadingAssessmentForPlanningRow
-	assessment, err = queries.GetSampledReadingAssessmentForPlanning(r.Context())
-	if err == nil {
-		var payload map[string]any
-		evidence.ContentEligible = json.Unmarshal(assessment.SemanticPayload, &payload) == nil && validAssessmentBootstrapContent(payload)
-	} else if !errors.Is(err, pgx.ErrNoRows) {
-		writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve assessment content")
-		return
+		assessment, err = queries.GetFreshSampledReadingAssessmentForPlanning(r.Context(), learner)
+		if err == nil {
+			evidence.ContentEligible = json.Unmarshal(assessment.SemanticPayload, &assessmentContent) == nil && validAssessmentBootstrapContent(assessmentContent)
+		} else if !errors.Is(err, pgx.ErrNoRows) {
+			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve assessment content")
+			return
+		}
 	}
 
 	assessmentInterpretation := assessmentcore.InterpretSampledReadingAT02(admittedSample)
 	progressionConsequence := progressioncore.InterpretSampledReadingAT02(assessmentInterpretation)
 	decision := plannercore.Decide(target, evidence, progressionConsequence)
-	coverageGaps := plannerCoverageGaps(decision, evidence.PriorSampledAssignment)
+	coverageGaps := plannerCoverageGaps(decision)
 	items := []public.DailyPlanItem{}
 	planID := newID("plan_")
 	generatedAt := time.Now().UTC()
 	var planItemID string
 	if decision == plannercore.CollectSampledEvidence {
 		planItemID = newID("plan_item_")
-		items = append(items, sampledReadingPlanItem(planItemID))
+		items = append(items, sampledReadingPlanItem(planItemID, assessmentContent))
 	}
 
 	targetJSON, targetErr := json.Marshal(targetContext)
@@ -133,15 +129,16 @@ func plannerTarget(profile public.TargetProfile) plannercore.Target {
 	return result
 }
 
-func sampledReadingPlanItem(id string) public.DailyPlanItem {
+func sampledReadingPlanItem(id string, content map[string]any) public.DailyPlanItem {
 	academic := public.TestVariant("Academic")
-	contexts := []public.CanonicalId{"CTX-READING-ACADEMIC"}
-	families := []public.CanonicalId{"IELTS-R-QF-02", "IELTS-R-QF-03"}
-	presentationReason := "No additional material presentation class is defined for this bounded Reading classification content."
-	deliveryReason := "This bounded sampled Reading classification assessment has no delivery-mode-specific interaction."
+	contexts := []public.CanonicalId{public.CanonicalId(content["content_context_id"].(string))}
+	families := canonicalIDs(content["official_family_ids"])
+	targets := canonicalIDs(content["skill_target_ids"])
+	presentationReason := "No additional material presentation class is defined for this bounded sampled Reading content."
+	deliveryReason := "This bounded sampled Reading assessment has no delivery-mode-specific interaction."
 	return public.DailyPlanItem{
-		PlanItemId: id, PracticeModeId: "PM-R03",
-		CanonicalTargetIds:     []public.CanonicalId{"R-QT-02", "R-QT-03"},
+		PlanItemId: id, PracticeModeId: public.CanonicalId(content["practice_mode_id"].(string)),
+		CanonicalTargetIds:     targets,
 		ReasonCodes:            []public.PlanReasonCode{public.PlanReasonCode("INSUFFICIENT_EVIDENCE")},
 		PrimaryActivityPurpose: public.ActivityPurpose("ASSESSMENT"), EvidenceCandidacy: public.EvidenceCandidacy("ASSESSMENT_MAY_ADMIT"),
 		TestVariant:          public.ScopedTestVariant{State: public.ApplicabilityState("PRESENT"), Value: &academic},
@@ -152,31 +149,28 @@ func sampledReadingPlanItem(id string) public.DailyPlanItem {
 	}
 }
 
-func plannerCoverageGaps(decision plannercore.Decision, priorAssignment bool) []public.CoverageGap {
-	targets := []public.CanonicalId{"R-QT-02", "R-QT-03"}
+func plannerCoverageGaps(decision plannercore.Decision) []public.CoverageGap {
+	classificationTargets := []public.CanonicalId{"R-QT-02", "R-QT-03"}
 	switch decision {
 	case plannercore.GeneralTrainingContentGap:
 		return []public.CoverageGap{{
-			GapClass: public.CoverageGapClass("CONTENT_OR_ASSET"), ScopedTargetIds: targets,
+			GapClass: public.CoverageGapClass("CONTENT_OR_ASSET"), ScopedTargetIds: classificationTargets,
 			ConditionId: "content_assets", ConditionStatus: public.CoverageConditionStatus("BLOCKED"),
 			BlockingConsequence: "No executable General Training Reading sample for this bounded AT-02 path is currently available.",
 			Dependencies:        []string{"General Training Reading sampled assessment content"}, DemandClass: "content/assets/supply route",
 			ProvenanceVersion: plannercore.CoverageProvenanceVersion,
 		}}
 	case plannercore.FreshSampleContentGap:
-		consequence := "The bounded sampled Reading assessment content is not currently eligible for assignment."
-		if priorAssignment {
-			consequence = "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued."
-		}
 		return []public.CoverageGap{{
-			GapClass: public.CoverageGapClass("CONTENT_OR_ASSET"), ScopedTargetIds: targets,
-			ConditionId: "content_assets", ConditionStatus: public.CoverageConditionStatus("BLOCKED"), BlockingConsequence: consequence,
-			Dependencies: []string{"fresh eligible sampled Reading assessment content"}, DemandClass: "content/assets/supply route",
+			GapClass: public.CoverageGapClass("CONTENT_OR_ASSET"), ScopedTargetIds: []public.CanonicalId{"R-QT-01", "R-QT-02", "R-QT-03"},
+			ConditionId: "content_assets", ConditionStatus: public.CoverageConditionStatus("BLOCKED"),
+			BlockingConsequence: "No eligible unseen revision remains in the bounded sampled Reading assessment supply.",
+			Dependencies:        []string{"fresh eligible sampled Reading assessment content"}, DemandClass: "content/assets/supply route",
 			ProvenanceVersion: plannercore.CoverageProvenanceVersion,
 		}}
 	case plannercore.ProgressionTransitionGap:
 		return []public.CoverageGap{{
-			GapClass: public.CoverageGapClass("TRANSITION"), ScopedTargetIds: targets,
+			GapClass: public.CoverageGapClass("TRANSITION"), ScopedTargetIds: classificationTargets,
 			ConditionId: "progression_transition", ConditionStatus: public.CoverageConditionStatus("BLOCKED"),
 			BlockingConsequence: "Assessment records only the bounded sampled EvidenceFact; no broader learner claim is authorized, so Progression emits no learner GapEvaluation or ActionIntent and the product has no authorized next transition for this scope.",
 			Dependencies:        []string{"authorized scoped Assessment consequence and Progression ActionIntent beyond sampled AT-02 evidence"}, DemandClass: "learner flow/transition",
@@ -188,8 +182,123 @@ func plannerCoverageGaps(decision plannercore.Decision, priorAssignment bool) []
 }
 
 func validAssessmentBootstrapContent(content map[string]any) bool {
-	if content["feature_id"] != "R-F04" || content["practice_mode_id"] != "PM-R03" || content["content_context_id"] != "CTX-READING-ACADEMIC" || content["primary_activity_purpose"] != "ASSESSMENT" || content["evidence_candidacy"] != "ASSESSMENT_MAY_ADMIT" || content["assessment_type_ref"] != "AT-02" || content["test_variant"] != "ACADEMIC" {
+	if content["content_context_id"] != "CTX-READING-ACADEMIC" || content["primary_activity_purpose"] != "ASSESSMENT" || content["evidence_candidacy"] != "ASSESSMENT_MAY_ADMIT" || content["assessment_type_ref"] != "AT-02" || content["test_variant"] != "ACADEMIC" {
 		return false
 	}
-	return validBootstrapItems(content)
+	if !validBootstrapItems(content) {
+		return false
+	}
+	feature, _ := content["feature_id"].(string)
+	mode, _ := content["practice_mode_id"].(string)
+	practiceTypes, okPractice := stringIDs(content["practice_type_ids"])
+	targets, okTargets := stringIDs(content["skill_target_ids"])
+	families, okFamilies := stringIDs(content["official_family_ids"])
+	claims, okClaims := stringIDs(content["claim_candidate_refs"])
+	if !okPractice || !okTargets || !okFamilies || !okClaims || !sameStrings(targets, claims) {
+		return false
+	}
+	switch feature {
+	case "R-F04":
+		return mode == "PM-R03" && sameStrings(practiceTypes, []string{"PT-13", "PT-16"}) && sameStrings(targets, []string{"R-QT-02", "R-QT-03"}) && sameStrings(families, []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}) && validAssessmentItemFamilies(content, map[string]bool{"IELTS-R-QF-02": true, "IELTS-R-QF-03": true})
+	case "R-F05":
+		return mode == "PM-R04" && sameStrings(practiceTypes, []string{"PT-13"}) && sameStrings(targets, []string{"R-QT-01"}) && sameStrings(families, []string{"IELTS-R-QF-05"}) && validAssessmentItemFamilies(content, map[string]bool{"IELTS-R-QF-05": true})
+	default:
+		return false
+	}
+}
+
+func validSampledAssessmentIntendedUse(revision, intendedUse string) bool {
+	switch revision {
+	case "reading-bootstrap-assessment-001-r1":
+		return intendedUse == "ASSESSMENT_SAMPLED_CLASSIFICATION"
+	case "reading-bootstrap-assessment-002-r1":
+		return intendedUse == "ASSESSMENT_SAMPLED_HEADINGS"
+	default:
+		return false
+	}
+}
+
+func canonicalIDs(raw any) []public.CanonicalId {
+	values, _ := stringIDs(raw)
+	out := make([]public.CanonicalId, 0, len(values))
+	for _, value := range values {
+		out = append(out, public.CanonicalId(value))
+	}
+	return out
+}
+
+func stringIDs(raw any) ([]string, bool) {
+	values, ok := raw.([]any)
+	if !ok || len(values) == 0 {
+		return nil, false
+	}
+	out := make([]string, 0, len(values))
+	for _, rawValue := range values {
+		value, ok := rawValue.(string)
+		if !ok || value == "" {
+			return nil, false
+		}
+		out = append(out, value)
+	}
+	return out, true
+}
+
+func sameStrings(got, want []string) bool {
+	if len(got) != len(want) {
+		return false
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func validAssessmentItemFamilies(content map[string]any, allowed map[string]bool) bool {
+	items, ok := content["items"].([]any)
+	if !ok || len(items) < 2 {
+		return false
+	}
+	seen := map[string]bool{}
+	for _, raw := range items {
+		item, ok := raw.(map[string]any)
+		if !ok {
+			return false
+		}
+		family, ok := item["official_family_id"].(string)
+		if !ok || !allowed[family] {
+			return false
+		}
+		seen[family] = true
+		correct, ok := item["correct_choice"].(string)
+		if !ok {
+			return false
+		}
+		choices, ok := item["choices"].([]any)
+		if !ok || len(choices) != 3 {
+			return false
+		}
+		found := false
+		for _, choice := range choices {
+			if choice == correct {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+		if family == "IELTS-R-QF-02" && correct != "TRUE" && correct != "FALSE" && correct != "NOT_GIVEN" {
+			return false
+		}
+		if family == "IELTS-R-QF-03" && correct != "YES" && correct != "NO" && correct != "NOT_GIVEN" {
+			return false
+		}
+	}
+	for family := range allowed {
+		if !seen[family] {
+			return false
+		}
+	}
+	return true
 }

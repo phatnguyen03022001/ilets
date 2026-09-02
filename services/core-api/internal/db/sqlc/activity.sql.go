@@ -48,6 +48,71 @@ func (q *Queries) GetAssignableContentRevision(ctx context.Context, learnerID st
 	return i, err
 }
 
+const getFreshSampledReadingAssessmentForPlanning = `-- name: GetFreshSampledReadingAssessmentForPlanning :one
+SELECT
+  cr.revision_id,
+  cr.semantic_payload,
+  us.current_validation_decision_id,
+  us.operational_state,
+  us.assignment_eligible,
+  vd.validation_policy_version,
+  vd.intended_use
+FROM content_revisions cr
+JOIN content_use_states us ON us.content_revision_id = cr.revision_id
+JOIN validation_decisions vd ON vd.validation_decision_id = us.current_validation_decision_id
+WHERE us.assignment_eligible = true
+  AND us.operational_state = 'ACTIVE'
+  AND vd.result = 'PASS'
+  AND vd.validation_policy_version = 'bootstrap-reading-assessment-v1'
+  AND cr.semantic_payload->>'primary_activity_purpose' = 'ASSESSMENT'
+  AND cr.semantic_payload->>'evidence_candidacy' = 'ASSESSMENT_MAY_ADMIT'
+  AND cr.semantic_payload->>'assessment_type_ref' = 'AT-02'
+  AND cr.semantic_payload->>'test_variant' = 'ACADEMIC'
+  AND (
+    (cr.revision_id = 'reading-bootstrap-assessment-001-r1' AND vd.intended_use = 'ASSESSMENT_SAMPLED_CLASSIFICATION') OR
+    (cr.revision_id = 'reading-bootstrap-assessment-002-r1' AND vd.intended_use = 'ASSESSMENT_SAMPLED_HEADINGS')
+  )
+  AND NOT EXISTS (
+    SELECT 1
+    FROM practice_activities pa
+    WHERE pa.learner_id = $1
+      AND pa.content_revision_id = cr.revision_id
+      AND pa.primary_activity_purpose = 'ASSESSMENT'
+  )
+ORDER BY CASE cr.revision_id
+  WHEN 'reading-bootstrap-assessment-001-r1' THEN 1
+  WHEN 'reading-bootstrap-assessment-002-r1' THEN 2
+  ELSE 3
+END
+LIMIT 1
+FOR SHARE OF cr, us, vd
+`
+
+type GetFreshSampledReadingAssessmentForPlanningRow struct {
+	RevisionID                  string
+	SemanticPayload             []byte
+	CurrentValidationDecisionID string
+	OperationalState            string
+	AssignmentEligible          bool
+	ValidationPolicyVersion     string
+	IntendedUse                 string
+}
+
+func (q *Queries) GetFreshSampledReadingAssessmentForPlanning(ctx context.Context, learnerID string) (GetFreshSampledReadingAssessmentForPlanningRow, error) {
+	row := q.db.QueryRow(ctx, getFreshSampledReadingAssessmentForPlanning, learnerID)
+	var i GetFreshSampledReadingAssessmentForPlanningRow
+	err := row.Scan(
+		&i.RevisionID,
+		&i.SemanticPayload,
+		&i.CurrentValidationDecisionID,
+		&i.OperationalState,
+		&i.AssignmentEligible,
+		&i.ValidationPolicyVersion,
+		&i.IntendedUse,
+	)
+	return i, err
+}
+
 const getPracticeActivity = `-- name: GetPracticeActivity :one
 SELECT pa.content_revision_id, pa.assigned_at, cr.semantic_payload
 FROM practice_activities pa
@@ -72,6 +137,166 @@ func (q *Queries) GetPracticeActivity(ctx context.Context, arg GetPracticeActivi
 	var i GetPracticeActivityRow
 	err := row.Scan(&i.ContentRevisionID, &i.AssignedAt, &i.SemanticPayload)
 	return i, err
+}
+
+const getSampledReadingAssessmentRevision = `-- name: GetSampledReadingAssessmentRevision :one
+SELECT
+  cr.revision_id,
+  cr.semantic_payload,
+  us.current_validation_decision_id,
+  us.operational_state,
+  us.assignment_eligible,
+  vd.validation_policy_version,
+  vd.intended_use
+FROM content_revisions cr
+JOIN content_use_states us ON us.content_revision_id = cr.revision_id
+JOIN validation_decisions vd ON vd.validation_decision_id = us.current_validation_decision_id
+WHERE cr.revision_id = $1
+  AND us.assignment_eligible = true
+  AND us.operational_state = 'ACTIVE'
+  AND vd.result = 'PASS'
+  AND vd.validation_policy_version = 'bootstrap-reading-assessment-v1'
+  AND cr.semantic_payload->>'primary_activity_purpose' = 'ASSESSMENT'
+  AND cr.semantic_payload->>'evidence_candidacy' = 'ASSESSMENT_MAY_ADMIT'
+  AND cr.semantic_payload->>'assessment_type_ref' = 'AT-02'
+  AND cr.semantic_payload->>'test_variant' = 'ACADEMIC'
+  AND (
+    (cr.revision_id = 'reading-bootstrap-assessment-001-r1' AND vd.intended_use = 'ASSESSMENT_SAMPLED_CLASSIFICATION') OR
+    (cr.revision_id = 'reading-bootstrap-assessment-002-r1' AND vd.intended_use = 'ASSESSMENT_SAMPLED_HEADINGS')
+  )
+`
+
+type GetSampledReadingAssessmentRevisionRow struct {
+	RevisionID                  string
+	SemanticPayload             []byte
+	CurrentValidationDecisionID string
+	OperationalState            string
+	AssignmentEligible          bool
+	ValidationPolicyVersion     string
+	IntendedUse                 string
+}
+
+func (q *Queries) GetSampledReadingAssessmentRevision(ctx context.Context, revisionID string) (GetSampledReadingAssessmentRevisionRow, error) {
+	row := q.db.QueryRow(ctx, getSampledReadingAssessmentRevision, revisionID)
+	var i GetSampledReadingAssessmentRevisionRow
+	err := row.Scan(
+		&i.RevisionID,
+		&i.SemanticPayload,
+		&i.CurrentValidationDecisionID,
+		&i.OperationalState,
+		&i.AssignmentEligible,
+		&i.ValidationPolicyVersion,
+		&i.IntendedUse,
+	)
+	return i, err
+}
+
+const hasAdmittedBoundedSampledReadingEvidence = `-- name: HasAdmittedBoundedSampledReadingEvidence :one
+SELECT EXISTS (
+  SELECT 1
+  FROM evidence_facts ef
+  JOIN observations o ON o.observation_id = ef.observation_id
+  WHERE ef.learner_id = $1
+    AND o.content_revision_id IN (
+      'reading-bootstrap-assessment-001-r1',
+      'reading-bootstrap-assessment-002-r1'
+    )
+    AND ef.claim_scope->>'assessment_type_id' = 'AT-02'
+    AND ef.claim_scope->>'test_variant' = 'Academic'
+    AND ef.claim_scope->'content_context_ids' = '["CTX-READING-ACADEMIC"]'::jsonb
+    AND (
+      (
+        o.content_revision_id = 'reading-bootstrap-assessment-001-r1'
+        AND ef.claim_scope->'canonical_target_ids' = '["R-QT-02","R-QT-03"]'::jsonb
+        AND ef.claim_scope->'official_family_ids' = '["IELTS-R-QF-02","IELTS-R-QF-03"]'::jsonb
+      ) OR (
+        o.content_revision_id = 'reading-bootstrap-assessment-002-r1'
+        AND ef.claim_scope->'canonical_target_ids' = '["R-QT-01"]'::jsonb
+        AND ef.claim_scope->'official_family_ids' = '["IELTS-R-QF-05"]'::jsonb
+      )
+    )
+)
+`
+
+func (q *Queries) HasAdmittedBoundedSampledReadingEvidence(ctx context.Context, learnerID string) (bool, error) {
+	row := q.db.QueryRow(ctx, hasAdmittedBoundedSampledReadingEvidence, learnerID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const hasPriorAssessmentRevisionAssignment = `-- name: HasPriorAssessmentRevisionAssignment :one
+SELECT EXISTS (
+  SELECT 1
+  FROM practice_activities
+  WHERE learner_id = $1
+    AND content_revision_id = $2
+    AND primary_activity_purpose = 'ASSESSMENT'
+)
+`
+
+type HasPriorAssessmentRevisionAssignmentParams struct {
+	LearnerID         string
+	ContentRevisionID string
+}
+
+func (q *Queries) HasPriorAssessmentRevisionAssignment(ctx context.Context, arg HasPriorAssessmentRevisionAssignmentParams) (bool, error) {
+	row := q.db.QueryRow(ctx, hasPriorAssessmentRevisionAssignment, arg.LearnerID, arg.ContentRevisionID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const insertBoundedAssessmentPracticeActivity = `-- name: InsertBoundedAssessmentPracticeActivity :one
+INSERT INTO practice_activities (
+  practice_activity_id,
+  learner_id,
+  content_revision_id,
+  feature_id,
+  practice_mode_id,
+  primary_activity_purpose,
+  evidence_candidacy,
+  assessment_type_id,
+  test_variant,
+  daily_plan_item_id
+)
+VALUES (
+  $1,
+  $2,
+  $3,
+  $4,
+  $5,
+  'ASSESSMENT',
+  'ASSESSMENT_MAY_ADMIT',
+  'AT-02',
+  'ACADEMIC',
+  $6
+)
+ON CONFLICT DO NOTHING
+RETURNING assigned_at
+`
+
+type InsertBoundedAssessmentPracticeActivityParams struct {
+	PracticeActivityID string
+	LearnerID          string
+	ContentRevisionID  string
+	FeatureID          string
+	PracticeModeID     string
+	DailyPlanItemID    *string
+}
+
+func (q *Queries) InsertBoundedAssessmentPracticeActivity(ctx context.Context, arg InsertBoundedAssessmentPracticeActivityParams) (pgtype.Timestamptz, error) {
+	row := q.db.QueryRow(ctx, insertBoundedAssessmentPracticeActivity,
+		arg.PracticeActivityID,
+		arg.LearnerID,
+		arg.ContentRevisionID,
+		arg.FeatureID,
+		arg.PracticeModeID,
+		arg.DailyPlanItemID,
+	)
+	var assigned_at pgtype.Timestamptz
+	err := row.Scan(&assigned_at)
+	return assigned_at, err
 }
 
 const insertPracticeActivity = `-- name: InsertPracticeActivity :exec

@@ -166,6 +166,12 @@ The locked catalog contains exactly 28 modes: 6 Listening, 6 Reading, 6 Writing,
 |---|---|---:|---|---|
 | `PM-R03` | T/F/NG + Y/N/NG | 6–12 min | evidence/stance classification | `PT-13`, `PT-16`, Contrast |
 
+### Canonical materializer anchor — Reading headings and structure mode
+
+| ID | Mode | Default duration | Learning role | Typical canonical backing |
+|---|---|---:|---|---|
+| `PM-R04` | Headings & Structure | 6–12 min | paragraph function / organization | `PT-13` |
+
 `PM-R06` resolves variant/scope; full-Reading readiness uses complete applicable variant conditions. `PM-W06` records material delivery/input condition. Task-1 mode instantiation resolves Academic to `W-TA-01/02/03` and GT to `W-GT1-01/02/03` plus shared Writing. `PM-X04` resolves variant before Reading/Writing Task 1 and does not allow mixed Academic/GT as normal readiness.
 
 ### Activity purpose and evidence candidacy

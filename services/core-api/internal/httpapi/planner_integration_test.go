@@ -10,6 +10,7 @@ import (
 )
 
 const sampledAssessmentRevision = "reading-bootstrap-assessment-001-r1"
+const sampledHeadingsAssessmentRevision = "reading-bootstrap-assessment-002-r1"
 
 func TestDailyPlanTargetResolutionAndBoundedAT02(t *testing.T) {
 	pool := integrationPool(t)
@@ -238,52 +239,52 @@ func TestPlanItemAssignmentRechecksOwnershipTargetContentAndFreshness(t *testing
 		}
 	})
 
-	t.Run("assignment consumes fresh opportunity without proving learner exposure", func(t *testing.T) {
+	t.Run("freshness is exact revision scoped across the bounded supply", func(t *testing.T) {
 		learner := newAPIClient(t, server.URL, key, "user_plan_freshness", nil)
 		putTarget(t, learner, 0, 6.5)
 		firstItem := singlePlanItemID(t, readDailyPlan(t, learner))
-		secondItem := singlePlanItemID(t, readDailyPlan(t, learner))
+		duplicateFirstItem := singlePlanItemID(t, readDailyPlan(t, learner))
+
 		first, status := assignPlanItem(t, learner, firstItem, "freshness-plan-key-0001")
 		if status != http.StatusCreated || first["outcome"] != "ASSIGNED" {
 			t.Fatalf("first assessment assignment failed: status=%d result=%#v", status, first)
 		}
-		replay, replayStatus := assignPlanItem(t, learner, firstItem, "freshness-plan-key-0001")
-		if replayStatus != http.StatusOK || replay["activity"].(map[string]any)["practice_activity_id"] != first["activity"].(map[string]any)["practice_activity_id"] {
-			t.Fatalf("assignment replay changed resource: status=%d result=%#v", replayStatus, replay)
+		firstActivity := first["activity"].(map[string]any)
+		if firstActivity["content_revision_id"] != sampledAssessmentRevision {
+			t.Fatalf("initial bounded sample changed: %#v", firstActivity)
 		}
 
-		var activityCount, attemptCount int
-		if err := pool.QueryRow(t.Context(), `SELECT count(*) FROM practice_activities WHERE learner_id=(SELECT learner_id FROM external_principals WHERE external_subject='user_plan_freshness') AND content_revision_id=$1 AND primary_activity_purpose='ASSESSMENT'`, sampledAssessmentRevision).Scan(&activityCount); err != nil {
-			t.Fatal(err)
-		}
-		if err := pool.QueryRow(t.Context(), `SELECT count(*) FROM attempts WHERE learner_id=(SELECT learner_id FROM external_principals WHERE external_subject='user_plan_freshness')`).Scan(&attemptCount); err != nil {
-			t.Fatal(err)
-		}
-		if activityCount != 1 || attemptCount != 0 {
-			t.Fatalf("assignment-only causal setup violated: activities=%d attempts=%d", activityCount, attemptCount)
+		duplicate, duplicateStatus := assignPlanItem(t, learner, duplicateFirstItem, "freshness-plan-key-0002")
+		if duplicateStatus != http.StatusOK || duplicate["outcome"] != "UNAVAILABLE" || duplicate["unavailability"].(map[string]any)["reason"] != "CURRENT_ELIGIBILITY_BLOCKED" {
+			t.Fatalf("same revision was assignable twice: status=%d result=%#v", duplicateStatus, duplicate)
 		}
 
-		second, secondStatus := assignPlanItem(t, learner, secondItem, "freshness-plan-key-0002")
-		if secondStatus != http.StatusOK || second["outcome"] != "UNAVAILABLE" || second["unavailability"].(map[string]any)["reason"] != "CURRENT_ELIGIBILITY_BLOCKED" {
-			t.Fatalf("second plan bypassed freshness gate: status=%d result=%#v", secondStatus, second)
+		secondPlan := readDailyPlan(t, learner)
+		secondItems := secondPlan["items"].([]any)
+		if len(secondItems) != 1 {
+			t.Fatalf("fresh second sample not recommended: %#v", secondPlan)
 		}
-		secondExplanation := second["unavailability"].(map[string]any)["explanation"]
-		wantSecondExplanation := "This exact assessment sample was already assigned; actual learner exposure is not established, so fresh/unseen eligibility cannot be proven for another independent opportunity."
-		if secondExplanation != wantSecondExplanation {
-			t.Fatalf("assignment was misrepresented as exposure: got=%#v want=%q", secondExplanation, wantSecondExplanation)
+		secondPlanItem := secondItems[0].(map[string]any)
+		if secondPlanItem["practice_mode_id"] != "PM-R04" || !equalStrings(secondPlanItem["canonical_target_ids"].([]any), []string{"R-QT-01"}) || !scopedValuesEqual(secondPlanItem["official_family_ids"], []string{"IELTS-R-QF-05"}) {
+			t.Fatalf("second sample metadata not content-derived: %#v", secondPlanItem)
 		}
 
-		postAssignment := readDailyPlan(t, learner)
-		if len(postAssignment["items"].([]any)) != 0 {
-			t.Fatalf("assigned sample was re-recommended as fresh: %#v", postAssignment)
+		second, secondStatus := assignPlanItem(t, learner, singlePlanItemID(t, secondPlan), "freshness-plan-key-0003")
+		if secondStatus != http.StatusCreated || second["outcome"] != "ASSIGNED" {
+			t.Fatalf("different fresh revision was blocked: status=%d result=%#v", secondStatus, second)
 		}
-		gaps := postAssignment["coverage_gaps"].([]any)
-		if len(gaps) != 1 || gaps[0].(map[string]any)["condition_id"] != "content_assets" {
-			t.Fatalf("fresh-sample inability not represented: %#v", postAssignment)
+		secondActivity := second["activity"].(map[string]any)
+		if secondActivity["content_revision_id"] != sampledHeadingsAssessmentRevision || secondActivity["practice_mode_id"] != "PM-R04" || !equalStrings(secondActivity["canonical_target_ids"].([]any), []string{"R-QT-01"}) {
+			t.Fatalf("wrong fresh revision assigned: %#v", secondActivity)
 		}
-		wantConsequence := "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued."
-		if got := gaps[0].(map[string]any)["blocking_consequence"]; got != wantConsequence {
-			t.Fatalf("daily plan claimed exposure instead of unresolved freshness: got=%#v want=%q", got, wantConsequence)
+
+		exhausted := readDailyPlan(t, learner)
+		if len(exhausted["items"].([]any)) != 0 {
+			t.Fatalf("bounded supply did not exhaust after both revisions: %#v", exhausted)
+		}
+		gaps := exhausted["coverage_gaps"].([]any)
+		if len(gaps) != 1 || gaps[0].(map[string]any)["condition_id"] != "content_assets" || gaps[0].(map[string]any)["condition_status"] != "BLOCKED" {
+			t.Fatalf("FreshSampleContentGap missing after bounded exhaustion: %#v", exhausted)
 		}
 	})
 }
@@ -460,24 +461,69 @@ func TestSampledAT02AttemptEvidenceLifecycle(t *testing.T) {
 	}
 
 	postEvidence := readDailyPlan(t, learner)
-	if len(postEvidence["items"].([]any)) != 0 {
-		t.Fatalf("post-evidence plan repeated sampled assessment: %#v", postEvidence)
+	itemsAfterFirstEvidence := postEvidence["items"].([]any)
+	if len(itemsAfterFirstEvidence) != 1 {
+		t.Fatalf("fresh headings sample missing after first evidence: %#v", postEvidence)
 	}
-	gaps := postEvidence["coverage_gaps"].([]any)
-	if len(gaps) != 1 {
-		t.Fatalf("post-evidence content-supply gap missing: %#v", postEvidence)
+	next := itemsAfterFirstEvidence[0].(map[string]any)
+	if next["practice_mode_id"] != "PM-R04" || !equalStrings(next["canonical_target_ids"].([]any), []string{"R-QT-01"}) || len(postEvidence["coverage_gaps"].([]any)) != 0 {
+		t.Fatalf("post-evidence plan exposed blocker before fresh supply exhausted: %#v", postEvidence)
 	}
-	gap := gaps[0].(map[string]any)
-	if gap["gap_class"] != "CONTENT_OR_ASSET" || gap["condition_id"] != "content_assets" || gap["condition_status"] != "BLOCKED" || gap["demand_class"] != "content/assets/supply route" {
-		t.Fatalf("post-evidence gap fabricated/wrong: %#v", gap)
+}
+
+func TestSecondSampledAT02EvidenceScopeIsHeadingsOnly(t *testing.T) {
+	pool := integrationPool(t)
+	resetLearnerState(t, pool)
+	server, key := newTestServer(t, pool)
+	defer server.Close()
+
+	learner := newAPIClient(t, server.URL, key, "user_at02_headings", nil)
+	putTarget(t, learner, 0, 6.5)
+	firstPlanItem := singlePlanItemID(t, readDailyPlan(t, learner))
+	first, status := assignPlanItem(t, learner, firstPlanItem, "headings-prime-key-0001")
+	if status != http.StatusCreated || first["activity"].(map[string]any)["content_revision_id"] != sampledAssessmentRevision {
+		t.Fatalf("could not consume first bounded revision: status=%d result=%#v", status, first)
 	}
-	wantConsequence := "A prior assignment exists for the only bounded Reading assessment sample; actual learner exposure is not established, so fresh/unseen eligibility can no longer be proven and no new fresh-independent opportunity is issued."
-	if gap["blocking_consequence"] != wantConsequence {
-		t.Fatalf("post-evidence supply blocker=%#v want=%q", gap["blocking_consequence"], wantConsequence)
+
+	secondPlan := readDailyPlan(t, learner)
+	second, status := assignPlanItem(t, learner, singlePlanItemID(t, secondPlan), "headings-assign-key-0001")
+	if status != http.StatusCreated || second["outcome"] != "ASSIGNED" {
+		t.Fatalf("headings assignment failed: status=%d result=%#v", status, second)
 	}
-	gapBytes := []byte(strings.ToLower(gap["blocking_consequence"].(string)))
-	if bytes.Contains(gapBytes, []byte("band")) || bytes.Contains(gapBytes, []byte("readiness")) {
-		t.Fatalf("post-evidence supply gap inferred Band/readiness: %#v", gap)
+	activity := second["activity"].(map[string]any)
+	if activity["content_revision_id"] != sampledHeadingsAssessmentRevision || activity["practice_mode_id"] != "PM-R04" || !equalStrings(activity["canonical_target_ids"].([]any), []string{"R-QT-01"}) || !scopedValuesEqual(activity["official_family_ids"], []string{"IELTS-R-QF-05"}) {
+		t.Fatalf("headings assignment scope broadened: %#v", activity)
+	}
+
+	created := learner.do(t, http.MethodPost, "/v1/attempts", map[string]any{"practice_activity_id": activity["practice_activity_id"]}, map[string]string{"Idempotency-Key": "headings-attempt-key-0001", "Origin": testOrigin})
+	if created.status != http.StatusCreated {
+		t.Fatalf("create headings attempt: %d %s", created.status, created.body)
+	}
+	var attempt map[string]any
+	mustJSON(t, created.body, &attempt)
+	attemptID := attempt["attempt_id"].(string)
+	submitted := learner.do(t, http.MethodPost, "/v1/attempts/"+attemptID+"/submissions", assessmentSubmission(activity), map[string]string{"Idempotency-Key": "headings-submit-key-0001", "Origin": testOrigin})
+	if submitted.status != http.StatusOK {
+		t.Fatalf("submit headings assessment: %d %s", submitted.status, submitted.body)
+	}
+
+	var claimScopeBytes []byte
+	var inferenceScope string
+	if err := pool.QueryRow(t.Context(), `SELECT ef.claim_scope, ef.inference_scope FROM evidence_facts ef JOIN observations o ON o.observation_id=ef.observation_id WHERE o.attempt_id=$1`, attemptID).Scan(&claimScopeBytes, &inferenceScope); err != nil {
+		t.Fatal(err)
+	}
+	var claimScope map[string]any
+	mustJSON(t, claimScopeBytes, &claimScope)
+	if claimScope["content_revision_id"] != sampledHeadingsAssessmentRevision || !equalStrings(claimScope["canonical_target_ids"].([]any), []string{"R-QT-01"}) || !equalStrings(claimScope["official_family_ids"].([]any), []string{"IELTS-R-QF-05"}) {
+		t.Fatalf("headings EvidenceFact scope wrong: %#v", claimScope)
+	}
+	if _, ok := claimScope["band"]; ok || bytes.Contains([]byte(strings.ToLower(inferenceScope)), []byte("readiness")) || bytes.Contains(claimScopeBytes, []byte("R-QT-02")) || bytes.Contains(claimScopeBytes, []byte("R-QT-03")) {
+		t.Fatalf("headings evidence broadened learner claim: scope=%s inference=%s", claimScopeBytes, inferenceScope)
+	}
+
+	exhausted := readDailyPlan(t, learner)
+	if len(exhausted["items"].([]any)) != 0 || len(exhausted["coverage_gaps"].([]any)) != 1 || exhausted["coverage_gaps"].([]any)[0].(map[string]any)["condition_id"] != "content_assets" {
+		t.Fatalf("final bounded supply exhaustion missing: %#v", exhausted)
 	}
 }
 
@@ -519,12 +565,12 @@ func TestSampledAT02CandidacyDoesNotAutoAdmitEvidence(t *testing.T) {
 		t.Fatalf("ineligible assessment auto-admitted evidence count=%d err=%v", evidence, err)
 	}
 	plan := readDailyPlan(t, learner)
-	if len(plan["items"].([]any)) != 0 {
-		t.Fatalf("contaminated sample was reoffered: %#v", plan)
+	items := plan["items"].([]any)
+	if len(items) != 1 || items[0].(map[string]any)["practice_mode_id"] != "PM-R04" || !equalStrings(items[0].(map[string]any)["canonical_target_ids"].([]any), []string{"R-QT-01"}) {
+		t.Fatalf("fresh second revision was hidden by ineligible first evidence: %#v", plan)
 	}
-	gaps := plan["coverage_gaps"].([]any)
-	if len(gaps) != 1 || gaps[0].(map[string]any)["condition_id"] != "content_assets" {
-		t.Fatalf("missing fresh-sample gap after ineligible observation: %#v", plan)
+	if len(plan["coverage_gaps"].([]any)) != 0 {
+		t.Fatalf("content gap appeared while fresh second revision exists: %#v", plan)
 	}
 }
 

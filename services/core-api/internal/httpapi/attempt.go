@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -14,7 +15,6 @@ import (
 	assessmentcore "github.com/phatnguyen03022001/ilets/services/core-api/internal/assessment"
 	sqlcdb "github.com/phatnguyen03022001/ilets/services/core-api/internal/db/sqlc"
 	public "github.com/phatnguyen03022001/ilets/services/core-api/internal/generated/openapi/public"
-	plannercore "github.com/phatnguyen03022001/ilets/services/core-api/internal/planner"
 )
 
 func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request, params public.CreateAttemptParams) {
@@ -52,7 +52,7 @@ func (s *Server) createAttempt(w http.ResponseWriter, r *http.Request, params pu
 	}
 	if activity.PrimaryActivityPurpose != "TRAINING" {
 		var content map[string]any
-		validAssessment := activity.PrimaryActivityPurpose == "ASSESSMENT" && activity.EvidenceCandidacy == "ASSESSMENT_MAY_ADMIT" && activity.AssessmentTypeID != nil && *activity.AssessmentTypeID == "AT-02" && activity.DailyPlanItemID != nil && activity.ContentRevisionID == plannercore.SampledAssessmentRevision && json.Unmarshal(activity.SemanticPayload, &content) == nil && validAssessmentBootstrapContent(content)
+		validAssessment := activity.PrimaryActivityPurpose == "ASSESSMENT" && activity.EvidenceCandidacy == "ASSESSMENT_MAY_ADMIT" && activity.AssessmentTypeID != nil && *activity.AssessmentTypeID == "AT-02" && activity.DailyPlanItemID != nil && json.Unmarshal(activity.SemanticPayload, &content) == nil && validAssessmentBootstrapContent(content)
 		if !validAssessment {
 			writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 			return
@@ -181,7 +181,7 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID
 	isTraining := locked.PrimaryActivityPurpose == "TRAINING"
 	isSampledAssessment := locked.PrimaryActivityPurpose == "ASSESSMENT" &&
 		locked.EvidenceCandidacy == "ASSESSMENT_MAY_ADMIT" && locked.AssessmentTypeID != nil && *locked.AssessmentTypeID == "AT-02" &&
-		locked.DailyPlanItemID != nil && locked.ContentRevisionID == plannercore.SampledAssessmentRevision
+		locked.DailyPlanItemID != nil
 	if !isTraining && !isSampledAssessment {
 		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
@@ -218,9 +218,12 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID
 	}
 	observationID := newID("observation_")
 	result, _ := json.Marshal(map[string]any{"raw_score": rawScore, "max_score": maxScore, "feedback": feedback})
+	skillTargetIDs, _ := stringIDs(content["skill_target_ids"])
+	officialFamilyIDs, _ := stringIDs(content["official_family_ids"])
+	contentContextID, _ := content["content_context_id"].(string)
 	conditionsPayload := map[string]any{
-		"content_context_id": "CTX-READING-ACADEMIC", "skill_target_ids": []string{"R-QT-02", "R-QT-03"},
-		"official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED",
+		"content_context_id": contentContextID, "skill_target_ids": skillTargetIDs,
+		"official_family_ids": officialFamilyIDs, "scoring_method": "DETERMINISTIC_KEYED",
 		"primary_activity_purpose": locked.PrimaryActivityPurpose, "evidence_candidacy": locked.EvidenceCandidacy, "actual_conditions": body.ActualConditions,
 	}
 	if isSampledAssessment {
@@ -232,15 +235,15 @@ func (s *Server) submitAttempt(w http.ResponseWriter, r *http.Request, attemptID
 		ResultPayload: result, ConditionsPayload: conditions, CreatedAt: pgtype.Timestamptz{Time: now, Valid: true},
 	}); err == nil && isSampledAssessment && sampledReadingEvidenceEligible(body.ActualConditions) {
 		claimScope, _ := json.Marshal(map[string]any{
-			"assessment_type_id": "AT-02", "content_revision_id": plannercore.SampledAssessmentRevision, "test_variant": "Academic",
-			"canonical_target_ids": []string{"R-QT-02", "R-QT-03"}, "content_context_ids": []string{"CTX-READING-ACADEMIC"},
-			"official_family_ids": []string{"IELTS-R-QF-02", "IELTS-R-QF-03"}, "scoring_method": "DETERMINISTIC_KEYED",
+			"assessment_type_id": "AT-02", "content_revision_id": locked.ContentRevisionID, "test_variant": "Academic",
+			"canonical_target_ids": skillTargetIDs, "content_context_ids": []string{contentContextID},
+			"official_family_ids": officialFamilyIDs, "scoring_method": "DETERMINISTIC_KEYED",
 			"actual_conditions": body.ActualConditions,
 		})
 		err = queries.InsertEvidenceFact(r.Context(), sqlcdb.InsertEvidenceFactParams{
 			EvidenceFactID: newID("evidence_"), ObservationID: observationID, LearnerID: learner, ClaimScope: claimScope,
-			EligibilityReason: "bounded AT-02 sampled classification eligibility conditions satisfied",
-			InferenceScope:    "R-QT-02/R-QT-03 sampled classification performance under the recorded conditions only",
+			EligibilityReason: "bounded AT-02 sampled Reading eligibility conditions satisfied",
+			InferenceScope:    strings.Join(skillTargetIDs, "/") + " sampled Reading performance under the recorded conditions only",
 			PolicyVersion:     assessmentcore.SampledReadingEvidencePolicyVersion, AdmittedAt: pgtype.Timestamptz{Time: now, Valid: true},
 		})
 	}

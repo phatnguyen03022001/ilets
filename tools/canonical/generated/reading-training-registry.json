@@ -1,12 +1,12 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:0fc217f4357068c4e0c5014fc1730876b920d266da032ec882a23f476c9ba864",
+  "canonical_source_revision": "canonical-source-revision/v1:120309b7ad257ef8a7911316fc1a5b57748c9890e422e2e0d710ff02658d3072",
   "entries": [
     {
       "cells": [],
       "id": "ASSESSMENT",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -17,7 +17,7 @@
       "cells": [],
       "id": "TRAINING",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -58,7 +58,7 @@
       "cells": [],
       "id": "ASSESSMENT_MAY_ADMIT",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
@@ -69,7 +69,7 @@
       "cells": [],
       "id": "NOT_EVIDENCE_CANDIDATE",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
@@ -84,10 +84,25 @@
       ],
       "id": "R-F04",
       "source": {
-        "git_blob": "1665d13a2dec4d4a6f6fc8f9eab27bb2cd11fac2",
+        "git_blob": "cc782ac2839b9520bd5c4e9567501ef310e8e2a2",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "### FTR-018 R-F04 \u2014 T/F/NG + Y/N/NG Lab"
+      },
+      "type": "feature"
+    },
+    {
+      "cells": [
+        "Headings & Structure",
+        "paragraph function / organization / heading matching from textual evidence",
+        "bounded headings/structure observation"
+      ],
+      "id": "R-F05",
+      "source": {
+        "git_blob": "cc782ac2839b9520bd5c4e9567501ef310e8e2a2",
+        "owner": "docs/BEHAVIOR.md",
+        "parent_section": null,
+        "section": "#### Canonical materializer anchor \u2014 Reading headings and structure feature"
       },
       "type": "feature"
     },
@@ -97,7 +112,7 @@
       ],
       "id": "IELTS-R-QF-02",
       "source": {
-        "git_blob": "58d30c50e0ef679a6f02a7d808e968351d1f76e6",
+        "git_blob": "caf563a3ba0f067e92abf25559f78e9dab17c795",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -110,10 +125,23 @@
       ],
       "id": "IELTS-R-QF-03",
       "source": {
-        "git_blob": "58d30c50e0ef679a6f02a7d808e968351d1f76e6",
+        "git_blob": "caf563a3ba0f067e92abf25559f78e9dab17c795",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
+      },
+      "type": "official_family"
+    },
+    {
+      "cells": [
+        "Reading \u2014 Matching headings"
+      ],
+      "id": "IELTS-R-QF-05",
+      "source": {
+        "git_blob": "caf563a3ba0f067e92abf25559f78e9dab17c795",
+        "owner": "docs/product/ielts-exam-and-bands.md",
+        "parent_section": null,
+        "section": "#### Canonical materializer anchor \u2014 Reading matching headings family"
       },
       "type": "official_family"
     },
@@ -126,10 +154,26 @@
       ],
       "id": "PM-R03",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading classification mode"
+      },
+      "type": "practice_mode"
+    },
+    {
+      "cells": [
+        "Headings & Structure",
+        "6\u201312 min",
+        "paragraph function / organization",
+        "PT-13"
+      ],
+      "id": "PM-R04",
+      "source": {
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
+        "owner": "docs/behavior/practice-and-media.md",
+        "parent_section": null,
+        "section": "### Canonical materializer anchor \u2014 Reading headings and structure mode"
       },
       "type": "practice_mode"
     },
@@ -143,7 +187,7 @@
       ],
       "id": "PT-13",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
@@ -160,12 +204,26 @@
       ],
       "id": "PT-16",
       "source": {
-        "git_blob": "29ad6e8ec7b923a6b7e9ff35b6cb7eb2234288f8",
+        "git_blob": "f6387e2ad5de816f34b2a1e10c9dc62e6416e240",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
       },
       "type": "practice_type"
+    },
+    {
+      "cells": [
+        "Matching headings",
+        "Match paragraph meaning to headings by main idea rather than keyword coincidence."
+      ],
+      "id": "R-QT-01",
+      "source": {
+        "git_blob": "61994086a592860f7a1268ca8ba31217f2d2ca83",
+        "owner": "docs/product/skill-leaves.md",
+        "parent_section": "## Reading",
+        "section": "### Question-type strategies"
+      },
+      "type": "skill_leaf"
     },
     {
       "cells": [
@@ -197,5 +255,5 @@
     }
   ],
   "schema_version": 1,
-  "source_map_sha256": "93d07827593143a328dc8b60675f2cbdcbf3dd9f80b2c8ff86d8e74df34e1cb5"
+  "source_map_sha256": "9284c5d00004582081ee4caadfd1dee4fa6b25e347a68890393c17a2cb9e6799"
 }

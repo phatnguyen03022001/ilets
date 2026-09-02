@@ -1,0 +1,76 @@
+{
+  "content_id": "reading-bootstrap-assessment-002",
+  "revision_id": "reading-bootstrap-assessment-002-r1",
+  "provenance": {
+    "origin": "owned_synthetic_bootstrap",
+    "copyright": "original repository bootstrap fixture",
+    "official_ielts_material": false
+  },
+  "validation": {
+    "decision_id": "vd_bootstrap_reading_assessment_headings_v1",
+    "policy_version": "bootstrap-reading-assessment-v1",
+    "intended_use": "ASSESSMENT_SAMPLED_HEADINGS",
+    "result": "PASS",
+    "findings": [
+      "canonical_refs_valid",
+      "structure_executable",
+      "academic_context_compatible",
+      "owned_rights",
+      "answer_key_complete",
+      "learner_projection_hides_answers",
+      "deterministic_scoring_consistent",
+      "sampled_headings_claim_scope_only"
+    ]
+  },
+  "semantic_payload": {
+    "feature_id": "R-F05",
+    "practice_mode_id": "PM-R04",
+    "practice_type_ids": [
+      "PT-13"
+    ],
+    "skill_target_ids": [
+      "R-QT-01"
+    ],
+    "official_family_ids": [
+      "IELTS-R-QF-05"
+    ],
+    "content_context_id": "CTX-READING-ACADEMIC",
+    "primary_activity_purpose": "ASSESSMENT",
+    "evidence_candidacy": "ASSESSMENT_MAY_ADMIT",
+    "assessment_type_ref": "AT-02",
+    "claim_candidate_refs": [
+      "R-QT-01"
+    ],
+    "test_variant": "ACADEMIC",
+    "stimulus": {
+      "title": "Cooling the block",
+      "text": "Paragraph A — A neighborhood library tested pale roof coatings on two small annexes during a hot month. Staff recorded lower afternoon ceiling temperatures in the coated buildings, while the rooms continued to use the same ventilation schedule. The trial was deliberately limited to existing roofs so the library could compare a low-disruption change before considering larger renovations.\n\nParagraph B — At a nearby transit stop, residents helped place lightweight shade panels above the waiting area. The panels were positioned to block strong afternoon sun without covering the road or changing bus operations. Volunteers later reported that the shaded seats were used more consistently during the hottest part of the day."
+    },
+    "items": [
+      {
+        "item_id": "item_assess_heading_001",
+        "official_family_id": "IELTS-R-QF-05",
+        "statement": "Choose the best heading for Paragraph A.",
+        "choices": [
+          "Cooling roofs without rebuilding",
+          "Shade where passengers wait",
+          "Replacing the local transport network"
+        ],
+        "correct_choice": "Cooling roofs without rebuilding",
+        "explanation": "Paragraph A focuses on testing a low-disruption roof treatment on existing buildings."
+      },
+      {
+        "item_id": "item_assess_heading_002",
+        "official_family_id": "IELTS-R-QF-05",
+        "statement": "Choose the best heading for Paragraph B.",
+        "choices": [
+          "Cooling roofs without rebuilding",
+          "Shade where passengers wait",
+          "Replacing the local transport network"
+        ],
+        "correct_choice": "Shade where passengers wait",
+        "explanation": "Paragraph B describes adding shade to the waiting area at a transit stop."
+      }
+    ]
+  }
+}

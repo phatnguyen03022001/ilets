@@ -21,12 +21,30 @@
       ]
     },
     {
+      "type": "feature",
+      "owner": "docs/BEHAVIOR.md",
+      "section": "#### Canonical materializer anchor — Reading headings and structure feature",
+      "kind": "markdown_table",
+      "ids": [
+        "R-F05"
+      ]
+    },
+    {
       "type": "practice_mode",
       "owner": "docs/behavior/practice-and-media.md",
       "section": "### Canonical materializer anchor — Reading classification mode",
       "kind": "markdown_table",
       "ids": [
         "PM-R03"
+      ]
+    },
+    {
+      "type": "practice_mode",
+      "owner": "docs/behavior/practice-and-media.md",
+      "section": "### Canonical materializer anchor — Reading headings and structure mode",
+      "kind": "markdown_table",
+      "ids": [
+        "PM-R04"
       ]
     },
     {
@@ -51,6 +69,16 @@
       ]
     },
     {
+      "type": "skill_leaf",
+      "owner": "docs/product/skill-leaves.md",
+      "parent_section": "## Reading",
+      "section": "### Question-type strategies",
+      "kind": "markdown_table",
+      "ids": [
+        "R-QT-01"
+      ]
+    },
+    {
       "type": "official_family",
       "owner": "docs/product/ielts-exam-and-bands.md",
       "section": "#### Canonical materializer anchor — Reading classification families",
@@ -58,6 +86,15 @@
       "ids": [
         "IELTS-R-QF-02",
         "IELTS-R-QF-03"
+      ]
+    },
+    {
+      "type": "official_family",
+      "owner": "docs/product/ielts-exam-and-bands.md",
+      "section": "#### Canonical materializer anchor — Reading matching headings family",
+      "kind": "markdown_table",
+      "ids": [
+        "IELTS-R-QF-05"
       ]
     },
     {

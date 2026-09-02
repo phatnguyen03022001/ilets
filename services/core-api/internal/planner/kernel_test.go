@@ -16,17 +16,17 @@ func TestDecideBoundedSampledReadingPathConsumesProgressionAuthority(t *testing.
 	if got := Decide(academic, EvidenceState{ContentEligible: true}, needsEvidence); got != CollectSampledEvidence {
 		t.Fatalf("academic pre-evidence decision=%v", got)
 	}
-	if got := Decide(academic, EvidenceState{ContentEligible: true, PriorSampledAssignment: true}, needsEvidence); got != FreshSampleContentGap {
-		t.Fatalf("prior-assignment freshness decision=%v", got)
-	}
 
 	needsMoreEvidence := progression.SampledReadingConsequence{
 		State:         progression.SampledReadingNeedsMoreEvidence,
 		GapEvaluation: progression.EvidenceGap,
 		ActionIntent:  progression.CollectEvidence,
 	}
-	if got := Decide(academic, EvidenceState{ContentEligible: true, PriorSampledAssignment: true}, needsMoreEvidence); got != FreshSampleContentGap {
-		t.Fatalf("post-evidence fresh-supply decision=%v", got)
+	if got := Decide(academic, EvidenceState{ContentEligible: true}, needsMoreEvidence); got != CollectSampledEvidence {
+		t.Fatalf("post-evidence fresh revision was not collectible: %v", got)
+	}
+	if got := Decide(academic, EvidenceState{ContentEligible: false}, needsMoreEvidence); got != FreshSampleContentGap {
+		t.Fatalf("exhausted bounded fresh supply decision=%v", got)
 	}
 
 	gt := Target{Configured: true, Resolved: true, Variant: "GENERAL_TRAINING", ReadingRelevant: true}
@@ -39,7 +39,7 @@ func TestDecideBoundedSampledReadingPathConsumesProgressionAuthority(t *testing.
 }
 
 func TestPlannerCannotPromoteBoundedEvidenceExistence(t *testing.T) {
-	state := EvidenceState{ContentEligible: true, PriorSampledAssignment: true}
+	state := EvidenceState{ContentEligible: true}
 	// EvidenceState intentionally has no admitted-evidence field. The planner can
 	// only react to the consequence supplied by Progression and current supply.
 	consequence := progression.SampledReadingConsequence{
@@ -48,7 +48,7 @@ func TestPlannerCannotPromoteBoundedEvidenceExistence(t *testing.T) {
 		ActionIntent:  progression.CollectEvidence,
 	}
 	academic := Target{Configured: true, Resolved: true, Variant: "ACADEMIC", ReadingRelevant: true}
-	if got := Decide(academic, state, consequence); got != FreshSampleContentGap {
-		t.Fatalf("planner ignored progression/supply authority: %v", got)
+	if got := Decide(academic, state, consequence); got != CollectSampledEvidence {
+		t.Fatalf("planner treated historical assignment as current supply authority: %v", got)
 	}
 }

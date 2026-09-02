@@ -37,7 +37,7 @@ type Fixture struct {
 
 func main() {
 	registryPath := getenv("CANONICAL_REGISTRY_PATH", "../../tools/canonical/generated/reading-training-registry.json")
-	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json,internal/bootstrap/reading-assessment-001.json"), ",")
+	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json,internal/bootstrap/reading-assessment-001.json,internal/bootstrap/reading-assessment-002.json"), ",")
 	for _, fixturePath := range fixturePaths {
 		fixturePath = strings.TrimSpace(fixturePath)
 		if fixturePath != "" {
@@ -184,15 +184,32 @@ func validateItems(payload map[string]any) {
 	if !ok || len(items) < 2 {
 		log.Fatal("bootstrap items missing")
 	}
-	families := map[string]bool{}
+	declaredFamilies := map[string]bool{}
+	if values, ok := payload["official_family_ids"].([]any); ok {
+		for _, value := range values {
+			family, ok := value.(string)
+			if !ok || family == "" {
+				log.Fatal("official family declaration invalid")
+			}
+			declaredFamilies[family] = true
+		}
+	}
+	if len(declaredFamilies) == 0 {
+		log.Fatal("official families missing")
+	}
+
+	seenFamilies := map[string]bool{}
 	for _, raw := range items {
 		item, ok := raw.(map[string]any)
 		if !ok {
 			log.Fatal("malformed item")
 		}
 		family, _ := item["official_family_id"].(string)
+		if !declaredFamilies[family] {
+			log.Fatalf("item family %s is outside declared scope", family)
+		}
 		correct, _ := item["correct_choice"].(string)
-		families[family] = true
+		seenFamilies[family] = true
 		choices, ok := item["choices"].([]any)
 		if !ok || len(choices) != 3 {
 			log.Fatal("item choices invalid")
@@ -213,7 +230,9 @@ func validateItems(payload map[string]any) {
 			log.Fatal("Y/N/NG answer mismatch")
 		}
 	}
-	if !families["IELTS-R-QF-02"] || !families["IELTS-R-QF-03"] {
-		log.Fatal("both Reading classification families are required")
+	for family := range declaredFamilies {
+		if !seenFamilies[family] {
+			log.Fatalf("declared family %s has no executable item", family)
+		}
 	}
 }

@@ -90,6 +90,12 @@ Exercises evidence-versus-claim and writer-view classification for the applicabl
 
 Trains paragraph function, organization, and heading matching from textual evidence. Variant packaging may select different source contexts without creating duplicate Reading feature identities.
 
+#### Canonical materializer anchor — Reading headings and structure feature
+
+| ID | Feature | Learner experience | Primary output |
+|---|---|---|---|
+| `R-F05` | Headings & Structure | paragraph function / organization / heading matching from textual evidence | bounded headings/structure observation |
+
 ### FTR-020 R-F06 — Paraphrase / Inference / Stance Lab
 
 Exercises inferential reasoning, stance, reference, and paraphrase beyond literal matching. Result interpretation remains scoped to the sampled construct and normal Assessment admission.

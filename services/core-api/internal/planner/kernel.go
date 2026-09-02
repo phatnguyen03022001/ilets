@@ -3,7 +3,6 @@ package planner
 import "github.com/phatnguyen03022001/ilets/services/core-api/internal/progression"
 
 const (
-	SampledAssessmentRevision = "reading-bootstrap-assessment-001-r1"
 	CoverageProvenanceVersion = "docs/product/curriculum-and-coverage.md@7d8dc6a2c454a86542b35122c8012cb0bd871fb9"
 )
 
@@ -15,8 +14,7 @@ type Target struct {
 }
 
 type EvidenceState struct {
-	PriorSampledAssignment bool
-	ContentEligible        bool
+	ContentEligible bool
 }
 
 type Decision int
@@ -42,7 +40,7 @@ func Decide(target Target, evidence EvidenceState, consequence progression.Sampl
 	if consequence.State == progression.SampledReadingNoAuthorizedNextConsequence {
 		return ProgressionTransitionGap
 	}
-	if evidence.PriorSampledAssignment || !evidence.ContentEligible {
+	if !evidence.ContentEligible {
 		return FreshSampleContentGap
 	}
 	if consequence.GapEvaluation == progression.EvidenceGap && consequence.ActionIntent == progression.CollectEvidence {
