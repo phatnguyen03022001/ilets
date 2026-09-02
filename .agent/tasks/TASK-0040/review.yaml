@@ -1,0 +1,92 @@
+protocol_version: 3
+
+task_id: TASK-0040
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0040/report.yaml
+  commit: "c5645eb8aa71079ba213275469bcbf594b08ce56"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Exact base-to-candidate comparison shows all 24 authorized files under spec/**, design/**,
+      research/**, and evidence/** removed. No replacement archive, legacy, history, backup,
+      glossary, or other retained-history tree was added by the candidate.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      The implementation candidate is exactly one commit from the task base and changes exactly
+      28 files: the 24 authorized deletions plus only the four audited semantics-neutral edits in
+      planner provenance, affected-classifier policy, affected-classifier fixtures, and canonical
+      materializer fixtures. The planner provenance now points to the existing canonical docs owner.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      TASK-0039 accepted docs-only authority remains unchanged. The candidate does not modify docs/**,
+      CONSTITUTION.md, OBJECTIVE.md, or the existing official IELTS provenance acknowledgement, and no
+      replacement glossary or provenance authority was introduced.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      Base 0e09c23071e53a9cf3167f1db6ad5daee1353199 to candidate
+      f54eb0e36e828276e1fa7e527c793c11f00cca7d is exactly one commit with the exact authorized
+      28-file change set and no additional semantic surface.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      Verification boundary 3133216157a8c880b0473656067f5a05fe78b66e is a one-file sentinel-only
+      child of candidate f54eb0e36e828276e1fa7e527c793c11f00cca7d. GitHub Actions run
+      33586967402 attempt 1 is the only matching push run, binds that exact candidate, checks it out
+      detached, asserts exact HEAD, and completes the repository-owned ./verify successfully.
+  - criterion_id: AC-6
+    status: PASS
+    evidence: >-
+      Candidate -> sentinel is exactly one one-file child and sentinel -> report
+      c5645eb8aa71079ba213275469bcbf594b08ce56 is exactly one report-only child. Before review
+      publication dev was the exact report commit, main remained e707aeee43411cc8f99448b63220eb8beff552b6,
+      and topology was exactly {dev, main}.
+
+gap_disposition:
+  - gap_id: LEGACY-ROOT-SUBTRACTION
+    classification: RESOLVED
+    disposition: ACCEPTED
+  - gap_id: REMOTE-EXACT-CANDIDATE-VERIFY
+    classification: RESOLVED
+    disposition: ACCEPTED
+
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: >-
+    TASK-0040 resolves the bounded repository-subtraction objective only. This review does not
+    authorize main mutation, promotion, tag creation, or release. Any later candidate-capture or
+    promotion decision requires a separately bound explicit objective and fresh canonical state.
+
+notes:
+  - "Fresh pre-review refs were dev=c5645eb8aa71079ba213275469bcbf594b08ce56 and main=e707aeee43411cc8f99448b63220eb8beff552b6 with topology exactly {dev, main}."
+  - "Exact candidate verification evidence was inspected independently rather than relying on Executor summary: the single run bound boundary 3133216157a8c880b0473656067f5a05fe78b66e to exact candidate f54eb0e36e828276e1fa7e527c793c11f00cca7d and the full ./verify job concluded success."
+  - "Review operational_timing is omitted because a trustworthy current UTC timestamp was not captured at the required review start boundary before evidence inspection; timing is non-authoritative and was not reconstructed from Git timestamps."
+  - "No product, learning, Band, planner/progression behavior, provider, runtime, API/schema, contract, standards, or DESIGN LOCK semantic change is accepted by this review."
