@@ -36,7 +36,7 @@ type Fixture struct {
 }
 
 func main() {
-	registryPath := getenv("CANONICAL_REGISTRY_PATH", "../../tools/canonical/generated/reading-training-registry.json")
+	registryPath := getenv("CANONICAL_REGISTRY_PATH", "../../tools/canonical/generated/registry.json")
 	fixturePaths := strings.Split(getenv("BOOTSTRAP_CONTENT_PATH", "internal/bootstrap/reading-training.json,internal/bootstrap/reading-training-002.json,internal/bootstrap/reading-assessment-001.json,internal/bootstrap/reading-assessment-002.json"), ",")
 	for _, fixturePath := range fixturePaths {
 		fixturePath = strings.TrimSpace(fixturePath)

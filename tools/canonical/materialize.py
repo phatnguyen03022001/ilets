@@ -7,9 +7,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_MAP_PATH = ROOT / "tools/canonical/source-map.json"
-SLICE_INPUT_PATH = ROOT / "tools/slice/reading-training.json"
-REGISTRY_OUTPUT = ROOT / "tools/canonical/generated/reading-training-registry.json"
-TRACE_OUTPUT = ROOT / "tools/slice/generated/reading-training-trace.json"
+SLICE_INPUT_DIR = ROOT / "tools/slice"
+SLICE_OUTPUT_DIR = ROOT / "tools/slice/generated"
+REGISTRY_OUTPUT = ROOT / "tools/canonical/generated/registry.json"
 
 def fail(message: str) -> None: raise ValueError(message)
 def git(*args: str) -> str: return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
@@ -81,6 +81,12 @@ def canonical_source_revision(owner_paths: list[str]) -> str:
         for owner in sorted(set(owner_paths))
     ]
     return canonical_source_revision_from_inputs(SOURCE_MAP_PATH.read_bytes(),owner_blobs)
+def slice_input_paths() -> list[Path]:
+    return sorted(SLICE_INPUT_DIR.glob("*.json"), key=lambda path: path.as_posix())
+def trace_output_path(slice_path: Path) -> Path:
+    return SLICE_OUTPUT_DIR / f"{slice_path.stem}-trace.json"
+def registry_sha256(registry_doc: dict[str,Any]) -> str:
+    return hashlib.sha256((json.dumps(registry_doc,sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()
 def validate_source_map(config: dict[str,Any]) -> None:
     allow=tuple(config["allowlisted_roots"]); forbidden=config["forbidden_authority_sources"]; seen=set()
     for registry in config["registries"]:
@@ -91,7 +97,7 @@ def validate_source_map(config: dict[str,Any]) -> None:
             pair=(registry["type"],object_id)
             if pair in seen: fail(f"duplicate configured canonical id {registry['type']}:{object_id}")
             seen.add(pair)
-def materialize() -> tuple[dict[str,Any],dict[str,Any]]:
+def materialize() -> tuple[dict[str,Any],list[tuple[Path,dict[str,Any]]]]:
     config=json.loads(SOURCE_MAP_PATH.read_text()); validate_source_map(config)
     owner_paths=sorted({e["owner"] for e in config["registries"]})
     revision=canonical_source_revision(owner_paths)
@@ -111,12 +117,15 @@ def materialize() -> tuple[dict[str,Any],dict[str,Any]]:
             entries.append({"type":registry["type"],"id":object_id,"cells":parsed[object_id]["cells"],"source":{"owner":registry["owner"],"section":registry["section"],"parent_section":registry.get("parent_section"),"git_blob":blob}})
     entries.sort(key=lambda item:(item["type"],item["id"]))
     registry_doc={"artifact":"DERIVED_CANONICAL_REGISTRY","schema_version":1,"canonical_source_revision":revision,"source_map_sha256":hashlib.sha256(SOURCE_MAP_PATH.read_bytes()).hexdigest(),"entries":entries}
-    slice_config=json.loads(SLICE_INPUT_PATH.read_text())
-    refs={slice_config["feature_id"],slice_config["practice_mode_id"],*slice_config["practice_type_ids"],*slice_config["skill_target_ids"],*slice_config["official_family_ids"],slice_config["content_context_id"],slice_config["primary_activity_purpose"],slice_config["evidence_candidacy"]}
-    missing=sorted(refs-set(global_ids))
-    if missing: fail(f"slice trace contains unknown canonical references: {', '.join(missing)}")
-    trace_doc={"artifact":"DERIVED_IMPLEMENTATION_TRACE","schema_version":1,"canonical_source_revision":revision,"canonical_registry_sha256":hashlib.sha256((json.dumps(registry_doc,sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest(),"slice":slice_config}
-    return registry_doc,trace_doc
+    traces=[]
+    for slice_path in slice_input_paths():
+        slice_config=json.loads(slice_path.read_text())
+        refs={slice_config["feature_id"],slice_config["practice_mode_id"],*slice_config["practice_type_ids"],*slice_config["skill_target_ids"],*slice_config["official_family_ids"],slice_config["content_context_id"],slice_config["primary_activity_purpose"],slice_config["evidence_candidacy"]}
+        missing=sorted(refs-set(global_ids))
+        if missing: fail(f"slice trace {slice_path.name} contains unknown canonical references: {', '.join(missing)}")
+        trace_doc={"artifact":"DERIVED_IMPLEMENTATION_TRACE","schema_version":1,"canonical_source_revision":revision,"canonical_registry_sha256":registry_sha256(registry_doc),"slice":slice_config}
+        traces.append((slice_path,trace_doc))
+    return registry_doc,traces
 def render(doc: dict[str,Any]) -> str: return json.dumps(doc,indent=2,sort_keys=True)+"\n"
 def write_or_check(path: Path, content: str, check: bool) -> None:
     if check:
@@ -127,7 +136,8 @@ def write_or_check(path: Path, content: str, check: bool) -> None:
 def main() -> int:
     parser=argparse.ArgumentParser(); parser.add_argument("--check",action="store_true"); args=parser.parse_args()
     try:
-        registry_doc,trace_doc=materialize(); write_or_check(REGISTRY_OUTPUT,render(registry_doc),args.check); write_or_check(TRACE_OUTPUT,render(trace_doc),args.check)
+        registry_doc,traces=materialize(); write_or_check(REGISTRY_OUTPUT,render(registry_doc),args.check)
+        for slice_path,trace_doc in traces: write_or_check(trace_output_path(slice_path),render(trace_doc),args.check)
     except (ValueError,subprocess.CalledProcessError,OSError,json.JSONDecodeError) as exc:
         print(f"canonical materialization failed: {exc}",file=sys.stderr); return 1
     return 0
