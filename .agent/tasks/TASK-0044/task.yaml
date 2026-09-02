@@ -1,7 +1,7 @@
 protocol_version: 3
 
 task_id: TASK-0044
-task_revision: 2
+task_revision: 3
 state: APPROVED
 
 origin:
@@ -82,6 +82,11 @@ structure_authority:
     agent-documents does not justify a new catalog identity because FTR-010 and IFC-001 already own this behavior/interface;
     agent-standards does not justify a separate pre-task assessor because this bounded training slice makes no highest-consequence
     Level-4/5 assurance claim. Its applicable lower-level engineering obligations are embedded directly in the acceptance evidence.
+    PM-L03 remains owned by docs/behavior/practice-and-media.md. If the accepted materializer cannot uniquely select PM-L03 from
+    the broad practice-mode registry because descendant canonical-anchor tables are parsed into the same section, execution may add
+    the smallest dedicated PM-L03 materializer anchor inside that existing owner and route source-map selection to it. This changes
+    machine resolvability only, not semantic ownership or product meaning, and does not authorize materializer refactoring or a
+    duplicate PM-L03 owner elsewhere.
 
 objective: >-
   Materialize the first executable bounded Listening Core/API training slice using the already-canonical Detail & Completion
@@ -116,16 +121,19 @@ scope:
     - >-
       Extend tools/canonical/source-map.json only enough to materialize L-F04, PM-L03, L-COMP-02, L-QT-01,
       IELTS-L-QF-04, and CTX-LISTENING-SHARED. Reuse the already-materialized PT-13, TRAINING, and
-      NOT_EVIDENCE_CANDIDATE identities. Prefer existing canonical tables/sections when uniquely machine-resolvable; add no
-      duplicate semantic owners merely for convenience.
+      NOT_EVIDENCE_CANDIDATE identities. PM-L03 remains owned by docs/behavior/practice-and-media.md. If its existing broad
+      practice-mode registry is not uniquely machine-resolvable by the accepted materializer because descendant anchor tables are
+      included in the parsed section, add the smallest dedicated PM-L03 materializer anchor in that same canonical owner and point
+      source-map at it. Do not duplicate PM-L03 ownership in docs/BEHAVIOR.md and do not modify materialize.py for this condition.
     - >-
       Add tools/slice/listening-detail-completion.json as one bounded implementation descriptor with exact semantic binding:
       L-F04, PM-L03, PT-13, L-COMP-02, L-QT-01, IELTS-L-QF-04, CTX-LISTENING-SHARED, TRAINING,
       NOT_EVIDENCE_CANDIDATE, runtime owner services/core-api, and content revision listening-bootstrap-completion-001-r1.
       The generalized materializer must generate tools/slice/generated/listening-detail-completion-trace.json automatically.
     - >-
-      Preserve tools/canonical/materialize.py unchanged unless a concrete defect in the already-accepted TASK-0043 multi-slice
-      behavior is reproduced. A desire to refactor, generalize, or improve style is not authority to modify it.
+      Preserve tools/canonical/materialize.py unchanged unless a separate concrete defect in the already-accepted TASK-0043
+      multi-slice behavior is reproduced after the canonical-owner-local PM-L03 selector correction. A desire to refactor,
+      generalize, or improve style is not authority to modify it.
     - >-
       Add exactly one Listening bootstrap ContentRevision fixture at
       services/core-api/internal/bootstrap/listening-training-001.json with content_id listening-bootstrap-completion-001 and
@@ -219,6 +227,7 @@ scope:
   allowed_existing_files_or_components:
     - .agent/tasks/TASK-0044/task.yaml
     - docs/BEHAVIOR.md
+    - docs/behavior/practice-and-media.md
     - tools/canonical/source-map.json
     - tools/canonical/generated/registry.json
     - tools/slice/generated/reading-training-trace.json
@@ -247,6 +256,7 @@ invariants:
   - "No Range handling, media service, R2, TTS, provider abstraction, generated-audio path, or storage abstraction is introduced."
   - "TRAINING produces an Observation only; no EvidenceFact admission or broader learner-state inference occurs."
   - "PM-R03 Reading behavior and existing Reading generated slice payload remain semantically unchanged. Canonical source revision/hash metadata may update deterministically because the source map/global registry gains Listening authority."
+  - "PM-L03 remains canonically owned by docs/behavior/practice-and-media.md; any dedicated materializer anchor is a machine-resolution aid inside that owner, not a new semantic owner."
   - "No Planner, Assessment, Progression, Web behavior, external provider activation, deployment, main, release, branch topology, workflow, or repository metadata change."
   - "agent-documents and agent-standards remain read-only external authorities; this task mutates only ilets/dev."
 
@@ -258,6 +268,7 @@ forbidden_changes:
   - "Do not expose transcript, answer key, validation findings, source provenance, or hidden scoring fields in learner-safe activity or media responses."
   - "Do not implement fuzzy or generalized text scoring."
   - "Do not alter current Reading PM-R03 scoring/assignment semantics or sampled Reading Assessment/Planner/Evidence behavior."
+  - "Do not duplicate PM-L03 canonical ownership outside docs/behavior/practice-and-media.md or modify tools/canonical/materialize.py solely to bypass the current broad-section duplicate-table condition."
   - "Do not change docs/catalog/project.json, create new catalog identities, or redesign the eight documentation authority domains."
   - "Do not claim agent-standards maturity level, Level-4/5 assurance, independent review, or independent reproduction from TASK-0044."
   - "Do not mutate agent-skills, agent-standards, agent-documents, architect-profile, main, workflows, dependencies, deployment, tags, releases, PRs, issues, or repository metadata."
@@ -274,6 +285,7 @@ structure_policy:
     - .agent/tasks/TASK-0044/report.yaml
   allowed_existing_files:
     - docs/BEHAVIOR.md
+    - docs/behavior/practice-and-media.md
     - tools/canonical/source-map.json
     - tools/canonical/generated/registry.json
     - tools/slice/generated/reading-training-trace.json
@@ -301,8 +313,9 @@ acceptance_criteria:
     requirement: "Listening canonical binding is semantically correct and deterministically materialized."
     evidence_required: >-
       Exact source-map/registry/trace evidence resolves L-F04, PM-L03, PT-13, L-COMP-02, L-QT-01, IELTS-L-QF-04,
-      CTX-LISTENING-SHARED, TRAINING, and NOT_EVIDENCE_CANDIDATE from canonical docs. No L-QT-02/IELTS-L-QF-01
-      binding exists. reading-training slice payload remains unchanged.
+      CTX-LISTENING-SHARED, TRAINING, and NOT_EVIDENCE_CANDIDATE from canonical docs. PM-L03 remains sourced from
+      docs/behavior/practice-and-media.md with no duplicate semantic owner. No L-QT-02/IELTS-L-QF-01 binding exists.
+      reading-training slice payload remains unchanged.
   - id: AC-2
     requirement: "One exact, attributable, integrity-bound Ogg bootstrap asset backs the slice."
     evidence_required: >-
@@ -353,7 +366,7 @@ acceptance_criteria:
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Verify exact TASK-0044 revision 2 handoff base, dev/main topology, pinned agent-skills revision, read-only agent-documents/agent-standards v1.0.0 identities, external Commons source availability/rights, structure authority, and native execution capability before mutation."
+      command_or_check: "Verify exact TASK-0044 revision 3 handoff base, dev/main topology, pinned agent-skills revision, read-only agent-documents/agent-standards v1.0.0 identities, external Commons source availability/rights, structure authority, and native execution capability before mutation."
       required: true
     - id: CHECK-2
       command_or_check: "Run canonical materialization and focused multi-slice checks; prove the Listening trace uses the corrected binding and Reading slice payload is unchanged apart from deterministic global revision/hash metadata."
