@@ -1,13 +1,13 @@
 protocol_version: 3
 
 task_id: TASK-0041
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
-  type: follow_up
-  task_id: TASK-0040
-  gap_ids: [POST_SAMPLED_PROGRESSION_HANDOFF]
+  type: correction
+  task_id: TASK-0041
+  gap_ids: [POST_SAMPLED_PROGRESSION_HANDOFF, GENERATED_CANONICAL_ARTIFACT_DRIFT]
 
 architect_binding:
   target_repository: phatnguyen03022001/ilets
@@ -31,97 +31,110 @@ execution_skills:
   required: [executor, simplicity, verification]
   recommended: []
 
+inherited_evidence:
+  revision_1_semantic_candidate: "84139d4433bf62635aa501c57c8bcb19dc8e0b3b"
+  revision_1_failed_boundary: "b321b4aefab00a3b6247f16ed78bb7fbdb508eed"
+  revision_1_actions_run: 33590220228
+  failure_class: GENERATED_CANONICAL_ARTIFACT_DRIFT
+  exact_failure: "canonical materialization failed: generated artifact drift: tools/canonical/generated/reading-training-registry.json"
+  binding_status: >-
+    Exact boundary binding, detached candidate checkout, and exact HEAD assertion passed before ./verify failed.
+    Revision 2 must preserve the revision-1 semantic bytes and correct only the deterministic generated artifact
+    required by canonical materialization.
+
 authority_sources:
-  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8"
-    role: "Accepted canonical target truth after TASK-0040 repository subtraction."
+  - source: "phatnguyen03022001/ilets@84139d4433bf62635aa501c57c8bcb19dc8e0b3b"
+    role: "Immutable revision-1 semantic implementation candidate to preserve exactly."
     precedence: 1
-  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8:docs/data/evidence-progression-content.md"
-    role: "Canonical evidence, ReadinessEvaluation, GapEvaluation, and ActionIntent semantics."
+  - source: "GitHub Actions run 33590220228 attempt 1"
+    role: "Authoritative proof that revision 1 failed only at generated canonical artifact drift after exact candidate binding."
     precedence: 2
-  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8:docs/behavior/planner-and-lifecycle.md"
-    role: "Canonical Planner stage-3 and learner-flow semantics."
+  - source: "phatnguyen03022001/ilets@84139d4433bf62635aa501c57c8bcb19dc8e0b3b:docs/data/evidence-progression-content.md"
+    role: "Canonical source whose blob/provenance changed and requires deterministic registry rematerialization."
     precedence: 3
-  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8:docs/product/skill-leaves.md"
-    role: "Canonical Reading construct and prerequisite identity."
-    precedence: 4
 
 objective: >-
-  Replace the bounded Academic Reading AT-02 post-evidence Progression dead-end with a truthful
-  coverage-based INSUFFICIENT_EVIDENCE -> EVIDENCE_GAP -> COLLECT_EVIDENCE consequence, so the
-  existing Planner advances to its already-defined fresh-sample content/supply gap rather than a
-  progression_transition blocker, without inferring learner ability, mastery, Band, readiness,
-  or inventing score, calibration, confidence, quantity, recency, or evidence thresholds.
+  Complete TASK-0041 without changing its accepted semantic design by rematerializing the deterministic
+  canonical generated registry required by the revision-1 canonical-doc mutation, then verify the resulting
+  exact immutable candidate through one new sentinel boundary and publish the terminal report.
 
 scope:
   required_changes:
-    - "Refresh exact refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
-    - "Preserve Assessment sampled-reading interpretation exactly as bounded evidence admission: AT-02, Academic, canonical targets R-QT-02/R-QT-03, BroaderClaimEvaluated=false."
-    - "For EVIDENCE_MISSING, preserve the existing NEEDS_EVIDENCE + EVIDENCE_GAP + COLLECT_EVIDENCE consequence."
-    - "For SAMPLED_EVIDENCE_RECORDED, replace NO_AUTHORIZED_NEXT_CONSEQUENCE with a distinct explainable post-recorded state meaning more evidence is required, carrying EVIDENCE_GAP + COLLECT_EVIDENCE. Prefer the stable name NEEDS_MORE_EVIDENCE unless an equivalent narrower name is required by existing conventions."
-    - "Ground that consequence only in demonstrably incomplete construct coverage: the admitted sample covers R-QT-02/R-QT-03 while the canonical Reading construct contains additional required Reading capability scope. Do not evaluate or fabricate a broader Band/readiness threshold."
-    - "Make the lower-bound rule explicit in canonical docs: when a broader consequential claim is known to require construct coverage that the admitted evidence does not cover, missing required coverage is sufficient to classify current evaluation as INSUFFICIENT_EVIDENCE even if threshold/support evaluation remains unresolved. This does not complete the EvidenceRequirement and does not imply learner weakness."
-    - "Preserve Planner production logic. With prior sampled assignment and the new COLLECT_EVIDENCE consequence, existing Planner behavior must resolve to FreshSampleContentGap/content supply rather than ProgressionTransitionGap."
-    - "Update focused unit/integration/Web tests to prove the post-submission route refetches to the existing fresh eligible sampled Reading content blocker and no longer exposes or depends on progression_transition."
-    - "Preserve learner-safe presentation: do not claim evidence admitted as a learner-facing achievement, Band improvement, mastery, readiness, weakness, remediation need, or support. Internal gap/condition identifiers remain hidden from normal learner copy."
-    - "Publish exactly one semantic implementation candidate, then exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to that candidate SHA."
-    - "Require repository-native GitHub Actions verify to bind the exact immutable candidate, checkout it detached, assert exact HEAD, and complete ./verify PASS."
+    - "Refresh exact refs/topology/task and require dev equals the exact revision-2 handoff base with topology exactly {dev, main}."
+    - "Treat revision-1 semantic candidate 84139d4433bf62635aa501c57c8bcb19dc8e0b3b as immutable semantic evidence. Do not amend, revert, replay, reformat, or reinterpret its seven semantic files."
+    - "Generate repository-native deterministic canonical materialization for the current tree and update tools/canonical/generated/reading-training-registry.json to exactly the output required by the canonical materializer."
+    - "The generated correction must reflect current canonical source revision/provenance, including the changed docs/data/evidence-progression-content.md source blob, without hand-editing semantic registry entries."
+    - "If repository-native materialization deterministically changes any additional already-tracked file beyond tools/canonical/generated/reading-training-registry.json, stop AUTHORITY_REQUIRED and report the exact additional path instead of expanding scope silently."
+    - "Create exactly one revision-2 implementation candidate from the exact handoff base. Its only non-task semantic/derived change must be tools/canonical/generated/reading-training-registry.json."
+    - "Then create exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to the revision-2 candidate SHA."
+    - "Require repository-native GitHub Actions verify to bind the exact new candidate, checkout it detached, assert exact HEAD, and complete ./verify PASS."
+    - "Do not rerun or mutate the failed revision-1 run; revision 2 gets one new exact verification boundary/run."
     - "Only after authoritative PASS publish exactly one report-only child at .agent/tasks/TASK-0041/report.yaml and stop at NEEDS_REVIEW."
 
   forbidden_changes:
-    - "Do not add or modify assessment/content bootstrap fixtures, seed supply, canonical Skill Leaf IDs, official family IDs, Practice Modes, or content inventory."
-    - "Do not add R-QT-01/R-QT-04/R-QT-05/R-QT-06 or any other fresh assessment supply in this task."
-    - "Do not modify services/core-api/internal/assessment/interpretation.go or broaden Assessment inference."
-    - "Do not modify services/core-api/internal/planner/kernel.go or redesign Planner ranking, candidate generation, load, or assignment semantics."
-    - "Do not introduce NOT_YET_SUPPORTED, ABILITY_GAP, REMEDIATE, SUPPORTED, CONSOLIDATE, ADVANCE, BandCertificationState changes, mastery support, Band score inference, readiness certification, or target readiness from this sampled evidence."
-    - "Do not create a full per-skill Band EvidenceRequirement, numeric score conversion, threshold, attempt count, confidence cutoff, calibration rule, recency window, or diversity formula."
-    - "Do not modify public API schemas/contracts, generated API bindings, database schema/migrations/queries, auth, providers, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, repository topology, main, tags, releases, or deployment."
-    - "Do not perform unrelated cleanup, legacy subtraction, formatting sweeps, validator/workflow redesign, or framework expansion."
+    - "Do not modify any of the seven revision-1 semantic files: docs/data/evidence-progression-content.md, docs/behavior/planner-and-lifecycle.md, services/core-api/internal/progression/sampled_reading.go, services/core-api/internal/progression/sampled_reading_test.go, services/core-api/internal/planner/kernel_test.go, services/core-api/internal/httpapi/planner_integration_test.go, apps/web/src/features/today/today.test.tsx."
+    - "Do not modify Assessment, Planner production kernel, content/bootstrap fixtures, seed supply, Skill Leaf IDs, API/schema/generated bindings, DB schema/migrations/queries, auth, providers, workflows, validator/materializer code, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, topology, main, tags, releases, or deployment."
+    - "Do not add content supply or infer Band, mastery, readiness, learner weakness, score thresholds, calibration, recency, quantity, diversity, or confidence rules."
+    - "Do not hand-edit generated semantic entries to force verification; use repository-native deterministic materialization only."
+    - "Do not perform unrelated cleanup, formatting sweeps, framework expansion, or CI debugging loops."
 
 structure_policy:
   expected_new_files:
     - .agent/tasks/TASK-0041/report.yaml
   allowed_existing_files:
-    - docs/data/evidence-progression-content.md
-    - docs/behavior/planner-and-lifecycle.md
-    - services/core-api/internal/progression/sampled_reading.go
-    - services/core-api/internal/progression/sampled_reading_test.go
-    - services/core-api/internal/planner/kernel_test.go
-    - services/core-api/internal/httpapi/planner_integration_test.go
-    - apps/web/src/features/today/today.test.tsx
-    - .github/verification-boundary/candidate
     - .agent/tasks/TASK-0041/task.yaml
+    - tools/canonical/generated/reading-training-registry.json
+    - .github/verification-boundary/candidate
   unlisted_new_files:
     allowed: false
     max: 0
   allow_new_top_level_directories: false
 
 invariants:
-  - "The current admitted sample remains claim-scoped to AT-02 Academic R-QT-02/R-QT-03 and never becomes a whole-Reading or Band/readiness claim."
-  - "Missing required construct coverage is uncertainty/insufficiency, not negative learner evidence."
-  - "The only authorized learner consequence added by this task is EVIDENCE_GAP -> COLLECT_EVIDENCE."
-  - "Existing Planner production semantics remain unchanged; the next blocker after prior sampled assignment is truthful fresh content/supply availability."
-  - "No new content supply is created, so TASK-0041 may legitimately terminate the product route at the existing FreshSampleContentGap after closing the Progression dead-end."
+  - "Revision-1 semantic candidate bytes remain unchanged and continue to define TASK-0041 product semantics."
+  - "Revision 2 is a deterministic generated-artifact correction, not a semantic redesign."
+  - "Generated registry output must be reproducible from current canonical sources and must not contain manual semantic invention."
+  - "The final verified candidate still contains the revision-1 Progression handoff semantics and no new product scope."
   - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "EVIDENCE_MISSING still produces NEEDS_EVIDENCE, EVIDENCE_GAP, and COLLECT_EVIDENCE with no semantic regression."
+    requirement: "Revision-1 semantic bytes are preserved exactly."
+    evidence_required: "Diff from revision-2 handoff base to revision-2 candidate changes only tools/canonical/generated/reading-training-registry.json."
   - id: AC-2
-    requirement: "SAMPLED_EVIDENCE_RECORDED produces a distinct post-recorded needs-more-evidence state plus EVIDENCE_GAP and COLLECT_EVIDENCE, while Assessment remains BroaderClaimEvaluated=false and no ability/Band/readiness/support inference is introduced."
+    requirement: "Canonical generated artifact is deterministically rematerialized."
+    evidence_required: "Repository-native materializer/check reports no generated artifact drift and registry provenance/current canonical-source revision match the current canonical source tree."
   - id: AC-3
-    requirement: "The consequence is justified only by incomplete canonical Reading construct coverage; canonical docs explicitly preserve this as a lower-bound INSUFFICIENT_EVIDENCE result and state that the broader EvidenceRequirement/threshold evaluation remains unresolved."
+    requirement: "Original TASK-0041 product semantics remain intact."
+    evidence_required: "Exact candidate ancestry contains 84139d4433bf62635aa501c57c8bcb19dc8e0b3b unchanged; no seven semantic files are modified after that candidate."
   - id: AC-4
-    requirement: "Without modifying planner/kernel.go, existing Planner unit/integration behavior routes a prior sampled assignment with COLLECT_EVIDENCE to FreshSampleContentGap/content_assets and no longer to ProgressionTransitionGap/progression_transition."
+    requirement: "Authoritative verification passes on the new immutable candidate."
+    evidence_required: "New sentinel-only boundary binds exact revision-2 candidate; detached checkout + exact HEAD assertion + ./verify all PASS."
   - id: AC-5
-    requirement: "The Web Today post-submission test proves plan refetch and learner-safe fresh-content blocker presentation without learner-facing evidence-admission, Band-improvement, mastery/readiness, weakness/remediation, or internal progression_transition terminology."
-  - id: AC-6
-    requirement: "The semantic candidate changes only the authorized files, adds no content supply/API/DB surface, and repository-native ./verify PASSes on the exact immutable candidate through one valid sentinel-only verification boundary."
+    requirement: "Terminal publication is report-only."
+    evidence_required: "report.yaml is a direct child of the successful sentinel boundary and is its only changed file."
 
 verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Verify exact handoff base, topology {dev, main}, inherited revision-1 candidate/boundary/run identities, and current task revision 2."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run repository-native canonical materialization/check locally on the execution surface if available; require the only tracked generated correction to be tools/canonical/generated/reading-training-registry.json."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Create one correction candidate; prove its diff from exact handoff base changes only the generated registry and preserves revision-1 semantic files byte-for-byte."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Create one sentinel-only verification child and require one new GitHub Actions verify run with exact binding, detached exact candidate HEAD, and ./verify PASS."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Publish report-only child and stop at NEEDS_REVIEW."
+      required: true
   authoritative_verification:
     required: true
     mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
-    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, and ./verify PASS"
+    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, canonical materialization PASS, and ./verify PASS"
 
 capability_requirements:
   EXECUTION:
