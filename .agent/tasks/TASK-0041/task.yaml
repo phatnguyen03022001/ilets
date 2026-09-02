@@ -1,0 +1,154 @@
+protocol_version: 3
+
+task_id: TASK-0041
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0040
+  gap_ids: [POST_SAMPLED_PROGRESSION_HANDOFF]
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills:
+  required: [executor, simplicity, verification]
+  recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8"
+    role: "Accepted canonical target truth after TASK-0040 repository subtraction."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8:docs/data/evidence-progression-content.md"
+    role: "Canonical evidence, ReadinessEvaluation, GapEvaluation, and ActionIntent semantics."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8:docs/behavior/planner-and-lifecycle.md"
+    role: "Canonical Planner stage-3 and learner-flow semantics."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@c93873d786d252d02d604d146db2a1de4920bca8:docs/product/skill-leaves.md"
+    role: "Canonical Reading construct and prerequisite identity."
+    precedence: 4
+
+objective: >-
+  Replace the bounded Academic Reading AT-02 post-evidence Progression dead-end with a truthful
+  coverage-based INSUFFICIENT_EVIDENCE -> EVIDENCE_GAP -> COLLECT_EVIDENCE consequence, so the
+  existing Planner advances to its already-defined fresh-sample content/supply gap rather than a
+  progression_transition blocker, without inferring learner ability, mastery, Band, readiness,
+  or inventing score, calibration, confidence, quantity, recency, or evidence thresholds.
+
+scope:
+  required_changes:
+    - "Refresh exact refs/topology/task and require dev equals the exact handoff base with topology exactly {dev, main}."
+    - "Preserve Assessment sampled-reading interpretation exactly as bounded evidence admission: AT-02, Academic, canonical targets R-QT-02/R-QT-03, BroaderClaimEvaluated=false."
+    - "For EVIDENCE_MISSING, preserve the existing NEEDS_EVIDENCE + EVIDENCE_GAP + COLLECT_EVIDENCE consequence."
+    - "For SAMPLED_EVIDENCE_RECORDED, replace NO_AUTHORIZED_NEXT_CONSEQUENCE with a distinct explainable post-recorded state meaning more evidence is required, carrying EVIDENCE_GAP + COLLECT_EVIDENCE. Prefer the stable name NEEDS_MORE_EVIDENCE unless an equivalent narrower name is required by existing conventions."
+    - "Ground that consequence only in demonstrably incomplete construct coverage: the admitted sample covers R-QT-02/R-QT-03 while the canonical Reading construct contains additional required Reading capability scope. Do not evaluate or fabricate a broader Band/readiness threshold."
+    - "Make the lower-bound rule explicit in canonical docs: when a broader consequential claim is known to require construct coverage that the admitted evidence does not cover, missing required coverage is sufficient to classify current evaluation as INSUFFICIENT_EVIDENCE even if threshold/support evaluation remains unresolved. This does not complete the EvidenceRequirement and does not imply learner weakness."
+    - "Preserve Planner production logic. With prior sampled assignment and the new COLLECT_EVIDENCE consequence, existing Planner behavior must resolve to FreshSampleContentGap/content supply rather than ProgressionTransitionGap."
+    - "Update focused unit/integration/Web tests to prove the post-submission route refetches to the existing fresh eligible sampled Reading content blocker and no longer exposes or depends on progression_transition."
+    - "Preserve learner-safe presentation: do not claim evidence admitted as a learner-facing achievement, Band improvement, mastery, readiness, weakness, remediation need, or support. Internal gap/condition identifiers remain hidden from normal learner copy."
+    - "Publish exactly one semantic implementation candidate, then exactly one sentinel-only verification-boundary child changing .github/verification-boundary/candidate to that candidate SHA."
+    - "Require repository-native GitHub Actions verify to bind the exact immutable candidate, checkout it detached, assert exact HEAD, and complete ./verify PASS."
+    - "Only after authoritative PASS publish exactly one report-only child at .agent/tasks/TASK-0041/report.yaml and stop at NEEDS_REVIEW."
+
+  forbidden_changes:
+    - "Do not add or modify assessment/content bootstrap fixtures, seed supply, canonical Skill Leaf IDs, official family IDs, Practice Modes, or content inventory."
+    - "Do not add R-QT-01/R-QT-04/R-QT-05/R-QT-06 or any other fresh assessment supply in this task."
+    - "Do not modify services/core-api/internal/assessment/interpretation.go or broaden Assessment inference."
+    - "Do not modify services/core-api/internal/planner/kernel.go or redesign Planner ranking, candidate generation, load, or assignment semantics."
+    - "Do not introduce NOT_YET_SUPPORTED, ABILITY_GAP, REMEDIATE, SUPPORTED, CONSOLIDATE, ADVANCE, BandCertificationState changes, mastery support, Band score inference, readiness certification, or target readiness from this sampled evidence."
+    - "Do not create a full per-skill Band EvidenceRequirement, numeric score conversion, threshold, attempt count, confidence cutoff, calibration rule, recency window, or diversity formula."
+    - "Do not modify public API schemas/contracts, generated API bindings, database schema/migrations/queries, auth, providers, CONSTITUTION.md, OBJECTIVE.md, docs/catalog/project.json, repository topology, main, tags, releases, or deployment."
+    - "Do not perform unrelated cleanup, legacy subtraction, formatting sweeps, validator/workflow redesign, or framework expansion."
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0041/report.yaml
+  allowed_existing_files:
+    - docs/data/evidence-progression-content.md
+    - docs/behavior/planner-and-lifecycle.md
+    - services/core-api/internal/progression/sampled_reading.go
+    - services/core-api/internal/progression/sampled_reading_test.go
+    - services/core-api/internal/planner/kernel_test.go
+    - services/core-api/internal/httpapi/planner_integration_test.go
+    - apps/web/src/features/today/today.test.tsx
+    - .github/verification-boundary/candidate
+    - .agent/tasks/TASK-0041/task.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+  allow_new_top_level_directories: false
+
+invariants:
+  - "The current admitted sample remains claim-scoped to AT-02 Academic R-QT-02/R-QT-03 and never becomes a whole-Reading or Band/readiness claim."
+  - "Missing required construct coverage is uncertainty/insufficiency, not negative learner evidence."
+  - "The only authorized learner consequence added by this task is EVIDENCE_GAP -> COLLECT_EVIDENCE."
+  - "Existing Planner production semantics remain unchanged; the next blocker after prior sampled assignment is truthful fresh content/supply availability."
+  - "No new content supply is created, so TASK-0041 may legitimately terminate the product route at the existing FreshSampleContentGap after closing the Progression dead-end."
+  - "No main mutation, promotion, release, branch creation, PR creation, or repository metadata mutation."
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "EVIDENCE_MISSING still produces NEEDS_EVIDENCE, EVIDENCE_GAP, and COLLECT_EVIDENCE with no semantic regression."
+  - id: AC-2
+    requirement: "SAMPLED_EVIDENCE_RECORDED produces a distinct post-recorded needs-more-evidence state plus EVIDENCE_GAP and COLLECT_EVIDENCE, while Assessment remains BroaderClaimEvaluated=false and no ability/Band/readiness/support inference is introduced."
+  - id: AC-3
+    requirement: "The consequence is justified only by incomplete canonical Reading construct coverage; canonical docs explicitly preserve this as a lower-bound INSUFFICIENT_EVIDENCE result and state that the broader EvidenceRequirement/threshold evaluation remains unresolved."
+  - id: AC-4
+    requirement: "Without modifying planner/kernel.go, existing Planner unit/integration behavior routes a prior sampled assignment with COLLECT_EVIDENCE to FreshSampleContentGap/content_assets and no longer to ProgressionTransitionGap/progression_transition."
+  - id: AC-5
+    requirement: "The Web Today post-submission test proves plan refetch and learner-safe fresh-content blocker presentation without learner-facing evidence-admission, Band-improvement, mastery/readiness, weakness/remediation, or internal progression_transition terminology."
+  - id: AC-6
+    requirement: "The semantic candidate changes only the authorized files, adds no content supply/API/DB surface, and repository-native ./verify PASSes on the exact immutable candidate through one valid sentinel-only verification boundary."
+
+verification:
+  authoritative_verification:
+    required: true
+    mechanism: "repository-native GitHub Actions .github/workflows/verify.yml via sentinel boundary"
+    expected_signal: "exact boundary->candidate binding PASS, detached exact candidate HEAD assertion PASS, and ./verify PASS"
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - repository_native_deterministic_verification_execution
+    - github_actions_run_read
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_read
+    - repository_content_write
+    - github_actions_run_read
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+  verification_boundary_child: true
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
