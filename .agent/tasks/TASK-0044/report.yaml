@@ -1,0 +1,404 @@
+protocol_version: 3
+
+task_id: TASK-0044
+task_revision: 4
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0044/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "ca3a07115f677054f770c790fa2dc7439d2e8f87"
+  pre_execution_head: "ca3a07115f677054f770c790fa2dc7439d2e8f87"
+  final_execution_head: "13b2577e02050c1f354017389a106da66de0872d"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+  observed_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external:
+    - superpowers:using-superpowers
+    - superpowers:test-driven-development
+    - superpowers:verification-before-completion
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - exact_remote_ref_read
+    - native_repository_execution
+    - github_actions_authoritative_verification
+    - external_audio_source_resolution
+  available:
+    - repository_content_read
+    - repository_content_write
+    - exact_remote_ref_read
+    - native_repository_execution
+    - github_actions_authoritative_verification
+    - external_audio_source_resolution
+  missing: []
+  passed: true
+
+operational_timing:
+  started_at_utc: "2026-09-02T20:32:17Z"
+  terminal_decision_at_utc: "2026-09-02T21:27:06Z"
+
+authoritative_verification:
+  required: true
+  performed: true
+  result: "PASS"
+  evidence: >-
+    Fresh GitHub Actions verify run 33684727585
+    (https://github.com/phatnguyen03022001/ilets/actions/runs/33684727585) was triggered by the
+    sentinel push, bound boundary commit 6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3, resolved the
+    one-line candidate value 13b2577e02050c1f354017389a106da66de0872d, checked out that exact
+    detached candidate, and completed the full ./verify job successfully. The run's sole job and
+    every step concluded success, including migration/reseed, Go integration, Playwright E2E, and
+    the final deterministic web build.
+
+local_hygiene:
+  result: RETAINED_FOR_EVIDENCE
+  run_root: "/workspace/scratch/a5d023c947f0"
+  cleanup_performed: false
+  retained:
+    - path: "/workspace/scratch/a5d023c947f0/task-0044-run.LeZMFn"
+      reason: "Current-run implementation reconstruction retained for audit; it is not repository truth."
+    - path: "/workspace/scratch/a5d023c947f0/task-0044-candidate-native.corrected.Q6m8Rt"
+      reason: "Current-run clean detached candidate checkout retained for audit."
+  evidence: >-
+    Current-run roots are isolated under the scratch workspace. The pre-existing
+    /workspace/scratch/a5d023c947f0/task-0044-candidate.LeZMFn worktree from the failed prior execution was
+    not reused or mutated. No agent-* repository or architect-profile was mutated.
+
+changed_files:
+  - path: apps/web/src/generated/public/index.ts
+    summary: "Regenerated the public TypeScript export surface for the media operation and MediaReference type."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: apps/web/src/generated/public/sdk.gen.ts
+    summary: "Regenerated the public TypeScript SDK operation for exact activity media retrieval."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: apps/web/src/generated/public/types.gen.ts
+    summary: "Regenerated public TypeScript types for LearnerTask instruction, MediaReference, and the media response."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: contracts/http/public.openapi.yaml
+    summary: "Added the authenticated activity-owned exact media GET contract and the learner-visible instruction field."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/BEHAVIOR.md
+    summary: "Added the owner-local single-row L-F04 canonical materializer anchor without changing FTR-010 meaning."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/behavior/practice-and-media.md
+    summary: "Added the owner-local PM-L03 canonical materializer anchor."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/data/evidence-progression-content.md
+    summary: "Added the owner-local CTX-LISTENING-SHARED canonical materializer anchor."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/ielts-exam-and-bands.md
+    summary: "Added the owner-local IELTS-L-QF-04 canonical materializer anchor."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/skill-leaves.md
+    summary: "Added owner-local selector anchors for the already-canonical L-COMP-02 and L-QT-01 identities."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/cmd/seed/main.go
+    summary: "Seeded and strictly validated the bounded shared Listening completion fixture and immutable media provenance."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/bootstrap/listening-training-001.json
+    summary: "Added the one exact Listening ContentRevision fixture, validation decision, semantic scope, item, and audio provenance."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/db/queries/activity.sql
+    summary: "Added bounded eligible Listening selection, variant-aware activity insertion, and stored-variant reload."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/db/sqlc/activity.sql.go
+    summary: "Regenerated sqlc bindings for the bounded Listening activity queries and stored test variant."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/generated/openapi/bindings_test.go
+    summary: "Extended generated public-contract surface assertions for getPracticeActivityMedia."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/generated/openapi/public/public.gen.go
+    summary: "Regenerated public Go bindings for the media operation and LearnerTask instruction."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/activity.go
+    summary: "Added PM-L03 catalog/assignment, explicit Academic or General Training storage, safe media/text projection, and strict Listening fixture validation."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/attempt.go
+    summary: "Added bounded TEXT response parsing and trim-plus-case-insensitive exact completion scoring while preserving Reading scoring."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/integration_test.go
+    summary: "Added focused Listening fixture integrity, variant/media/authentication, scoring, Observation, EvidenceFact, and Reading regression evidence."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/listening_media.go
+    summary: "Added the smallest Core-local authenticated exact-reference Go-embedded Ogg handler."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/media/hello-this-is-marsha.ogg
+    summary: "Vendored the exact 54891-byte public-domain Ogg source bound by immutable SHA-256 provenance."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/server.go
+    summary: "Registered and delegated the generated exact activity media route."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/migrations/0008_listening_training.sql
+    summary: "Widened practice_activities.test_variant to exactly ACADEMIC or GENERAL_TRAINING."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/generated/registry.json
+    summary: "Regenerated the canonical registry with the six authorized Listening identities."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/source-map.json
+    summary: "Routed the six authorized Listening identities to existing owner-local materializer anchors."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/test_materialize.py
+    summary: "Updated repository-native materializer expectations for the authorized multi-slice registry."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/contracts/test_generate.py
+    summary: "Updated generated-contract operation expectations for getPracticeActivityMedia."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/contracts/validate.go
+    summary: "Audited the new public media operation in the repository-native contract validator."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/generated/listening-detail-completion-trace.json
+    summary: "Added the generated trace for the exact Listening slice binding."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/generated/reading-training-trace.json
+    summary: "Regenerated the existing Reading trace against the expanded shared canonical registry."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/listening-detail-completion.json
+    summary: "Added the bounded Listening implementation descriptor with exact semantic binding and runtime owner."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "13b2577e02050c1f354017389a106da66de0872d"
+    message: "feat(core): add bounded Listening completion slice"
+  - sha: "6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3"
+    message: "chore(verify): bind TASK-0044 candidate"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PROVEN
+    evidence: >-
+      The canonical binding is exactly L-F04 -> PM-L03 -> PT-13 -> L-COMP-02 + L-QT-01 ->
+      IELTS-L-QF-04 -> CTX-LISTENING-SHARED -> TRAINING -> NOT_EVIDENCE_CANDIDATE. Owner-local
+      anchors were used only to make the already-bound identities machine-resolvable. The canonical
+      materializer remained unchanged; materializer tests and --check passed.
+  - criterion_id: AC-2
+    status: PROVEN
+    evidence: >-
+      tools/slice/listening-detail-completion.json and its generated trace bind the exact slice,
+      content revision listening-bootstrap-completion-001-r1, services/core-api owner, and bounded
+      persistence/API verification surface. The existing Reading trace regenerated deterministically
+      against the same global registry.
+  - criterion_id: AC-3
+    status: PROVEN
+    evidence: >-
+      The bootstrap fixture contains exactly one item with instruction "Write ONE WORD ONLY.",
+      prompt "Name: ______", hidden answer "Marsha", exact family/scope, shared applicability
+      ACADEMIC and GENERAL_TRAINING, and no choice-list cosplay. Seed validation and focused Go tests
+      reject malformed scope, missing fields, choices, extra executable item structure, and unknown
+      canonical references.
+  - criterion_id: AC-4
+    status: PROVEN
+    evidence: >-
+      The exact Wikimedia Commons source page identifies "Hello. This is Marsha. - Yes, Marsha.ogg"
+      and VOA Learning English under the recorded Wikimedia Public Domain Mark/VOA public-domain
+      basis. The vendored Ogg is 54891 bytes with SHA-256
+      1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765; the embedded-byte integrity
+      test and authoritative seed run agree with that immutable provenance.
+  - criterion_id: AC-5
+    status: PROVEN
+    evidence: >-
+      OpenAPI, generated Go/TypeScript bindings, server routing, and focused integration evidence
+      cover GET /v1/practice-activities/{practice_activity_id}/media/{media_reference}. Access is
+      authenticated and learner-owned; success returns the exact embedded audio/ogg bytes, while
+      anonymous, foreign, missing, wrong-reference, and revision-mismatch cases fail closed.
+  - criterion_id: AC-6
+    status: PROVEN
+    evidence: >-
+      PM-L03 is listed and directly assignable only with an explicit PRESENT Academic or General
+      Training TargetProfile. Both variants store their exact current DB value while reusing the
+      same immutable Listening revision; migration 0008 permits exactly ACADEMIC|GENERAL_TRAINING
+      and no SHARED value.
+  - criterion_id: AC-7
+    status: PROVEN
+    evidence: >-
+      The learner-safe projection exposes a MEDIA_REFERENCE stimulus and real TEXT response
+      contract with the exact instruction and prompt, and no answer/options/transcript/provenance.
+      Completion scoring trims outer whitespace and compares case-insensitively against the exact
+      canonical answer; punctuation or other fuzzy variants remain incorrect.
+  - criterion_id: AC-8
+    status: PROVEN
+    evidence: >-
+      The normal Attempt -> Observation path records DETERMINISTIC_KEYED scoring for PM-L03
+      TRAINING and creates no EvidenceFact, Assessment result, Mastery/Readiness/Band inference,
+      GapEvaluation, or Progression consequence. The existing Reading PM-R03 assignment, projection,
+      selected-value scoring, and integration behavior remain covered.
+  - criterion_id: AC-9
+    status: PROVEN
+    evidence: >-
+      Repository-native focused checks passed: affected classifier 24 tests, canonical materializer
+      15 tests and --check, contract generation/validation tests, deterministic OpenAPI and sqlc
+      generation, Go vet/test/build, and web format/lint/typecheck/unit/build. Native ./verify reached
+      the Docker boundary after all pre-Compose checks; the missing local Docker capability was
+      non-blocking because the required fresh authoritative Actions run passed full ./verify.
+  - criterion_id: AC-10
+    status: PROVEN
+    evidence: >-
+      GitHub compare proves the final implementation candidate is exactly one direct child of the
+      authorized base, with no main promotion and no topology expansion. The only subsequent
+      implementation-adjacent child is the one-line sentinel; Actions run 33684727585 verified its
+      exact detached parent candidate before the report-only publication.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Fresh live preflight confirmed repository phatnguyen03022001/ilets, dev at exact base
+      ca3a07115f677054f770c790fa2dc7439d2e8f87, main at e707aeee43411cc8f99448b63220eb8beff552b6,
+      topology exactly {dev, main}, TASK-0044 revision 4 APPROVED/execution_ready, and the
+      pinned agent-skills, agent-documents v1.0.0, and agent-standards v1.0.0 authorities. The
+      external Wikimedia/VOA Ogg source and downloadable audio identity were re-resolved before vendoring.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      TDD RED was captured before implementation: the focused Listening tests failed because the
+      validator rejected the not-yet-supported Listening shape and the embedded media file was
+      absent. After implementation, the focused tests passed, including exact audio hash and
+      deterministic text scoring.
+  - check_id: CHECK-3
+    result: PASS
+    evidence: >-
+      The corrected candidate was checked out clean and native ./verify passed all classifier,
+      canonical, contract, web, sqlc, Go vet/test/build, migration/reseed, Go integration, Playwright
+      E2E, and final web-build stages up to the local environment's Docker capability; the
+      authoritative runner completed the same full workflow successfully.
+  - check_id: CHECK-4
+    result: PASS
+    evidence: >-
+      GitHub Actions run 33684727585 has event push, run_attempt 1, one verify job, successful
+      candidate-boundary validation, exact detached candidate assertion, and successful ./verify.
+      Its log records HTTP_CONTRACTS_VALID, HTTP_CONTRACT_AUTHORITIES_AUDITED, repeated seed hashes
+      including listening-bootstrap-completion-001-r1, Go integration success, and one passing E2E.
+  - check_id: CHECK-5
+    result: PASS
+    evidence: >-
+      No tools/canonical/materialize.py, task YAML, agent-* repository, architect-profile, workflow,
+      main ref, or branch topology was mutated. The exact vendored audio hash is bound in fixture
+      provenance and checked against the Go-embedded bytes.
+  - check_id: CHECK-6
+    result: PASS
+    evidence: >-
+      Before report publication, sentinel 6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3 was confirmed
+      as a one-file direct child of candidate 13b2577e02050c1f354017389a106da66de0872d, and the
+      authoritative run concluded PASS without retry, dispatch, or rerun.
+
+discovered_gaps:
+  - gap_id: GAP-001
+    classification: LOCAL
+    type: capability
+    severity: low
+    description: "The local environment has no Docker executable, so native ./verify could not run its Compose/PostgreSQL phase."
+    evidence: "Native ./verify exited only at verify: line 114: docker: command not found after all pre-Compose checks and Go integration package checks passed."
+    impact: "No impact on current task acceptance because the required fresh GitHub Actions full ./verify proof passed."
+    blocks_current_task: false
+    action_taken: "Recorded; the authoritative GitHub Actions runner supplied the missing full-stack capability."
+    suggested_next_step: "No action unless a separate local Docker reproduction is required during review."
+
+structural_observations: []
+deviations_from_task:
+  - "A provisional pre-sentinel candidate was replaced before sentinel creation when native verify exposed one unformatted generated binding-test line. The final candidate 13b2577e02050c1f354017389a106da66de0872d is the sole stable implementation candidate, remains a direct child of the exact handoff base, and is the only candidate bound to the sentinel and authoritative run."
+
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: >-
+    The authoritative GitHub Actions checkout at the exact candidate completed full ./verify and
+    post-job cleanup cleanly. The report is a separate Executor evidence artifact and does not alter
+    final_execution_head.
+
+result: NEEDS_REVIEW
