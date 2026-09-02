@@ -61,13 +61,11 @@ _ROOT_CRITICAL_EXACT = {
 _CRITICAL_PREFIXES = (
     ".github/workflows/",
     "contracts/",
-    "design/",
     "services/core-api/cmd/seed/",
     "services/core-api/internal/bootstrap/",
     "services/core-api/internal/db/",
     "services/core-api/internal/httpapi/generated/",
     "services/core-api/migrations/",
-    "spec/",
     "tools/affected/",
     "tools/canonical/",
     "tools/contracts/",

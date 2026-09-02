@@ -29,7 +29,7 @@ class MaterializerTests(unittest.TestCase):
         config["registries"].append(
             {
                 "type": "fake",
-                "owner": "research/fake.md",
+                "owner": "archive/fake.md",
                 "section": "# Fake",
                 "kind": "markdown_table",
                 "ids": ["R-F04"],
@@ -62,8 +62,8 @@ class MaterializerTests(unittest.TestCase):
     def test_revision_is_deterministic(self):
         source_map = b'{"version":1}'
         owners = [
-            ("spec/a.md", "aaa"),
-            ("design/b.md", "bbb"),
+            ("docs/a.md", "aaa"),
+            ("docs/b.md", "bbb"),
         ]
         first = module.canonical_source_revision_from_inputs(source_map, owners)
         second = module.canonical_source_revision_from_inputs(source_map, owners)
@@ -72,8 +72,8 @@ class MaterializerTests(unittest.TestCase):
     def test_owner_order_does_not_change_revision(self):
         source_map = b'{"version":1}'
         owners = [
-            ("spec/a.md", "aaa"),
-            ("design/b.md", "bbb"),
+            ("docs/a.md", "aaa"),
+            ("docs/b.md", "bbb"),
         ]
         forward = module.canonical_source_revision_from_inputs(source_map, owners)
         reverse = module.canonical_source_revision_from_inputs(
@@ -84,15 +84,15 @@ class MaterializerTests(unittest.TestCase):
     def test_owner_blob_change_changes_revision(self):
         source_map = b'{"version":1}'
         before = module.canonical_source_revision_from_inputs(
-            source_map, [("spec/a.md", "aaa")]
+            source_map, [("docs/a.md", "aaa")]
         )
         after = module.canonical_source_revision_from_inputs(
-            source_map, [("spec/a.md", "bbb")]
+            source_map, [("docs/a.md", "bbb")]
         )
         self.assertNotEqual(before, after)
 
     def test_source_map_change_changes_revision(self):
-        owners = [("spec/a.md", "aaa")]
+        owners = [("docs/a.md", "aaa")]
         before = module.canonical_source_revision_from_inputs(
             b'{"version":1}', owners
         )

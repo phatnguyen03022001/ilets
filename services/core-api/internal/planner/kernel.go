@@ -4,7 +4,7 @@ import "github.com/phatnguyen03022001/ilets/services/core-api/internal/progressi
 
 const (
 	SampledAssessmentRevision = "reading-bootstrap-assessment-001-r1"
-	CoverageProvenanceVersion = "design/08-coverage-and-support.md@da6ba7c949d8e5288ae0c36beba10b5919d24ee8"
+	CoverageProvenanceVersion = "docs/product/curriculum-and-coverage.md@7d8dc6a2c454a86542b35122c8012cb0bd871fb9"
 )
 
 type Target struct {

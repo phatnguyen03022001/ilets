@@ -97,7 +97,7 @@ class ClassificationTests(unittest.TestCase):
         self.assertEqual(self.classify("contracts/http/public.openapi.yaml").mode, "full")
 
     def test_unknown_path_forces_full(self) -> None:
-        self.assertEqual(self.classify("evidence/new-note.md").mode, "full")
+        self.assertEqual(self.classify("legacy/new-note.md").mode, "full")
 
     def test_classifier_self_change_forces_full(self) -> None:
         self.assertEqual(self.classify("tools/affected/classifier.py").mode, "full")
@@ -215,7 +215,7 @@ class EntrypointIntegrationTests(unittest.TestCase):
         self.assertTrue((self.repo / ".full-called").exists())
 
     def test_unknown_path_falls_back_full(self) -> None:
-        self.commit("evidence/new-note.md", "unknown\n")
+        self.commit("legacy/new-note.md", "unknown\n")
         result = self.run_check("--base", self.base)
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("CHECK_PASS mode=full-fallback", result.stdout)
