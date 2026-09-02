@@ -1,0 +1,219 @@
+protocol_version: 3
+
+task_id: TASK-0043
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0043/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "d64d5d930865fc9e4b22dc9660b200fb1fa2d6e0"
+  pre_execution_head: "d64d5d930865fc9e4b22dc9660b200fb1fa2d6e0"
+  final_execution_head: "6c63cfecdde31ceff914bf8b5be2f6e4b4f77f50"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+  observed_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external:
+    - superpowers/using-superpowers
+    - superpowers/test-driven-development
+    - superpowers/verification-before-completion
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - native_repository_command_execution
+    - github_actions_run_read
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - native_repository_command_execution
+    - github_actions_run_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: true
+  performed: true
+  result: PASS
+  evidence: >-
+    GitHub Actions verify run 33667847470 (run #14, attempt 1) was the single fresh push-triggered run for sentinel
+    fa8dab17fea2abad2ebf0cf17d6bcc99aba85822. The run bound the sentinel value to candidate 6c63cfecdde31ceff914bf8b5be2f6e4b4f77f50, checked out that candidate detached, asserted
+    the exact candidate HEAD, and completed the full ./verify step successfully. Job 100373878155 and every verification
+    setup/binding step completed with success.
+
+local_hygiene:
+  result: PASS
+  run_root: /workspace/scratch/5708d5ab1445/ilets
+  cleanup_performed: true
+  retained: []
+  evidence: >-
+    The run-owned Codex checkout was used only for candidate construction and verification. Run-created Python bytecode
+    was removed. No Docker or other persistent runtime artifacts were created.
+
+changed_files:
+  - path: services/core-api/cmd/seed/main.go
+    summary: "Change only the default canonical registry filename from the Reading-named path to registry.json."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/generated/registry.json
+    summary: "Rename the sole generated canonical registry from reading-training-registry.json without changing its bytes."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/materialize.py
+    summary: "Discover exactly tools/slice/*.json deterministically, validate every slice against one global registry, and emit stem-based traces."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/test_materialize.py
+    summary: "Add focused deterministic multi-slice discovery, output-path, shared-registry, and unknown-reference tests."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "6c63cfecdde31ceff914bf8b5be2f6e4b4f77f50"
+    message: "refactor(TASK-0043): generalize canonical materialization"
+  - sha: "fa8dab17fea2abad2ebf0cf17d6bcc99aba85822"
+    message: "ci(TASK-0043): bind candidate for verification"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Remote candidate tree contains tools/canonical/generated/registry.json with the same blob and bytes as the base
+      Reading-named registry; the legacy path is absent. Live references resolve only to registry.json in the seed and
+      materializer.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      Focused canonical tests passed 15/15. They prove sorted tools/slice/*.json discovery, generated/ exclusion,
+      deterministic stem-based trace names, repeated multi-slice output determinism, shared global-registry hashing,
+      and independent unknown-reference rejection.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      tools/slice/reading-training.json, its generated trace, and tools/canonical/source-map.json retain their exact base
+      blobs. The generated registry content is byte-identical to the former Reading registry, preserving current Reading
+      canonical meaning.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      Source-map authority boundaries were unchanged. Existing focused tests for forbidden authority sources, duplicate
+      configured IDs, and non-discovery of research text passed; materialization still reads canonical owners only from
+      source-map.json.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      The exact seed diff changes only the default registry filename. Authoritative full ./verify passed seed twice,
+      governance-state preservation, migration, integration, and build checks.
+  - criterion_id: AC-6
+    status: PASS
+    evidence: >-
+      Exact candidate diff contains only the seed path correction, registry rename, materializer generalization, and
+      focused tests. No Listening descriptor, source-map entry, canonical document, dependency, plugin, framework, runtime,
+      API, DB, content, or workflow change was introduced.
+  - criterion_id: AC-7
+    status: PASS
+    evidence: >-
+      Candidate 6c63cfecdde31ceff914bf8b5be2f6e4b4f77f50 is the direct child of exact base d64d5d930865fc9e4b22dc9660b200fb1fa2d6e0. Sentinel fa8dab17fea2abad2ebf0cf17d6bcc99aba85822 is its direct child, changes
+      only .github/verification-boundary/candidate, and the single fresh Actions run 33667847470 passed with exact detached
+      candidate binding and full ./verify.
+  - criterion_id: AC-8
+    status: PASS
+    evidence: >-
+      Candidate lineage is reconstructible as base -> 6c63cfecdde31ceff914bf8b5be2f6e4b4f77f50 -> fa8dab17fea2abad2ebf0cf17d6bcc99aba85822; remote branch topology remains exactly
+      {dev, main}. This report is published as the report-only child after the successful sentinel proof.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Live dev matched d64d5d930865fc9e4b22dc9660b200fb1fa2d6e0; TASK-0043 revision 1 at that exact commit was APPROVED and execution-ready; pinned
+      agent-skills revision 76f2d3877d1698f91eb5a6117e2301ed49480379 and executor/simplicity/verification skills were
+      resolved; structure authority and required GitHub capabilities were available; topology was exactly {dev, main}.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      TDD RED was observed for the new seam tests on the exact base, then focused canonical materializer tests passed 15/15
+      after the minimal implementation. materialize.py --check also passed.
+  - check_id: CHECK-3
+    result: PASS
+    evidence: >-
+      Exact base-to-candidate diff was restricted to four logical paths. source-map.json, reading-training.json, and the
+      Reading trace were byte-identical; the old registry path was absent; registry.json was byte-identical to the old
+      registry; and the seed diff was filename-only.
+  - check_id: CHECK-4
+    result: NOT_FEASIBLE
+    evidence: >-
+      Native Codex ./verify was attempted on the exact candidate checkout and reached canonical tests and contract
+      validation, then exited 127 at tools/contracts/validate.sh because gofmt was not installed. The host also lacked
+      Go and Docker, so a local full verify was not feasible. No local PASS was claimed; the required authoritative
+      GitHub Actions proof completed full ./verify successfully.
+  - check_id: CHECK-5
+    result: PASS
+    evidence: >-
+      Exactly one sentinel-only child was created after the stable candidate, and exactly one fresh Actions run was bound
+      to it: run 33667847470, attempt 1, with no rerun.
+  - check_id: CHECK-6
+    result: PASS
+    evidence: >-
+      After authoritative PASS, this report-only artifact was created as the sole additional path on dev; no product,
+      runtime, generated, workflow, or task-authority mutation was included.
+
+discovered_gaps: []
+structural_observations: []
+
+deviations_from_task:
+  - >-
+    Local full ./verify was not feasible because the Codex host lacked Go/gofmt and Docker; the repository-native
+    authoritative Actions boundary supplied the required full verification PASS.
+
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "Remote dev contains the implementation candidate, one sentinel-only verification child, and this report-only child; main and topology remain unchanged."
+
+result: NEEDS_REVIEW
