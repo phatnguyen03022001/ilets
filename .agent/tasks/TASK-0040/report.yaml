@@ -1,0 +1,291 @@
+protocol_version: 3
+
+task_id: TASK-0040
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0040/task.yaml
+  commit: "0e09c23071e53a9cf3167f1db6ad5daee1353199"
+
+operational_timing:
+  started_at_utc: "2026-09-02T03:21:03Z"
+  terminal_decision_at_utc: "2026-09-02T03:28:40Z"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "0e09c23071e53a9cf3167f1db6ad5daee1353199"
+  pre_execution_head: "0e09c23071e53a9cf3167f1db6ad5daee1353199"
+  implementation_commit: "f54eb0e36e828276e1fa7e527c793c11f00cca7d"
+  verification_boundary_commit: "3133216157a8c880b0473656067f5a05fe78b66e"
+  final_execution_head: "f54eb0e36e828276e1fa7e527c793c11f00cca7d"
+  implementation_commits: 1
+  verification_boundaries_published: 1
+  repository_mutations_before_report: 2
+  semantic_mutations: 0
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+  observed_revision: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external:
+    - superpowers:using-superpowers
+    - superpowers:executing-plans
+    - superpowers:verification-before-completion
+    - superpowers:finishing-a-development-branch
+
+pre_execution_checks:
+  protocol_version_supported: true
+  task_revision_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  topology_exact_dev_main_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  report_path_absent_at_boundary: true
+  no_branch_created: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - github_actions_run_read
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_git_object_write
+    - non_force_ref_update
+    - exact_diff_inspection
+    - github_actions_run_read
+  missing: []
+  passed: true
+  evidence: >-
+    GitHub-native exact-ref reads, repository content reads, Git tree and commit object writes,
+    non-force dev ref updates, exact commit comparisons, and Actions run/job reads were all
+    available before mutation. No temporary branch or local checkout was required.
+
+authority_and_drift_revalidation:
+  task_0038_audit_reused: true
+  task_0039_acceptance_reused: true
+  task_0038_base: "aa0efa25a4a5533d81a9b1235bc10eb38526edb1"
+  accepted_task_0039_truth: "dd633b13910550d11bc9616a3f87b457c8810dfc"
+  intervening_changes_touching_task_0038_audited_active_surfaces: false
+  intervening_changed_surfaces:
+    - .agent/tasks/TASK-0038/report.yaml
+    - .agent/tasks/TASK-0039/report.yaml
+    - .agent/tasks/TASK-0039/review.yaml
+    - .agent/tasks/TASK-0039/task.yaml
+    - CONSTITUTION.md
+    - OBJECTIVE.md
+  glossary_audit_terms: 85
+  glossary_unique_unowned_terms: 0
+  result: PASS
+
+implementation:
+  commit: "f54eb0e36e828276e1fa7e527c793c11f00cca7d"
+  parent: "0e09c23071e53a9cf3167f1db6ad5daee1353199"
+  message: "impl(TASK-0040): subtract legacy repository roots"
+  commits_ahead_of_base: 1
+  deletion_count: 24
+  deleted_paths:
+    - spec/00-PRODUCT.md
+    - spec/01-LEARNER-MODEL.md
+    - spec/02-IELTS-MODEL.md
+    - spec/03-SKILLS.md
+    - spec/04-KNOWLEDGE.md
+    - spec/05-BANDS.md
+    - spec/06-CURRICULUM.md
+    - spec/07-PRACTICE.md
+    - spec/08-ASSESSMENT.md
+    - spec/09-PROGRESSION.md
+    - spec/10-CONTENT-MODEL.md
+    - spec/11-GLOSSARY.md
+    - spec/DECISIONS.md
+    - design/00-learning-experience.md
+    - design/01-skill-features.md
+    - design/02-practice-catalog.md
+    - design/03-media-youtube.md
+    - design/04-application-flows.md
+    - design/05-api.md
+    - design/06-implementation-stack.md
+    - design/07-third-party-services.md
+    - design/08-coverage-and-support.md
+    - research/learning-science-baseline.md
+    - evidence/2026-08-22-ielts-official-baseline.md
+  edited_paths:
+    - path: services/core-api/internal/planner/kernel.go
+      classification: SEMANTICS_NEUTRAL_PROVENANCE_REPOINT
+      change: >-
+        Repointed CoverageProvenanceVersion from the deleted design owner to
+        docs/product/curriculum-and-coverage.md@7d8dc6a2c454a86542b35122c8012cb0bd871fb9.
+    - path: tools/affected/classifier.py
+      classification: STALE_POLICY_REMOVAL
+      change: >-
+        Removed only the stale design/ and spec/ critical prefixes; unknown paths still force full verification.
+    - path: tools/affected/test_classifier.py
+      classification: FIXTURE_REHOME
+      change: >-
+        Replaced synthetic evidence/new-note.md unknown-path fixtures with legacy/new-note.md.
+    - path: tools/canonical/test_materialize.py
+      classification: FIXTURE_REHOME
+      change: >-
+        Replaced deleted-root synthetic authority/revision fixtures with archive/fake.md and docs/a.md/docs/b.md
+        while preserving the validator and determinism test intent.
+  total_changed_files: 28
+  allowed_changed_files_only: true
+  replacement_archive_or_history_tree_created: false
+  product_semantics_changed: false
+  runtime_provider_behavior_changed: false
+  standards_claims_changed: false
+
+post_candidate_revalidation:
+  legacy_roots_absent:
+    spec: true
+    design: true
+    research: true
+    evidence: true
+  audited_active_reference_edits_resolved: true
+  source_map_allowlisted_roots:
+    - docs
+  source_map_forbidden_authority_sources:
+    - spec
+    - design
+    - research
+    - evidence
+    - archive
+  source_map_registry_owners_all_under_docs: true
+  docs_tree_unchanged_from_base: true
+  docs_tree_sha: "49b98199d96b03f5c6ffb250fd3e7cc7e876f0ac"
+  official_ielts_provenance_acknowledgement_unchanged: true
+  official_ielts_recheck_date: "2026-08-22"
+  constitution_unchanged: true
+  objective_unchanged: true
+  workflow_candidate_blob_unchanged: true
+  workflow_blob_sha: "05b76baddeba8aaefeb7784b8d8e8708426c1817"
+  result: PASS
+
+verification_boundary:
+  candidate: "f54eb0e36e828276e1fa7e527c793c11f00cca7d"
+  boundary: "3133216157a8c880b0473656067f5a05fe78b66e"
+  boundary_parent_is_candidate: true
+  changed_files:
+    - .github/verification-boundary/candidate
+  changed_file_count: 1
+  sentinel_value: "f54eb0e36e828276e1fa7e527c793c11f00cca7d"
+  exact_sentinel_only_child: true
+  workflow_modified: false
+
+authoritative_verification:
+  required: true
+  performed: true
+  provider: GitHub Actions
+  workflow: verify
+  run_id: 33586967402
+  run_number: 7
+  run_attempt: 1
+  trigger: push
+  head_sha: "3133216157a8c880b0473656067f5a05fe78b66e"
+  matching_push_run_count: 1
+  exact_candidate_binding: PASS
+  detached_candidate_checkout: PASS
+  exact_candidate_head_assertion: PASS
+  command: ./verify
+  command_result: PASS
+  run_result: PASS
+  evidence: >-
+    The single permitted push-triggered verify run bound boundary
+    3133216157a8c880b0473656067f5a05fe78b66e to its exact parent candidate
+    f54eb0e36e828276e1fa7e527c793c11f00cca7d, checked out that candidate detached,
+    asserted the exact candidate HEAD, and completed ./verify successfully.
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Exact base enumeration contained 24 files across spec/**, design/**, research/**, and evidence/**;
+      the candidate top-level tree contains none of those roots and creates no replacement archive/history tree.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      Base-to-candidate is exactly one commit with exactly 28 changed files: the 24 authorized deletions
+      plus the four authorized semantics-neutral reference/policy/fixture edits and no other file.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      spec/11-GLOSSARY.md was deleted after the accepted TASK-0039 85-term audit established zero unique
+      unowned terms; no glossary replacement or new terminology authority was created.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      Canonical docs, CONSTITUTION.md, OBJECTIVE.md, source-map authority policy, and the official IELTS
+      provenance acknowledgement remain unchanged; source-map owners remain docs-only.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      Exactly one GitHub Actions verify run was triggered through the sentinel-only boundary and it PASSed
+      the exact immutable candidate, including ./verify.
+  - criterion_id: AC-6
+    status: PASS
+    evidence: >-
+      Lineage before report publication is exact base -> one implementation candidate -> one sentinel-only
+      child. This canonical report is published as the direct report-only child of that sentinel; the report
+      commit SHA is resolved by the GitHub publication response.
+
+publication:
+  implementation_commit_published: true
+  verification_boundary_child_published: true
+  report_only_child: true
+  report_parent: "3133216157a8c880b0473656067f5a05fe78b66e"
+  report_path: .agent/tasks/TASK-0040/report.yaml
+  report_commit_sha: "resolved by GitHub publication response"
+  main_before_report: "e707aeee43411cc8f99448b63220eb8beff552b6"
+  main_changed: false
+  topology_before_report:
+    - dev
+    - main
+  topology_changed: false
+  branch_or_pr_created: false
+  promotion_performed: false
+  release_performed: false
+
+local_hygiene:
+  result: PASS
+  local_checkout_created: false
+  temporary_branch_created: false
+  retained_temporary_artifacts: []
+  evidence: >-
+    Execution used GitHub repository objects and refs only; no local checkout, worktree, or temporary execution branch was created.
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+result: NEEDS_REVIEW
+
+next_action:
+  status: NEEDS_REVIEW
+  instruction: >-
+    Review the exact immutable candidate, single successful verification boundary, and this canonical report.
+    Do not promote main or perform release actions from this execution phase.
