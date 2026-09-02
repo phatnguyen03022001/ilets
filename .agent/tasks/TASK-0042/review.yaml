@@ -1,0 +1,119 @@
+protocol_version: 3
+
+task_id: TASK-0042
+task_revision: 3
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0042/report.yaml
+  commit: "47ebfba07008de394786f88c23177025fdf6497b"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+operational_timing:
+  started_at_utc: "2026-09-02T17:49:16Z"
+  terminal_decision_at_utc: "2026-09-02T17:50:48Z"
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Candidate c78f39540aab419c2b108c29b965f17c6290defa adds only the authorized dedicated
+      R-F05, PM-R04, and IELTS-R-QF-05 materializer anchors plus the authorized source-map
+      routing. The exact detached candidate passed 11 canonical materializer tests and the
+      full repository-native verification path; tools/canonical/materialize.py is absent from
+      the candidate file list and was not changed.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      The candidate adds exactly services/core-api/internal/bootstrap/reading-assessment-002.json
+      with revision reading-bootstrap-assessment-002-r1, original repository-owned synthetic
+      Matching Headings material, and the required R-F05/PM-R04/PT-13/R-QT-01/IELTS-R-QF-05/
+      CTX-READING-ACADEMIC/AT-02/ASSESSMENT/ASSESSMENT_MAY_ADMIT binding. Authoritative verify
+      seeded assessment-002 successfully and repeatedly while preserving assessment-001 lineage.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      Candidate planner, SQL, integration, and E2E changes implement exact-revision fresh supply.
+      Authoritative verify passed focused Go integration and Playwright evidence showing
+      assessment-001 first, assessment-002 next, and FreshSampleContentGap only after bounded
+      eligible unseen sampled supply is exhausted.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      The authorized SQL and planner path recheck exact revision eligibility and retain duplicate
+      protection for the same revision while allowing another fresh eligible revision. The exact
+      candidate passed the repository DB/integration verification path.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      The candidate derives sampled assessment evidence scope from validated assigned content.
+      Executor evidence and the exact candidate changes preserve assessment-001 scope at
+      R-QT-02/R-QT-03, assessment-002 scope at R-QT-01/IELTS-R-QF-05, BroaderClaimEvaluated=false,
+      and introduce no Band, readiness, mastery, weakness, or broader Reading inference.
+  - criterion_id: AC-6
+    status: PASS
+    evidence: >-
+      Authoritative run 33659963949 on the exact detached candidate passed canonical generation,
+      generated binding checks, Prettier, ESLint with zero errors, TypeScript, Vitest 13/13,
+      Go checks, DB verification, Playwright 1/1, and production build. Generated registry, trace,
+      and sqlc files are present only as authorized deterministic outputs; no public OpenAPI
+      semantic change was required.
+  - criterion_id: AC-7
+    status: PASS
+    evidence: >-
+      The exact candidate E2E explicitly verifies Recommended next Headings & Structure after the
+      first sampled submission, assignment of reading-bootstrap-assessment-002-r1 with PM-R04 and
+      R-QT-01, learner-safe projection without answer leakage, and the content_assets blocker only
+      after the second bounded sample is consumed. Authoritative Playwright completed 1/1 PASS.
+  - criterion_id: AC-8
+    status: PASS
+    evidence: >-
+      Sentinel fd7ae61e4a862eb2379080bcccf400809228ca8e is a one-file direct child changing only
+      .github/verification-boundary/candidate to c78f39540aab419c2b108c29b965f17c6290defa.
+      GitHub Actions verify run 33659963949, run #13 attempt 1, bound that exact candidate,
+      checked it out detached, asserted exact HEAD, ran full ./verify, and concluded success.
+  - criterion_id: AC-9
+    status: PASS
+    evidence: >-
+      Report commit 47ebfba07008de394786f88c23177025fdf6497b is the direct child of successful
+      sentinel fd7ae61e4a862eb2379080bcccf400809228ca8e and changes only
+      .agent/tasks/TASK-0042/report.yaml. The report is protocol v3, task revision 3,
+      report revision 1, and remains Executor-owned NEEDS_REVIEW evidence as required.
+
+gap_disposition:
+  - gap_id: CANONICAL_MATERIALIZER_SECTION_AMBIGUITY
+    classification: RESOLVED
+    disposition: ACCEPTED
+
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: >-
+    TASK-0042 accepts only the bounded fresh sampled Reading continuation and its exact verified
+    lineage. This review grants no main mutation, promotion, tagging, release, deployment, or
+    follow-on product authority.
+
+notes:
+  - "Fresh pre-review refs were dev=47ebfba07008de394786f88c23177025fdf6497b and main=e707aeee43411cc8f99448b63220eb8beff552b6 with topology exactly {dev, main}."
+  - "Architect independently inspected the exact task, candidate, sentinel-only boundary, report-only commit, workflow run metadata, job steps, and decoded authoritative ./verify logs rather than relying on the Executor report alone."
+  - "The report branch role label 'integration' differs from the task's descriptive role label 'primary-development'; the exact branch identity is dev in both artifacts and no authority, base, scope, or acceptance predicate depends on that descriptive label, so this is non-blocking presentation drift rather than a contract failure."
+  - "No Codex use occurred in TASK-0042 revision 3; the task-required Agent Runtime execution path and single authoritative GitHub Actions proof were satisfied."
