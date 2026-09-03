@@ -1,0 +1,164 @@
+protocol_version: 3
+
+task_id: TASK-0045
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: continuation
+  task_id: TASK-0044
+  gap_id: GOV-E2_IELTS_PM_L02_PILOT
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "9e8add0ef47fb3d7797c6a4da4f45ceb78c4030e"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "docs/behavior/practice-and-media.md@1a33e0466a2416a7d1afcf71d604de9fdbb3f9a0"
+    role: "Current canonical PM-L02 Gist Sprint and PT-12 practice semantics."
+    precedence: 1
+  - source: "docs/BEHAVIOR.md@1a33e0466a2416a7d1afcf71d604de9fdbb3f9a0"
+    role: "Current canonical FTR-009 Gist & Main-Idea Drill and training/evidence behavior."
+    precedence: 2
+  - source: ".agent/tasks/TASK-0044/review.yaml@1a33e0466a2416a7d1afcf71d604de9fdbb3f9a0"
+    role: "Accepted current Listening Core/API training boundary and regression evidence."
+    precedence: 3
+  - source: "docs/PRODUCT.md@1a33e0466a2416a7d1afcf71d604de9fdbb3f9a0"
+    role: "Current product truth and evidence/variant/provider boundaries."
+    precedence: 4
+
+structure_authority:
+  status: NOT_APPLICABLE
+  source: ""
+  rationale: "No new material ownership, component, public/shared contract, or cross-component structure is authorized. Executor may choose local internal structure inside the existing Listening training component under the pinned protocol."
+
+objective: >-
+  Materialize one real executable PM-L02 Gist Sprint TRAINING activity inside the existing Listening Core/API practice route, using the already-canonical PM-L02 -> PT-12 and FTR-009 meaning, so a learner can perform bounded main-idea/discourse listening practice without creating Assessment evidence or changing existing public/data/ownership boundaries.
+
+scope:
+  required_changes:
+    - "Make one PM-L02 Gist Sprint activity executable through the existing authenticated learner practice route for both current IELTS variants where Listening is shared."
+    - "Preserve PM-L02 as main-idea/discourse practice backed by PT-12 and FTR-009; do not reinterpret it as detail/completion, diagnostic, assessment, or readiness work."
+    - "Use existing eligible Listening content/media and existing learner ownership/public activity semantics; no new media/provider/storage/public-API contract is authorized."
+    - "TRAINING completion may create the normal Attempt/Observation consequence only; it creates zero EvidenceFact and no Band/readiness/mastery/weakness, GapEvaluation, Progression, or Planner consequence."
+    - "Preserve the accepted PM-L03 Listening slice and existing Reading behavior."
+    - "Executor resolves local files, internal helpers/modules, materialization mechanics, test companions, and repository-native verification from current repository patterns."
+  allowed_existing_files_or_components:
+    - "existing Listening Core/API training component"
+    - "canonical practice/materialization ownership surfaces"
+    - "existing learner activity/media contract implementation"
+    - "repository-native verification companions"
+
+invariants:
+  - "PM-L02 remains the canonical Gist Sprint identity and PT-12 remains its canonical backing."
+  - "Listening remains shared across Academic and General Training; no synthetic SHARED TestVariant is introduced."
+  - "TRAINING is not Assessment evidence."
+  - "Existing public API, learner ownership, persistence model, provider/storage boundaries, and cross-component ownership do not change."
+  - "Executor discretion may change local HOW but not these material consequences."
+
+forbidden_changes:
+  - "Do not add or change public API semantics, persistence schema/meaning, authentication/authorization ownership, media/provider/storage architecture, Assessment/Evidence admission, Progression/Planner semantics, or cross-component ownership."
+  - "Do not redesign PM-L02, PT-12, FTR-009, PM-L03, Reading, TargetProfile, or the practice catalog."
+  - "Do not modify main, create staging, add dependencies without material authority, or mutate agent-* repositories or architect-profile."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+  REVIEW:
+    - exact_commit_report_resolution
+    - repository_content_write
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "PM-L02 is a real executable Gist Sprint under canonical Listening semantics."
+    evidence_required: "Exact candidate evidence proves PM-L02 resolves to the existing Gist Sprint/PT-12/FTR-009 meaning and can be assigned and completed as real learner work rather than a catalog-only identity."
+  - id: AC-2
+    requirement: "The activity stays inside existing learner/public/data boundaries."
+    evidence_required: "Academic and General Training learners can use the bounded activity through existing authenticated ownership/activity semantics, with eligible Listening content and no new public contract, persistence meaning, provider/storage boundary, or cross-component owner."
+  - id: AC-3
+    requirement: "TRAINING consequence remains observation-only."
+    evidence_required: "Completion records the authorized Attempt/Observation scope and creates zero EvidenceFact plus no Assessment, Progression, GapEvaluation, Band/readiness/mastery/weakness, or Planner consequence."
+  - id: AC-4
+    requirement: "Existing Listening and Reading behavior regressions remain intact while local implementation HOW stays Executor-owned."
+    evidence_required: "Repository-native tests prove PM-L03 and existing Reading behavior remain unchanged; any necessary local companion surfaces are reported rather than treated as automatic revision triggers."
+  - id: AC-5
+    requirement: "The exact implementation candidate has reproducible repository proof."
+    evidence_required: "Full repository-native verification and the existing authoritative GitHub verification path PASS for the same exact candidate without workflow mutation; report binds exact task/base/candidate/proof and stops at NEEDS_REVIEW."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Resolve TASK-0045 revision 1 at exact handoff base, require current topology {dev, main}, main unchanged, pinned agent-skills authority, and required capabilities before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Inspect current Listening/practice/materialization/test patterns, then choose the smallest sufficient repo-native HOW inside the material boundary."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Prove AC-1..AC-4 with focused tests and run the repository full verification on the exact candidate; fail closed if implementation requires a material boundary change."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Publish the exact candidate to dev and obtain the existing repository-authoritative verification signal for that exact candidate using current repo-native verification mechanics; do not mutate verification workflow merely to obtain PASS."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Publish the canonical report only after exact-candidate proof, verify final refs/topology and unchanged main, then stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: true
+    mechanism: "Existing repository-authoritative verification path for the exact implementation candidate."
+    expected_signal: "The repository's current authoritative full verification completes successfully for the exact candidate SHA."
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
