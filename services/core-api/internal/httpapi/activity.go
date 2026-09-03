@@ -18,6 +18,7 @@ func (s *Server) listPracticeModes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, public.PracticeModeList{Modes: []public.PracticeMode{
+		{PracticeModeId: "PM-L02", Label: "Gist Sprint", PracticeTypeIds: []public.CanonicalId{"PT-12"}, DurationLabel: "3–6 min"},
 		{PracticeModeId: "PM-L03", Label: "Detail & Completion", PracticeTypeIds: []public.CanonicalId{"PT-13"}, DurationLabel: "5–10 min"},
 		{PracticeModeId: "PM-R03", Label: "T/F/NG + Y/N/NG", PracticeTypeIds: []public.CanonicalId{"PT-13", "PT-16"}, DurationLabel: "6–12 min"},
 		{PracticeModeId: "PM-R04", Label: "Headings & Structure", PracticeTypeIds: []public.CanonicalId{"PT-13"}, DurationLabel: "6–12 min"},
@@ -47,8 +48,8 @@ func (s *Server) createPracticeActivity(w http.ResponseWriter, r *http.Request, 
 		s.createPlannedAssessmentActivity(w, r, learner, key, body)
 		return
 	}
-	if string(*body.PracticeModeId) != "PM-R03" && string(*body.PracticeModeId) != "PM-L03" {
-		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "this bounded runtime currently assigns only PM-R03 or PM-L03 directly")
+	if string(*body.PracticeModeId) != "PM-R03" && !isListeningPracticeMode(string(*body.PracticeModeId)) {
+		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "this bounded runtime currently assigns only PM-R03, PM-L02, or PM-L03 directly")
 		return
 	}
 	s.createDirectTrainingActivity(w, r, learner, key, body)
@@ -81,7 +82,7 @@ func (s *Server) createDirectTrainingActivity(w http.ResponseWriter, r *http.Req
 		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "this bounded Reading content is Academic-only")
 		return
 	}
-	if mode == "PM-L03" && *profile.TestVariant.Value != public.TestVariant("Academic") && *profile.TestVariant.Value != public.TestVariant("General Training") {
+	if isListeningPracticeMode(mode) && *profile.TestVariant.Value != public.TestVariant("Academic") && *profile.TestVariant.Value != public.TestVariant("General Training") {
 		writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "this bounded Listening content requires an Academic or General Training TargetProfile")
 		return
 	}
@@ -116,17 +117,30 @@ func (s *Server) createDirectTrainingActivity(w http.ResponseWriter, r *http.Req
 	queries := sqlcdb.New(tx)
 	var revisionID string
 	var semanticPayload []byte
-	if mode == "PM-L03" {
-		assignable, assignErr := queries.GetAssignableListeningContentRevision(r.Context(), dbVariant)
-		if errors.Is(assignErr, pgx.ErrNoRows) {
-			writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "validated bootstrap content is not currently assignable")
-			return
+	if isListeningPracticeMode(mode) {
+		if mode == "PM-L03" {
+			assignable, assignErr := queries.GetAssignableListeningContentRevision(r.Context(), dbVariant)
+			if errors.Is(assignErr, pgx.ErrNoRows) {
+				writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "validated bootstrap content is not currently assignable")
+				return
+			}
+			if assignErr != nil {
+				writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve assignable content")
+				return
+			}
+			revisionID, semanticPayload = assignable.RevisionID, assignable.SemanticPayload
+		} else {
+			assignable, assignErr := queries.GetAssignableListeningGistContentRevision(r.Context(), dbVariant)
+			if errors.Is(assignErr, pgx.ErrNoRows) {
+				writeError(w, r, http.StatusUnprocessableEntity, "SEMANTIC_PRECONDITION_FAILED", "validated bootstrap content is not currently assignable")
+				return
+			}
+			if assignErr != nil {
+				writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve assignable content")
+				return
+			}
+			revisionID, semanticPayload = assignable.RevisionID, assignable.SemanticPayload
 		}
-		if assignErr != nil {
-			writeError(w, r, http.StatusServiceUnavailable, "DATABASE_UNAVAILABLE", "cannot resolve assignable content")
-			return
-		}
-		revisionID, semanticPayload = assignable.RevisionID, assignable.SemanticPayload
 	} else {
 		assignable, assignErr := queries.GetAssignableContentRevision(r.Context(), learner)
 		if errors.Is(assignErr, pgx.ErrNoRows) {
@@ -147,6 +161,8 @@ func (s *Server) createDirectTrainingActivity(w http.ResponseWriter, r *http.Req
 	id := newID("activity_")
 	if mode == "PM-L03" {
 		err = queries.InsertListeningPracticeActivity(r.Context(), sqlcdb.InsertListeningPracticeActivityParams{PracticeActivityID: id, LearnerID: learner, ContentRevisionID: revisionID, TestVariant: dbVariant})
+	} else if mode == "PM-L02" {
+		err = queries.InsertListeningGistPracticeActivity(r.Context(), sqlcdb.InsertListeningGistPracticeActivityParams{PracticeActivityID: id, LearnerID: learner, ContentRevisionID: revisionID, TestVariant: dbVariant})
 	} else {
 		err = queries.InsertPracticeActivity(r.Context(), sqlcdb.InsertPracticeActivityParams{PracticeActivityID: id, LearnerID: learner, ContentRevisionID: revisionID})
 	}
@@ -399,13 +415,13 @@ func safeActivity(id, revision string, assigned time.Time, storedVariant string,
 		testVariant = public.TestVariant("General Training")
 	}
 	presentationReason := "No additional material presentation class is defined for this bounded Reading content."
-	if content["practice_mode_id"] == "PM-L03" {
+	if isListeningContent(content) {
 		presentationReason = "No additional material presentation class is defined for this bounded Listening content."
 	}
 	purpose := public.ActivityPurpose(content["primary_activity_purpose"].(string))
 	candidacy := public.EvidenceCandidacy(content["evidence_candidacy"].(string))
 	deliveryReason := "This bounded Reading activity has no delivery-mode-specific interaction."
-	if content["practice_mode_id"] == "PM-L03" {
+	if isListeningContent(content) {
 		deliveryReason = "This bounded Listening activity has no delivery-mode-specific interaction."
 	}
 	assistance := []public.ConditionFact{}
@@ -474,7 +490,19 @@ func dbTestVariant(variant public.TestVariant) string {
 
 func stringValuePointer[T ~string](value T) *T { return &value }
 
+func isListeningPracticeMode(mode string) bool {
+	return mode == "PM-L02" || mode == "PM-L03"
+}
+
+func isListeningContent(content map[string]any) bool {
+	featureID, _ := content["feature_id"].(string)
+	return featureID == "L-F03" || featureID == "L-F04"
+}
+
 func validBootstrapContent(content map[string]any) bool {
+	if content["feature_id"] == "L-F03" {
+		return validListeningGistBootstrapContent(content)
+	}
 	if content["feature_id"] == "L-F04" {
 		return validListeningBootstrapContent(content)
 	}
@@ -482,6 +510,34 @@ func validBootstrapContent(content map[string]any) bool {
 		return false
 	}
 	return validBootstrapItems(content)
+}
+
+func validListeningGistBootstrapContent(content map[string]any) bool {
+	if content["feature_id"] != "L-F03" || content["practice_mode_id"] != "PM-L02" || content["content_context_id"] != "CTX-LISTENING-SHARED" || content["primary_activity_purpose"] != "TRAINING" || content["evidence_candidacy"] != "NOT_EVIDENCE_CANDIDATE" {
+		return false
+	}
+	if _, present := content["test_variant"]; present {
+		return false
+	}
+	if !sameStringsFromAny(content["practice_type_ids"], []string{"PT-12"}) || !sameStringsFromAny(content["skill_target_ids"], []string{"L-COMP-01"}) || !sameStringsFromAny(content["official_family_ids"], []string{"IELTS-L-QF-01"}) || !sameStringsFromAny(content["applicable_test_variants"], []string{"ACADEMIC", "GENERAL_TRAINING"}) {
+		return false
+	}
+	stimulus, ok := content["stimulus"].(map[string]any)
+	if !ok || stimulus["title"] != "Marsha introduction" || stimulus["media_reference"] != "hello-this-is-marsha" {
+		return false
+	}
+	if _, present := stimulus["text"]; present {
+		return false
+	}
+	items, ok := content["items"].([]any)
+	if !ok || len(items) != 1 {
+		return false
+	}
+	item, ok := items[0].(map[string]any)
+	if !ok || len(item) != 6 || item["item_id"] != "listening_gist_001" || item["official_family_id"] != "IELTS-L-QF-01" || item["statement"] != "What is the recording mainly about?" || !sameStringsFromAny(item["choices"], []string{"Introducing Marsha", "Ordering a meal", "Making a travel plan"}) || item["correct_choice"] != "Introducing Marsha" || item["explanation"] != "The speakers identify and greet Marsha." {
+		return false
+	}
+	return true
 }
 
 func validListeningBootstrapContent(content map[string]any) bool {
@@ -521,7 +577,7 @@ func sameStringsFromAny(raw any, want []string) bool {
 }
 
 func learnerStimulus(revision string, content, stimulus map[string]any) []public.LearnerStimulusBlock {
-	if content["practice_mode_id"] == "PM-L03" {
+	if isListeningContent(content) {
 		mediaReference := public.ResourceId(stimulus["media_reference"].(string))
 		return []public.LearnerStimulusBlock{{StimulusId: revision + ":stimulus:1", Kind: public.LearnerStimulusBlockKind("MEDIA_REFERENCE"), Title: stringValuePointer(stimulus["title"].(string)), MediaReference: &mediaReference}}
 	}

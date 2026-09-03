@@ -40,6 +40,12 @@ These IDs identify external exam families, not Skills, Practice Types, product f
 | `IELTS-S-P2` | Speaking Part 2 — individual long turn |
 | `IELTS-S-P3` | Speaking Part 3 — extended discussion |
 
+#### Canonical materializer anchor — Listening multiple-choice family
+
+| ID | External family |
+|---|---|
+| `IELTS-L-QF-01` | Listening — Multiple choice |
+
 #### Canonical materializer anchor — Listening completion family
 
 | ID | External family |

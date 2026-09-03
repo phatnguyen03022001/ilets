@@ -65,6 +65,12 @@ The following are intentionally not identity-level Skill authority:
 | `L-COMP-05` | Distractor management | Reject plausible but unsupported or superseded options. |
 | `L-COMP-06` | Extended academic speech | Follow dense, extended academic monologue without losing the discourse thread. |
 
+### Canonical materializer anchor — Listening main-idea capability
+
+| ID | Capability | Atomic objective |
+|---|---|---|
+| `L-COMP-01` | Main ideas / gist | Identify the central idea of spoken input. |
+
 ### Question-type strategies
 
 | ID | Capability | Atomic objective |

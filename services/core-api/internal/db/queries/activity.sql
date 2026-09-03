@@ -67,6 +67,38 @@ INSERT INTO practice_activities (
 )
 VALUES ($1, $2, $3, 'L-F04', 'PM-L03', 'TRAINING', 'NOT_EVIDENCE_CANDIDATE', $4);
 
+-- name: GetAssignableListeningGistContentRevision :one
+SELECT cr.revision_id, cr.semantic_payload
+FROM content_revisions cr
+JOIN content_use_states us ON us.content_revision_id = cr.revision_id
+JOIN validation_decisions vd ON vd.validation_decision_id = us.current_validation_decision_id
+WHERE us.assignment_eligible = true
+  AND us.operational_state = 'ACTIVE'
+  AND vd.result = 'PASS'
+  AND vd.validation_policy_version = 'bootstrap-listening-gist-v1'
+  AND cr.semantic_payload->>'feature_id' = 'L-F03'
+  AND cr.semantic_payload->>'practice_mode_id' = 'PM-L02'
+  AND cr.revision_id = 'listening-bootstrap-gist-001-r1'
+  AND cr.semantic_payload->>'primary_activity_purpose' = 'TRAINING'
+  AND cr.semantic_payload->>'evidence_candidacy' = 'NOT_EVIDENCE_CANDIDATE'
+  AND cr.semantic_payload->'applicable_test_variants' ? sqlc.arg(test_variant)::text
+ORDER BY cr.revision_id
+LIMIT 1
+FOR SHARE OF cr, us, vd;
+
+-- name: InsertListeningGistPracticeActivity :exec
+INSERT INTO practice_activities (
+  practice_activity_id,
+  learner_id,
+  content_revision_id,
+  feature_id,
+  practice_mode_id,
+  primary_activity_purpose,
+  evidence_candidacy,
+  test_variant
+)
+VALUES ($1, $2, $3, 'L-F03', 'PM-L02', 'TRAINING', 'NOT_EVIDENCE_CANDIDATE', $4);
+
 -- name: GetPracticeActivity :one
 SELECT pa.content_revision_id, pa.assigned_at, pa.test_variant, cr.semantic_payload
 FROM practice_activities pa

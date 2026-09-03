@@ -79,6 +79,18 @@ AI tutoring is delivery/runtime capability, not a Learning Mechanism, and may no
 |---|---|---:|---|---|
 | `PM-L03` | Detail & Completion | 5–10m | explicit detail/completion/word limits | `PT-13`, `PT-19` |
 
+### Canonical materializer anchor — Listening gist speed practice type
+
+| ID | Type | Primary / supported phases | Mode / scope | Typical mechanisms | Canonical target role |
+|---|---|---|---|---|---|
+| `PT-12` | Skim/scan/gist-detail speed drill | Fl / Aq,Fl | timed listening/reading | `LM-04`, `LM-12` | selective receptive processing |
+
+### Canonical materializer anchor — Listening gist sprint mode
+
+| ID | Mode | Default duration | Learning role | Typical canonical backing |
+|---|---|---:|---|---|
+| `PM-L02` | Gist Sprint | 3–6m | main idea/discourse | `PT-12` |
+
 Concrete binding resolves target families to explicit stable Skill/Knowledge IDs before execution/evidence recording.
 
 ## Gap-to-practice selection

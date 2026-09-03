@@ -46,6 +46,12 @@ Presents bounded listening segments for detail discrimination, segmentation, spe
 
 Trains rapid identification of topic, purpose, speaker intent, and main idea from eligible listening material. Feedback remains scoped to the observed gist/discourse target and does not imply broader Listening readiness.
 
+#### Canonical materializer anchor — Listening gist feature
+
+| ID | Feature | Learner experience | Primary output |
+|---|---|---|---|
+| `L-F03` | Gist & Main-Idea Drill | trains rapid identification of topic, purpose, speaker intent, and main idea from eligible listening material | bounded Listening observation |
+
 ### FTR-010 L-F04 — Detail & Completion Drill
 
 Exercises explicit detail extraction, completion constraints, and word-limit control against eligible listening content. Attempt results remain bounded observations until normal Assessment admission gives them evidence consequence.

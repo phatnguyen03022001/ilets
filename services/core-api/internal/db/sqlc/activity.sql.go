@@ -80,6 +80,38 @@ func (q *Queries) GetAssignableListeningContentRevision(ctx context.Context, tes
 	return i, err
 }
 
+const getAssignableListeningGistContentRevision = `-- name: GetAssignableListeningGistContentRevision :one
+SELECT cr.revision_id, cr.semantic_payload
+FROM content_revisions cr
+JOIN content_use_states us ON us.content_revision_id = cr.revision_id
+JOIN validation_decisions vd ON vd.validation_decision_id = us.current_validation_decision_id
+WHERE us.assignment_eligible = true
+  AND us.operational_state = 'ACTIVE'
+  AND vd.result = 'PASS'
+  AND vd.validation_policy_version = 'bootstrap-listening-gist-v1'
+  AND cr.semantic_payload->>'feature_id' = 'L-F03'
+  AND cr.semantic_payload->>'practice_mode_id' = 'PM-L02'
+  AND cr.revision_id = 'listening-bootstrap-gist-001-r1'
+  AND cr.semantic_payload->>'primary_activity_purpose' = 'TRAINING'
+  AND cr.semantic_payload->>'evidence_candidacy' = 'NOT_EVIDENCE_CANDIDATE'
+  AND cr.semantic_payload->'applicable_test_variants' ? $1::text
+ORDER BY cr.revision_id
+LIMIT 1
+FOR SHARE OF cr, us, vd
+`
+
+type GetAssignableListeningGistContentRevisionRow struct {
+	RevisionID      string
+	SemanticPayload []byte
+}
+
+func (q *Queries) GetAssignableListeningGistContentRevision(ctx context.Context, testVariant string) (GetAssignableListeningGistContentRevisionRow, error) {
+	row := q.db.QueryRow(ctx, getAssignableListeningGistContentRevision, testVariant)
+	var i GetAssignableListeningGistContentRevisionRow
+	err := row.Scan(&i.RevisionID, &i.SemanticPayload)
+	return i, err
+}
+
 const getFreshSampledReadingAssessmentForPlanning = `-- name: GetFreshSampledReadingAssessmentForPlanning :one
 SELECT
   cr.revision_id,
@@ -335,6 +367,37 @@ func (q *Queries) InsertBoundedAssessmentPracticeActivity(ctx context.Context, a
 	var assigned_at pgtype.Timestamptz
 	err := row.Scan(&assigned_at)
 	return assigned_at, err
+}
+
+const insertListeningGistPracticeActivity = `-- name: InsertListeningGistPracticeActivity :exec
+INSERT INTO practice_activities (
+  practice_activity_id,
+  learner_id,
+  content_revision_id,
+  feature_id,
+  practice_mode_id,
+  primary_activity_purpose,
+  evidence_candidacy,
+  test_variant
+)
+VALUES ($1, $2, $3, 'L-F03', 'PM-L02', 'TRAINING', 'NOT_EVIDENCE_CANDIDATE', $4)
+`
+
+type InsertListeningGistPracticeActivityParams struct {
+	PracticeActivityID string
+	LearnerID          string
+	ContentRevisionID  string
+	TestVariant        string
+}
+
+func (q *Queries) InsertListeningGistPracticeActivity(ctx context.Context, arg InsertListeningGistPracticeActivityParams) error {
+	_, err := q.db.Exec(ctx, insertListeningGistPracticeActivity,
+		arg.PracticeActivityID,
+		arg.LearnerID,
+		arg.ContentRevisionID,
+		arg.TestVariant,
+	)
+	return err
 }
 
 const insertListeningPracticeActivity = `-- name: InsertListeningPracticeActivity :exec

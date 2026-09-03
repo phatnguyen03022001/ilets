@@ -30,7 +30,7 @@ func (s *Server) getPracticeActivityMedia(w http.ResponseWriter, r *http.Request
 		return
 	}
 	var content map[string]any
-	if row.ContentRevisionID != "listening-bootstrap-completion-001-r1" || json.Unmarshal(row.SemanticPayload, &content) != nil || !validListeningBootstrapContent(content) {
+	if (row.ContentRevisionID != "listening-bootstrap-completion-001-r1" && row.ContentRevisionID != "listening-bootstrap-gist-001-r1") || json.Unmarshal(row.SemanticPayload, &content) != nil || !isListeningContent(content) || !validBootstrapContent(content) {
 		writeError(w, r, http.StatusNotFound, "NOT_FOUND", "resource not found")
 		return
 	}

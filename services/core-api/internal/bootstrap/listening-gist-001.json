@@ -1,0 +1,46 @@
+{
+  "content_id": "listening-bootstrap-gist-001",
+  "revision_id": "listening-bootstrap-gist-001-r1",
+  "provenance": {
+    "source_page": "https://commons.wikimedia.org/wiki/File:Hello._This_is_Marsha._-_Yes,_Marsha.ogg",
+    "source_file": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Hello._This_is_Marsha._-_Yes%2C_Marsha.ogg",
+    "title": "Hello. This is Marsha. - Yes, Marsha.ogg",
+    "provider": "VOA Learning English",
+    "rights_basis": "Wikimedia Commons Public Domain Mark; VOA Learning English public-domain basis",
+    "media_type": "audio/ogg",
+    "byte_length": 54891,
+    "sha256": "1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765"
+  },
+  "validation": {
+    "decision_id": "vd_bootstrap_listening_gist_v1",
+    "policy_version": "bootstrap-listening-gist-v1",
+    "intended_use": "TRAINING_LOW_CONSEQUENCE",
+    "result": "PASS",
+    "findings": ["canonical_refs_valid", "structure_executable", "shared_listening_context", "public_domain_media_attributed", "answer_key_complete", "learner_projection_hides_answers", "deterministic_choice_scoring_consistent"]
+  },
+  "semantic_payload": {
+    "feature_id": "L-F03",
+    "practice_mode_id": "PM-L02",
+    "practice_type_ids": ["PT-12"],
+    "skill_target_ids": ["L-COMP-01"],
+    "official_family_ids": ["IELTS-L-QF-01"],
+    "content_context_id": "CTX-LISTENING-SHARED",
+    "primary_activity_purpose": "TRAINING",
+    "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
+    "applicable_test_variants": ["ACADEMIC", "GENERAL_TRAINING"],
+    "stimulus": {
+      "title": "Marsha introduction",
+      "media_reference": "hello-this-is-marsha"
+    },
+    "items": [
+      {
+        "item_id": "listening_gist_001",
+        "official_family_id": "IELTS-L-QF-01",
+        "statement": "What is the recording mainly about?",
+        "choices": ["Introducing Marsha", "Ordering a meal", "Making a travel plan"],
+        "correct_choice": "Introducing Marsha",
+        "explanation": "The speakers identify and greet Marsha."
+      }
+    ]
+  }
+}

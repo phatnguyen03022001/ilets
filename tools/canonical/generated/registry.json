@@ -1,12 +1,12 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:e32dc488dba4971a48ff653e5f7265474faa622854fffeb8a04e05351964caa7",
+  "canonical_source_revision": "canonical-source-revision/v1:63ab4bc8dd5b6666eb48b1ace15b4711c977f114d790acc95c58dbeacabe22cf",
   "entries": [
     {
       "cells": [],
       "id": "ASSESSMENT",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -17,7 +17,7 @@
       "cells": [],
       "id": "TRAINING",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -72,7 +72,7 @@
       "cells": [],
       "id": "ASSESSMENT_MAY_ADMIT",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
@@ -83,12 +83,27 @@
       "cells": [],
       "id": "NOT_EVIDENCE_CANDIDATE",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
       },
       "type": "evidence_candidacy"
+    },
+    {
+      "cells": [
+        "Gist & Main-Idea Drill",
+        "trains rapid identification of topic, purpose, speaker intent, and main idea from eligible listening material",
+        "bounded Listening observation"
+      ],
+      "id": "L-F03",
+      "source": {
+        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
+        "owner": "docs/BEHAVIOR.md",
+        "parent_section": null,
+        "section": "#### Canonical materializer anchor \u2014 Listening gist feature"
+      },
+      "type": "feature"
     },
     {
       "cells": [
@@ -98,7 +113,7 @@
       ],
       "id": "L-F04",
       "source": {
-        "git_blob": "e404662a1ecf78826d11d8c45051be8b2a8e395e",
+        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Listening detail and completion feature"
@@ -113,7 +128,7 @@
       ],
       "id": "R-F04",
       "source": {
-        "git_blob": "e404662a1ecf78826d11d8c45051be8b2a8e395e",
+        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "### FTR-018 R-F04 \u2014 T/F/NG + Y/N/NG Lab"
@@ -128,7 +143,7 @@
       ],
       "id": "R-F05",
       "source": {
-        "git_blob": "e404662a1ecf78826d11d8c45051be8b2a8e395e",
+        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading headings and structure feature"
@@ -137,11 +152,24 @@
     },
     {
       "cells": [
+        "Listening \u2014 Multiple choice"
+      ],
+      "id": "IELTS-L-QF-01",
+      "source": {
+        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
+        "owner": "docs/product/ielts-exam-and-bands.md",
+        "parent_section": null,
+        "section": "#### Canonical materializer anchor \u2014 Listening multiple-choice family"
+      },
+      "type": "official_family"
+    },
+    {
+      "cells": [
         "Listening \u2014 Form / note / table / flow-chart / summary completion"
       ],
       "id": "IELTS-L-QF-04",
       "source": {
-        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
+        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Listening completion family"
@@ -154,7 +182,7 @@
       ],
       "id": "IELTS-R-QF-02",
       "source": {
-        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
+        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -167,7 +195,7 @@
       ],
       "id": "IELTS-R-QF-03",
       "source": {
-        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
+        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -180,12 +208,28 @@
       ],
       "id": "IELTS-R-QF-05",
       "source": {
-        "git_blob": "c10f2368bad53c7e3240c2ed188f3dd92c2c3e57",
+        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading matching headings family"
       },
       "type": "official_family"
+    },
+    {
+      "cells": [
+        "Gist Sprint",
+        "3\u20136m",
+        "main idea/discourse",
+        "PT-12"
+      ],
+      "id": "PM-L02",
+      "source": {
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "owner": "docs/behavior/practice-and-media.md",
+        "parent_section": null,
+        "section": "### Canonical materializer anchor \u2014 Listening gist sprint mode"
+      },
+      "type": "practice_mode"
     },
     {
       "cells": [
@@ -196,7 +240,7 @@
       ],
       "id": "PM-L03",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Listening detail and completion mode"
@@ -212,7 +256,7 @@
       ],
       "id": "PM-R03",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading classification mode"
@@ -228,12 +272,29 @@
       ],
       "id": "PM-R04",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading headings and structure mode"
       },
       "type": "practice_mode"
+    },
+    {
+      "cells": [
+        "Skim/scan/gist-detail speed drill",
+        "Fl / Aq,Fl",
+        "timed listening/reading",
+        "`LM-04`, `LM-12`",
+        "selective receptive processing"
+      ],
+      "id": "PT-12",
+      "source": {
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "owner": "docs/behavior/practice-and-media.md",
+        "parent_section": null,
+        "section": "### Canonical materializer anchor \u2014 Listening gist speed practice type"
+      },
+      "type": "practice_type"
     },
     {
       "cells": [
@@ -245,7 +306,7 @@
       ],
       "id": "PT-13",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
@@ -262,7 +323,7 @@
       ],
       "id": "PT-16",
       "source": {
-        "git_blob": "db555c4deb16826a295b43e8126a2886d75b6929",
+        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
@@ -271,12 +332,26 @@
     },
     {
       "cells": [
+        "Main ideas / gist",
+        "Identify the central idea of spoken input."
+      ],
+      "id": "L-COMP-01",
+      "source": {
+        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "owner": "docs/product/skill-leaves.md",
+        "parent_section": "## Listening",
+        "section": "### Canonical materializer anchor \u2014 Listening main-idea capability"
+      },
+      "type": "skill_leaf"
+    },
+    {
+      "cells": [
         "Specific details",
         "Capture targeted factual details accurately."
       ],
       "id": "L-COMP-02",
       "source": {
-        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Listening",
         "section": "### Canonical materializer anchor \u2014 Listening specific details capability"
@@ -290,7 +365,7 @@
       ],
       "id": "L-QT-01",
       "source": {
-        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Listening",
         "section": "### Canonical materializer anchor \u2014 Listening completion question type"
@@ -304,7 +379,7 @@
       ],
       "id": "R-QT-01",
       "source": {
-        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -318,7 +393,7 @@
       ],
       "id": "R-QT-02",
       "source": {
-        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -332,7 +407,7 @@
       ],
       "id": "R-QT-03",
       "source": {
-        "git_blob": "3192de5462e57260b08a2ed6c2fdb8fc49165946",
+        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -341,5 +416,5 @@
     }
   ],
   "schema_version": 1,
-  "source_map_sha256": "e741c66eaff854798895fe310a5f09ee8e8cf422d6a84b4ded4b899b8ed68ec7"
+  "source_map_sha256": "503a33a330e72bf04fe88c913a302761fa74cb2f7c6d91b6a281ee367faa69bc"
 }
