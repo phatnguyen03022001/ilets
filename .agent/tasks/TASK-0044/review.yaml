@@ -1,0 +1,128 @@
+protocol_version: 3
+
+task_id: TASK-0044
+task_revision: 5
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/ilets
+  path: .agent/tasks/TASK-0044/report.yaml
+  commit: "898f4360edf5523c355b98651b2c98dce6866886"
+  report_revision: 2
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Immutable candidate 13b2577e02050c1f354017389a106da66de0872d preserves the exact bounded Listening binding
+      L-F04 -> PM-L03 -> PT-13 -> L-COMP-02 + L-QT-01 -> IELTS-L-QF-04 -> CTX-LISTENING-SHARED ->
+      TRAINING -> NOT_EVIDENCE_CANDIDATE. The owner-local canonical anchors create no duplicate semantic owner,
+      no L-QT-02 or IELTS-L-QF-01 binding is introduced, and the preserved Reading path remains covered by the
+      immutable full repository proof.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      The immutable candidate binds the exact 54891-byte Wikimedia/VOA Ogg asset with audio/ogg provenance and
+      SHA-256 1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765. Candidate tests verify the
+      embedded bytes against the recorded immutable provenance, and the authoritative proof passed.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      The candidate assigns the same listening-bootstrap-completion-001-r1 revision for explicit Academic and
+      General Training TargetProfiles, stores and returns the resolved existing variant, rejects unresolved/unsupported
+      variants, introduces no SHARED TestVariant, and preserves the PM-R03 Reading path.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      Learner-safe Listening material is MEDIA_REFERENCE plus a real TEXT completion with the authorized instruction
+      and prompt, without options, transcript, answer, provenance, or validator leakage. Existing Reading
+      SINGLE_SELECTION behavior remains preserved.
+  - criterion_id: AC-5
+    status: PASS
+    evidence: >-
+      The authorized activity media operation is learner-authenticated, activity-owned, exact-reference-bound, and
+      fail-closed. Immutable integration evidence covers exact audio/ogg success, anonymous 401, and foreign/missing/
+      wrong-reference 404 behavior without filesystem interpretation, Range support, or media infrastructure expansion.
+  - criterion_id: AC-6
+    status: PASS
+    evidence: >-
+      The bounded completion scorer uses trim plus case-insensitive exact comparison, accepts the authorized equivalent
+      case/outer-whitespace forms, rejects non-exact text, introduces no fuzzy/generalized IELTS marking, and preserves
+      pre-existing selected-value Reading scoring.
+  - criterion_id: AC-7
+    status: PASS
+    evidence: >-
+      PM-L03 TRAINING follows the normal Attempt -> Observation path with exact Listening scope and produces zero
+      EvidenceFact rows and no Assessment, Progression, Band/readiness/mastery/weakness, GapEvaluation, or Planner consequence.
+  - criterion_id: AC-8
+    status: PASS
+    evidence: >-
+      The preserved candidate and immutable proof satisfy the task-bounded COR, SEC, SUP, and ASR obligations while
+      preserving existing FTR-010/IFC-001 ownership. No catalog identity, maturity certification, Level-4/5 assurance,
+      independent-review claim, or unrelated documentation authority is introduced.
+  - criterion_id: AC-9
+    status: PASS
+    evidence: >-
+      Candidate 13b2577e02050c1f354017389a106da66de0872d is the direct child of revision-4 planning base
+      ca3a07115f677054f770c790fa2dc7439d2e8f87. Sentinel 6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3
+      is its sentinel-only direct child. GitHub Actions run 33684727585, attempt 1, concluded success on that sentinel
+      and verified the exact detached candidate with full ./verify. Revision 5 created no replacement candidate,
+      sentinel, or proof.
+
+gap_disposition:
+  - gap_id: REV4-RESTRICTIVE-AUTHORITY
+    classification: HISTORICAL_NONCOMPLIANCE
+    disposition: PRESERVED_AND_FORWARD_CLOSED
+    evidence: >-
+      Revision 4 omitted tools/canonical/test_materialize.py, tools/contracts/test_generate.py, and
+      tools/contracts/validate.go from its restrictive allowlist although the immutable candidate changed them.
+      Independent inspection confirms those changes are bounded repository-native verification companions to already-authorized
+      TASK-0044 semantics. Revision 5 does not retroactively authorize revision 4; it records the defect and establishes a fresh
+      authority-correct closure lineage while preserving implementation bytes.
+  - gap_id: REV4-REPORT-ID-MAPPING
+    classification: HISTORICAL_EVIDENCE_DEFECT
+    disposition: PRESERVED_AND_FORWARD_CLOSED
+    evidence: >-
+      Report revision 1 invented AC-10 and did not map the canonical revision-4 CHECK set one-to-one. Report revision 2
+      preserves that history and maps exactly AC-1..AC-9 and CHECK-1..CHECK-8 under revision 5.
+
+lineage_closure:
+  revision_5_base: "04cc4b29246b074f2a33e83d89a665660222e9c1"
+  report_revision_2_commit: "898f4360edf5523c355b98651b2c98dce6866886"
+  report_child_is_direct: true
+  report_child_changed_only_report: true
+  implementation_replayed: false
+  new_candidate_created: false
+  new_sentinel_created: false
+  new_authoritative_run_created: false
+  reused_authoritative_run: 33684727585
+
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: >-
+    TASK-0044 accepts only the bounded Listening Core/API training slice and its authority-correct execution lineage.
+    This review grants no main mutation, promotion, release, deployment, or implicit authority for the next product slice.
+
+notes:
+  - "Architect independently re-resolved revision-5 task/report identity, report-only base-to-final diff, current branch topology, immutable candidate/sentinel parentage, and the authoritative Actions inventory before acceptance."
+  - "Revision-4 restrictive-authority and report-mapping defects remain explicit historical facts; ACCEPTED refers to the revision-5 forward-correct closure, not retroactive compliance of revision 4."
+  - "Current topology before this review commit was exactly {dev, main}, with main unchanged at e707aeee43411cc8f99448b63220eb8beff552b6."
