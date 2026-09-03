@@ -1,0 +1,228 @@
+protocol_version: 3
+
+task_id: TASK-0045
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0045/task.yaml
+  commit: "c6f8f91c8d8b12e4a46f17916ea476e71fce4c5e"
+  blob_sha: "4f6aa4d5ce5c00d88f11ea09766f6816c57550cb"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "c6f8f91c8d8b12e4a46f17916ea476e71fce4c5e"
+  pre_execution_head: "c6f8f91c8d8b12e4a46f17916ea476e71fce4c5e"
+  final_execution_head: "1e5d60003b91367e128a8c5d6cccfd0943b4ea06"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "9e8add0ef47fb3d7797c6a4da4f45ceb78c4030e"
+  observed_revision: "9e8add0ef47fb3d7797c6a4da4f45ceb78c4030e"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external:
+    - superpowers:using-superpowers
+    - superpowers:executing-plans
+    - superpowers:test-driven-development
+    - superpowers:systematic-debugging
+    - superpowers:verification-before-completion
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+  missing: []
+  passed: true
+  evidence: "Fresh Agent Runtime and GitHub preflight resolved TASK-0045 revision 1 at exact base c6f8f91c8d8b12e4a46f17916ea476e71fce4c5e, with remote topology exactly {dev, main}; dev and main were inspected before mutation. The pinned agent-skills revision and all required execution capabilities were available. The local target worktree was clean and was fast-forwarded only to the exact authorized dev base."
+
+authoritative_verification:
+  required: true
+  performed: true
+  result: PASS
+  evidence: "GitHub Actions run 33720532979 (https://github.com/phatnguyen03022001/ilets/actions/runs/33720532979) completed success for boundary commit c017055656b8758301c7c6bf58cc77df46d5f570. Its exact-candidate binding and assertion steps passed, then the existing ./verify path passed on candidate 1e5d60003b91367e128a8c5d6cccfd0943b4ea06; the local full ./verify independently exited 0 on that same candidate."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: true
+  retained: []
+  evidence: "The operator-owned target worktree was clean before mutation and clean after implementation verification. No temporary branch, staging branch, agent-* repository, architect-profile, or main mutation was created. Test-generated Python bytecode was removed before the implementation commit."
+
+changed_files:
+  - path: services/core-api/internal/httpapi/activity.go
+    summary: "Expose PM-L02 Gist Sprint through the existing Listening practice route, selector, learner projection, and media path while preserving PM-L03 and Reading dispatch."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/listening_media.go
+    summary: "Allow the new Listening gist revision through the existing authenticated media projection using the existing audio asset."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/db/queries/activity.sql
+    summary: "Add local SQL selector and insert helpers for the PM-L02 Listening training revision using existing practice activity persistence semantics."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/db/sqlc/activity.sql.go
+    summary: "Regenerate the repository-owned sqlc bindings for the PM-L02 queries."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/cmd/seed/main.go
+    summary: "Validate and seed the bounded PM-L02 fixture through existing bootstrap materialization."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/bootstrap/listening-gist-001.json
+    summary: "Add one revisioned PM-L02/FTR-009/PT-12 Listening training fixture backed by the existing public-domain audio."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: services/core-api/internal/httpapi/integration_test.go
+    summary: "Prove Academic and General Training assignment, learner projection, media delivery, scoring, observation-only consequence, and PM-L03/audio regression behavior."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/BEHAVIOR.md
+    summary: "Add the canonical materializer anchor for the existing FTR-009 Gist and Main-Idea Drill."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/behavior/practice-and-media.md
+    summary: "Add canonical materializer anchors for PM-L02 Gist Sprint and PT-12."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/skill-leaves.md
+    summary: "Add the canonical materializer anchor for existing L-COMP-01."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: docs/product/ielts-exam-and-bands.md
+    summary: "Add the canonical materializer anchor for existing IELTS-L-QF-01."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/source-map.json
+    summary: "Map the five existing canonical identifiers required to materialize the PM-L02 slice."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/generated/registry.json
+    summary: "Regenerate canonical registry output from the updated source map and existing canonical anchors."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/canonical/test_materialize.py
+    summary: "Extend the materializer companion expectation to cover the five canonical PM-L02 identifiers."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/listening-gist-sprint.json
+    summary: "Describe the bounded PM-L02 slice, existing public operations, runtime owner, persistence resources, and verification references."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/generated/listening-gist-sprint-trace.json
+    summary: "Materialize the PM-L02 slice trace."
+    new_file: true
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/generated/listening-detail-completion-trace.json
+    summary: "Regenerate the existing PM-L03 trace against the expanded canonical registry."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: tools/slice/generated/reading-training-trace.json
+    summary: "Regenerate the existing Reading trace against the expanded canonical registry."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "1e5d60003b91367e128a8c5d6cccfd0943b4ea06"
+    message: "feat(core): add PM-L02 gist sprint training"
+  - sha: "c017055656b8758301c7c6bf58cc77df46d5f570"
+    message: "chore(verify): bind TASK-0045 candidate"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The existing authenticated route lists PM-L02 as Gist Sprint with PT-12 and 3–6 min metadata, selects the revision listening-bootstrap-gist-001-r1, validates canonical FTR-009/L-COMP-01/IELTS-L-QF-01 references, and presents one bounded gist question over the existing audio. The focused integration test assigns and completes real PM-L02 learner work."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The integration proof runs the same PM-L02 route for both ACADEMIC and GENERAL_TRAINING target profiles, stores the target variant in the existing practice activity row, and serves the existing authenticated media operation. No OpenAPI generated binding, public contract, schema meaning, authentication owner, provider, storage, or cross-component owner changed."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "The existing TRAINING attempt path records one Attempt and one Observation with raw/max score 1/1 and creates zero EvidenceFact rows. The test also asserts no Assessment, Progression, GapEvaluation, Band/readiness/mastery/weakness, or Planner consequence; the implementation does not alter those components."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "PM-L03 continues through its existing Listening selector, strict completion fixture, media projection, and text projection; Reading dispatch and the existing Playwright Reading training test remain passing. Full Go, web, contract, generated-artifact, migration/seed, and end-to-end verification passed."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Candidate 1e5d60003b91367e128a8c5d6cccfd0943b4ea06 is a direct child of the exact authorized base. Local ./verify exited 0, and authoritative run 33720532979 bound and verified that same candidate successfully without workflow changes; the canonical report records the exact task, base, candidate, and boundary evidence."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Preflight resolved TASK-0045 revision 1 from the exact base, confirmed repository phatnguyen03022001/ilets and branch dev, observed remote refs dev=c6f8f91c8d8b12e4a46f17916ea476e71fce4c5e and main=e707aeee43411cc8f99448b63220eb8beff552b6, confirmed the required pinned authority/capabilities, and found the local worktree clean."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Current activity dispatch, SQL selector/insert, seed validators, media projection, attempt consequence, canonical materializer, and test patterns were inspected. The smallest sufficient HOW was to add one local PM-L02 fixture and local Listening branches/helpers/tests while reusing the existing audio, authenticated operations, persistence rows, and TRAINING observation path."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "TDD proof first established a failing PM-L02 integration test, then the implementation made it pass. Focused PM-L02/PM-L03/media tests, materializer checks, git diff checks, full Go tests, and local ./verify all passed. No public contract, persistence meaning, trust boundary, provider/storage architecture, Assessment/Evidence admission, Progression/Planner semantics, dependency, or cross-component ownership change was required."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Implementation candidate 1e5d60003b91367e128a8c5d6cccfd0943b4ea06 was pushed to dev, then the existing sentinel-only boundary commit c017055656b8758301c7c6bf58cc77df46d5f570 was pushed. GitHub Actions run 33720532979 passed its exact candidate binding and the existing full verification path."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Immediately before report publication, GitHub refs were refreshed and proved exactly {dev=c017055656b8758301c7c6bf58cc77df46d5f570, main=e707aeee43411cc8f99448b63220eb8beff552b6}. No staging branch, main promotion, agent-* mutation, architect-profile mutation, or release metadata mutation occurred."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: true
+  summary: "After the separate canonical report-only commit, dev remains clean. The implementation candidate is 1e5d60003b91367e128a8c5d6cccfd0943b4ea06, the authoritative boundary is c017055656b8758301c7c6bf58cc77df46d5f570, main remains e707aeee43411cc8f99448b63220eb8beff552b6, and execution stops at NEEDS_REVIEW."
+
+result: NEEDS_REVIEW
