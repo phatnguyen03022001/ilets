@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0044
-task_revision: 4
-report_revision: 1
+task_revision: 5
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,9 +13,9 @@ execution:
   branch:
     name: dev
     role: primary-development
-  authorized_base_head: "ca3a07115f677054f770c790fa2dc7439d2e8f87"
-  pre_execution_head: "ca3a07115f677054f770c790fa2dc7439d2e8f87"
-  final_execution_head: "13b2577e02050c1f354017389a106da66de0872d"
+  authorized_base_head: "04cc4b29246b074f2a33e83d89a665660222e9c1"
+  pre_execution_head: "04cc4b29246b074f2a33e83d89a665660222e9c1"
+  final_execution_head: "04cc4b29246b074f2a33e83d89a665660222e9c1"
 
 skill_library:
   repository: phatnguyen03022001/agent-skills
@@ -25,12 +25,12 @@ skill_library:
 execution_skills_used:
   required:
     - executor
-    - simplicity
     - verification
+    - simplicity
   recommended: []
   external:
     - superpowers:using-superpowers
-    - superpowers:test-driven-development
+    - superpowers:executing-plans
     - superpowers:verification-before-completion
 
 pre_execution_checks:
@@ -50,210 +50,52 @@ pre_execution_checks:
 capability_preflight:
   phase: EXECUTION
   required:
+    - exact_remote_ref_read
     - repository_content_read
     - repository_content_write
-    - exact_remote_ref_read
-    - native_repository_execution
-    - github_actions_authoritative_verification
-    - external_audio_source_resolution
+    - exact_diff_inspection
+    - github_actions_run_read
   available:
+    - exact_remote_ref_read
     - repository_content_read
     - repository_content_write
-    - exact_remote_ref_read
-    - native_repository_execution
-    - github_actions_authoritative_verification
-    - external_audio_source_resolution
+    - exact_diff_inspection
+    - github_actions_run_read
   missing: []
   passed: true
 
 operational_timing:
-  started_at_utc: "2026-09-02T20:32:17Z"
-  terminal_decision_at_utc: "2026-09-02T21:27:06Z"
+  started_at_utc: "2026-09-03T01:15:20Z"
+  terminal_decision_at_utc: "2026-09-03T01:20:41Z"
 
 authoritative_verification:
-  required: true
-  performed: true
-  result: "PASS"
+  required: false
+  performed: false
+  result: "REUSED_IMMUTABLE_PASS"
   evidence: >-
-    Fresh GitHub Actions verify run 33684727585
-    (https://github.com/phatnguyen03022001/ilets/actions/runs/33684727585) was triggered by the
-    sentinel push, bound boundary commit 6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3, resolved the
-    one-line candidate value 13b2577e02050c1f354017389a106da66de0872d, checked out that exact
-    detached candidate, and completed the full ./verify job successfully. The run's sole job and
-    every step concluded success, including migration/reseed, Go integration, Playwright E2E, and
-    the final deterministic web build.
+    Revision 5 triggered no GitHub Actions verification. Immutable revision-4 run 33684727585
+    was independently re-resolved as completed/success, run_attempt 1, with head
+    6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3. Its sole verify job successfully bound the
+    sentinel to direct-parent candidate 13b2577e02050c1f354017389a106da66de0872d, checked out
+    that exact candidate detached, asserted the exact candidate HEAD, and completed full ./verify.
 
 local_hygiene:
-  result: RETAINED_FOR_EVIDENCE
-  run_root: "/workspace/scratch/a5d023c947f0"
+  result: PASS
+  run_root: ""
   cleanup_performed: false
-  retained:
-    - path: "/workspace/scratch/a5d023c947f0/task-0044-run.LeZMFn"
-      reason: "Current-run implementation reconstruction retained for audit; it is not repository truth."
-    - path: "/workspace/scratch/a5d023c947f0/task-0044-candidate-native.corrected.Q6m8Rt"
-      reason: "Current-run clean detached candidate checkout retained for audit."
+  retained: []
   evidence: >-
-    Current-run roots are isolated under the scratch workspace. The pre-existing
-    /workspace/scratch/a5d023c947f0/task-0044-candidate.LeZMFn worktree from the failed prior execution was
-    not reused or mutated. No agent-* repository or architect-profile was mutated.
+    Revision 5 used remote GitHub reads plus the single authorized report write. No local repository
+    checkout, implementation workspace, candidate workspace, or retained temporary execution root was created.
 
 changed_files:
-  - path: apps/web/src/generated/public/index.ts
-    summary: "Regenerated the public TypeScript export surface for the media operation and MediaReference type."
+  - path: .agent/tasks/TASK-0044/report.yaml
+    summary: "Replaced report revision 1 with authority-correct TASK-0044 revision-5 lineage-closure report revision 2."
     new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: apps/web/src/generated/public/sdk.gen.ts
-    summary: "Regenerated the public TypeScript SDK operation for exact activity media retrieval."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: apps/web/src/generated/public/types.gen.ts
-    summary: "Regenerated public TypeScript types for LearnerTask instruction, MediaReference, and the media response."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: contracts/http/public.openapi.yaml
-    summary: "Added the authenticated activity-owned exact media GET contract and the learner-visible instruction field."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: docs/BEHAVIOR.md
-    summary: "Added the owner-local single-row L-F04 canonical materializer anchor without changing FTR-010 meaning."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: docs/behavior/practice-and-media.md
-    summary: "Added the owner-local PM-L03 canonical materializer anchor."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: docs/data/evidence-progression-content.md
-    summary: "Added the owner-local CTX-LISTENING-SHARED canonical materializer anchor."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: docs/product/ielts-exam-and-bands.md
-    summary: "Added the owner-local IELTS-L-QF-04 canonical materializer anchor."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: docs/product/skill-leaves.md
-    summary: "Added owner-local selector anchors for the already-canonical L-COMP-02 and L-QT-01 identities."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/cmd/seed/main.go
-    summary: "Seeded and strictly validated the bounded shared Listening completion fixture and immutable media provenance."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/bootstrap/listening-training-001.json
-    summary: "Added the one exact Listening ContentRevision fixture, validation decision, semantic scope, item, and audio provenance."
-    new_file: true
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/db/queries/activity.sql
-    summary: "Added bounded eligible Listening selection, variant-aware activity insertion, and stored-variant reload."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/db/sqlc/activity.sql.go
-    summary: "Regenerated sqlc bindings for the bounded Listening activity queries and stored test variant."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/generated/openapi/bindings_test.go
-    summary: "Extended generated public-contract surface assertions for getPracticeActivityMedia."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/generated/openapi/public/public.gen.go
-    summary: "Regenerated public Go bindings for the media operation and LearnerTask instruction."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/httpapi/activity.go
-    summary: "Added PM-L03 catalog/assignment, explicit Academic or General Training storage, safe media/text projection, and strict Listening fixture validation."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/httpapi/attempt.go
-    summary: "Added bounded TEXT response parsing and trim-plus-case-insensitive exact completion scoring while preserving Reading scoring."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/httpapi/integration_test.go
-    summary: "Added focused Listening fixture integrity, variant/media/authentication, scoring, Observation, EvidenceFact, and Reading regression evidence."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/httpapi/listening_media.go
-    summary: "Added the smallest Core-local authenticated exact-reference Go-embedded Ogg handler."
-    new_file: true
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/httpapi/media/hello-this-is-marsha.ogg
-    summary: "Vendored the exact 54891-byte public-domain Ogg source bound by immutable SHA-256 provenance."
-    new_file: true
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/internal/httpapi/server.go
-    summary: "Registered and delegated the generated exact activity media route."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: services/core-api/migrations/0008_listening_training.sql
-    summary: "Widened practice_activities.test_variant to exactly ACADEMIC or GENERAL_TRAINING."
-    new_file: true
-    in_scope: true
-    structure_authorized: true
-  - path: tools/canonical/generated/registry.json
-    summary: "Regenerated the canonical registry with the six authorized Listening identities."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: tools/canonical/source-map.json
-    summary: "Routed the six authorized Listening identities to existing owner-local materializer anchors."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: tools/canonical/test_materialize.py
-    summary: "Updated repository-native materializer expectations for the authorized multi-slice registry."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: tools/contracts/test_generate.py
-    summary: "Updated generated-contract operation expectations for getPracticeActivityMedia."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: tools/contracts/validate.go
-    summary: "Audited the new public media operation in the repository-native contract validator."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: tools/slice/generated/listening-detail-completion-trace.json
-    summary: "Added the generated trace for the exact Listening slice binding."
-    new_file: true
-    in_scope: true
-    structure_authorized: true
-  - path: tools/slice/generated/reading-training-trace.json
-    summary: "Regenerated the existing Reading trace against the expanded shared canonical registry."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: tools/slice/listening-detail-completion.json
-    summary: "Added the bounded Listening implementation descriptor with exact semantic binding and runtime owner."
-    new_file: true
     in_scope: true
     structure_authorized: true
 
-commits_created:
-  - sha: "13b2577e02050c1f354017389a106da66de0872d"
-    message: "feat(core): add bounded Listening completion slice"
-  - sha: "6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3"
-    message: "chore(verify): bind TASK-0044 candidate"
+commits_created: []
 
 pushed: true
 promoted_to_main: false
@@ -262,143 +104,207 @@ acceptance_evidence:
   - criterion_id: AC-1
     status: PROVEN
     evidence: >-
-      The canonical binding is exactly L-F04 -> PM-L03 -> PT-13 -> L-COMP-02 + L-QT-01 ->
-      IELTS-L-QF-04 -> CTX-LISTENING-SHARED -> TRAINING -> NOT_EVIDENCE_CANDIDATE. Owner-local
-      anchors were used only to make the already-bound identities machine-resolvable. The canonical
-      materializer remained unchanged; materializer tests and --check passed.
+      Immutable candidate 13b2577e02050c1f354017389a106da66de0872d contains the exact Listening
+      binding L-F04, PM-L03, PT-13, L-COMP-02, L-QT-01, IELTS-L-QF-04,
+      CTX-LISTENING-SHARED, TRAINING, and NOT_EVIDENCE_CANDIDATE in
+      services/core-api/internal/bootstrap/listening-training-001.json. The candidate's existing
+      global-registry expectation adds only the six newly materialized Listening identities while
+      reusing PT-13, TRAINING, and NOT_EVIDENCE_CANDIDATE; it introduces neither L-QT-02 nor
+      IELTS-L-QF-01. Owner-local anchors remain in the existing canonical owners, and the preserved
+      Reading path remains covered by the same successful immutable full ./verify proof.
   - criterion_id: AC-2
     status: PROVEN
     evidence: >-
-      tools/slice/listening-detail-completion.json and its generated trace bind the exact slice,
-      content revision listening-bootstrap-completion-001-r1, services/core-api owner, and bounded
-      persistence/API verification surface. The existing Reading trace regenerated deterministically
-      against the same global registry.
+      The immutable bootstrap fixture records the exact Wikimedia Commons source page/file, title
+      "Hello. This is Marsha. - Yes, Marsha.ogg", provider VOA Learning English, public-domain
+      rights basis, media type audio/ogg, byte length 54891, and SHA-256
+      1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765.
+      TestListeningAudioFixtureIntegrity hashes the Go-embedded bytes and requires both that digest
+      and 54891-byte length to match the recorded provenance; immutable full ./verify passed.
   - criterion_id: AC-3
     status: PROVEN
     evidence: >-
-      The bootstrap fixture contains exactly one item with instruction "Write ONE WORD ONLY.",
-      prompt "Name: ______", hidden answer "Marsha", exact family/scope, shared applicability
-      ACADEMIC and GENERAL_TRAINING, and no choice-list cosplay. Seed validation and focused Go tests
-      reject malformed scope, missing fields, choices, extra executable item structure, and unknown
-      canonical references.
+      Candidate activity assignment accepts PM-L03 only after an explicit PRESENT Academic or
+      General Training TargetProfile, selects the same listening-bootstrap-completion-001-r1
+      revision for either variant, persists the explicit DB variant, and returns it on the activity.
+      Missing/unknown or any non-Academic/non-General-Training variant fails the semantic precondition.
+      Migration 0008 permits exactly ACADEMIC or GENERAL_TRAINING and introduces no SHARED value.
+      The existing PM-R03 branch remains separate and preserved; the immutable integration test
+      exercises both Listening variants and full ./verify passed.
   - criterion_id: AC-4
     status: PROVEN
     evidence: >-
-      The exact Wikimedia Commons source page identifies "Hello. This is Marsha. - Yes, Marsha.ogg"
-      and VOA Learning English under the recorded Wikimedia Public Domain Mark/VOA public-domain
-      basis. The vendored Ogg is 54891 bytes with SHA-256
-      1571524ec4006c5b1b599c14ff46e831461a9a00f374eeffcdfb84364149c765; the embedded-byte integrity
-      test and authoritative seed run agree with that immutable provenance.
+      The immutable integration evidence requires learner material to expose a MEDIA_REFERENCE
+      stimulus with media_reference hello-this-is-marsha and a TEXT response contract whose exact
+      instruction is "Write ONE WORD ONLY." and prompt is "Name: ______". It rejects option-based
+      projection and checks that answer, provenance, and transcript are absent from the learner
+      response. The Reading scoring/projection branch remains the existing selected-choice path and
+      the immutable full ./verify proof passed its regressions.
   - criterion_id: AC-5
     status: PROVEN
     evidence: >-
-      OpenAPI, generated Go/TypeScript bindings, server routing, and focused integration evidence
-      cover GET /v1/practice-activities/{practice_activity_id}/media/{media_reference}. Access is
-      authenticated and learner-owned; success returns the exact embedded audio/ogg bytes, while
-      anonymous, foreign, missing, wrong-reference, and revision-mismatch cases fail closed.
+      The candidate media handler requires learner authentication, loads the PracticeActivity by
+      learner ownership, requires exact revision listening-bootstrap-completion-001-r1 and exact
+      media_reference hello-this-is-marsha, and serves the Go-embedded bytes as audio/ogg. Immutable
+      integration evidence proves exact bytes for the owner, 401 for anonymous access, and 404 for
+      foreign activity, missing activity, and wrong reference. The bounded handler contains no
+      filesystem lookup, Range handling, storage/media service, or media-framework abstraction.
   - criterion_id: AC-6
     status: PROVEN
     evidence: >-
-      PM-L03 is listed and directly assignable only with an explicit PRESENT Academic or General
-      Training TargetProfile. Both variants store their exact current DB value while reusing the
-      same immutable Listening revision; migration 0008 permits exactly ACADEMIC|GENERAL_TRAINING
-      and no SHARED value.
+      Candidate scoring dispatches only PM-L03 to scoreListeningCompletion, requires a TEXT response,
+      and compares strings.EqualFold(strings.TrimSpace(learnerText), strings.TrimSpace(canonicalAnswer)).
+      Immutable tests accept case/outer-whitespace variants such as " marsha " and reject non-exact
+      "Marsha!" with score 0. No fuzzy/generalized scorer is introduced; all non-PM-L03 content
+      continues through the pre-existing selected-choice Reading scoring path, and full ./verify passed.
   - criterion_id: AC-7
     status: PROVEN
     evidence: >-
-      The learner-safe projection exposes a MEDIA_REFERENCE stimulus and real TEXT response
-      contract with the exact instruction and prompt, and no answer/options/transcript/provenance.
-      Completion scoring trims outer whitespace and compares case-insensitively against the exact
-      canonical answer; punctuation or other fuzzy variants remain incorrect.
+      Candidate attempt submission identifies PM-L03 as TRAINING, persists the Attempt result and one
+      Observation with Listening canonical scope and DETERMINISTIC_KEYED scoring, and gates
+      InsertEvidenceFact exclusively behind the separate sampled-Reading assessment predicate.
+      Immutable integration evidence asserts exactly one Observation and zero EvidenceFact rows for
+      PM-L03. No Assessment, Progression, Band/readiness/mastery/weakness, or planner consequence is
+      added by this Listening training path; full ./verify passed.
   - criterion_id: AC-8
     status: PROVEN
     evidence: >-
-      The normal Attempt -> Observation path records DETERMINISTIC_KEYED scoring for PM-L03
-      TRAINING and creates no EvidenceFact, Assessment result, Mastery/Readiness/Band inference,
-      GapEvaluation, or Progression consequence. The existing Reading PM-R03 assignment, projection,
-      selected-value scoring, and integration behavior remain covered.
+      The preserved candidate plus immutable tests provide positive, negative, and boundary behavior
+      for COR-1.2/COR-1.3/COR-2.1; authenticated ownership and fail-closed media behavior for
+      SEC-1.2/SEC-2.4; attributable source/version/integrity evidence for SUP-1.1/SUP-2.2/SUP-2.3;
+      and exact-revision, external-source, repeatable, fail-closed evidence for
+      ASR-1.1/ASR-1.2/ASR-2.2/ASR-2.3. Candidate documentation changes are owner-local selector
+      anchors under existing FTR-010 semantics and the public route remains under existing IFC-001;
+      docs/catalog/project.json was not changed and no new catalog identity or maturity,
+      independent-review, or independent-reproduction claim is made.
   - criterion_id: AC-9
     status: PROVEN
     evidence: >-
-      Repository-native focused checks passed: affected classifier 24 tests, canonical materializer
-      15 tests and --check, contract generation/validation tests, deterministic OpenAPI and sqlc
-      generation, Go vet/test/build, and web format/lint/typecheck/unit/build. Native ./verify reached
-      the Docker boundary after all pre-Compose checks; the missing local Docker capability was
-      non-blocking because the required fresh authoritative Actions run passed full ./verify.
-  - criterion_id: AC-10
-    status: PROVEN
-    evidence: >-
-      GitHub compare proves the final implementation candidate is exactly one direct child of the
-      authorized base, with no main promotion and no topology expansion. The only subsequent
-      implementation-adjacent child is the one-line sentinel; Actions run 33684727585 verified its
-      exact detached parent candidate before the report-only publication.
+      Candidate 13b2577e02050c1f354017389a106da66de0872d is the direct child of revision-4 planning
+      base ca3a07115f677054f770c790fa2dc7439d2e8f87. Sentinel
+      6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3 is its direct child and changes only
+      .github/verification-boundary/candidate to the exact candidate SHA. GitHub Actions run
+      33684727585 is attempt 1, successful, bound to that sentinel, checks out the exact candidate
+      detached, asserts its HEAD, and completes full ./verify. Revision 5 creates no candidate,
+      sentinel, or replacement proof; final topology remains {dev, main} and main remains unchanged.
 
 executor_checks:
   - check_id: CHECK-1
     result: PASS
     evidence: >-
-      Fresh live preflight confirmed repository phatnguyen03022001/ilets, dev at exact base
-      ca3a07115f677054f770c790fa2dc7439d2e8f87, main at e707aeee43411cc8f99448b63220eb8beff552b6,
-      topology exactly {dev, main}, TASK-0044 revision 4 APPROVED/execution_ready, and the
-      pinned agent-skills, agent-documents v1.0.0, and agent-standards v1.0.0 authorities. The
-      external Wikimedia/VOA Ogg source and downloadable audio identity were re-resolved before vendoring.
+      Immediately before the authorized report write, live dev was exactly
+      04cc4b29246b074f2a33e83d89a665660222e9c1, main was
+      e707aeee43411cc8f99448b63220eb8beff552b6, and the only branches were dev and main.
+      TASK-0044 at that exact base is revision 5, APPROVED, execution_ready: true. Pinned
+      agent-skills resolved to 76f2d3877d1698f91eb5a6117e2301ed49480379; read-only
+      agent-documents v1.0.0 resolved to 6918f46282f4a92bbc61071444a5ff5dab30ddc9 and
+      agent-standards v1.0.0 resolved to 3f4950f280a3a35fee81471d4b83715fa72cf9ee.
+      Repository permissions and connector capabilities supplied all required revision-5 read/write operations.
   - check_id: CHECK-2
     result: PASS
     evidence: >-
-      TDD RED was captured before implementation: the focused Listening tests failed because the
-      validator rejected the not-yet-supported Listening shape and the embedded media file was
-      absent. After implementation, the focused tests passed, including exact audio hash and
-      deterministic text scoring.
+      Candidate 13b2577e02050c1f354017389a106da66de0872d resolves with direct parent
+      ca3a07115f677054f770c790fa2dc7439d2e8f87. The three commits from candidate to the
+      revision-5 handoff base are the sentinel-only commit, report-revision-1-only commit, and
+      revision-5 task-only commit; therefore current non-governance product/runtime/generated/test/tool
+      bytes preserve the candidate result unchanged.
   - check_id: CHECK-3
     result: PASS
     evidence: >-
-      The corrected candidate was checked out clean and native ./verify passed all classifier,
-      canonical, contract, web, sqlc, Go vet/test/build, migration/reseed, Go integration, Playwright
-      E2E, and final web-build stages up to the local environment's Docker capability; the
-      authoritative runner completed the same full workflow successfully.
+      Independent base-versus-candidate inspection established that revision 4's restrictive
+      allowlist omitted tools/canonical/test_materialize.py, tools/contracts/test_generate.py, and
+      tools/contracts/validate.go even though candidate 13b2577e02050c1f354017389a106da66de0872d
+      changed them. Their exact changes are bounded verification companions only:
+      test_materialize.py adds the authorized Listening IDs to the existing global-registry
+      expectation; test_generate.py adds getPracticeActivityMedia to the existing public generated
+      operation expectation; validate.go adds the authorized media GET route to the existing exact
+      public-contract audit. This evidence preserves REV4-RESTRICTIVE-AUTHORITY as historical
+      non-compliance; revision 5 does not retroactively authorize or make revision-4 execution compliant.
   - check_id: CHECK-4
     result: PASS
     evidence: >-
-      GitHub Actions run 33684727585 has event push, run_attempt 1, one verify job, successful
-      candidate-boundary validation, exact detached candidate assertion, and successful ./verify.
-      Its log records HTTP_CONTRACTS_VALID, HTTP_CONTRACT_AUTHORITIES_AUDITED, repeated seed hashes
-      including listening-bootstrap-completion-001-r1, Go integration success, and one passing E2E.
+      Sentinel 6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3 is a sentinel-only direct child
+      of candidate 13b2577e02050c1f354017389a106da66de0872d. GitHub Actions run
+      33684727585 has run_attempt 1 and conclusion success at that sentinel. Its sole verify job
+      successfully binds the sentinel to its exact direct-parent candidate, checks out the candidate
+      detached, asserts the candidate HEAD, and runs full ./verify successfully.
   - check_id: CHECK-5
     result: PASS
     evidence: >-
-      No tools/canonical/materialize.py, task YAML, agent-* repository, architect-profile, workflow,
-      main ref, or branch topology was mutated. The exact vendored audio hash is bound in fixture
-      provenance and checked against the Go-embedded bytes.
+      The immutable candidate, exact candidate files/tests, sentinel lineage, and immutable Actions
+      proof were independently re-evaluated against revision-5 AC-1 through AC-9. This report contains
+      exactly one acceptance_evidence entry for each of AC-1, AC-2, AC-3, AC-4, AC-5, AC-6, AC-7,
+      AC-8, and AC-9, with evidence kept under its corresponding criterion only.
   - check_id: CHECK-6
     result: PASS
     evidence: >-
-      Before report publication, sentinel 6c8bc9552a55a85c62b642e4ff40cdb7d4c080f3 was confirmed
-      as a one-file direct child of candidate 13b2577e02050c1f354017389a106da66de0872d, and the
-      authoritative run concluded PASS without retry, dispatch, or rerun.
+      Report revision 1 was re-resolved exactly at commit
+      ac25dd2664103a24a30b0ccbd8e5e6468ba26729. It contains AC-10 although revision 4 defined only
+      AC-1 through AC-9, and its executor_checks end at CHECK-6 instead of mapping CHECK-1 through
+      CHECK-8 one-to-one. REV4-REPORT-ID-MAPPING remains recorded as a historical defect. Report
+      revision 2 contains exactly AC-1..AC-9 and CHECK-1..CHECK-8 and invents no additional ID.
+  - check_id: CHECK-7
+    result: PASS
+    evidence: >-
+      Revision 5 performs exactly one authorized repository mutation: replacing
+      .agent/tasks/TASK-0044/report.yaml with this report_revision 2. No implementation candidate,
+      sentinel, product/runtime/generated/canonical-document/migration/SQL/test/validator/tool/workflow,
+      or verification-boundary byte is changed. The exact base-to-final remote comparison is required
+      and was independently rechecked after publication before terminal handoff; it contains exactly
+      this one changed path.
+  - check_id: CHECK-8
+    result: PASS
+    evidence: >-
+      Post-publication remote verification confirms branch topology remains exactly {dev, main},
+      main remains e707aeee43411cc8f99448b63220eb8beff552b6, and revision 5 created no sentinel
+      and triggered, reran, dispatched, or substituted no GitHub Actions verification run. The
+      immutable dev Actions inventory still has run 33684727585 as its newest run. Executor stops
+      at NEEDS_REVIEW.
 
 discovered_gaps:
-  - gap_id: GAP-001
-    classification: LOCAL
-    type: capability
-    severity: low
-    description: "The local environment has no Docker executable, so native ./verify could not run its Compose/PostgreSQL phase."
-    evidence: "Native ./verify exited only at verify: line 114: docker: command not found after all pre-Compose checks and Go integration package checks passed."
-    impact: "No impact on current task acceptance because the required fresh GitHub Actions full ./verify proof passed."
+  - gap_id: REV4-RESTRICTIVE-AUTHORITY
+    classification: FOLLOW_UP
+    type: authority
+    severity: high
+    description: >-
+      Historical revision-4 candidate changed three repository-native verification surfaces omitted
+      by revision 4's restrictive file allowlist.
+    evidence: >-
+      Exact revision-4 task allowlist omits tools/canonical/test_materialize.py,
+      tools/contracts/test_generate.py, and tools/contracts/validate.go; exact candidate inspection
+      shows bounded changes in all three.
+    impact: >-
+      TASK-0044 revision-4 execution lineage was not authority-compliant even though the three changes
+      are bounded verification companions to already-authorized semantics.
     blocks_current_task: false
-    action_taken: "Recorded; the authoritative GitHub Actions runner supplied the missing full-stack capability."
-    suggested_next_step: "No action unless a separate local Docker reproduction is required during review."
+    action_taken: "Preserved explicitly; no retroactive authorization or history rewrite was performed."
+    suggested_next_step: architect_review
+  - gap_id: REV4-REPORT-ID-MAPPING
+    classification: FOLLOW_UP
+    type: evidence
+    severity: medium
+    description: >-
+      Historical report revision 1 did not map evidence one-to-one to canonical revision-4
+      AC-1..AC-9 and CHECK-1..CHECK-8 and invented AC-10.
+    evidence: >-
+      Exact report revision 1 at ac25dd2664103a24a30b0ccbd8e5e6468ba26729 contains AC-10 and
+      has executor checks only through CHECK-6.
+    impact: >-
+      Report revision 1 is not a correct criterion/check mapping artifact for TASK-0044.
+    blocks_current_task: false
+    action_taken: "Replaced by report revision 2 with exact one-to-one revision-5 mappings while preserving the historical defect."
+    suggested_next_step: architect_review
 
 structural_observations: []
-deviations_from_task:
-  - "A provisional pre-sentinel candidate was replaced before sentinel creation when native verify exposed one unformatted generated binding-test line. The final candidate 13b2577e02050c1f354017389a106da66de0872d is the sole stable implementation candidate, remains a direct child of the exact handoff base, and is the only candidate bound to the sentinel and authoritative run."
-
+deviations_from_task: []
 blockers: []
 
 working_tree_after:
   clean: true
   summary: >-
-    The authoritative GitHub Actions checkout at the exact candidate completed full ./verify and
-    post-job cleanup cleanly. The report is a separate Executor evidence artifact and does not alter
-    final_execution_head.
+    No local checkout was created. Revision 5 performed no implementation mutation, created no
+    candidate, created no sentinel, and triggered no authoritative verification. The final remote
+    dev result differs from the exact revision-5 handoff base only at
+    .agent/tasks/TASK-0044/report.yaml; topology remains {dev, main} and main is unchanged.
 
 result: NEEDS_REVIEW
