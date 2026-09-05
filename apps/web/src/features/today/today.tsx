@@ -3,12 +3,13 @@
 import { SignInButton, useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   createAttempt,
   createPracticeActivity,
   getDailyPlan,
+  getPracticeActivityMedia,
   listPracticeModes,
   putTargetProfile,
   submitAttempt,
@@ -48,6 +49,7 @@ type TargetForm = {
 };
 
 type ActivitySource = "TODAY" | "DIRECT";
+type DirectPracticeMode = "PM-R03" | "PM-L02";
 type Assignment = {
   source: ActivitySource;
   result: PracticeActivityCreationResult;
@@ -153,6 +155,10 @@ export default function Today() {
   const academicDirectPracticeAvailable =
     profile?.test_variant.state === "PRESENT" &&
     profile.test_variant.value === "Academic";
+  const listeningDirectPracticeAvailable =
+    profile?.test_variant.state === "PRESENT" &&
+    (profile.test_variant.value === "Academic" ||
+      profile.test_variant.value === "General Training");
 
   useEffect(() => {
     if (!dailyPlanQuery.isSuccess || targetForm.formState.isDirty) return;
@@ -199,14 +205,16 @@ export default function Today() {
     mutationFn: async ({
       source,
       item,
+      practiceModeId,
     }: {
       source: ActivitySource;
       item?: DailyPlanItem;
+      practiceModeId?: DirectPracticeMode;
     }): Promise<Assignment> => {
       const body =
         source === "TODAY"
           ? { daily_plan_item_id: item?.plan_item_id }
-          : { practice_mode_id: "PM-R03" };
+          : { practice_mode_id: practiceModeId ?? "PM-R03" };
       if (source === "TODAY" && !body.daily_plan_item_id) {
         throw new Error(t("errors.activity"));
       }
@@ -279,6 +287,23 @@ export default function Today() {
     },
   });
 
+  const loadActivityMedia = useCallback(
+    async (activityId: string, mediaReference: string) => {
+      const response = await getPracticeActivityMedia({
+        client: api,
+        path: {
+          practice_activity_id: activityId,
+          media_reference: mediaReference,
+        },
+      });
+      if (response.error || !response.data) {
+        throw new Error("MEDIA_UNAVAILABLE");
+      }
+      return response.data;
+    },
+    [api],
+  );
+
   const assignedActivity =
     assignment?.result.outcome === "ASSIGNED"
       ? assignment.result.activity
@@ -324,7 +349,12 @@ export default function Today() {
 
   function startDirectPractice() {
     resetActivityState();
-    activityMutation.mutate({ source: "DIRECT" });
+    activityMutation.mutate({ source: "DIRECT", practiceModeId: "PM-R03" });
+  }
+
+  function startGistSprint() {
+    resetActivityState();
+    activityMutation.mutate({ source: "DIRECT", practiceModeId: "PM-L02" });
   }
 
   async function submitAnswers(values: AnswerForm) {
@@ -480,6 +510,9 @@ export default function Today() {
             }
             submitLabel={t("submitAnswers")}
             fallbackTitle={t("activityFallback")}
+            loadMedia={loadActivityMedia}
+            mediaLoadingLabel={t("mediaLoading")}
+            mediaErrorLabel={t("mediaError")}
             onSubmit={submitAnswers}
           />
         </>
@@ -506,7 +539,7 @@ export default function Today() {
           <CardTitle id="direct-heading">{t("directHeading")}</CardTitle>
           <CardDescription>{t("directDescription")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="grid gap-2 sm:flex sm:flex-wrap">
           <Button
             variant="outline"
             onClick={startDirectPractice}
@@ -515,6 +548,15 @@ export default function Today() {
             }
           >
             {t("startDirect")}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={startGistSprint}
+            disabled={
+              !listeningDirectPracticeAvailable || activityMutation.isPending
+            }
+          >
+            {t("startGistSprint")}
           </Button>
         </CardContent>
       </Card>

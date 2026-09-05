@@ -1,6 +1,7 @@
 "use client";
 
 import { Controller, type UseFormReturn } from "react-hook-form";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Attempt, PracticeActivity } from "@/generated/public";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +23,17 @@ type Props = {
   isPending: boolean;
   submitLabel: string;
   fallbackTitle: string;
+  loadMedia: (activityId: string, mediaReference: string) => Promise<Blob>;
+  mediaLoadingLabel: string;
+  mediaErrorLabel: string;
   onSubmit: (values: AnswerForm) => void | Promise<void>;
 };
+
+type MediaState =
+  | { status: "idle" }
+  | { status: "loading"; reference: string }
+  | { status: "ready"; reference: string; url: string }
+  | { status: "error"; reference: string };
 
 export default function ActivityWorkspace({
   activity,
@@ -32,6 +42,9 @@ export default function ActivityWorkspace({
   isPending,
   submitLabel,
   fallbackTitle,
+  loadMedia,
+  mediaLoadingLabel,
+  mediaErrorLabel,
   onSubmit,
 }: Props) {
   const answers = form.watch("answers");
@@ -39,16 +52,103 @@ export default function ActivityWorkspace({
     Boolean(answers[task.task_id]),
   );
   const locked = isPending || attempt?.status === "evaluated";
+  const stimulus = activity.material.stimuli[0];
+  const mediaReference =
+    stimulus?.kind === "MEDIA_REFERENCE" ? stimulus.media_reference : undefined;
+  const objectUrlRef = useRef<string | undefined>(undefined);
+  const [mediaState, setMediaState] = useState<MediaState>({ status: "idle" });
+  const releaseMediaUrl = useCallback(() => {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = undefined;
+    }
+  }, []);
+
+  useEffect(() => {
+    let disposed = false;
+    releaseMediaUrl();
+    if (!mediaReference) {
+      return () => {
+        disposed = true;
+        releaseMediaUrl();
+      };
+    }
+
+    void loadMedia(activity.practice_activity_id, mediaReference)
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        if (disposed) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        objectUrlRef.current = url;
+        setMediaState({ status: "ready", reference: mediaReference, url });
+      })
+      .catch(() => {
+        if (!disposed)
+          setMediaState({ status: "error", reference: mediaReference });
+      });
+
+    return () => {
+      disposed = true;
+      releaseMediaUrl();
+    };
+  }, [
+    activity.practice_activity_id,
+    loadMedia,
+    mediaReference,
+    releaseMediaUrl,
+  ]);
+
+  const currentMediaState =
+    mediaReference &&
+    "reference" in mediaState &&
+    mediaState.reference === mediaReference
+      ? mediaState
+      : undefined;
+  const mediaReady = currentMediaState?.status === "ready";
+  const mediaLoading =
+    Boolean(mediaReference) &&
+    (!currentMediaState || currentMediaState.status === "loading");
+  const mediaError = currentMediaState?.status === "error";
+  const mediaBlocked = Boolean(mediaReference) && !mediaReady;
+
+  function handleMediaError() {
+    releaseMediaUrl();
+    if (mediaReference) {
+      setMediaState({ status: "error", reference: mediaReference });
+    }
+  }
 
   return (
     <Card aria-labelledby="activity-heading">
       <CardHeader>
         <CardTitle id="activity-heading">
-          {activity.material.stimuli[0]?.title ?? fallbackTitle}
+          {stimulus?.title ?? fallbackTitle}
         </CardTitle>
-        {activity.material.stimuli[0]?.text && (
+        {mediaLoading && (
+          <p className="text-sm text-muted-foreground" role="status">
+            {mediaLoadingLabel}
+          </p>
+        )}
+        {mediaError && (
+          <p className="text-sm text-destructive" role="alert">
+            {mediaErrorLabel}
+          </p>
+        )}
+        {mediaReady && currentMediaState.status === "ready" && (
+          <audio
+            aria-label={stimulus?.title ?? fallbackTitle}
+            controls
+            data-testid="activity-audio"
+            onError={handleMediaError}
+            preload="metadata"
+            src={currentMediaState.url}
+          />
+        )}
+        {stimulus?.text && (
           <CardDescription className="whitespace-pre-wrap text-base leading-7 text-foreground">
-            {activity.material.stimuli[0].text}
+            {stimulus.text}
           </CardDescription>
         )}
       </CardHeader>
@@ -87,7 +187,10 @@ export default function ActivityWorkspace({
               />
             </fieldset>
           ))}
-          <Button type="submit" disabled={!allAnswered || locked}>
+          <Button
+            type="submit"
+            disabled={!allAnswered || locked || mediaBlocked}
+          >
             {submitLabel}
           </Button>
         </form>

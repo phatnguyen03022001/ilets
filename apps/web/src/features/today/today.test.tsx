@@ -22,12 +22,17 @@ const sdk = vi.hoisted(() => ({
   listPracticeModes: vi.fn(),
   putTargetProfile: vi.fn(),
   createPracticeActivity: vi.fn(),
+  getPracticeActivityMedia: vi.fn(),
   createAttempt: vi.fn(),
   submitAttempt: vi.fn(),
 }));
 const getToken = vi.hoisted(() => vi.fn(async () => "clerk-token"));
 const apiClient = vi.hoisted(() => ({ marker: "generated-client" }));
 const authState = vi.hoisted(() => ({ isLoaded: true, isSignedIn: true }));
+const mediaUrl = vi.hoisted(() => ({
+  createObjectURL: vi.fn(() => "blob:ilets-test"),
+  revokeObjectURL: vi.fn(),
+}));
 
 vi.mock("@clerk/nextjs", () => ({
   useAuth: () => ({
@@ -186,7 +191,61 @@ function trainingActivity() {
   };
 }
 
-function draftAttempt(activity = assessmentActivity()) {
+function gistActivity(variant: "Academic" | "General Training" = "Academic") {
+  return {
+    ...trainingActivity(),
+    practice_activity_id: `activity_gist_${variant}`,
+    content_revision_id: "listening-bootstrap-gist-001-r1",
+    practice_mode_id: "PM-L02",
+    practice_type_ids: ["PT-12"],
+    canonical_target_ids: ["L-COMP-01"],
+    test_variant: { state: "PRESENT" as const, value: variant },
+    content_context_ids: {
+      state: "PRESENT" as const,
+      values: ["CTX-LISTENING-SHARED"],
+    },
+    official_family_ids: {
+      state: "PRESENT" as const,
+      values: ["IELTS-L-QF-01"],
+    },
+    delivery_mode: {
+      state: "NOT_APPLICABLE" as const,
+      reason:
+        "This bounded Listening activity has no delivery-mode-specific interaction.",
+    },
+    material: {
+      stimuli: [
+        {
+          stimulus_id: "gist-stimulus",
+          kind: "MEDIA_REFERENCE" as const,
+          title: "Marsha introduction",
+          media_reference: "hello-this-is-marsha",
+        },
+      ],
+      tasks: [
+        {
+          task_id: "listening_gist_001",
+          prompt: "What is the recording mainly about?",
+          response_contract: {
+            kind: "SINGLE_SELECTION" as const,
+            options: [
+              { value: "Introducing Marsha", label: "Introducing Marsha" },
+              { value: "Ordering a meal", label: "Ordering a meal" },
+              { value: "Making a travel plan", label: "Making a travel plan" },
+            ],
+          },
+        },
+      ],
+    },
+  };
+}
+
+function draftAttempt(
+  activity: Pick<
+    ReturnType<typeof assessmentActivity>,
+    "practice_activity_id" | "content_revision_id"
+  > = assessmentActivity(),
+) {
   return {
     attempt_id: "attempt_1",
     practice_activity_id: activity.practice_activity_id,
@@ -198,7 +257,12 @@ function draftAttempt(activity = assessmentActivity()) {
   };
 }
 
-function submittedResult(activity = assessmentActivity()) {
+function submittedResult(
+  activity: Pick<
+    ReturnType<typeof assessmentActivity>,
+    "practice_activity_id" | "content_revision_id"
+  > = assessmentActivity(),
+) {
   return {
     attempt: {
       ...draftAttempt(activity),
@@ -215,6 +279,16 @@ describe("Today canonical consumer", () => {
   afterEach(cleanup);
   beforeEach(() => {
     Object.values(sdk).forEach((mock) => mock.mockReset());
+    Object.defineProperty(URL, "createObjectURL", {
+      configurable: true,
+      value: mediaUrl.createObjectURL,
+    });
+    Object.defineProperty(URL, "revokeObjectURL", {
+      configurable: true,
+      value: mediaUrl.revokeObjectURL,
+    });
+    mediaUrl.createObjectURL.mockClear();
+    mediaUrl.revokeObjectURL.mockClear();
     authState.isLoaded = true;
     authState.isSignedIn = true;
     sdk.getDailyPlan.mockResolvedValue({ data: plan() });
@@ -289,8 +363,31 @@ describe("Today canonical consumer", () => {
     );
     const direct = screen.getByRole("button", { name: "startDirect" });
     expect(direct).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "startGistSprint" }),
+    ).toBeEnabled();
     fireEvent.click(direct);
     expect(sdk.createPracticeActivity).not.toHaveBeenCalled();
+  });
+
+  it("keeps Gist Sprint truthful while assignment is pending", async () => {
+    let resolveAssignment: (value: unknown) => void = () => {};
+    sdk.createPracticeActivity.mockReturnValue(
+      new Promise((resolve) => {
+        resolveAssignment = resolve;
+      }),
+    );
+    renderSubject();
+    const gist = await screen.findByRole("button", {
+      name: "startGistSprint",
+    });
+    await waitFor(() => expect(gist).toBeEnabled());
+    fireEvent.click(gist);
+    await waitFor(() => expect(gist).toBeDisabled());
+    resolveAssignment({
+      data: { outcome: "ASSIGNED", activity: gistActivity() },
+    });
+    expect(await screen.findByText("Marsha introduction")).toBeVisible();
   });
 
   it("renders unresolved target explanations without exposing condition IDs", async () => {
@@ -397,6 +494,45 @@ describe("Today canonical consumer", () => {
     await waitFor(() => expect(sdk.getDailyPlan).toHaveBeenCalledTimes(2));
   });
 
+  it("surfaces a direct Gist Sprint UNAVAILABLE result and refreshes Today", async () => {
+    sdk.getDailyPlan.mockResolvedValue({
+      data: plan({ items: [] }),
+    });
+    sdk.createPracticeActivity.mockResolvedValue({
+      data: {
+        outcome: "UNAVAILABLE",
+        unavailability: {
+          reason: "CURRENT_ELIGIBILITY_BLOCKED",
+          unresolved_target_conditions: [],
+          coverage_gaps: [],
+          explanation:
+            "Gist Sprint is not currently available. Today was refreshed.",
+        },
+      },
+    });
+    renderSubject();
+    const gist = await screen.findByRole("button", {
+      name: "startGistSprint",
+    });
+    await waitFor(() => expect(gist).toBeEnabled());
+    fireEvent.click(gist);
+    await waitFor(() =>
+      expect(sdk.createPracticeActivity).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client: apiClient,
+          body: { practice_mode_id: "PM-L02" },
+        }),
+      ),
+    );
+    expect(
+      await screen.findByText(
+        "Gist Sprint is not currently available. Today was refreshed.",
+      ),
+    ).toBeVisible();
+    expect(screen.getByTestId("unavailable")).toBeVisible();
+    await waitFor(() => expect(sdk.getDailyPlan).toHaveBeenCalledTimes(2));
+  });
+
   it("preserves assigned conditions, uses bounded assessment copy, and refreshes post-submission plan", async () => {
     const activity = assessmentActivity();
     const blocker =
@@ -477,5 +613,90 @@ describe("Today canonical consumer", () => {
       ),
     );
     expect(await screen.findByText("trainingBoundary")).toBeVisible();
+  });
+
+  it.each(["Academic", "General Training"] as const)(
+    "starts PM-L02 Gist Sprint for %s and submits observation-only training",
+    async (variant) => {
+      const activity = gistActivity(variant);
+      sdk.getDailyPlan.mockResolvedValue({
+        data: plan({ target_context: profile(variant), items: [] }),
+      });
+      sdk.createPracticeActivity.mockResolvedValue({
+        data: { outcome: "ASSIGNED", activity },
+      });
+      sdk.getPracticeActivityMedia.mockResolvedValue({
+        data: new Blob(["audio"], { type: "audio/ogg" }),
+      });
+      sdk.createAttempt.mockResolvedValue({ data: draftAttempt(activity) });
+      sdk.submitAttempt.mockResolvedValue({ data: submittedResult(activity) });
+
+      renderSubject();
+      await waitFor(() =>
+        expect(screen.getByLabelText("variant")).toHaveValue(variant),
+      );
+      fireEvent.click(screen.getByRole("button", { name: "startGistSprint" }));
+
+      await waitFor(() =>
+        expect(sdk.createPracticeActivity).toHaveBeenCalledWith(
+          expect.objectContaining({
+            client: apiClient,
+            body: { practice_mode_id: "PM-L02" },
+          }),
+        ),
+      );
+      expect(await screen.findByTestId("activity-audio")).toBeVisible();
+      expect(sdk.getPracticeActivityMedia).toHaveBeenCalledWith({
+        client: apiClient,
+        path: {
+          practice_activity_id: activity.practice_activity_id,
+          media_reference: "hello-this-is-marsha",
+        },
+      });
+
+      fireEvent.click(
+        screen.getByRole("radio", { name: "Introducing Marsha" }),
+      );
+      fireEvent.click(screen.getByRole("button", { name: "submitAnswers" }));
+      await waitFor(() => expect(sdk.submitAttempt).toHaveBeenCalled());
+      expect(await screen.findByText("trainingCompleted")).toBeVisible();
+      expect(screen.queryByText("assessmentCompleted")).not.toBeInTheDocument();
+    },
+  );
+
+  it("blocks Gist Sprint submission when authorized audio fails and releases audio URLs on unmount", async () => {
+    const activity = gistActivity();
+    sdk.createPracticeActivity.mockResolvedValue({
+      data: { outcome: "ASSIGNED", activity },
+    });
+    sdk.getPracticeActivityMedia.mockResolvedValue({
+      data: new Blob(["audio"], { type: "audio/ogg" }),
+    });
+
+    const rendered = renderSubject();
+    const startGist = await screen.findByRole("button", {
+      name: "startGistSprint",
+    });
+    await waitFor(() => expect(startGist).toBeEnabled());
+    fireEvent.click(startGist);
+    expect(await screen.findByTestId("activity-audio")).toBeVisible();
+    fireEvent.click(screen.getByRole("radio", { name: "Introducing Marsha" }));
+    rendered.unmount();
+    expect(mediaUrl.revokeObjectURL).toHaveBeenCalledWith("blob:ilets-test");
+
+    sdk.getPracticeActivityMedia.mockRejectedValueOnce(
+      new Error("media unavailable"),
+    );
+    renderSubject();
+    const retryGist = await screen.findByRole("button", {
+      name: "startGistSprint",
+    });
+    await waitFor(() => expect(retryGist).toBeEnabled());
+    fireEvent.click(retryGist);
+    expect(await screen.findByRole("alert")).toHaveTextContent("mediaError");
+    fireEvent.click(screen.getByRole("radio", { name: "Introducing Marsha" }));
+    expect(
+      screen.getByRole("button", { name: "submitAnswers" }),
+    ).toBeDisabled();
   });
 });

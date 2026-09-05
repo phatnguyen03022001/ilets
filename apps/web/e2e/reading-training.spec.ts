@@ -236,9 +236,7 @@ test("Today consumes fresh sampled AT-02 supply before showing the authoritative
   ).toBeVisible();
   await page.getByRole("button", { name: "Practice directly" }).click();
   await expect(
-    page.getByText(
-      "This is training. It does not count as Reading Band evidence.",
-    ),
+    page.getByText("This is training. It does not count as IELTS evidence."),
   ).toBeVisible();
   expect(activityRequests[2]).toEqual({ practice_mode_id: "PM-R03" });
   expect(activityResponses[2].activity.primary_activity_purpose).toBe(
@@ -247,6 +245,99 @@ test("Today consumes fresh sampled AT-02 supply before showing the authoritative
   expect(activityResponses[2].activity.evidence_candidacy).toBe(
     "NOT_EVIDENCE_CANDIDATE",
   );
+
+  const academicGistAssignmentResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes("/v1/practice-activities") &&
+      response.request().method() === "POST" &&
+      response.ok(),
+  );
+  const academicGistMediaResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes("/media/hello-this-is-marsha") &&
+      response.request().method() === "GET",
+  );
+  await page.getByRole("button", { name: "Start Gist Sprint" }).click();
+  const academicGistAssignment = await (
+    await academicGistAssignmentResponse
+  ).json();
+  const academicGistMedia = await academicGistMediaResponse;
+  expect(academicGistAssignment.outcome).toBe("ASSIGNED");
+  expect(academicGistAssignment.activity.practice_mode_id).toBe("PM-L02");
+  expect(academicGistAssignment.activity.test_variant.value).toBe("Academic");
+  expect(academicGistAssignment.activity.primary_activity_purpose).toBe(
+    "TRAINING",
+  );
+  expect(academicGistAssignment.activity.evidence_candidacy).toBe(
+    "NOT_EVIDENCE_CANDIDATE",
+  );
+  expect(academicGistMedia.status()).toBe(200);
+  expect(academicGistMedia.headers()["content-type"]).toBe("audio/ogg");
+  await expect(page.getByTestId("activity-audio")).toBeVisible();
+  await page
+    .getByRole("radio", { name: "Introducing Marsha", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Submit answers" }).click();
+  await expect(
+    page.getByText(
+      "Training submitted. This activity does not count as IELTS evidence.",
+    ),
+  ).toBeVisible();
+  expect(submissionRequests).toHaveLength(3);
+  expect(submissionRequests[2].actual_conditions).toEqual({
+    delivery: academicGistAssignment.activity.delivery_mode,
+    assistance: academicGistAssignment.activity.assistance_conditions,
+    exposure: academicGistAssignment.activity.exposure_conditions,
+    input: [],
+    timing: [],
+  });
+
+  await page.getByLabel("Variant").selectOption("General Training");
+  const targetSaveResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes("/v1/target-profile") &&
+      response.request().method() === "PUT" &&
+      response.ok(),
+  );
+  await page.getByRole("button", { name: "Save target" }).click();
+  await targetSaveResponse;
+  await expect(page.getByTestId("target-saved")).toBeVisible();
+  await expect(page.getByLabel("Variant")).toHaveValue("General Training");
+
+  const generalGistAssignmentResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes("/v1/practice-activities") &&
+      response.request().method() === "POST" &&
+      response.ok(),
+  );
+  const generalGistMediaResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes("/media/hello-this-is-marsha") &&
+      response.request().method() === "GET",
+  );
+  await page.getByRole("button", { name: "Start Gist Sprint" }).click();
+  const generalGistAssignment = await (
+    await generalGistAssignmentResponse
+  ).json();
+  const generalGistMedia = await generalGistMediaResponse;
+  expect(generalGistAssignment.outcome).toBe("ASSIGNED");
+  expect(generalGistAssignment.activity.practice_mode_id).toBe("PM-L02");
+  expect(generalGistAssignment.activity.test_variant.value).toBe(
+    "General Training",
+  );
+  expect(generalGistMedia.status()).toBe(200);
+  expect(generalGistMedia.headers()["content-type"]).toBe("audio/ogg");
+  await expect(page.getByTestId("activity-audio")).toBeVisible();
+  await page
+    .getByRole("radio", { name: "Introducing Marsha", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Submit answers" }).click();
+  await expect(
+    page.getByText(
+      "Training submitted. This activity does not count as IELTS evidence.",
+    ),
+  ).toBeVisible();
+  expect(submissionRequests).toHaveLength(4);
 
   const accessibility = await new AxeBuilder({ page }).analyze();
   const severe = accessibility.violations.filter(
