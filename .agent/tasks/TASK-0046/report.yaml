@@ -1,0 +1,258 @@
+protocol_version: 3
+
+task_id: TASK-0046
+task_revision: 1
+report_revision: 1
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0046/task.yaml
+  commit: "0a5e95bdc0f24b385aada917ef83b67bf2ca6a56"
+  blob_sha: "0415cee760632a3149ef459b8f4933537494e0ee"
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "0a5e95bdc0f24b385aada917ef83b67bf2ca6a56"
+  pre_execution_head: "0a5e95bdc0f24b385aada917ef83b67bf2ca6a56"
+  implementation_commit: "9aa6be322f71a9c978534d2536aabc8788fe2cb9"
+  verification_boundary_commit: "76156fe5b0ad18afbdd5ccc09e92938f7a79aea3"
+  final_execution_head: "76156fe5b0ad18afbdd5ccc09e92938f7a79aea3"
+  implementation_commits: 1
+  verification_boundaries_published: 1
+  repository_mutations_before_report: 2
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "084d4657d1602a19cf91c68b07716221f34b6aca"
+  observed_revision: "084d4657d1602a19cf91c68b07716221f34b6aca"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+    - github-workflow
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  task_revision_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  topology_exact_dev_main_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+  evidence: >-
+    Before mutation, fresh target-repository reads proved owner/repository identity,
+    the exact clean base and branch, dev/main refs, local Git identity, GitHub
+    identity, and the task-owned native toolchain. Repository content read/write
+    and native execution were exercised, including the required escalated target
+    write probe; git history read, commit, non-force push dry-run, and remote-ref
+    reads were available. This is the recorded pre-execution capability evidence.
+    The later candidate/sentinel commits, publication, and verification results are
+    recorded as actual operations below and are not backdated into this preflight.
+
+implementation:
+  commit: "9aa6be322f71a9c978534d2536aabc8788fe2cb9"
+  parent: "0a5e95bdc0f24b385aada917ef83b67bf2ca6a56"
+  message: "feat(today): add Gist Sprint training flow"
+  commits_ahead_of_base: 1
+  changed_paths:
+    - apps/web/e2e/reading-training.spec.ts
+    - apps/web/messages/en.json
+    - apps/web/src/features/reading-practice/activity-workspace.tsx
+    - apps/web/src/features/today/today.test.tsx
+    - apps/web/src/features/today/today.tsx
+  changed_path_count: 5
+
+verification_boundary:
+  candidate: "9aa6be322f71a9c978534d2536aabc8788fe2cb9"
+  boundary: "76156fe5b0ad18afbdd5ccc09e92938f7a79aea3"
+  boundary_parent_is_candidate: true
+  changed_files:
+    - .github/verification-boundary/candidate
+  changed_file_count: 1
+  sentinel_value: "9aa6be322f71a9c978534d2536aabc8788fe2cb9"
+  exact_sentinel_only_child: true
+  workflow_modified: false
+
+local_verification:
+  command: "env -u CODEX_CI -u CODEX_THREAD_ID ./verify"
+  result: PASS
+  evidence: >-
+    The full native verifier exited 0 on candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9:
+    canonical and contract checks, Prettier, ESLint, TypeScript, all 18 web tests,
+    Next build, Go tests/build, migrations and repeated seed, integration tests,
+    and the existing Playwright subject passed. The environment-only unset avoids
+    Next 16.3 Codex agent-file generation during local next dev; it changed no
+    repository, workflow, or source file. The authoritative GitHub run passed the
+    same ./verify path in its standard runner environment.
+
+authoritative_verification:
+  required: true
+  performed: true
+  provider: GitHub Actions
+  workflow: verify
+  run_id: 33994581381
+  run_number: 17
+  run_attempt: 1
+  trigger: push
+  head_sha: "76156fe5b0ad18afbdd5ccc09e92938f7a79aea3"
+  exact_candidate_binding: PASS
+  detached_candidate_checkout: PASS
+  exact_candidate_head_assertion: PASS
+  command: ./verify
+  command_result: PASS
+  run_result: PASS
+  evidence: >-
+    Run 33994581381 (https://github.com/phatnguyen03022001/ilets/actions/runs/33994581381)
+    completed success for boundary 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3. The
+    existing workflow bound that boundary to its exact parent candidate
+    9aa6be322f71a9c978534d2536aabc8788fe2cb9, checked out and asserted that exact
+    candidate, and completed ./verify successfully, including the browser flow.
+
+changed_files:
+  - path: apps/web/src/features/today/today.tsx
+    summary: "Adds a labelled PM-L02 Gist Sprint action for configured Academic or General Training targets while preserving the Academic-only PM-R03 action and existing assignment/attempt flow."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: apps/web/src/features/reading-practice/activity-workspace.tsx
+    summary: "Loads authenticated MEDIA_REFERENCE audio through the existing caller, exposes loading/error/accessibility states, blocks submission until media is ready, and revokes task-owned object URLs on change or unmount."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: apps/web/messages/en.json
+    summary: "Adds localized Gist Sprint/media states and generic IELTS evidence boundary copy for shared TRAINING feedback."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: apps/web/src/features/today/today.test.tsx
+    summary: "Covers Academic/General Training PM-L02 assignment and submission, pending/unavailable states, media failure, object URL cleanup, non-evidence result, and preserved PM-R03 behavior."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: apps/web/e2e/reading-training.spec.ts
+    summary: "Extends the existing shared Playwright subject with real Academic and General Training PM-L02 assignment, audio/ogg response, answer submission, TRAINING result, target switching, and Reading regression assertions."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      The focused Today suite passed 15 tests, including Academic and General
+      Training eligibility, the actual PM-L02 request, disabled pending state,
+      direct UNAVAILABLE refresh behavior, and the preserved PM-R03 Academic-only
+      rule. The existing Reading Playwright flow remained in the same shared
+      subject and passed in the full native and authoritative verification runs.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      The component proof covers authorized media failure, submission blocking,
+      object URL release on unmount, and activity-owned media lifecycle. The
+      browser proof fetched the existing authenticated
+      /v1/practice-activities/{id}/media/hello-this-is-marsha operation, observed
+      status 200 and audio/ogg, and rendered the accessible audio control for both
+      target variants. No token or private source value is exposed in the UI.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      The browser proof completed the existing attempt/answer/submission path for
+      PM-L02 under Academic and General Training and rendered generic IELTS
+      TRAINING/non-evidence feedback. The accepted immutable TASK-0045 backend
+      review at .agent/tasks/TASK-0045/review.yaml@4b88bbde9558ae50de2c17941677c73fe7c504c8
+      remains the source for PM-L02 observation-only/no-EvidenceFact semantics;
+      this task changes only the Today consumer and media presentation.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      Candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 is one direct child of the
+      exact base, and boundary 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 is one
+      sentinel-only child. Local and exact-candidate GitHub ./verify both passed;
+      no public contract, generated binding, backend, database, workflow, branch,
+      main, deployment, or dependency mutation was made.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Fresh pre-mutation checks resolved TASK-0046 revision 1 at exact base
+      0a5e95bdc0f24b385aada917ef83b67bf2ca6a56, confirmed phatnguyen03022001/ilets
+      dev/main truth, the pinned skill revision, required execution capabilities,
+      and a clean worktree before mutation.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      Focused UI tests, typecheck, lint, real browser/API proof, and the full
+      native verifier passed. Existing accepted backend and media semantics were
+      reused; no unchanged sibling test or broad history sweep was required.
+  - check_id: CHECK-3
+    result: NOT_PROVEN
+    evidence: >-
+      Current Git observations proved the candidate, sentinel, remote equality at
+      their publication boundaries, unchanged main, and successful exact-candidate
+      Actions run. The report-only commit identity, its non-force publication, and
+      fresh final local/remote equality remain post-authorship checks; this report
+      does not self-attest those future facts.
+
+discovered_gaps: []
+structural_observations:
+  - "This is a bounded natural IELTS pilot for Today PM-L02 across Academic and General Training. It does not claim global IELTS closure, final sweep, activation, deployment readiness, certification, or main promotion."
+deviations_from_task: []
+blockers: []
+
+publication:
+  implementation_commit_published: true
+  verification_boundary_child_published: true
+  report_only_child: "INTENDED; post-authorship one-file child proof required"
+  report_parent: "76156fe5b0ad18afbdd5ccc09e92938f7a79aea3"
+  report_path: .agent/tasks/TASK-0046/report.yaml
+  report_commit_sha: "NOT_PROVEN_AT_REPORT_AUTHORSHIP"
+  main_before_report: "e707aeee43411cc8f99448b63220eb8beff552b6"
+  main_changed: false
+  topology_before_report:
+    - dev
+    - main
+  topology_changed: false
+  branch_or_pr_created: false
+  promotion_performed: false
+  release_performed: false
+
+result: NEEDS_REVIEW
