@@ -1,0 +1,114 @@
+protocol_version: 3
+task_id: TASK-0046
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: NATURAL-ILETS-PILOT
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "084d4657d1602a19cf91c68b07716221f34b6aca"
+architect_analysis_skills: [architect]
+execution_skills:
+  required: [executor, simplicity, verification, github-workflow]
+  recommended: []
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+authority_sources:
+  - source: current operator instruction
+    role: "Run a genuine new ilets product pilot on dev using Luna/MAX Executors. The current root session is delegated Architect for this work; CODEX_LOCAL and Luna/MAX are current-session choices, not changes to durable role or model defaults."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:CONSTITUTION.md, OBJECTIVE.md, docs/BEHAVIOR.md, docs/behavior/practice-and-media.md"
+    role: "Target authority hierarchy, learner route, existing PM-L02/PT-12/FTR-009 training and media semantics; only implement the existing product meaning."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:docs/ARCHITECTURE.md, docs/INTERFACES.md, contracts/"
+    role: "Existing Web/Core ownership, authenticated media and activity boundaries, exact generated public client contracts. Resolve only relevant owners and contract operations."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:.agent/tasks/TASK-0045/review.yaml"
+    role: "Accepted backend PM-L02 implementation and immutable regression evidence; historical TASK-0045 does not count as this new natural pilot."
+    precedence: 4
+  - source: "phatnguyen03022001/architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/bootstrap/authority.lock.json"
+    role: "Intended accepted dev authority generation for this pilot: skills 084d4657d1602a19cf91c68b07716221f34b6aca, standards 1141b9dbfce0110d6623f5a877c2d04843caa6eb, documents c4eb75c33b6cfdb02b5b88eb6eb78d7fa48d4360, runtime 69c4760ab07e9cb04263eae36d95f39887f31c23. Selectively resolve applicable capability paths; no stable-main activation or full support context preload."
+    precedence: 5
+structure_authority:
+  status: RESOLVED
+  source: "Existing Today learner route, activity workspace, generated public client, locale messages and native web verification companions."
+  rationale: "Extend the existing learner interaction with its already accepted API capability; local UI component decomposition is Executor HOW within this boundary."
+objective: "Let a signed-in learner start and complete the existing PM-L02 Gist Sprint from Today, hear its authorized audio, submit a gist answer, and receive truthful TRAINING feedback for either Academic or General Training."
+scope:
+  required_changes:
+    - "Add a clearly labelled Gist Sprint direct-practice action alongside the existing Reading direct-practice action on Today. Preserve the existing Reading availability rule; allow Gist Sprint for a configured Academic or General Training target using the existing PM-L02 activity assignment operation. Missing target, pending requests and unavailable assignments retain truthful existing behavior."
+    - "Render the assigned MEDIA_REFERENCE audio through the existing authenticated media operation and generated client. Preserve access-token opacity, private media ownership and authorized source; show loading/failure states without silently substituting media or implying success. Dispose of task-owned playback resources when activity changes or unmounts."
+    - "Reuse the existing attempt, answer and submission flow for the assigned gist task. Preserve the existing TRAINING/non-evidence explanation and server-owned result; switching practice must not reuse another activity's answers, media or attempt. Keep existing localization and accessibility conventions."
+    - "Add meaningful focused component and browser/API integration proof for the complete learner flow and its failure/isolation boundaries. Reuse existing native verification and immutable unchanged backend semantics evidence."
+  allowed_existing_files_or_components:
+    - "apps/web Today and existing activity workspace components, their directly necessary local companions and locale messages"
+    - "Existing web unit and browser end-to-end verification companions"
+    - ".github/verification-boundary/candidate (existing sentinel-only verification commit)"
+invariants:
+  - "Core remains the owner of assignment, media authorization, attempts, scoring and consequences. No browser bypass, public contract, generated binding, database, provider or storage change."
+  - "PM-L02 remains TRAINING with observation-only consequences; no Band, readiness, mastery, weakness, EvidenceFact, Assessment, Progression or Planner policy is introduced. Listening remains shared behavior across the two real target variants."
+  - "Existing PM-R03 Reading behavior and PM-L03 backend behavior remain intact. No claim of broad IELTS product support, deployment readiness or certification follows from this slice."
+  - "Real environment values remain opaque and untouched. No support-repository mutation, operator-state cleanup, new paid dependency or external service activation."
+forbidden_changes:
+  - "No canonical product semantic change, API/schema/backend implementation change, dependency change, workflow modification, new framework, new route architecture, main/staging mutation, branch creation, force push, deployment, activation or freeze."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Both configured target variants can start Gist Sprint from Today alongside preserved Reading behavior; assignment and target-unavailable states remain correct."
+    evidence_required: "Focused tests assert actual PM-L02 request, target eligibility, pending/unavailable behavior and Reading regression."
+  - id: AC-2
+    requirement: "Assigned audio is retrieved through authenticated existing ownership, plays through an accessible control, and handles failure and activity changes without leaking or reusing stale media."
+    evidence_required: "Meaningful component failure/cleanup proof and browser playback readiness or actual playback proof against the existing authorized media path. No secrets in evidence."
+  - id: AC-3
+    requirement: "A learner hears the existing stimulus, selects a gist answer and submits to the existing attempt path with truthful TRAINING feedback and no stale cross-activity state."
+    evidence_required: "Browser end-to-end proof for the genuine web/Core flow for Academic and General Training; preserve existing Reading proof and cite unchanged accepted backend consequence evidence."
+  - id: AC-4
+    requirement: "The exact implementation candidate passes native repository verification and existing authoritative GitHub verification, and only authorized dev changes are published."
+    evidence_required: "Local root verify result, existing sentinel-only exact-candidate Actions PASS, scope checks and actual task/report validation; report-only child with truthful publication limits, fresh remote/local identity and unchanged main."
+capability_requirements:
+  EXECUTION: [repository_content_read, repository_content_write, native_repository_execution, git_history_read, git_commit, git_push, remote_ref_read]
+  REVIEW: [repository_content_read, repository_content_write, git_history_read, git_commit, git_push, remote_ref_read]
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Bind task and intended exact authority set; prove all EXECUTION capabilities before mutation, clean local equality to published base, exact dev/main and existing native verification availability."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Prove focused eligibility, media lifecycle/error, submission and Reading regression behavior; run the existing full root verify path covering the new real browser flow."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Publish implementation candidate then existing sentinel-only boundary to dev, obtain exact-candidate GitHub PASS without workflow changes; validate and publish truthful canonical report separately and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: true
+    mechanism: "Existing .github/workflows/verify.yml sentinel-bound exact candidate execution of ./verify."
+    expected_signal: "Successful existing workflow with boundary parent equal to implementation candidate SHA and exact-candidate assertion passing."
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
