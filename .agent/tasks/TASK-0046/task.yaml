@@ -1,6 +1,6 @@
 protocol_version: 3
 task_id: TASK-0046
-task_revision: 2
+task_revision: 3
 state: APPROVED
 origin:
   type: user_request
@@ -83,7 +83,7 @@ acceptance_criteria:
     requirement: "The revised report records the existing verified PM-L02 pilot without widening it into a global IELTS, activation, deployment, promotion or certification claim."
     evidence_required: "Direct report review against TASK-0046 candidate, accepted TASK-0045 backend evidence and existing GitHub Actions run 33994581381."
 capability_requirements:
-  EXECUTION: [repository_content_read, repository_content_write, git_history_read, git_commit, git_push, remote_ref_read]
+  EXECUTION: [repository_content_read, repository_content_write, native_repository_execution, git_history_read, git_commit, git_push, remote_ref_read]
   REVIEW: [repository_content_read, repository_content_write, git_history_read, git_commit, git_push, remote_ref_read]
 verification:
   executor_checks:
