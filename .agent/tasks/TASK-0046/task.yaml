@@ -1,6 +1,6 @@
 protocol_version: 3
 task_id: TASK-0046
-task_revision: 1
+task_revision: 2
 state: APPROVED
 origin:
   type: user_request
@@ -44,28 +44,26 @@ authority_sources:
   - source: "phatnguyen03022001/architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/bootstrap/authority.lock.json"
     role: "Intended accepted dev authority generation for this pilot: skills 084d4657d1602a19cf91c68b07716221f34b6aca, standards 1141b9dbfce0110d6623f5a877c2d04843caa6eb, documents c4eb75c33b6cfdb02b5b88eb6eb78d7fa48d4360, runtime 69c4760ab07e9cb04263eae36d95f39887f31c23. Selectively resolve applicable capability paths; no stable-main activation or full support context preload."
     precedence: 5
+  - source: "phatnguyen03022001/ilets@224e74730ed7cdc10e6ab13c0292fe0b71c80a8b:.agent/tasks/TASK-0046/review.yaml"
+    role: "Published independent REVISION_REQUIRED judgment over report revision 1. It preserves the verified candidate and restricts this revision to valid Executor evidence."
+    precedence: 6
 structure_authority:
   status: RESOLVED
-  source: "Existing Today learner route, activity workspace, generated public client, locale messages and native web verification companions."
-  rationale: "Extend the existing learner interaction with its already accepted API capability; local UI component decomposition is Executor HOW within this boundary."
-objective: "Let a signed-in learner start and complete the existing PM-L02 Gist Sprint from Today, hear its authorized audio, submit a gist answer, and receive truthful TRAINING feedback for either Academic or General Training."
+  source: "Existing TASK-0046 report/review lineage, accepted artifact validator and immutable candidate verification evidence."
+  rationale: "Correct the executor-owned evidence serialization only; no product or implementation structure is in scope."
+objective: "Publish a validator-valid, truthful TASK-0046 executor report that preserves the already verified Gist Sprint candidate lineage without changing product behavior."
 scope:
   required_changes:
-    - "Add a clearly labelled Gist Sprint direct-practice action alongside the existing Reading direct-practice action on Today. Preserve the existing Reading availability rule; allow Gist Sprint for a configured Academic or General Training target using the existing PM-L02 activity assignment operation. Missing target, pending requests and unavailable assignments retain truthful existing behavior."
-    - "Render the assigned MEDIA_REFERENCE audio through the existing authenticated media operation and generated client. Preserve access-token opacity, private media ownership and authorized source; show loading/failure states without silently substituting media or implying success. Dispose of task-owned playback resources when activity changes or unmounts."
-    - "Reuse the existing attempt, answer and submission flow for the assigned gist task. Preserve the existing TRAINING/non-evidence explanation and server-owned result; switching practice must not reuse another activity's answers, media or attempt. Keep existing localization and accessibility conventions."
-    - "Add meaningful focused component and browser/API integration proof for the complete learner flow and its failure/isolation boundaries. Reuse existing native verification and immutable unchanged backend semantics evidence."
+    - "Replace TASK-0046 report revision 1 with report revision 2 using only syntax accepted by the pinned artifact validator. Preserve the exact task/base, candidate, sentinel, GitHub run, local verification and post-publication timing distinctions already established by immutable commits and current remote evidence."
+    - "Validate the actual revised report before publication. Publish it as the sole child of the current planning base, then prove current dev/local equality, unchanged main and no implementation, sentinel or workflow mutation."
   allowed_existing_files_or_components:
-    - "apps/web Today and existing activity workspace components, their directly necessary local companions and locale messages"
-    - "Existing web unit and browser end-to-end verification companions"
-    - ".github/verification-boundary/candidate (existing sentinel-only verification commit)"
+    - ".agent/tasks/TASK-0046/report.yaml"
 invariants:
-  - "Core remains the owner of assignment, media authorization, attempts, scoring and consequences. No browser bypass, public contract, generated binding, database, provider or storage change."
-  - "PM-L02 remains TRAINING with observation-only consequences; no Band, readiness, mastery, weakness, EvidenceFact, Assessment, Progression or Planner policy is introduced. Listening remains shared behavior across the two real target variants."
-  - "Existing PM-R03 Reading behavior and PM-L03 backend behavior remain intact. No claim of broad IELTS product support, deployment readiness or certification follows from this slice."
-  - "Real environment values remain opaque and untouched. No support-repository mutation, operator-state cleanup, new paid dependency or external service activation."
+  - "Candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 and sentinel 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 remain immutable evidence. The prior successful exact-candidate GitHub run and fresh pinned local verifier may be reused; no redundant remote run is authorized."
+  - "No product implementation, generated artifact, contract, database, workflow, dependency, provider, real environment value, support repository, main or staging mutation."
+  - "The report does not self-attest its own post-publication identity. It distinguishes current pre-publication facts from later fresh remote equality proof."
 forbidden_changes:
-  - "No canonical product semantic change, API/schema/backend implementation change, dependency change, workflow modification, new framework, new route architecture, main/staging mutation, branch creation, force push, deployment, activation or freeze."
+  - "No application, test, canonical documentation, API/schema/backend, generated artifact, dependency, workflow, branch, main/staging, deployment, activation or freeze change."
 gap_policy:
   local_auto_fix: true
   scope_expansion: forbidden
@@ -76,35 +74,32 @@ gap_policy:
   blocking_gap_behavior: BLOCKED
 acceptance_criteria:
   - id: AC-1
-    requirement: "Both configured target variants can start Gist Sprint from Today alongside preserved Reading behavior; assignment and target-unavailable states remain correct."
-    evidence_required: "Focused tests assert actual PM-L02 request, target eligibility, pending/unavailable behavior and Reading regression."
+    requirement: "The actual revised Executor report validates against the exact pinned artifact validator and accurately identifies this task revision, prior candidate, sentinel and evidence boundaries."
+    evidence_required: "Validator exit 0 against the committed report and exact immutable path/commit checks."
   - id: AC-2
-    requirement: "Assigned audio is retrieved through authenticated existing ownership, plays through an accessible control, and handles failure and activity changes without leaking or reusing stale media."
-    evidence_required: "Meaningful component failure/cleanup proof and browser playback readiness or actual playback proof against the existing authorized media path. No secrets in evidence."
+    requirement: "Only the report changes after the revision-2 planning commit; product candidate, sentinel, GitHub workflow and main remain unchanged."
+    evidence_required: "Exact commit ancestry, diff scope, fresh remote refs and clean local equality after report publication."
   - id: AC-3
-    requirement: "A learner hears the existing stimulus, selects a gist answer and submits to the existing attempt path with truthful TRAINING feedback and no stale cross-activity state."
-    evidence_required: "Browser end-to-end proof for the genuine web/Core flow for Academic and General Training; preserve existing Reading proof and cite unchanged accepted backend consequence evidence."
-  - id: AC-4
-    requirement: "The exact implementation candidate passes native repository verification and existing authoritative GitHub verification, and only authorized dev changes are published."
-    evidence_required: "Local root verify result, existing sentinel-only exact-candidate Actions PASS, scope checks and actual task/report validation; report-only child with truthful publication limits, fresh remote/local identity and unchanged main."
+    requirement: "The revised report records the existing verified PM-L02 pilot without widening it into a global IELTS, activation, deployment, promotion or certification claim."
+    evidence_required: "Direct report review against TASK-0046 candidate, accepted TASK-0045 backend evidence and existing GitHub Actions run 33994581381."
 capability_requirements:
-  EXECUTION: [repository_content_read, repository_content_write, native_repository_execution, git_history_read, git_commit, git_push, remote_ref_read]
+  EXECUTION: [repository_content_read, repository_content_write, git_history_read, git_commit, git_push, remote_ref_read]
   REVIEW: [repository_content_read, repository_content_write, git_history_read, git_commit, git_push, remote_ref_read]
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Bind task and intended exact authority set; prove all EXECUTION capabilities before mutation, clean local equality to published base, exact dev/main and existing native verification availability."
+      command_or_check: "Bind revision 2 at its exact base, prove the required report-read/write and Git/ref capabilities before mutation, resolve the review, report revision 1, candidate, sentinel and current dev/main refs."
       required: true
     - id: CHECK-2
-      command_or_check: "Prove focused eligibility, media lifecycle/error, submission and Reading regression behavior; run the existing full root verify path covering the new real browser flow."
+      command_or_check: "Rewrite only report syntax, run the pinned actual artifact validator, inspect report-only diff and preserve evidence timing truth."
       required: true
     - id: CHECK-3
-      command_or_check: "Publish implementation candidate then existing sentinel-only boundary to dev, obtain exact-candidate GitHub PASS without workflow changes; validate and publish truthful canonical report separately and stop at NEEDS_REVIEW."
+      command_or_check: "Publish one report-only child nonforce to dev, refresh remote/local equality and main identity, then stop at NEEDS_REVIEW for Architect review."
       required: true
   authoritative_verification:
-    required: true
-    mechanism: "Existing .github/workflows/verify.yml sentinel-bound exact candidate execution of ./verify."
-    expected_signal: "Successful existing workflow with boundary parent equal to implementation candidate SHA and exact-candidate assertion passing."
+    required: false
+    mechanism: ""
+    expected_signal: "Existing successful GitHub Actions run 33994581381 and fresh pinned local verifier evidence apply to the unchanged candidate; this report-only correction must not trigger another remote run."
 git_authority:
   create_branch: false
   commit: true
