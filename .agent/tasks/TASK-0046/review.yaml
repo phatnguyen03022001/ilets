@@ -1,17 +1,21 @@
 protocol_version: 3
+
 task_id: TASK-0046
-task_revision: 1
-review_revision: 1
-state: REVISION_REQUIRED
+task_revision: 4
+review_revision: 2
+state: ACCEPTED
+
 reviewed_report:
   repository: phatnguyen03022001/ilets
   path: .agent/tasks/TASK-0046/report.yaml
-  commit: "b1d4fa1f2e2b054bc0783e0335a01b13f8268886"
-  report_revision: 1
+  commit: "039484555c432cc8f0e71702491659287b895816"
+  report_revision: 2
+
 independence:
   reviewer_role: ARCHITECT
   separate_session_from_executor: true
   exact_report_identity_verified: true
+
 contract_compliance:
   protocol_version: PASS
   identity: PASS
@@ -20,13 +24,30 @@ contract_compliance:
   scope: PASS
   structure_policy: PASS
   git_authority: PASS
-  acceptance_criteria: NOT_PROVEN
+  acceptance_criteria: PASS
   verifier_evidence: PASS
+
+accepted_candidate:
+  commit: "9aa6be322f71a9c978534d2536aabc8788fe2cb9"
+  role: "immutable TASK-0046 Gist Sprint natural IELTS product candidate originally executed under revision 1 and compatibly closed under revision 4"
+
+acceptance_basis:
+  - "Fresh canonical review proves TASK-0046 is protocol v3, revision 4, APPROVED and execution_ready at exact handoff base a5b254c43d63a0d6c5f2c72661e9ebd0e8488549; reviewed report 039484555c432cc8f0e71702491659287b895816 is report_revision 2 and binds that exact revision-4 base."
+  - "Report commit 039484555c432cc8f0e71702491659287b895816 is the sole direct child of exact revision-4 base a5b254c43d63a0d6c5f2c72661e9ebd0e8488549 and modifies only .agent/tasks/TASK-0046/report.yaml. The prior review.yaml remained byte-identical through Executor publication."
+  - "Current accepted dev authority is freshly resolved from architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2 as agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26, agent-standards@1141b9dbfce0110d6623f5a877c2d04843caa6eb, agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 and agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23. Accepted TASK-0035 explicitly leaves NATURAL-ILETS-PILOT open for this product proof and grants no stable activation."
+  - "The immutable product candidate remains 9aa6be322f71a9c978534d2536aabc8788fe2cb9. Sentinel 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 is its direct child and contains that exact candidate SHA. Candidate execution remains attributed to TASK-0046 revision 1; revision 4 does not claim to have authored, amended, recreated, rebased or cherry-picked product bytes."
+  - "Fresh compare evidence from sentinel 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 through reviewed report 039484555c432cc8f0e71702491659287b895816 shows only TASK-0046 task, report and review artifacts changed. No later application, product-document, contract, backend, workflow or dependency drift invalidates reuse of the natural-pilot candidate."
+  - "Fresh GitHub Actions resolution proves run 33994581381 is workflow verify, push event, completed success, head SHA 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3. Its verify job completed Checkout verification ref, Bind exact candidate from latest sentinel boundary, Checkout exact candidate, Assert exact candidate HEAD and Run ./verify successfully."
+  - "The Executor report records a fresh detached-worktree full native ./verify PASS on exact candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 using the repository-required Node v24.19.0, plus exact agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26 report-validator exit 0 and git diff --check PASS. This Architect surface could not independently rerun that local validator because its sandbox lacked outbound name resolution, so acceptance relies on the committed report evidence together with independent artifact, lineage, authority and remote verifier checks rather than a fabricated rerun claim."
+  - "The revised report correctly leaves same-report publication predicates AC-4 and CHECK-5 NOT_PROVEN. Fresh Architect review-boundary proof establishes dev=039484555c432cc8f0e71702491659287b895816 before review publication, main=e707aeee43411cc8f99448b63220eb8beff552b6 unchanged and remote topology exactly {dev, main}; Executor terminal evidence records final local HEAD=origin/dev=remote dev and a clean working tree."
+
 promotion_readiness:
   eligible_for_candidate_capture: false
-  reason: "The product candidate passed fresh pinned local verification and exact-candidate GitHub verification, but canonical executor evidence is invalid until a corrected report is independently reviewed."
+  reason: "TASK-0046 revision 4 terminally closes only the NATURAL-ILETS-PILOT proof on dev; it grants no main promotion, deployment, release, stable activation, freeze or successor-handoff authority."
+
+follow_up_tasks:
+  - "Run the final five-repository live-governance and debt sweep under the now-proven natural IELTS product path before any stable activation or freeze decision."
+
 notes:
-  - "Independent review resolved the exact report commit, its candidate parent and sentinel-only boundary, confirmed GitHub Actions run 33994581381 success, and reran the pinned local verifier successfully on dev."
-  - "The implementation is within the admitted web-only boundary: Today offers existing PM-L02 for configured Academic and General Training learners, the existing authenticated media operation returns audio/ogg, submission remains server-owned TRAINING/non-evidence behavior, and PM-R03 remains available only for Academic learners."
-  - "The current report cannot be canonical evidence because its YAML block-scalar syntax is rejected by the accepted agent-skills artifact validator at capability_preflight.evidence. Its report-level acceptance claims are therefore NOT_PROVEN, despite separate candidate verification evidence."
-  - "Continuation scope is limited to replacing every unsupported report YAML value with validator-supported equivalent syntax, preserving truthful timing and evidence, then validating and publishing a report-only revision. No implementation, sentinel, workflow, or main mutation is authorized by this review."
+  - "TASK-0046 revision 1 product execution, sentinel and GitHub run remain immutable historical evidence; revision 4 closes current-authority compatibility and canonical report evidence only."
+  - "NATURAL-ILETS-PILOT is satisfied by this exact accepted task lineage. Global IELTS closure, final five-repository closure and stable activation remain separate predicates."
