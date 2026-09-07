@@ -1,109 +1,183 @@
 protocol_version: 3
+
 task_id: TASK-0046
-task_revision: 3
+task_revision: 4
 state: APPROVED
+
 origin:
   type: user_request
   task_id: ""
   gap_id: NATURAL-ILETS-PILOT
+
 architect_binding:
   target_repository: phatnguyen03022001/ilets
+
 target:
   repository: phatnguyen03022001/ilets
   branch:
     name: dev
     role: primary-development
+
 execution_base:
   mode: handoff_snapshot
   capture: after_final_planning_commit
   require_exact_match: true
+
 skill_library:
   repository: phatnguyen03022001/agent-skills
-  revision: "084d4657d1602a19cf91c68b07716221f34b6aca"
-architect_analysis_skills: [architect]
+  revision: "de060ab9c61627eeec02937519eddfffd8bc1e26"
+
+architect_analysis_skills:
+  - architect
+
 execution_skills:
-  required: [executor, simplicity, verification, github-workflow]
+  required:
+    - executor
+    - simplicity
+    - verification
+    - github-workflow
   recommended: []
+
 external_skills:
   architect_analysis: []
   execution_required: []
   execution_recommended: []
+
 authority_sources:
-  - source: current operator instruction
-    role: "Run a genuine new ilets product pilot on dev using Luna/MAX Executors. The current root session is delegated Architect for this work; CODEX_LOCAL and Luna/MAX are current-session choices, not changes to durable role or model defaults."
+  - source: "current operator instruction"
+    role: "Close the already implemented genuine TASK-0046 natural IELTS pilot under the refreshed post-closure authority set. Do not create a replacement product task or reimplement the candidate unless current authority materially invalidates reuse."
     precedence: 1
-  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:CONSTITUTION.md, OBJECTIVE.md, docs/BEHAVIOR.md, docs/behavior/practice-and-media.md"
-    role: "Target authority hierarchy, learner route, existing PM-L02/PT-12/FTR-009 training and media semantics; only implement the existing product meaning."
+  - source: "phatnguyen03022001/architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2:.agent/bootstrap/authority.lock.json"
+    role: "Current accepted intended dev authority set: agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26, agent-standards@1141b9dbfce0110d6623f5a877c2d04843caa6eb, agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 and agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23. This is dev authority only and grants no stable activation."
     precedence: 2
-  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:docs/ARCHITECTURE.md, docs/INTERFACES.md, contracts/"
-    role: "Existing Web/Core ownership, authenticated media and activity boundaries, exact generated public client contracts. Resolve only relevant owners and contract operations."
+  - source: "phatnguyen03022001/architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2:.agent/tasks/TASK-0035/review.yaml"
+    role: "Accepted post-closure authority refresh. It explicitly leaves NATURAL-ILETS-PILOT open and requires one natural ilets product task to reach ACCEPTED before final sweep or stable activation."
     precedence: 3
-  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:.agent/tasks/TASK-0045/review.yaml"
-    role: "Accepted backend PM-L02 implementation and immutable regression evidence; historical TASK-0045 does not count as this new natural pilot."
-    precedence: 4
-  - source: "phatnguyen03022001/architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/bootstrap/authority.lock.json"
-    role: "Intended accepted dev authority generation for this pilot: skills 084d4657d1602a19cf91c68b07716221f34b6aca, standards 1141b9dbfce0110d6623f5a877c2d04843caa6eb, documents c4eb75c33b6cfdb02b5b88eb6eb78d7fa48d4360, runtime 69c4760ab07e9cb04263eae36d95f39887f31c23. Selectively resolve applicable capability paths; no stable-main activation or full support context preload."
-    precedence: 5
   - source: "phatnguyen03022001/ilets@224e74730ed7cdc10e6ab13c0292fe0b71c80a8b:.agent/tasks/TASK-0046/review.yaml"
-    role: "Published independent REVISION_REQUIRED judgment over report revision 1. It preserves the verified candidate and restricts this revision to valid Executor evidence."
+    role: "Independent REVISION_REQUIRED judgment over report revision 1. The product candidate itself was found within authority and verification passed; only canonical report serialization/evidence closure remained invalid."
+    precedence: 4
+  - source: "phatnguyen03022001/ilets@9aa6be322f71a9c978534d2536aabc8788fe2cb9"
+    role: "Immutable TASK-0046 Gist Sprint product candidate. Its exact parent is the original authorized revision-1 task base 0a5e95bdc0f24b385aada917ef83b67bf2ca6a56."
+    precedence: 5
+  - source: "phatnguyen03022001/ilets@76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 and GitHub Actions run 33994581381"
+    role: "Immutable verification boundary and successful exact-candidate remote verifier evidence for candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9. No new remote verification run is required unless current evidence is materially invalidated."
     precedence: 6
+  - source: "phatnguyen03022001/ilets@4b88bbde9558ae50de2c17941677c73fe7c504c8:CONSTITUTION.md, OBJECTIVE.md, docs/BEHAVIOR.md, docs/behavior/practice-and-media.md, docs/ARCHITECTURE.md, docs/INTERFACES.md, contracts/"
+    role: "Original target-owned product, behavior, architecture and interface authority used by TASK-0046. Current dev comparison from the product candidate through revision-3 planning shows no later product/application/contract mutation, only TASK-0046 evidence/planning artifacts plus its verification-boundary sentinel."
+    precedence: 7
+
 structure_authority:
   status: RESOLVED
-  source: "Existing TASK-0046 report/review lineage, accepted artifact validator and immutable candidate verification evidence."
-  rationale: "Correct the executor-owned evidence serialization only; no product or implementation structure is in scope."
-objective: "Publish a validator-valid, truthful TASK-0046 executor report that preserves the already verified Gist Sprint candidate lineage without changing product behavior."
+  source: "Existing TASK-0046 candidate/sentinel/report/review lineage plus the accepted current architect-profile authority lock."
+  rationale: "This is closure-only evidence work. The product outcome already exists and remains immutable. The only authorized repository mutation is replacement of the existing TASK-0046 report with a validator-supported report revision 2 after current-authority compatibility and exact-candidate verification are freshly proven."
+
+objective: "Close the genuine TASK-0046 Gist Sprint natural IELTS pilot by publishing a validator-valid, truthful report revision 2 for task revision 4 under the refreshed post-closure authority set, without rewriting or relabeling the historical product execution."
+
 scope:
   required_changes:
-    - "Replace TASK-0046 report revision 1 with report revision 2 using only syntax accepted by the pinned artifact validator. Preserve the exact task/base, candidate, sentinel, GitHub run, local verification and post-publication timing distinctions already established by immutable commits and current remote evidence."
-    - "Validate the actual revised report before publication. Publish it as the sole child of the current planning base, then prove current dev/local equality, unchanged main and no implementation, sentinel or workflow mutation."
+    - "Fresh-bind TASK-0046 revision 4 at its exact handoff base and resolve the current four-repository authority set from architect-profile TASK-0035. Prove that changes from the original pilot support set to the current set do not alter the TASK-0046 product consequence boundary, target-owned PM-L02 semantics, candidate identity, evidence validity rules, or report-closure eligibility. If any current authority materially invalidates reuse, stop before mutation with REVERIFY_REQUIRED or AUTHORITY_REQUIRED instead of grandfathering evidence."
+    - "Preserve candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9, verification boundary 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3, GitHub Actions run 33994581381, original revision-1 execution attribution, and the accepted TASK-0045 backend evidence as immutable history. Revision 4 did not author, amend, recreate, rebase or cherry-pick the product candidate."
+    - "Fresh-run the repository-native full verifier against the exact immutable candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 using a detached/archive/worktree mechanism that does not mutate canonical dev history. Fresh-resolve GitHub Actions run 33994581381 and its exact candidate-binding evidence. Do not trigger a new remote run unless the existing run cannot be proven applicable."
+    - "Replace the existing .agent/tasks/TASK-0046/report.yaml with report_revision 2 and task_revision 4 using only serialization supported by agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26. The report must distinguish historical revision-1 product execution evidence from revision-4 current-authority compatibility/revalidation evidence and must not claim revision 4 authored the candidate."
+    - "Validate the actual revised report with agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26 using scripts/validate_skill_library.py --artifact report PATH and require exit 0 before publication. Publish the report as the sole direct child of the revision-4 planning base, changing only .agent/tasks/TASK-0046/report.yaml, then fresh-prove final local/remote dev equality, clean working tree, unchanged main and exact dev/main topology."
   allowed_existing_files_or_components:
-    - ".agent/tasks/TASK-0046/report.yaml"
+    - .agent/tasks/TASK-0046/report.yaml
+  expected_files_are_restrictive: true
+
 invariants:
-  - "Candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 and sentinel 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 remain immutable evidence. The prior successful exact-candidate GitHub run and fresh pinned local verifier may be reused; no redundant remote run is authorized."
-  - "No product implementation, generated artifact, contract, database, workflow, dependency, provider, real environment value, support repository, main or staging mutation."
-  - "The report does not self-attest its own post-publication identity. It distinguishes current pre-publication facts from later fresh remote equality proof."
+  - "TASK-0046 remains the same natural product pilot. Candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 and sentinel 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3 are immutable historical evidence."
+  - "The current authority set is exactly agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26, agent-standards@1141b9dbfce0110d6623f5a877c2d04843caa6eb, agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 and agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23. No mutable-ref substitution is allowed."
+  - "The original product semantics remain target-owned by ilets. Support repositories may govern workflow, evidence, assurance, documentation closure and local transport but may not retroactively rewrite target product meaning."
+  - "Revision 4 is closure-only. No application, test, documentation, contract, generated client, backend, database, migration, workflow, dependency, provider, environment value or verification-boundary mutation is authorized."
+  - "The revised report must not self-attest its own post-publication commit identity or final remote equality. Same-report publication predicates remain NOT_PROVEN inside the report and are proven externally after publication."
+  - "A terminal ACCEPTED review of this task closes only NATURAL-ILETS-PILOT. It does not itself close the final five-repository sweep or authorize main activation, deployment, release, freeze or successor handoff."
+  - "main remains e707aeee43411cc8f99448b63220eb8beff552b6 and repository topology remains exactly dev/main throughout execution."
+
 forbidden_changes:
-  - "No application, test, canonical documentation, API/schema/backend, generated artifact, dependency, workflow, branch, main/staging, deployment, activation or freeze change."
+  - "Do not modify .agent/tasks/TASK-0046/review.yaml; it remains the prior REVISION_REQUIRED Architect artifact until Governing Architect review after report publication."
+  - "Do not modify the product candidate, verification boundary, application/tests/docs/contracts/backend/database/workflow/dependencies or any prior task directory."
+  - "Do not create a replacement IELTS product task merely to obtain a cleaner lineage while this exact task can truthfully close."
+  - "Do not claim candidate execution occurred under revision 4 or under the refreshed authority set. Only current compatibility/revalidation and report closure occur under revision 4."
+  - "Do not create/delete/rename branches, force-push, mutate main, deploy, promote, tag, publish a release, freeze authority or mutate repository settings/metadata."
+
 gap_policy:
-  local_auto_fix: true
+  local_auto_fix: false
   scope_expansion: forbidden
   architecture_change: forbidden
   spec_change: forbidden
   dependency_change: revised_contract_required
   public_contract_change: revised_contract_required
   blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
 acceptance_criteria:
   - id: AC-1
-    requirement: "The actual revised Executor report validates against the exact pinned artifact validator and accurately identifies this task revision, prior candidate, sentinel and evidence boundaries."
-    evidence_required: "Validator exit 0 against the committed report and exact immutable path/commit checks."
+    requirement: "Current post-closure authority is compatibly rebound to TASK-0046 closure without retroactively relabeling historical execution."
+    evidence_required: "Fresh exact-resolution of architect-profile TASK-0035 lock/review and materially relevant accepted support changes proves no current support change invalidates the immutable TASK-0046 product consequence boundary or reuse of candidate/sentinel/run evidence. The report explicitly attributes product execution to revision 1 and current compatibility/revalidation to revision 4."
   - id: AC-2
-    requirement: "Only the report changes after the revision-2 planning commit; product candidate, sentinel, GitHub workflow and main remain unchanged."
-    evidence_required: "Exact commit ancestry, diff scope, fresh remote refs and clean local equality after report publication."
+    requirement: "The immutable Gist Sprint candidate remains freshly verified and its existing authoritative remote run remains correctly bound."
+    evidence_required: "Fresh local full verifier PASS on exact candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 plus fresh GitHub resolution of run 33994581381 proving success and exact candidate binding through sentinel 76156fe5b0ad18afbdd5ccc09e92938f7a79aea3. Candidate-to-current-dev comparison shows no later product/application/contract drift."
   - id: AC-3
-    requirement: "The revised report records the existing verified PM-L02 pilot without widening it into a global IELTS, activation, deployment, promotion or certification claim."
-    evidence_required: "Direct report review against TASK-0046 candidate, accepted TASK-0045 backend evidence and existing GitHub Actions run 33994581381."
+    requirement: "Canonical report revision 2 is validator-valid, truthful and bounded to the natural pilot."
+    evidence_required: "The committed report says task_revision 4 and report_revision 2, uses only serialization supported by agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26, validates with exact command scripts/validate_skill_library.py --artifact report PATH at exit 0, preserves exact candidate/sentinel/run identities, records no false current execution authorship, and makes no global IELTS/activation/deployment/promotion/certification claim."
+  - id: AC-4
+    requirement: "Revision-4 execution publishes only the corrected report and stops for independent Architect review."
+    evidence_required: "The report commit has the exact revision-4 planning base as sole parent and changes only .agent/tasks/TASK-0046/report.yaml. Fresh post-publication proof shows local HEAD = origin/dev = remote dev, clean working tree, main unchanged at e707aeee43411cc8f99448b63220eb8beff552b6 and topology exactly dev/main. review.yaml remains untouched."
+
 capability_requirements:
-  EXECUTION: [repository_content_read, repository_content_write, native_repository_execution, git_history_read, git_commit, git_push, remote_ref_read]
-  REVIEW: [repository_content_read, repository_content_write, git_history_read, git_commit, git_push, remote_ref_read]
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - repository_content_write
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Bind revision 2 at its exact base, prove the required report-read/write and Git/ref capabilities before mutation, resolve the review, report revision 1, candidate, sentinel and current dev/main refs."
+      command_or_check: "Fresh-bind TASK-0046 revision 4 at the exact handoff base. Require local branch dev, local HEAD = origin/dev = exact base, clean working tree, main e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly dev/main and all required EXECUTION capabilities available before mutation. Resolve the current architect-profile TASK-0035 authority lock/review plus prior TASK-0046 review/report/candidate/sentinel."
       required: true
     - id: CHECK-2
-      command_or_check: "Rewrite only report syntax, run the pinned actual artifact validator, inspect report-only diff and preserve evidence timing truth."
+      command_or_check: "Perform the current-authority compatibility/rebinding proof. Inspect the accepted support changes between the original pilot set and current lock only as needed to decide evidence validity. Confirm candidate-to-current-dev has no later product/application/contract drift. If materially invalidated, stop without report mutation."
       required: true
     - id: CHECK-3
-      command_or_check: "Publish one report-only child nonforce to dev, refresh remote/local equality and main identity, then stop at NEEDS_REVIEW for Architect review."
+      command_or_check: "Fresh-run the full native ./verify against exact candidate 9aa6be322f71a9c978534d2536aabc8788fe2cb9 without rewriting dev history. Fresh-resolve GitHub Actions run 33994581381 and exact sentinel/candidate binding. No new remote run is required when existing authoritative evidence remains applicable."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Rewrite only .agent/tasks/TASK-0046/report.yaml as task_revision 4 / report_revision 2 using supported serialization. Validate the actual report with agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26 scripts/validate_skill_library.py --artifact report PATH and require exit 0. Run git diff --check and prove only the report changed."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Commit and push the report-only direct child non-force to dev. Fresh-prove final local HEAD = origin/dev = remote dev, clean tree, unchanged main and exact dev/main topology, then stop at NEEDS_REVIEW for Governing Architect review."
       required: true
   authoritative_verification:
     required: false
     mechanism: ""
-    expected_signal: "Existing successful GitHub Actions run 33994581381 and fresh pinned local verifier evidence apply to the unchanged candidate; this report-only correction must not trigger another remote run."
+    expected_signal: "Existing GitHub Actions run 33994581381 remains the authoritative remote verifier for the immutable product candidate. Revision 4 requires fresh local exact-candidate verification and fresh remote-run identity/binding resolution but does not authorize a redundant new remote run when the existing evidence is still valid."
+
 git_authority:
   create_branch: false
   commit: true
   push: true
   promote_to_main: false
+
 blocking_decisions: []
 execution_ready: true
