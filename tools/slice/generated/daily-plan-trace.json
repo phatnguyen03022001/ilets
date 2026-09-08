@@ -1,0 +1,50 @@
+{
+  "artifact": "DERIVED_IMPLEMENTATION_TRACE",
+  "canonical_registry_sha256": "672daa3762c0b04e68425f32cef29ee5a63c47c53d21b5b222537ea232875252",
+  "canonical_source_revision": "canonical-source-revision/v1:63ab4bc8dd5b6666eb48b1ace15b4711c977f114d790acc95c58dbeacabe22cf",
+  "schema_version": 1,
+  "slice": {
+    "feature_id": "X-F01",
+    "feature_root_id": "FTR-041",
+    "implementation_refs": [
+      {
+        "path": "apps/web/src/features/today/today.tsx",
+        "required_literals": [
+          "dailyPlanQueryKey",
+          "source: \"TODAY\""
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/activity.go",
+        "required_literals": [
+          "DailyPlanItemId",
+          "cannot recheck current content eligibility"
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/planner.go",
+        "required_literals": [
+          "plannercore.Decide",
+          "InsertDailyPlan"
+        ]
+      }
+    ],
+    "slice_id": "daily-plan-v1",
+    "verification_refs": [
+      {
+        "path": "apps/web/e2e/reading-training.spec.ts",
+        "required_literals": [
+          "/v1/daily-plan",
+          "Start recommended activity"
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/planner_integration_test.go",
+        "required_literals": [
+          "/v1/daily-plan",
+          "freshness is exact revision scoped across the bounded supply"
+        ]
+      }
+    ]
+  }
+}

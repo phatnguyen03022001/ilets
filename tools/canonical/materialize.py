@@ -116,8 +116,10 @@ def feature_alias_from_sources(feature_root_id: str, catalog: dict[str,Any], beh
     alias=match.group(1)
     headings=[line for line in behavior.splitlines() if re.match(rf"^#+\s+{re.escape(feature_root_id)}(?:\s|$)",line)]
     if len(headings)!=1: fail(f"expected exactly one behavior section for {feature_root_id}; found {len(headings)}")
-    rows=parse_table(section_text(behavior,headings[0]))
-    if alias not in rows: fail(f"behavior section for {feature_root_id} does not bind alias {alias}")
+    heading_match=re.match(rf"^#+\s+{re.escape(feature_root_id)}\s+([A-Z]-F\d{{2}})\s+—\s+",headings[0])
+    if not heading_match: fail(f"behavior section for {feature_root_id} has malformed feature heading")
+    heading_alias=heading_match.group(1)
+    if heading_alias != alias: fail(f"conflicting behavior alias for {feature_root_id}: catalog {alias}, heading {heading_alias}")
     return alias
 
 def subject_slice_paths(root: Path, revision: str) -> list[str]:
@@ -129,7 +131,7 @@ def subject_slice_paths(root: Path, revision: str) -> list[str]:
             paths.append(path)
     return sorted(paths)
 
-def validated_relation_refs(items: Any, relation: str, read_subject: Any) -> list[dict[str,Any]]:
+def normalized_relation_refs(items: Any, relation: str) -> list[dict[str,Any]]:
     if not isinstance(items,list) or not items: fail(f"{relation} must be a non-empty list")
     validated=[]
     for item in items:
@@ -137,13 +139,54 @@ def validated_relation_refs(items: Any, relation: str, read_subject: Any) -> lis
         path=item["path"]; literals=item["required_literals"]
         if not isinstance(path,str) or not path or Path(path).is_absolute() or ".." in Path(path).parts: fail(f"malformed {relation} relation")
         if not isinstance(literals,list) or not literals or not all(isinstance(value,str) and value for value in literals): fail(f"malformed {relation} relation")
-        text=read_subject(path)
-        missing=[value for value in literals if value not in text]
-        if missing: fail(f"unattributable {relation} relation {path}: missing {', '.join(missing)}")
         validated.append({"path":path,"required_literals":list(literals)})
     paths=[item["path"] for item in validated]
     if len(paths)!=len(set(paths)): fail(f"duplicate {relation} path")
     return sorted(validated,key=lambda item:item["path"])
+
+def validated_relation_refs(items: Any, relation: str, read_subject: Any) -> list[dict[str,Any]]:
+    validated=normalized_relation_refs(items,relation)
+    for item in validated:
+        text=read_subject(item["path"])
+        missing=[value for value in item["required_literals"] if value not in text]
+        if missing: fail(f"unattributable {relation} relation {item['path']}: missing {', '.join(missing)}")
+    return validated
+
+PRACTICE_SEMANTIC_FIELDS=(
+    "practice_mode_id",
+    "practice_type_ids",
+    "skill_target_ids",
+    "official_family_ids",
+    "content_context_id",
+    "primary_activity_purpose",
+    "evidence_candidacy",
+)
+
+def materialization_refs(slice_path: Path, slice_config: Any) -> set[str]:
+    if not isinstance(slice_config,dict): fail(f"slice trace {slice_path.name} must be an object")
+    feature_root_id=slice_config.get("feature_root_id")
+    if feature_root_id is None:
+        missing=[field for field in ("feature_id",*PRACTICE_SEMANTIC_FIELDS) if field not in slice_config]
+        if missing: fail(f"legacy slice trace {slice_path.name} is missing practice semantics: {', '.join(missing)}")
+    else:
+        for field in ("slice_id","feature_root_id","feature_id"):
+            value=slice_config.get(field)
+            if not isinstance(value,str) or not value: fail(f"malformed feature-root slice {slice_path.name}: missing {field}")
+        normalized_relation_refs(slice_config.get("implementation_refs"),"implementation")
+        normalized_relation_refs(slice_config.get("verification_refs"),"verification")
+        present=[field in slice_config for field in PRACTICE_SEMANTIC_FIELDS]
+        if any(present) and not all(present): fail(f"incomplete specialized practice semantics in {slice_path.name}")
+        if not any(present): return set()
+    return {
+        slice_config["feature_id"],
+        slice_config["practice_mode_id"],
+        *slice_config["practice_type_ids"],
+        *slice_config["skill_target_ids"],
+        *slice_config["official_family_ids"],
+        slice_config["content_context_id"],
+        slice_config["primary_activity_purpose"],
+        slice_config["evidence_candidacy"],
+    }
 
 def query_feature_trace(feature_root_id: str, expected_revision: str, root: Path = ROOT) -> dict[str,Any]:
     root=Path(root)
@@ -202,6 +245,7 @@ def validate_source_map(config: dict[str,Any]) -> None:
             seen.add(pair)
 def materialize() -> tuple[dict[str,Any],list[tuple[Path,dict[str,Any]]]]:
     config=json.loads(SOURCE_MAP_PATH.read_text()); validate_source_map(config)
+    catalog=json.loads(PROJECT_CATALOG_PATH.read_text()); behavior=BEHAVIOR_PATH.read_text()
     owner_paths=sorted({e["owner"] for e in config["registries"]})
     revision=canonical_source_revision(owner_paths)
     entries=[]; global_ids={}
@@ -223,7 +267,11 @@ def materialize() -> tuple[dict[str,Any],list[tuple[Path,dict[str,Any]]]]:
     traces=[]
     for slice_path in slice_input_paths():
         slice_config=json.loads(slice_path.read_text())
-        refs={slice_config["feature_id"],slice_config["practice_mode_id"],*slice_config["practice_type_ids"],*slice_config["skill_target_ids"],*slice_config["official_family_ids"],slice_config["content_context_id"],slice_config["primary_activity_purpose"],slice_config["evidence_candidacy"]}
+        feature_root_id=slice_config.get("feature_root_id") if isinstance(slice_config,dict) else None
+        if feature_root_id is not None:
+            alias=feature_alias_from_sources(feature_root_id,catalog,behavior)
+            if slice_config.get("feature_id") != alias: fail(f"conflicting feature mapping for {feature_root_id}: expected {alias}, got {slice_config.get('feature_id')}")
+        refs=materialization_refs(slice_path,slice_config)
         missing=sorted(refs-set(global_ids))
         if missing: fail(f"slice trace {slice_path.name} contains unknown canonical references: {', '.join(missing)}")
         trace_doc={"artifact":"DERIVED_IMPLEMENTATION_TRACE","schema_version":1,"canonical_source_revision":revision,"canonical_registry_sha256":registry_sha256(registry_doc),"slice":slice_config}

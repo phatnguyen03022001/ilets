@@ -1,0 +1,14 @@
+{
+  "slice_id": "daily-plan-v1",
+  "feature_root_id": "FTR-041",
+  "feature_id": "X-F01",
+  "implementation_refs": [
+    {"path": "apps/web/src/features/today/today.tsx", "required_literals": ["dailyPlanQueryKey", "source: \"TODAY\""]},
+    {"path": "services/core-api/internal/httpapi/activity.go", "required_literals": ["DailyPlanItemId", "cannot recheck current content eligibility"]},
+    {"path": "services/core-api/internal/httpapi/planner.go", "required_literals": ["plannercore.Decide", "InsertDailyPlan"]}
+  ],
+  "verification_refs": [
+    {"path": "apps/web/e2e/reading-training.spec.ts", "required_literals": ["/v1/daily-plan", "Start recommended activity"]},
+    {"path": "services/core-api/internal/httpapi/planner_integration_test.go", "required_literals": ["/v1/daily-plan", "freshness is exact revision scoped across the bounded supply"]}
+  ]
+}

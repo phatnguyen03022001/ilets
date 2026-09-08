@@ -8,6 +8,23 @@
     "content_revision_id": "listening-bootstrap-gist-001-r1",
     "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
     "feature_id": "L-F03",
+    "feature_root_id": "FTR-009",
+    "implementation_refs": [
+      {
+        "path": "apps/web/src/features/today/today.tsx",
+        "required_literals": [
+          "PM-L02",
+          "startGistSprint"
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/activity.go",
+        "required_literals": [
+          "L-F03",
+          "PM-L02"
+        ]
+      }
+    ],
     "official_family_ids": [
       "IELTS-L-QF-01"
     ],
@@ -47,8 +64,21 @@
     ],
     "slice_id": "listening-gist-sprint-v1",
     "verification_refs": [
-      "tools/canonical/test_materialize.py",
-      "services/core-api/internal/httpapi/integration_test.go"
+      {
+        "path": "apps/web/e2e/reading-training.spec.ts",
+        "required_literals": [
+          "Start Gist Sprint",
+          "PM-L02"
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/integration_test.go",
+        "required_literals": [
+          "L-F03",
+          "PM-L02",
+          "NOT_EVIDENCE_CANDIDATE"
+        ]
+      }
     ]
   }
 }

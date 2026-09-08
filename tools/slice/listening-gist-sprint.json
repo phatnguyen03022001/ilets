@@ -1,6 +1,7 @@
 {
   "slice_id": "listening-gist-sprint-v1",
   "feature_id": "L-F03",
+  "feature_root_id": "FTR-009",
   "practice_mode_id": "PM-L02",
   "practice_type_ids": ["PT-12"],
   "skill_target_ids": ["L-COMP-01"],
@@ -10,7 +11,14 @@
   "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
   "content_revision_id": "listening-bootstrap-gist-001-r1",
   "public_api_operation_ids": ["getMe", "getTargetProfile", "putTargetProfile", "listPracticeModes", "createPracticeActivity", "getPracticeActivity", "getPracticeActivityMedia", "createAttempt", "getAttempt", "submitAttempt"],
+  "implementation_refs": [
+    {"path": "apps/web/src/features/today/today.tsx", "required_literals": ["PM-L02", "startGistSprint"]},
+    {"path": "services/core-api/internal/httpapi/activity.go", "required_literals": ["L-F03", "PM-L02"]}
+  ],
   "runtime_owner": "services/core-api",
   "persistence_resources": ["learners", "sessions", "target_profiles", "contents", "content_revisions", "validation_decisions", "content_use_states", "practice_activities", "attempts", "observations", "idempotency_operations"],
-  "verification_refs": ["tools/canonical/test_materialize.py", "services/core-api/internal/httpapi/integration_test.go"]
+  "verification_refs": [
+    {"path": "apps/web/e2e/reading-training.spec.ts", "required_literals": ["Start Gist Sprint", "PM-L02"]},
+    {"path": "services/core-api/internal/httpapi/integration_test.go", "required_literals": ["L-F03", "PM-L02", "NOT_EVIDENCE_CANDIDATE"]}
+  ]
 }
