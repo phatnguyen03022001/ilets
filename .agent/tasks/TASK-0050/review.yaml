@@ -1,15 +1,15 @@
 protocol_version: 3
 
 task_id: TASK-0050
-task_revision: 4
-review_revision: 4
+task_revision: 5
+review_revision: 5
 state: BLOCKED
 
 reviewed_report:
   repository: phatnguyen03022001/ilets
   path: .agent/tasks/TASK-0050/report.yaml
-  commit: "992bc729046d06213e4b86f6b6cf897f01f2a22f"
-  report_revision: 4
+  commit: "bd14b2c6c37be91b246e46c833d1969576f1b7b0"
+  report_revision: 5
 
 independence:
   reviewer_role: ARCHITECT
@@ -30,17 +30,16 @@ contract_compliance:
 gap_disposition:
   - gap_id: EXECUTION-CAPABILITY-UNAVAILABLE
     decision: BLOCKING
-    rationale: "Required native_repository_execution could not be established because the selected CHATGPT_LOCAL Agent Runtime transport remained disabled during the revision-4 pre-mutation capability gate, so no authorized implementation or verification consequence could safely begin."
+    rationale: "Required native_repository_execution could not be established because the selected CHATGPT_LOCAL Agent Runtime transport remained disabled during the revision-5 pre-mutation capability gate, so no authorized implementation or repository-native verification consequence could safely begin."
 
 promotion_readiness:
   eligible_for_candidate_capture: false
-  reason: "No implementation candidate exists; TASK-0050 revision 4 stopped at capability preflight before implementation mutation."
+  reason: "No implementation candidate exists; TASK-0050 revision 5 stopped at capability preflight before implementation mutation."
 
 notes:
-  - "Fresh Architect authority remains architect-profile/dev 1a711360afc201f286aeb66c093add98ae16f9ad with locked agent-skills 3c4a31598da4c4e12cb0925bee1b471f160d3b4e and Case Router EXECUTE -> executor."
-  - "Fresh GitHub review proves report 992bc729046d06213e4b86f6b6cf897f01f2a22f is exactly one commit after authorized base 0846cc7e251a49c9b9c9e64c42a8142229827779 and modifies only .agent/tasks/TASK-0050/report.yaml to record revision-4 evidence."
-  - "The revision-4 report binds final_execution_head to the authorized base itself and reports no implementation candidate. Remote reconstruction therefore finds no authored assurance/**, tools/assurance/** or verify mutation to review or accept."
-  - "Revision 4 correctly preserved the canonical CHATGPT_LOCAL route and did not silently substitute CHATGPT_GITHUB or another execution surface. Harness-disabled Agent Runtime remains a runtime capability blocker, not evidence that the Phase-4 Domain Constraint Profile WHAT/BOUNDARY/PROOF is defective."
-  - "Remote dev was freshly resolved at exact revision-4 report commit before review publication; main remained e707aeee43411cc8f99448b63220eb8beff552b6 and topology remained exactly dev/main."
+  - "Fresh GitHub review proves report bd14b2c6c37be91b246e46c833d1969576f1b7b0 is exactly one commit after authorized base 70dd015c34a4dbe1443ee1bcbd955c85bf37dcf0 and modifies only .agent/tasks/TASK-0050/report.yaml to record revision-5 evidence."
+  - "The revision-5 report binds final_execution_head to the authorized base itself and reports no implementation candidate. Remote reconstruction therefore finds no authored assurance/**, tools/assurance/** or verify mutation to review or accept."
+  - "Revision 5 correctly preserved the canonical CHATGPT_LOCAL route and did not silently substitute CHATGPT_GITHUB or another execution surface. Harness-disabled Agent Runtime remains an execution capability blocker, not evidence that the Phase-4 Domain Constraint Profile WHAT/BOUNDARY/PROOF is defective."
+  - "Remote dev was freshly resolved at exact revision-5 report commit before review publication; main remained e707aeee43411cc8f99448b63220eb8beff552b6 and topology remained exactly dev/main."
   - "The stale /tmp capability-probe remains outside canonical repository truth and was not inspected or mutated because native execution was unavailable. Future cleanup remains limited to an exact run-owned artifact whose ownership is freshly proven."
-  - "BLOCKED closes TASK-0050 revision 4 execution only. Phase-4 authority remains valid and may be re-authorized by revision 5 on a fresh exact handoff, with all required runtime capabilities freshly preflighted before mutation."
+  - "BLOCKED closes TASK-0050 revision 5 execution. Phase-4 authority remains valid, but no revision 6 is pre-authorized while the required CHATGPT_LOCAL native_repository_execution capability is known unavailable; a future Architect should fresh-resolve current dev and authorize the next revision only after that prerequisite can be freshly established."
