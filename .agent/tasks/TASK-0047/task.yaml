@@ -1,0 +1,168 @@
+protocol_version: 3
+
+task_id: TASK-0047
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: ACT-005-DOC-REF
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+architect_analysis_skills:
+  - architect
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - github-workflow
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "current operator program instruction"
+    role: "Freshly reproduce and, only if real, close the smallest IELTS ACT-005 documentation-reference defect before implementation-trace work."
+    precedence: 1
+  - source: "phatnguyen03022001/architect-profile@1a711360afc201f286aeb66c093add98ae16f9ad:.agent/bootstrap/authority.lock.json"
+    role: "Activated authority set for this program, including agent-skills@3c4a31598da4c4e12cb0925bee1b471f160d3b4e and agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82:DOCUMENT_MODEL.md and tools/validate.py"
+    role: "Pinned documentation-reference and DOCS_READY semantics. Logical document fragments contain no whitespace and resolve to exactly one canonical ATX heading by exact token or token-plus-space prefix."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@831f90424251e2ff2e9ccb0d619ec1f14859f4e2:docs/catalog/project.json and docs/PRODUCT.md"
+    role: "Target-owned product/documentation truth. ACT-005 currently references docs/PRODUCT.md#Guardian-or-legal-representative while the unique canonical section heading is 'Guardian or legal representative'."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing docs/catalog/project.json actor inventory and docs/PRODUCT.md PRODUCT authority."
+  rationale: "This is a one-reference integrity correction inside the existing catalog. No new document, schema, registry, feature identity, or architecture is required."
+
+objective: "Restore truthful agent-documents V1 reference integrity for ACT-005 with the smallest semantic-neutral target-owned correction and prove the relevant DOCS_READY gate under the exact pinned agent-documents revision."
+
+scope:
+  required_changes:
+    - "Freshly reproduce the current ACT-005 reference failure at the exact execution base with agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 tools/validate.py. The failure must identify ACT-005.doc_ref and the missing Guardian-or-legal-representative heading token before any product-document mutation."
+    - "Change only ACT-005.doc_ref in docs/catalog/project.json from docs/PRODUCT.md#Guardian-or-legal-representative to docs/PRODUCT.md#Guardian. Preserve the human-readable PRODUCT heading and all actor/product semantics."
+    - "Re-run the exact pinned documentation validator and require DOCS_READY = TRUE with exit 0. If another blocker remains, stop BLOCKED rather than broadening this task."
+    - "Publish the bounded correction plus the canonical TASK-0047 report, then stop at NEEDS_REVIEW for independent Governing Architect review."
+  allowed_existing_files_or_components:
+    - docs/catalog/project.json
+  expected_files_are_restrictive: true
+
+invariants:
+  - "ACT-005 remains the same Guardian or legal representative actor with unchanged kind, name, milestone-root membership, product semantics, privacy boundary and relationships."
+  - "docs/PRODUCT.md is not modified merely to satisfy a malformed fragment token."
+  - "No agent-documents, agent-skills, agent-standards, agent-runtime or architect-profile change is authorized."
+  - "No feature, acceptance, role, capability, release, readiness, implementation or engineering-assurance state is created or changed by this task."
+  - "DOCS_READY remains derived evidence, not a stored target status flag."
+
+forbidden_changes:
+  - "Do not weaken or modify agent-documents reference validation."
+  - "Do not rewrite unrelated IELTS docs, catalog records, product semantics, contracts, code, tests, dependencies, workflows or providers."
+  - "Do not add a trace registry, delivery matrix, domain profile, readiness state or any Phase-2+ machinery in this task."
+  - "Do not modify main, create/delete/rename branches, force-push, promote, deploy, tag or publish a release."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - USER_STOP
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The reported ACT-005 documentation defect is freshly reproduced under the exact pinned documentation semantics."
+    evidence_required: "Pre-change execution of agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 tools/validate.py against the exact target base returns DOCS_READY = FALSE and an ACT-005.doc_ref missing-heading-token error for Guardian-or-legal-representative."
+  - id: AC-2
+    requirement: "The correction is the smallest semantic-neutral target-owned change."
+    evidence_required: "The implementation diff changes only ACT-005.doc_ref in docs/catalog/project.json to docs/PRODUCT.md#Guardian; docs/PRODUCT.md and all other product/catalog semantics remain unchanged."
+  - id: AC-3
+    requirement: "The relevant documentation closure gate is green after correction."
+    evidence_required: "Post-change execution of the same exact pinned validator returns DOCS_READY = TRUE and exit 0."
+  - id: AC-4
+    requirement: "Published execution remains bounded and reviewable."
+    evidence_required: "Candidate/report lineage is exact, only the authorized catalog correction plus canonical TASK-0047 report artifacts are introduced, dev is pushed non-force, main remains e707aeee43411cc8f99448b63220eb8beff552b6, topology remains exactly dev/main, and Executor stops NEEDS_REVIEW."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - repository_content_write
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Fresh-bind phatnguyen03022001/ilets dev at the exact handoff base. Require local HEAD = origin/dev = remote dev, clean tree, main e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly dev/main and all required EXECUTION capabilities before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Using an exact checkout/read-only copy of agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82, run python3 tools/validate.py <exact-ilets-root> before the fix and require the ACT-005.doc_ref missing token Guardian-or-legal-representative failure."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Modify only ACT-005.doc_ref in docs/catalog/project.json to docs/PRODUCT.md#Guardian. Run git diff --check and inspect the exact diff to prove no unrelated catalog semantic changed."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Re-run the same pinned agent-documents validator against the modified checkout and require DOCS_READY = TRUE with exit 0."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Commit/push non-force to dev under this task, publish a canonical TASK-0047 report with exact candidate/evidence identities, fresh-prove remote dev identity and unchanged main/topology, then stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: "The exact pinned agent-documents validator is the required documentation-closure proof; no redundant full application verifier or CI run is required for this one-reference documentation-integrity correction unless execution uncovers material coupling."
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
