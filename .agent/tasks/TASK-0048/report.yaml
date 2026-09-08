@@ -1,0 +1,95 @@
+protocol_version: 3
+
+task_id: TASK-0048
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0048/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "f79513e287aff187f470ed45e1ba60616f3e915a"
+  final_execution_head: "a84659e801f241d1c2aae6ef233242d70beffb55"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0048 designates the repository-owned focused trace/materializer tests plus full ./verify on the exact implementation candidate as sufficient Executor verification. No separate authoritative verifier is required."
+
+pushed: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "At exact candidate a84659e801f241d1c2aae6ef233242d70beffb55, the read-only query resolves canonical FTR-018 from docs/catalog/project.json, verifies its docs/BEHAVIOR.md#FTR-018 binding, resolves alias R-F04, and admits exactly one matching reading-training slice trace. Duplicate canonical roots, missing behavior alias binding, duplicate slice traces and conflicting alias mappings are covered by fail-closed focused tests."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The FTR-018 result binds implementation to apps/web/src/features/today/today.tsx and services/core-api/internal/httpapi/activity.go, and verification to apps/web/e2e/reading-training.spec.ts and services/core-api/internal/httpapi/integration_test.go. Exact-subject Git reads require every path and relation marker to exist; focused tests reject missing paths and unattributable verification relations."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Two FTR-018 derivations for candidate a84659e801f241d1c2aae6ef233242d70beffb55 were byte-equivalent and reported that exact subject_revision. Supplying stale base f79513e287aff187f470ed45e1ba60616f3e915a was rejected non-zero with stale expected revision. Committed trace input and generated trace contain no self-referential containing-commit SHA."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Existing canonical FTR-019 remains untraced. Querying FTR-019 at the exact candidate returns authority NONE, alias R-F05, condition IMPLEMENTATION_PROOF_NOT_ESTABLISHED and empty implementation/verification references; negative-control assertions prohibit FEATURE_NOT_IMPLEMENTED, status, release_ready, completion, PASS or DONE inference."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "tools/canonical/test_materialize.py runs 28 focused tests with OK and tools/canonical/materialize.py --check passes. Regeneration changed only the reading-training generated trace; both unrelated Listening generated trace blobs were hash-identical before and after regeneration. Existing static canonical registry/materialization behavior remains intact."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Full repository-native ./verify passed on exact candidate a84659e801f241d1c2aae6ef233242d70beffb55 after selecting the already-installed repository-required Node v24.19.0. The run covered canonical checks, HTTP contract checks, formatting, lint with 0 errors, TypeScript, 18 Vitest tests, Next production build, Go tests, Postgres migrations/integration, and the Reading Playwright E2E test; HEAD remained exact and the working tree remained clean. Candidate changes are restricted to tools/canonical/materialize.py, tools/canonical/test_materialize.py, tools/slice/reading-training.json and tools/slice/generated/reading-training-trace.json."
+  - criterion_id: AC-7
+    status: NOT_PROVEN
+    evidence: "The implementation candidate is the direct child of exact authorized base f79513e287aff187f470ed45e1ba60616f3e915a, changes only authorized tools/canonical and tools/slice paths, and has already been published non-force to dev. Fresh post-candidate publication proof kept main at e707aeee43411cc8f99448b63220eb8beff552b6 with topology exactly dev/main. Pinned agent-skills@3c4a31598da4c4e12cb0925bee1b471f160d3b4e report serialization validation passed before commit. This report's own commit identity, direct-child relation and remote publication are post-authorship consequences and are not self-attested here."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh pre-mutation binding established local dev, origin/dev and remote dev at exact base f79513e287aff187f470ed45e1ba60616f3e915a after safe ff-only synchronization of a clean local mirror; main was e707aeee43411cc8f99448b63220eb8beff552b6, topology was exactly dev/main, task revision 1 was APPROVED and execution_ready true, push dry-run succeeded, and all required EXECUTION capabilities were available."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Before mutation, the existing reading-training slice, generated trace, canonical source map, materializer and tests were inspected. Canonical target-owned docs at the exact base establish FTR-018 as R-F04 — T/F/NG + Y/N/NG Lab, while existing Core integration and Web E2E producers materially exercise PM-R03/R-F04 behavior."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "The implementation extends only the existing tools/canonical and tools/slice primitive. TDD covered exact canonical identity/alias, exact-subject Git-tree reads, deterministic rendering, stale revision rejection, dirty-worktree isolation, duplicate/conflicting identity, missing paths, unattributable verification relations, malformed trace facts and missing-trace semantics."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Repository-native regeneration and --check both pass, focused tests are 28/28, git diff --check passes, unrelated Listening trace blobs remain unchanged, and the exact candidate contains no docs, contracts, app, service, dependency, workflow, database or runtime-semantic modification."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "On exact committed candidate a84659e801f241d1c2aae6ef233242d70beffb55, FTR-018 returned TRACE_PRESENT with the exact candidate SHA twice byte-identically; stale base input failed closed; FTR-019 returned IMPLEMENTATION_PROOF_NOT_ESTABLISHED without optimistic status inference; focused tests and materializer --check passed; full ./verify exited 0 under repository-required Node v24.19.0; post-run HEAD and tree stayed exact and clean."
+  - check_id: CHECK-6
+    result: NOT_PROVEN
+    evidence: "The implementation candidate is already published non-force to dev, with fresh main and topology guards satisfied. Pinned agent-skills@3c4a31598da4c4e12cb0925bee1b471f160d3b4e report serialization validation passed on the authored report. Report-only direct-child commit identity, non-force report publication and final remote consequence proof remain post-authorship consequences rather than predictions."
+
+result: NEEDS_REVIEW
