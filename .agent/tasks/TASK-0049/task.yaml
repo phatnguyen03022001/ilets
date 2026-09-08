@@ -1,0 +1,191 @@
+protocol_version: 3
+
+task_id: TASK-0049
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: DELIVERY-TRACE-REPRESENTATIVE-EXPANSION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+architect_analysis_skills:
+  - architect
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - github-workflow
+  recommended:
+    - simplicity
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "current operator program instruction"
+    role: "Expand the accepted target-owned delivery trace across representative simple, data-heavy, AI-heavy and missing-proof cases without creating status authority or speculative implementation claims."
+    precedence: 1
+  - source: "phatnguyen03022001/architect-profile@1a711360afc201f286aeb66c093add98ae16f9ad:.agent/bootstrap/authority.lock.json"
+    role: "Activated Architect authority set."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@eb190b25622045de03f1a3be2becfae347158dc6:.agent/tasks/TASK-0048/review.yaml"
+    role: "Accepted exact-revision feature-trace pilot and lifecycle predecessor."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@eb190b25622045de03f1a3be2becfae347158dc6:docs/catalog/project.json and docs/BEHAVIOR.md"
+    role: "Canonical target feature identity. Relevant representative roots are FTR-009 L-F03, FTR-041 X-F01, FTR-030 W-F08 and FTR-019 R-F05."
+    precedence: 4
+  - source: "phatnguyen03022001/ilets@eb190b25622045de03f1a3be2becfae347158dc6:tools/canonical/materialize.py, tools/canonical/test_materialize.py and tools/slice/**"
+    role: "Existing accepted target-native delivery-trace primitive."
+    precedence: 5
+  - source: "phatnguyen03022001/ilets@eb190b25622045de03f1a3be2becfae347158dc6:services/core-api/internal/httpapi/activity.go, services/core-api/internal/httpapi/planner.go, services/core-api/internal/httpapi/planner_integration_test.go, apps/web/src/features/today/today.tsx and apps/web/e2e/reading-training.spec.ts"
+    role: "Observed implementation and verification producers for the simple Listening and Daily Plan representative surfaces."
+    precedence: 6
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing tools/canonical + tools/slice ownership accepted by TASK-0048."
+  rationale: "Phase 3 requires a bounded schema/generalization correction inside the existing primitive, not a new registry, service, workflow engine, matrix or documentation authority."
+
+objective: "Prove the accepted delivery-trace primitive generalizes beyond the FTR-018 practice pilot by admitting one simple existing Listening feature and one data/planner-heavy Daily Plan feature while preserving truthful AI-heavy and missing-proof negatives, exact-revision binding and authority NONE."
+
+scope:
+  required_changes:
+    - "Fresh-bind TASK-0049 revision 1 at the exact handoff base and prove required EXECUTION capabilities before mutation. Inspect the accepted TASK-0048 implementation before choosing HOW."
+    - "Generalize canonical feature-alias resolution so a detailed FTR-007..FTR-046 feature can resolve from exactly one catalog feature plus its exactly one canonical BEHAVIOR heading containing the same lower-level alias. A materializer-anchor table must not be required merely to make a feature traceable. Existing configured canonical table/source-map constraints remain independently enforced; conflicting catalog/heading aliases, duplicate headings or malformed feature names must fail closed."
+    - "Generalize direct tools/slice records only enough to support a relation-only feature slice in addition to legacy practice-semantic slices. Common delivery identity is slice_id + feature_root_id + feature_id + implementation_refs + verification_refs. Existing practice semantic fields remain valid specialized facts when present and retain their current canonical-ID validation. Do not require fake practice/content/evidence fields for a non-practice feature."
+    - "Preserve backward compatibility for existing slice files that have not yet been admitted to feature-root queries. Legacy practice slices without feature_root_id must continue to materialize and check exactly under their existing semantics."
+    - "Admit FTR-009 / L-F03 as the simple representative by extending the existing tools/slice/listening-gist-sprint.json rather than creating a duplicate trace. Add only the smallest implementation and verification relations materially attributable to the current Gist Sprint behavior. Query at the exact candidate revision must return TRACE_PRESENT."
+    - "Admit FTR-041 / X-F01 Daily Plan as the data/planner-heavy representative using one target-owned relation-only slice under tools/slice. Its implementation refs must cover the smallest material Daily Plan boundary rather than every transitive dependency, and its verification refs must include existing producers that exercise target resolution, recommendation, persistence/assignment freshness or the learner-visible Today route. Query at the exact candidate revision must return TRACE_PRESENT."
+    - "Use FTR-030 / W-F08 Rubric Feedback & Revision Diff as the AI/evaluator-heavy representative. Current exact base contains evaluator contracts/generated bindings but no observed product implementation slice/runtime boundary for FTR-030. Do not create a trace merely from contracts, generated bindings, design intent or capability relations. Query must return IMPLEMENTATION_PROOF_NOT_ESTABLISHED unless execution discovers contradictory exact-base implementation evidence; contradictory evidence is BLOCKING and requires Architect revision rather than scope improvisation."
+    - "Retain FTR-019 / R-F05 as a distinct missing-proof control. Even though neighboring runtime content may exist, no admitted feature-root slice means its query remains IMPLEMENTATION_PROOF_NOT_ESTABLISHED. Do not infer FEATURE_NOT_IMPLEMENTED or GAP."
+    - "For all four representative queries, derived output remains authority NONE, exact candidate subject_revision, deterministic for unchanged input, stale-safe and free of DONE/PASS/completion percentage/release readiness/maturity fields."
+    - "Add focused tests proving heading-based alias resolution, optional specialized slice semantics, legacy-slice compatibility, FTR-009 TRACE_PRESENT, FTR-041 TRACE_PRESENT, FTR-030 negative, FTR-019 negative, duplicate/conflicting identity failure, relation attribution failure and deterministic output."
+    - "Regenerate/check derived static traces deterministically. Existing FTR-018 semantics and unrelated Listening Detail/Completion semantics must not drift except where deterministic formatting/schema handling necessarily reflects the generalized compatible materializer."
+    - "Run focused materializer tests, materialize.py --check and full repository-native ./verify on the exact implementation candidate. Publish candidate and canonical report non-force to dev, then stop NEEDS_REVIEW."
+  allowed_existing_files_or_components:
+    - tools/canonical/
+    - tools/slice/
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Canonical product authority remains docs/catalog/project.json + docs/BEHAVIOR.md; tools/slice contains only trace/evidence relations and specialized slice facts."
+  - "FTR-009 remains L-F03 Gist & Main-Idea Drill; FTR-041 remains X-F01 Daily Plan; FTR-030 remains W-F08 Rubric Feedback & Revision Diff; FTR-019 remains R-F05 Headings & Structure Lab."
+  - "No documentation anchor/table is added merely to satisfy trace tooling. Trace tooling adapts to canonical product structure, not the reverse."
+  - "Trace absence means only IMPLEMENTATION_PROOF_NOT_ESTABLISHED. Presence means proof attribution exists for the exact subject revision; neither condition is feature completion, product acceptance or release readiness."
+  - "Contracts/generated bindings alone are insufficient implementation proof for a feature."
+  - "Every query result is derived, read-only and authority NONE. Exact target commit identity is resolved at query time; no self-referential candidate SHA is stored in committed trace facts."
+  - "Existing TASK-0048 FTR-018 trace remains valid and exact-revision safe."
+  - "No support repository mutation is authorized."
+  - "No new workflow engine, trace service, database, global feature matrix, manual status registry, capability registry, planner/orchestrator or generic domain-assurance framework is authorized."
+
+forbidden_changes:
+  - "Do not modify docs/, contracts/, apps/, services/, migrations, workflows, dependencies, providers or production/runtime behavior."
+  - "Do not add feature-root traces for FTR-010, FTR-019, FTR-030 or any other feature outside the two positive representatives FTR-009 and FTR-041."
+  - "Do not bulk-convert every existing slice or every product feature."
+  - "Do not introduce implementation_status, done, pass, percentage, maturity, release_ready, release scope or product-readiness authoring."
+  - "Do not create/delete/rename branches, force-push, mutate main, promote, deploy, tag or publish a release."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Detailed feature identity no longer depends on artificial trace-specific documentation anchors."
+    evidence_required: "FTR-041 resolves unambiguously to X-F01 from exact canonical catalog + unique BEHAVIOR heading without adding/changing docs, while malformed, duplicate or conflicting identity fails closed and existing table/source-map validation remains intact."
+  - id: AC-2
+    requirement: "Simple representative trace is admitted without duplication."
+    evidence_required: "Exact-candidate query FTR-009 returns TRACE_PRESENT with alias L-F03 and materially attributable existing implementation/verification refs derived from the extended listening-gist-sprint slice."
+  - id: AC-3
+    requirement: "Data/planner-heavy representative trace is admitted without fake practice semantics."
+    evidence_required: "Exact-candidate query FTR-041 returns TRACE_PRESENT with alias X-F01 from one relation-only slice; implementation and verification refs exist and are materially attributable to Daily Plan behavior, persistence/freshness or learner-visible recommendation flow."
+  - id: AC-4
+    requirement: "AI-heavy and missing-proof cases remain truthful negatives."
+    evidence_required: "At exact candidate FTR-030 and FTR-019 each return IMPLEMENTATION_PROOF_NOT_ESTABLISHED, authority NONE and empty proof refs; no stronger implementation, gap, pass or readiness claim is emitted."
+  - id: AC-5
+    requirement: "Legacy and pilot behavior remain compatible."
+    evidence_required: "FTR-018 remains TRACE_PRESENT; legacy unadmitted practice slices still materialize/check; deterministic generated artifacts have no unexplained unrelated semantic drift."
+  - id: AC-6
+    requirement: "Verification is exact, deterministic and target-native."
+    evidence_required: "Focused trace/materializer tests PASS, materialize.py --check PASS, repeated representative queries are byte-equivalent for the exact candidate, stale revision fails closed and full ./verify PASS on that candidate."
+  - id: AC-7
+    requirement: "Publication remains bounded."
+    evidence_required: "Implementation candidate descends directly from exact handoff base, changed implementation files are confined to tools/canonical/** and tools/slice/**, report is a direct child adding only .agent/tasks/TASK-0049/report.yaml, both are pushed non-force to dev, main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly dev/main before stopping NEEDS_REVIEW."
+
+verification:
+  authoritative_verification:
+    required: false
+    rationale: "Target-native deterministic focused proof plus full ./verify is sufficient for this target-local trace expansion; no independent CI claim is required."
+  required_checks:
+    - "python3 -m unittest tools.canonical.test_materialize"
+    - "python3 tools/canonical/materialize.py --check"
+    - "Exact-revision queries for FTR-009, FTR-041, FTR-030, FTR-019 and FTR-018"
+    - "./verify"
+
+capability_requirements:
+  EXECUTION:
+    required:
+      - repository_content_read
+      - repository_content_write
+      - native_repository_execution
+      - git_history_read
+      - git_commit
+      - git_push
+      - remote_ref_read
+  REVIEW:
+    required:
+      - repository_content_read
+      - repository_content_write
+      - git_history_read
+      - git_commit
+      - git_push
+      - remote_ref_read
+
+git_authority:
+  commit: true
+  push: true
+  create_branch: false
+  promote: false
+  force_push: false
+  tag: false
+  release: false
+
+execution_ready: true
