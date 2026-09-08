@@ -1,6 +1,7 @@
 {
   "slice_id": "reading-training-bootstrap-v1",
   "feature_id": "R-F04",
+  "feature_root_id": "FTR-018",
   "practice_mode_id": "PM-R03",
   "practice_type_ids": ["PT-13", "PT-16"],
   "skill_target_ids": ["R-QT-02", "R-QT-03"],
@@ -10,7 +11,14 @@
   "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
   "content_revision_id": "reading-bootstrap-classification-001-r1",
   "public_api_operation_ids": ["bootstrapSession","getMe","getTargetProfile","putTargetProfile","listPracticeModes","createPracticeActivity","getPracticeActivity","createAttempt","getAttempt","submitAttempt"],
+  "implementation_refs": [
+    {"path": "apps/web/src/features/today/today.tsx", "required_literals": ["PM-R03"]},
+    {"path": "services/core-api/internal/httpapi/activity.go", "required_literals": ["R-F04", "PM-R03"]}
+  ],
   "runtime_owner": "services/core-api",
   "persistence_resources": ["learners","sessions","target_profiles","contents","content_revisions","validation_decisions","content_use_states","practice_activities","attempts","observations","idempotency_operations"],
-  "verification_refs": ["tools/canonical/test_materialize.py","services/core-api/internal/httpapi/integration_test.go","apps/web/e2e/reading-training.spec.ts"]
+  "verification_refs": [
+    {"path": "apps/web/e2e/reading-training.spec.ts", "required_literals": ["T/F/NG + Y/N/NG", "PM-R03"]},
+    {"path": "services/core-api/internal/httpapi/integration_test.go", "required_literals": ["PM-R03", "NOT_EVIDENCE_CANDIDATE"]}
+  ]
 }

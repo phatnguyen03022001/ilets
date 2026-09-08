@@ -8,6 +8,22 @@
     "content_revision_id": "reading-bootstrap-classification-001-r1",
     "evidence_candidacy": "NOT_EVIDENCE_CANDIDATE",
     "feature_id": "R-F04",
+    "feature_root_id": "FTR-018",
+    "implementation_refs": [
+      {
+        "path": "apps/web/src/features/today/today.tsx",
+        "required_literals": [
+          "PM-R03"
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/activity.go",
+        "required_literals": [
+          "R-F04",
+          "PM-R03"
+        ]
+      }
+    ],
     "official_family_ids": [
       "IELTS-R-QF-02",
       "IELTS-R-QF-03"
@@ -50,9 +66,20 @@
     ],
     "slice_id": "reading-training-bootstrap-v1",
     "verification_refs": [
-      "tools/canonical/test_materialize.py",
-      "services/core-api/internal/httpapi/integration_test.go",
-      "apps/web/e2e/reading-training.spec.ts"
+      {
+        "path": "apps/web/e2e/reading-training.spec.ts",
+        "required_literals": [
+          "T/F/NG + Y/N/NG",
+          "PM-R03"
+        ]
+      },
+      {
+        "path": "services/core-api/internal/httpapi/integration_test.go",
+        "required_literals": [
+          "PM-R03",
+          "NOT_EVIDENCE_CANDIDATE"
+        ]
+      }
     ]
   }
 }

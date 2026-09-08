@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import json
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -233,6 +236,274 @@ class MaterializerTests(unittest.TestCase):
             any(args and args[0] == "rev-list" for args in calls),
             calls,
         )
+
+    def _commit_fixture(self, root: Path, message: str = "fixture") -> str:
+        subprocess.run(["git", "add", "."], cwd=root, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", message],
+            cwd=root,
+            check=True,
+            capture_output=True,
+        )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=root, text=True
+        ).strip()
+
+    def _trace_fixture(self):
+        tmp = tempfile.TemporaryDirectory()
+        root = Path(tmp.name)
+        subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "config", "user.email", "trace@example.invalid"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Trace Fixture"], cwd=root, check=True
+        )
+        for relative in [
+            "docs/catalog",
+            "tools/slice",
+            "apps/web/src/features/today",
+            "services/core-api/internal/httpapi",
+            "apps/web/e2e",
+        ]:
+            (root / relative).mkdir(parents=True, exist_ok=True)
+        (root / "docs/catalog/project.json").write_text(
+            json.dumps(
+                {
+                    "features": [
+                        {
+                            "id": "FTR-018",
+                            "name": "R-F04 — T/F/NG + Y/N/NG Lab",
+                            "spec_ref": "docs/BEHAVIOR.md#FTR-018",
+                        },
+                        {
+                            "id": "FTR-019",
+                            "name": "R-F05 — Headings & Structure Lab",
+                            "spec_ref": "docs/BEHAVIOR.md#FTR-019",
+                        },
+                    ]
+                }
+            )
+            + "\n"
+        )
+        (root / "docs/BEHAVIOR.md").write_text(
+            """### FTR-018 R-F04 — T/F/NG + Y/N/NG Lab
+
+| ID | Feature |
+|---|---|
+| `R-F04` | Classification |
+
+### FTR-019 R-F05 — Headings & Structure Lab
+
+| ID | Feature |
+|---|---|
+| `R-F05` | Headings |
+"""
+        )
+        slice_config = {
+            "slice_id": "reading-training-bootstrap-v1",
+            "feature_root_id": "FTR-018",
+            "feature_id": "R-F04",
+            "implementation_refs": [
+                {
+                    "path": "apps/web/src/features/today/today.tsx",
+                    "required_literals": ["PM-R03"],
+                },
+                {
+                    "path": "services/core-api/internal/httpapi/activity.go",
+                    "required_literals": ["R-F04", "PM-R03"],
+                },
+            ],
+            "verification_refs": [
+                {
+                    "path": "apps/web/e2e/reading-training.spec.ts",
+                    "required_literals": ["T/F/NG + Y/N/NG", "PM-R03"],
+                },
+                {
+                    "path": "services/core-api/internal/httpapi/integration_test.go",
+                    "required_literals": ["PM-R03", "NOT_EVIDENCE_CANDIDATE"],
+                },
+            ],
+        }
+        (root / "tools/slice/reading-training.json").write_text(
+            json.dumps(slice_config, indent=2) + "\n"
+        )
+        (root / "apps/web/src/features/today/today.tsx").write_text(
+            'const mode = "PM-R03";\n'
+        )
+        (root / "services/core-api/internal/httpapi/activity.go").write_text(
+            'const feature = "R-F04"\nconst mode = "PM-R03"\n'
+        )
+        (root / "apps/web/e2e/reading-training.spec.ts").write_text(
+            'const label = "T/F/NG + Y/N/NG"; const mode = "PM-R03";\n'
+        )
+        (root / "services/core-api/internal/httpapi/integration_test.go").write_text(
+            'const mode = "PM-R03"\nconst candidacy = "NOT_EVIDENCE_CANDIDATE"\n'
+        )
+        subject = self._commit_fixture(root)
+        return tmp, root, subject
+
+    def test_feature_trace_query_binds_ftr_root_to_alias_and_exact_subject(self):
+        tmp, root, subject = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        result = module.query_feature_trace("FTR-018", subject, root=root)
+
+        self.assertEqual(result["authority"], "NONE")
+        self.assertEqual(result["condition"], "TRACE_PRESENT")
+        self.assertEqual(result["subject_revision"], subject)
+        self.assertEqual(result["feature_root_id"], "FTR-018")
+        self.assertEqual(result["aliases"], ["R-F04"])
+        self.assertEqual(
+            [item["path"] for item in result["implementation_refs"]],
+            [
+                "apps/web/src/features/today/today.tsx",
+                "services/core-api/internal/httpapi/activity.go",
+            ],
+        )
+        self.assertEqual(
+            [item["path"] for item in result["verification_refs"]],
+            [
+                "apps/web/e2e/reading-training.spec.ts",
+                "services/core-api/internal/httpapi/integration_test.go",
+            ],
+        )
+
+    def test_trace_query_rejects_stale_expected_revision(self):
+        tmp, root, stale = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        (root / "marker.txt").write_text("new head\n")
+        self._commit_fixture(root, "advance")
+        with self.assertRaisesRegex(ValueError, "stale expected revision"):
+            module.query_feature_trace("FTR-018", stale, root=root)
+
+
+    def test_duplicate_canonical_feature_root_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "docs/catalog/project.json"
+        catalog = json.loads(path.read_text())
+        catalog["features"].append(dict(catalog["features"][0]))
+        path.write_text(json.dumps(catalog) + "\n")
+        subject = self._commit_fixture(root, "duplicate-canonical-root")
+        with self.assertRaisesRegex(ValueError, "expected exactly one canonical feature root"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_missing_behavior_alias_binding_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "docs/BEHAVIOR.md"
+        path.write_text(path.read_text().replace("`R-F04`", "`R-F99`", 1))
+        subject = self._commit_fixture(root, "missing-alias-binding")
+        with self.assertRaisesRegex(ValueError, "does not bind alias R-F04"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_untraced_feature_returns_truthful_missing_proof_condition(self):
+        tmp, root, subject = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        result = module.query_feature_trace("FTR-019", subject, root=root)
+        self.assertEqual(result["authority"], "NONE")
+        self.assertEqual(result["condition"], "IMPLEMENTATION_PROOF_NOT_ESTABLISHED")
+        self.assertEqual(result["feature_root_id"], "FTR-019")
+        self.assertEqual(result["aliases"], ["R-F05"])
+        self.assertEqual(result["implementation_refs"], [])
+        self.assertEqual(result["verification_refs"], [])
+        self.assertNotIn("status", result)
+        self.assertNotIn("release_ready", result)
+
+    def test_trace_query_reads_committed_subject_not_dirty_worktree(self):
+        tmp, root, subject = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "tools/slice/reading-training.json"
+        config = json.loads(path.read_text())
+        config["feature_id"] = "R-F99"
+        path.write_text(json.dumps(config, indent=2) + "\n")
+        result = module.query_feature_trace("FTR-018", subject, root=root)
+        self.assertEqual(result["condition"], "TRACE_PRESENT")
+        self.assertEqual(result["aliases"], ["R-F04"])
+
+    def test_conflicting_alias_mapping_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "tools/slice/reading-training.json"
+        config = json.loads(path.read_text())
+        config["feature_id"] = "R-F99"
+        path.write_text(json.dumps(config, indent=2) + "\n")
+        subject = self._commit_fixture(root, "conflict")
+        with self.assertRaisesRegex(ValueError, "conflicting feature mapping"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_duplicate_feature_root_trace_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        shutil.copyfile(
+            root / "tools/slice/reading-training.json",
+            root / "tools/slice/reading-training-copy.json",
+        )
+        subject = self._commit_fixture(root, "duplicate")
+        with self.assertRaisesRegex(ValueError, "multiple slice traces"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_missing_implementation_path_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "tools/slice/reading-training.json"
+        config = json.loads(path.read_text())
+        config["implementation_refs"][0]["path"] = "apps/web/src/missing.tsx"
+        path.write_text(json.dumps(config, indent=2) + "\n")
+        subject = self._commit_fixture(root, "missing-ref")
+        with self.assertRaisesRegex(ValueError, "missing referenced path"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_unattributable_verification_ref_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "tools/slice/reading-training.json"
+        config = json.loads(path.read_text())
+        config["verification_refs"][0]["required_literals"].append("R-F99")
+        path.write_text(json.dumps(config, indent=2) + "\n")
+        subject = self._commit_fixture(root, "unattributable")
+        with self.assertRaisesRegex(ValueError, "unattributable verification relation"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_malformed_trace_relation_fails_closed(self):
+        tmp, root, _ = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        path = root / "tools/slice/reading-training.json"
+        config = json.loads(path.read_text())
+        config["implementation_refs"] = [{"path": "apps/web/src/features/today/today.tsx"}]
+        path.write_text(json.dumps(config, indent=2) + "\n")
+        subject = self._commit_fixture(root, "malformed")
+        with self.assertRaisesRegex(ValueError, "malformed implementation relation"):
+            module.query_feature_trace("FTR-018", subject, root=root)
+
+    def test_trace_query_render_is_deterministic(self):
+        tmp, root, subject = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        first = module.render(module.query_feature_trace("FTR-018", subject, root=root))
+        second = module.render(module.query_feature_trace("FTR-018", subject, root=root))
+        self.assertEqual(first, second)
+
+
+    def test_cli_query_emits_derived_trace(self):
+        tmp, root, subject = self._trace_fixture()
+        self.addCleanup(tmp.cleanup)
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            code = module.main(
+                [
+                    "--query-feature",
+                    "FTR-018",
+                    "--expected-revision",
+                    subject,
+                ],
+                root=root,
+            )
+        self.assertEqual(code, 0)
+        result = json.loads(stdout.getvalue())
+        self.assertEqual(result["condition"], "TRACE_PRESENT")
+        self.assertEqual(result["subject_revision"], subject)
 
 
 if __name__ == "__main__":

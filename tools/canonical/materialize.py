@@ -10,6 +10,8 @@ SOURCE_MAP_PATH = ROOT / "tools/canonical/source-map.json"
 SLICE_INPUT_DIR = ROOT / "tools/slice"
 SLICE_OUTPUT_DIR = ROOT / "tools/slice/generated"
 REGISTRY_OUTPUT = ROOT / "tools/canonical/generated/registry.json"
+PROJECT_CATALOG_PATH = ROOT / "docs/catalog/project.json"
+BEHAVIOR_PATH = ROOT / "docs/BEHAVIOR.md"
 
 def fail(message: str) -> None: raise ValueError(message)
 def git(*args: str) -> str: return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
@@ -85,6 +87,107 @@ def slice_input_paths() -> list[Path]:
     return sorted(SLICE_INPUT_DIR.glob("*.json"), key=lambda path: path.as_posix())
 def trace_output_path(slice_path: Path) -> Path:
     return SLICE_OUTPUT_DIR / f"{slice_path.stem}-trace.json"
+
+def git_at(root: Path, *args: str) -> str:
+    return subprocess.check_output(["git", *args], cwd=root, text=True).strip()
+
+def revision_text(root: Path, revision: str, path: str) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "show", f"{revision}:{path}"], cwd=root, text=True, stderr=subprocess.PIPE
+        )
+    except subprocess.CalledProcessError as exc:
+        fail(f"missing referenced path: {path}")
+        raise AssertionError from exc
+
+def revision_json(root: Path, revision: str, path: str) -> Any:
+    return json.loads(revision_text(root, revision, path))
+
+def feature_alias_from_sources(feature_root_id: str, catalog: dict[str,Any], behavior: str) -> str:
+    matches=[item for item in catalog.get("features",[]) if item.get("id")==feature_root_id]
+    if len(matches)!=1: fail(f"expected exactly one canonical feature root {feature_root_id}; found {len(matches)}")
+    feature=matches[0]
+    if feature.get("spec_ref") != f"docs/BEHAVIOR.md#{feature_root_id}":
+        fail(f"canonical feature root {feature_root_id} has conflicting behavior reference")
+    name=feature.get("name")
+    if not isinstance(name,str): fail(f"canonical feature root {feature_root_id} has malformed name")
+    match=re.match(r"^([A-Z]-F\d{2})\s+—\s+",name)
+    if not match: fail(f"canonical feature root {feature_root_id} has no lower-level feature alias")
+    alias=match.group(1)
+    headings=[line for line in behavior.splitlines() if re.match(rf"^#+\s+{re.escape(feature_root_id)}(?:\s|$)",line)]
+    if len(headings)!=1: fail(f"expected exactly one behavior section for {feature_root_id}; found {len(headings)}")
+    rows=parse_table(section_text(behavior,headings[0]))
+    if alias not in rows: fail(f"behavior section for {feature_root_id} does not bind alias {alias}")
+    return alias
+
+def subject_slice_paths(root: Path, revision: str) -> list[str]:
+    output=git_at(root,"ls-tree","-r","--name-only",revision,"--","tools/slice")
+    paths=[]
+    for path in output.splitlines():
+        candidate=Path(path)
+        if candidate.parent == Path("tools/slice") and candidate.suffix == ".json":
+            paths.append(path)
+    return sorted(paths)
+
+def validated_relation_refs(items: Any, relation: str, read_subject: Any) -> list[dict[str,Any]]:
+    if not isinstance(items,list) or not items: fail(f"{relation} must be a non-empty list")
+    validated=[]
+    for item in items:
+        if not isinstance(item,dict) or set(item)!={"path","required_literals"}: fail(f"malformed {relation} relation")
+        path=item["path"]; literals=item["required_literals"]
+        if not isinstance(path,str) or not path or Path(path).is_absolute() or ".." in Path(path).parts: fail(f"malformed {relation} relation")
+        if not isinstance(literals,list) or not literals or not all(isinstance(value,str) and value for value in literals): fail(f"malformed {relation} relation")
+        text=read_subject(path)
+        missing=[value for value in literals if value not in text]
+        if missing: fail(f"unattributable {relation} relation {path}: missing {', '.join(missing)}")
+        validated.append({"path":path,"required_literals":list(literals)})
+    paths=[item["path"] for item in validated]
+    if len(paths)!=len(set(paths)): fail(f"duplicate {relation} path")
+    return sorted(validated,key=lambda item:item["path"])
+
+def query_feature_trace(feature_root_id: str, expected_revision: str, root: Path = ROOT) -> dict[str,Any]:
+    root=Path(root)
+    subject=git_at(root,"rev-parse","HEAD")
+    if not re.fullmatch(r"[0-9a-f]{40}",expected_revision): fail("expected revision must be a full 40-character Git SHA")
+    if expected_revision != subject: fail(f"stale expected revision: expected {expected_revision}, subject {subject}")
+    catalog=revision_json(root,subject,"docs/catalog/project.json")
+    behavior=revision_text(root,subject,"docs/BEHAVIOR.md")
+    alias=feature_alias_from_sources(feature_root_id,catalog,behavior)
+    read_subject=lambda path: revision_text(root,subject,path)
+    matches=[]
+    for slice_path in subject_slice_paths(root,subject):
+        slice_config=revision_json(root,subject,slice_path)
+        if slice_config.get("feature_root_id")==feature_root_id:
+            matches.append((slice_path,slice_config))
+    common={
+        "artifact":"DERIVED_DELIVERY_TRACE_QUERY",
+        "schema_version":1,
+        "authority":"NONE",
+        "subject_revision":subject,
+        "feature_root_id":feature_root_id,
+        "aliases":[alias],
+    }
+    if not matches:
+        return {
+            **common,
+            "condition":"IMPLEMENTATION_PROOF_NOT_ESTABLISHED",
+            "implementation_refs":[],
+            "verification_refs":[],
+        }
+    if len(matches)>1: fail(f"multiple slice traces for {feature_root_id}: {', '.join(path for path,_ in matches)}")
+    _,slice_config=matches[0]
+    if slice_config.get("feature_id")!=alias: fail(f"conflicting feature mapping for {feature_root_id}: expected {alias}, got {slice_config.get('feature_id')}")
+    slice_id=slice_config.get("slice_id")
+    if not isinstance(slice_id,str) or not slice_id: fail(f"malformed slice trace for {feature_root_id}: missing slice_id")
+    implementation_refs=validated_relation_refs(slice_config.get("implementation_refs"),"implementation",read_subject)
+    verification_refs=validated_relation_refs(slice_config.get("verification_refs"),"verification",read_subject)
+    return {
+        **common,
+        "condition":"TRACE_PRESENT",
+        "slice_id":slice_id,
+        "implementation_refs":implementation_refs,
+        "verification_refs":verification_refs,
+    }
 def registry_sha256(registry_doc: dict[str,Any]) -> str:
     return hashlib.sha256((json.dumps(registry_doc,sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()
 def validate_source_map(config: dict[str,Any]) -> None:
@@ -133,9 +236,18 @@ def write_or_check(path: Path, content: str, check: bool) -> None:
         if path.read_text()!=content: fail(f"generated artifact drift: {path.relative_to(ROOT)}")
     else:
         path.parent.mkdir(parents=True,exist_ok=True); path.write_text(content)
-def main() -> int:
-    parser=argparse.ArgumentParser(); parser.add_argument("--check",action="store_true"); args=parser.parse_args()
+def main(argv: list[str] | None = None, root: Path = ROOT) -> int:
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--check",action="store_true")
+    parser.add_argument("--query-feature")
+    parser.add_argument("--expected-revision")
+    args=parser.parse_args(argv)
     try:
+        if args.query_feature or args.expected_revision:
+            if args.check or not args.query_feature or not args.expected_revision:
+                fail("feature query requires --query-feature and --expected-revision without --check")
+            print(render(query_feature_trace(args.query_feature,args.expected_revision,root=root)),end="")
+            return 0
         registry_doc,traces=materialize(); write_or_check(REGISTRY_OUTPUT,render(registry_doc),args.check)
         for slice_path,trace_doc in traces: write_or_check(trace_output_path(slice_path),render(trace_doc),args.check)
     except (ValueError,subprocess.CalledProcessError,OSError,json.JSONDecodeError) as exc:
