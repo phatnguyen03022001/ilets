@@ -1,7 +1,7 @@
 protocol_version: 3
 
 task_id: TASK-0050
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
@@ -50,36 +50,39 @@ authority_sources:
   - source: "phatnguyen03022001/architect-profile@1a711360afc201f286aeb66c093add98ae16f9ad:.agent/bootstrap/authority.lock.json"
     role: "Activated Architect authority set."
     precedence: 2
+  - source: "phatnguyen03022001/ilets@7c83403eda83c8d1a1b0511c3f466797f0c91b39:.agent/tasks/TASK-0050/review.yaml"
+    role: "Revision-1 durable BLOCKED judgment: native_repository_execution became unavailable before any implementation mutation; Phase-4 WHAT/BOUNDARY/PROOF remained valid and may be re-authorized through a fresh task revision."
+    precedence: 3
   - source: "phatnguyen03022001/ilets@b7f2c6eae55f17c96c5a815966fed00039f41225:docs/QUALITY.md"
     role: "Canonical target quality constraints covering authentication, authorization/trust, secrets, privacy, retry/recovery, concurrency/failure, performance/resources, observability, testing/evidence and cost/usage."
-    precedence: 3
+    precedence: 4
   - source: "phatnguyen03022001/ilets@b7f2c6eae55f17c96c5a815966fed00039f41225:docs/DELIVERY.md"
     role: "Canonical target delivery constraints covering environments/configuration, deployment/migration/rollback, backup/restore, compatibility/versioning/platforms and operational ownership."
-    precedence: 4
+    precedence: 5
   - source: "phatnguyen03022001/ilets@b7f2c6eae55f17c96c5a815966fed00039f41225:apps/web/package.json, apps/web/next.config.ts, services/core-api/internal/httpapi/auth.go, verify"
     role: "Exact target stack and existing evidence-supplier boundaries: Next.js 16.3.2, Clerk 7.8.2, Playwright/axe, Core Clerk bearer verification and repository-native verification."
-    precedence: 5
+    precedence: 6
   - source: "W3C WCAG 2.2 Recommendation, latest published Recommendation 2024-12-12"
     role: "Versioned accessibility source identity; use as a conformance/proof reference without copying the full criterion catalog."
-    precedence: 6
+    precedence: 7
   - source: "OWASP ASVS 5.0.0, released 2025-05-30"
     role: "Versioned web application security verification source identity."
-    precedence: 7
+    precedence: 8
   - source: "OWASP Top 10 2025"
     role: "Current web application security risk-awareness source identity."
-    precedence: 8
+    precedence: 9
   - source: "OWASP API Security Top 10 2023"
     role: "Current API security risk-awareness source identity for the public/internal API surface."
-    precedence: 9
+    precedence: 10
   - source: "web.dev Core Web Vitals thresholds, article last updated 2025-05-07"
     role: "Current external performance benchmark identity: good LCP <= 2.5s, INP <= 200ms, CLS <= 0.1 at the 75th percentile; benchmark only, not an internal SLO guarantee."
-    precedence: 10
+    precedence: 11
   - source: "Next.js App Router Production guide and CSP guide, last updated 2026-02-27"
     role: "Framework-specific production/security proof guidance for the exact target family."
-    precedence: 11
+    precedence: 12
   - source: "Clerk Next.js protect-content/resource guidance, last updated 2026-09-04"
     role: "Auth integration guidance: protect each resource that reads or mutates protected data; client checks are not a security boundary."
-    precedence: 12
+    precedence: 13
 
 structure_authority:
   status: RESOLVED
@@ -90,7 +93,7 @@ objective: "Materialize a finite WEB_PRODUCTION_V1 Domain Constraint Profile for
 
 scope:
   required_changes:
-    - "Fresh-bind TASK-0050 revision 1 at the exact handoff base and prove all required EXECUTION capabilities before mutation. Inspect current QUALITY, DELIVERY, stack/config/auth and root verify surfaces before choosing HOW."
+    - "Fresh-bind TASK-0050 revision 2 at the exact handoff base and prove all required EXECUTION capabilities before mutation, including currently usable native_repository_execution. Treat revision-1 blocker evidence only as continuity evidence: no implementation candidate exists. Inspect current QUALITY, DELIVERY, stack/config/auth and root verify surfaces before choosing HOW. If a run-owned stale /tmp capability-probe artifact is found, clean only that exact artifact after proving ownership; absence or inability to prove cleanup is not permission for broad /tmp mutation."
     - "Create exactly one target-owned profile at assurance/domain-constraint-profile.yaml. It is authoritative only for target assurance applicability/inventory; it is not product/feature authority and is not implementation, release or standards-conformance status authority."
     - "Profile identity must be WEB_PRODUCTION_V1 and must declare inventory coverage COMPLETE separately from any assessment result. COMPLETE means the Architect-owned finite domain inventory is closed for this profile revision; it must not mean implementation PASS, standards conformance, release readiness or feature completion."
     - "Represent exactly ten stable constraint families, each with a unique DCP-* id, concise title, applicability, exact canonical target owner_ref(s), versioned external source identities where materially relevant, and finite required evidence classes suitable for later derived assessment."
@@ -171,7 +174,7 @@ acceptance_criteria:
     evidence_required: "Candidate contains no delivery graph, assurance projection, feature matrix, readiness score, percentage, current assurance result, CI workflow or generic cross-repository framework."
   - id: AC-7
     requirement: "Publication remains bounded and independently reviewable."
-    evidence_required: "Implementation candidate is a direct child of exact handoff base and changes only assurance/**, tools/assurance/** and verify; report is a direct child adding only .agent/tasks/TASK-0050/report.yaml; both are pushed non-force to dev; main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly dev/main before stopping NEEDS_REVIEW."
+    evidence_required: "Implementation candidate is a direct child of exact handoff base and changes only assurance/**, tools/assurance/** and verify; report is a direct child updating only .agent/tasks/TASK-0050/report.yaml for revision 2; both are pushed non-force to dev; main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly dev/main before stopping NEEDS_REVIEW."
 
 verification:
   authoritative_verification:
