@@ -1,0 +1,95 @@
+protocol_version: 3
+
+task_id: TASK-0049
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0049/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "583c0b7d6f17dbb496bebe879c31761716d71e94"
+  final_execution_head: "0c1980f05404e490dabe276511ddaa17d8949ad8"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0049 designates focused target-native materializer/query proof plus full repository-native ./verify on the exact implementation candidate as sufficient Executor verification; no independent authoritative verifier is required."
+
+pushed: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "At exact candidate 0c1980f05404e490dabe276511ddaa17d8949ad8, detailed feature identity resolves from exactly one docs/catalog/project.json feature plus exactly one docs/BEHAVIOR.md heading carrying the same lower-level alias. FTR-041 resolves to X-F01 without any docs mutation or table anchor. Focused tests fail closed for duplicate canonical roots/headings, conflicting heading aliases, malformed feature names and conflicting feature-root slice mappings; existing source-map validation remains independently enforced."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The existing tools/slice/listening-gist-sprint.json was extended rather than duplicated. Exact-candidate FTR-009 query returns TRACE_PRESENT with alias L-F03, implementation attribution to the Today Gist Sprint trigger and Core PM-L02/L-F03 activity boundary, and verification attribution to the existing Web E2E and Core integration producers."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "tools/slice/daily-plan.json is one relation-only FTR-041/X-F01 slice with no fake practice/content/evidence semantics. Its implementation refs cover the learner-visible Today recommendation route, DailyPlanItem assignment recheck and Core planner decision/persistence boundary; verification refs cover the existing Web daily-plan recommendation flow and Core planner integration/freshness proof. Exact-candidate query returns TRACE_PRESENT with alias X-F01."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "A bounded exact-base search found no FTR-030/W-F08 product implementation boundary outside canonical product documentation, so no speculative trace was created. Exact-candidate FTR-030 and FTR-019 queries each return IMPLEMENTATION_PROOF_NOT_ESTABLISHED with authority NONE and empty implementation/verification refs; no implementation status, gap, PASS, DONE, maturity or readiness inference is emitted."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "FTR-018 remains TRACE_PRESENT at the exact candidate. Legacy practice slices without feature_root_id continue to materialize under their existing canonical-ID semantics, while feature-root slices may use complete specialized practice semantics or relation-only semantics. Regeneration left tools/slice/generated/listening-detail-completion-trace.json and tools/slice/generated/reading-training-trace.json byte-equivalent to the exact base."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "On exact candidate 0c1980f05404e490dabe276511ddaa17d8949ad8, python3 -m unittest tools.canonical.test_materialize passed 36/36 tests, materialize.py --check passed, repeated FTR-009/FTR-041/FTR-030/FTR-019/FTR-018 queries were byte-equivalent with exact subject_revision and authority NONE, stale base revision failed closed, and full ./verify passed under repository-required Node v24.19.0. The first full-verifier invocation rejected the host-default Node v26.5.0 before completing; rerunning with the already-installed pinned Node changed no repository content, and the candidate remained clean and exact."
+  - criterion_id: AC-7
+    status: NOT_PROVEN
+    evidence: "The implementation candidate is the direct child of exact authorized base 583c0b7d6f17dbb496bebe879c31761716d71e94, changes only tools/canonical/** and tools/slice/**, and was published non-force to dev. Fresh post-candidate publication proof kept main at e707aeee43411cc8f99448b63220eb8beff552b6 with topology exactly dev/main. This report's own direct-child commit identity, report-only diff and remote publication are post-authorship consequences and are intentionally not self-attested here."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh pre-mutation binding resolved canonical dev at exact base 583c0b7d6f17dbb496bebe879c31761716d71e94, main at e707aeee43411cc8f99448b63220eb8beff552b6, topology dev/main, TASK-0049 revision 1 APPROVED/execution_ready, the pinned required skills, a clean safely fast-forwarded local dev mirror, and all required EXECUTION capabilities."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "The accepted TASK-0048 primitive and current producer boundaries were inspected before implementation. FTR-009 has observed existing Web/Core Gist Sprint implementation and verification; FTR-041 has observed planner, assignment, persistence/freshness and Today-route producers; no contradictory FTR-030 implementation evidence was found."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "TDD first reproduced the two required generalization gaps: heading identity depended on a section table row, and materialization coerced every slice into practice semantics. The minimal implementation replaced the trace-specific table dependency with catalog-plus-heading identity and added relation-only slice support while preserving complete specialized practice validation and legacy behavior."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "The exact candidate changes only six authorized paths: two tools/canonical files, the existing Listening Gist slice plus generated trace, and one Daily Plan slice plus generated trace. No docs, contracts, apps, services, migrations, workflows, dependencies, providers or runtime behavior were changed."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Exact-candidate verification passed 36 focused tests, deterministic materialization check, five exact-revision representative queries, stale-revision rejection, unchanged unrelated generated-trace hashes and full ./verify under Node v24.19.0; HEAD and working tree remained exact and clean."
+  - check_id: CHECK-6
+    result: NOT_PROVEN
+    evidence: "Candidate publication was freshly proven non-force on dev with main/topology unchanged. The HTTPS Git transport was unavailable at publication time, so the already-configured GitHub SSH-over-443 transport was used without changing repository remote configuration. Report commit identity and its own remote publication remain post-authorship evidence for the final publication boundary."
+
+result: NEEDS_REVIEW
