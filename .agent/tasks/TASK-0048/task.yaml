@@ -1,0 +1,194 @@
+protocol_version: 3
+
+task_id: TASK-0048
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: DELIVERY-TRACE-PILOT-FTR-018
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+architect_analysis_skills:
+  - architect
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - github-workflow
+  recommended:
+    - simplicity
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "current operator program instruction"
+    role: "Pilot the smallest target-owned implementation trace on IELTS after documentation closure, adapting the existing repo-native slice machinery and proving exact feature-to-code-to-verification attribution without creating status authority."
+    precedence: 1
+  - source: "phatnguyen03022001/architect-profile@1a711360afc201f286aeb66c093add98ae16f9ad:.agent/bootstrap/authority.lock.json"
+    role: "Activated program authority set, including agent-skills@3c4a31598da4c4e12cb0925bee1b471f160d3b4e."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@25f3b41f61fd83070e90aeeea3057d64b00a80c1:docs/catalog/project.json and docs/BEHAVIOR.md"
+    role: "Target-owned feature authority. FTR-018 is the canonical product feature root for R-F04 — T/F/NG + Y/N/NG Lab."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@25f3b41f61fd83070e90aeeea3057d64b00a80c1:tools/slice/reading-training.json, tools/slice/generated/reading-training-trace.json, tools/canonical/source-map.json, tools/canonical/materialize.py and tools/canonical/test_materialize.py"
+    role: "Existing target-native trace/materialization primitive. It already derives canonical-source-bound implementation trace artifacts for R-F04 and must be adapted rather than replaced by a new global registry."
+    precedence: 4
+  - source: "phatnguyen03022001/ilets@25f3b41f61fd83070e90aeeea3057d64b00a80c1:verify, apps/web/e2e/reading-training.spec.ts and services/core-api/internal/httpapi/integration_test.go"
+    role: "Existing repository verification pipeline and attributable product verification producers."
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing tools/canonical and tools/slice ownership plus the existing reading-training slice."
+  rationale: "The required capability is a narrow extension of an existing target-local deterministic materializer. No new repository, service, database, workflow engine, global trace registry or product authority is justified."
+
+objective: "Extend the existing IELTS slice-trace primitive so a read-only exact-revision query can mechanically establish FTR-018 ↔ R-F04 ↔ implementation boundary ↔ verification producers for one exact target commit, while failing closed on stale revision and representing an absent trace only as IMPLEMENTATION_PROOF_NOT_ESTABLISHED."
+
+scope:
+  required_changes:
+    - "Fresh-bind TASK-0048 revision 1 at the exact handoff base and prove required EXECUTION capabilities before any mutation. Inspect the existing tools/canonical and tools/slice patterns before choosing implementation HOW."
+    - "Extend only the existing reading-training trace facts as necessary to bind canonical feature root FTR-018 to existing leaf alias R-F04 and to record the smallest exact implementation-boundary relations and verification-producer relations that cannot be derived reliably. Every referenced repository path must be attributable to this slice and resolve at the queried subject revision."
+    - "Adapt the existing target-native canonical/slice materialization capability to expose a deterministic read-only derived query for a canonical FTR root. For FTR-018 the result must contain authority NONE, the exact queried Git subject revision, canonical feature root, resolved lower-level alias or aliases, exact implementation references, exact verification references, and a truthful trace condition equivalent to TRACE_PRESENT."
+    - "Bind the exact Git subject revision at query time rather than storing a self-referential commit SHA in committed trace input or generated source artifacts. The query must accept or otherwise enforce an expected exact revision and fail closed when the requested/expected revision is stale relative to the subject being inspected. The same exact revision and inputs must produce byte-equivalent derived output."
+    - "For at least one existing canonical FTR root that has no admitted slice trace, prove the query returns a truthful condition equivalent to IMPLEMENTATION_PROOF_NOT_ESTABLISHED. Do not add a trace for that negative-control feature and do not infer FEATURE_NOT_IMPLEMENTED, GAP, PASS, DONE, completion percentage or release readiness merely from trace absence."
+    - "Prove that canonical FTR identity and alias resolution are unambiguous, implementation and verification references exist in the exact subject Git tree, and verification producers are materially attributable rather than merely path-existing. Invalid/ambiguous identity, missing referenced paths, stale revision, malformed trace facts or conflicting mappings must fail closed rather than produce optimistic proof."
+    - "Preserve existing static canonical registry/materialization behavior and existing unrelated slice semantics. Regeneration/check mode must remain deterministic; no manually maintained implementation status, release state or second product authority may be introduced."
+    - "Run focused trace/materializer tests plus the repository-native full ./verify against the exact implementation candidate. Publish the implementation candidate and canonical TASK-0048 report non-force to dev, then stop NEEDS_REVIEW for independent Governing Architect review."
+  allowed_existing_files_or_components:
+    - tools/canonical/
+    - tools/slice/
+  expected_files_are_restrictive: true
+
+invariants:
+  - "FTR-018 remains the canonical product feature root and R-F04 remains its existing detailed Reading alias; product behavior, docs catalog, contracts, application runtime and test semantics are not modified by this trace pilot."
+  - "Trace configuration contains relations/evidence attribution only. It must not become product authority or store DONE, PASS, completion percentage, release_ready, implementation status, maturity or lifecycle state."
+  - "Every derived delivery/trace result has authority NONE and is reconstructible from exact target-owned canonical facts plus exact Git subject state."
+  - "No committed trace input or generated source artifact stores the commit SHA of the commit that contains itself. Exact subject revision is resolved at read/query time to avoid self-reference and immediate staleness."
+  - "Trace absence means only IMPLEMENTATION_PROOF_NOT_ESTABLISHED unless separate canonical evidence supports a stronger claim."
+  - "Existing unrelated slice inputs and generated traces remain semantically unchanged; this task does not perform representative multi-feature expansion."
+  - "No agent-skills, agent-documents, agent-standards, agent-runtime or architect-profile mutation is authorized."
+  - "No new orchestrator, planner, queue, status database, workflow database, capability registry, trace service, global feature matrix or generic domain-profile abstraction is authorized."
+
+forbidden_changes:
+  - "Do not modify docs/, contracts/, apps/, services/, database schema/migrations, workflows, dependencies, provider configuration or production/runtime behavior."
+  - "Do not add traces for FTR-001, FTR-030, FTR-041 or any other representative Phase-3 feature merely to broaden coverage during this pilot."
+  - "Do not create a new global trace-index/source-of-truth when the current tools/slice primitive can own the relation."
+  - "Do not treat generated trace output as canonical authority or manually synchronize a feature-delivery matrix."
+  - "Do not create/delete/rename branches, force-push, mutate main, promote, deploy, tag or publish a release."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Canonical feature identity and lower-level alias resolve mechanically and unambiguously for the pilot."
+    evidence_required: "At the exact candidate revision, the read-only query resolves canonical catalog feature FTR-018 and its existing R-F04 alias to one trace only, with no duplicate/ambiguous mapping and without creating another feature authority."
+  - id: AC-2
+    requirement: "The pilot mechanically joins feature identity to a real implementation boundary and attributable verification producers."
+    evidence_required: "The FTR-018 derived result enumerates the smallest sufficient exact implementation references and verification references; every path exists in the exact subject Git tree, and focused evidence demonstrates the verification producers actually exercise or validate the R-F04/FTR-018 slice rather than merely existing."
+  - id: AC-3
+    requirement: "Derived trace output is exact-revision-bound, deterministic and stale-safe without commit self-reference."
+    evidence_required: "Two derivations for the same exact candidate revision and inputs are byte-equivalent and identify that exact candidate SHA. An intentionally stale expected revision is rejected non-zero/fail-closed. No committed trace input or generated artifact needs to embed its own containing commit SHA."
+  - id: AC-4
+    requirement: "Missing trace is represented truthfully rather than converted into an implementation claim."
+    evidence_required: "A query for an existing canonical FTR with no trace returns IMPLEMENTATION_PROOF_NOT_ESTABLISHED or exact equivalent, while adding no trace for that feature and emitting no FEATURE_NOT_IMPLEMENTED/DONE/PASS/completion/release-readiness inference."
+  - id: AC-5
+    requirement: "The existing target-native materializer remains the sole narrow trace primitive and unrelated generated behavior does not drift."
+    evidence_required: "Focused tests cover identity/alias resolution, path checks, deterministic output, stale revision, malformed/ambiguous trace failure and missing-trace semantics; existing tools/canonical/materialize.py --check remains green and unrelated slice inputs/outputs are unchanged."
+  - id: AC-6
+    requirement: "The repository remains regression-clean after the trace pilot."
+    evidence_required: "Repository-native ./verify passes on the exact implementation candidate, including canonical/materialization checks and existing application verification, with no unauthorized product/runtime/docs/contracts/dependency mutation."
+  - id: AC-7
+    requirement: "Execution publication is exact and independently reviewable."
+    evidence_required: "The implementation candidate descends directly from the exact TASK-0048 handoff base, only authorized tools/canonical and tools/slice implementation paths change, the report is a direct child of the candidate and validates under pinned agent-skills, dev is pushed non-force, main remains e707aeee43411cc8f99448b63220eb8beff552b6, topology remains exactly dev/main, and Executor stops NEEDS_REVIEW."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - repository_content_write
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Fresh-bind phatnguyen03022001/ilets dev at the exact handoff base. Require local HEAD = origin/dev = remote dev, clean tree, main e707aeee43411cc8f99448b63220eb8beff552b6, topology exactly dev/main and all required EXECUTION capabilities before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Inspect current tools/slice/reading-training.json, its generated trace, tools/canonical/source-map.json, materialize.py and focused tests. Prove FTR-018 ↔ R-F04 canonical identity from current docs/catalog/project.json plus docs/BEHAVIOR.md before changing trace tooling."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Implement the smallest target-local extension inside tools/canonical and tools/slice only. Add focused tests for exact FTR/alias mapping, exact-subject path resolution, deterministic output, stale expected revision rejection, malformed/ambiguous trace failure and missing-trace semantics. Preserve unrelated slice output."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Regenerate/check repository-native canonical artifacts as required and run focused trace/materializer tests. Inspect the exact diff and require no docs/contracts/apps/services/dependency/workflow mutation and no manual status/readiness authority."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Commit the implementation candidate, then run the exact-revision read-only trace proof against that committed candidate: FTR-018 TRACE_PRESENT with exact candidate SHA, repeat byte-identically, stale-revision negative proof, and one existing untraced FTR returning IMPLEMENTATION_PROOF_NOT_ESTABLISHED. Run ./verify on that exact candidate and require PASS."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Publish the candidate and canonical report non-force to dev. Validate report serialization with pinned agent-skills, fresh-prove remote dev identity, unchanged main and exact dev/main topology, then stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: "The repository-owned deterministic focused trace tests plus full ./verify on the exact candidate are sufficient for this target-local pilot. No separate CI run is required unless execution discovers a proof obligation that cannot be satisfied locally."
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
