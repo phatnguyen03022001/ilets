@@ -1,0 +1,214 @@
+protocol_version: 3
+
+task_id: TASK-0050
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: DOMAIN-ASSURANCE-PROFILE
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+architect_analysis_skills:
+  - architect
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - github-workflow
+  recommended:
+    - simplicity
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "current operator program instruction"
+    role: "Create a target-owned finite Domain Constraint Profile, separate inventory coverage from assurance pass/fail, and preserve derived-only PASS/PARTIAL/GAP/UNKNOWN/N/A/EXCEPTION semantics without a manual status registry."
+    precedence: 1
+  - source: "phatnguyen03022001/architect-profile@1a711360afc201f286aeb66c093add98ae16f9ad:.agent/bootstrap/authority.lock.json"
+    role: "Activated Architect authority set."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@b7f2c6eae55f17c96c5a815966fed00039f41225:docs/QUALITY.md"
+    role: "Canonical target quality constraints covering authentication, authorization/trust, secrets, privacy, retry/recovery, concurrency/failure, performance/resources, observability, testing/evidence and cost/usage."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@b7f2c6eae55f17c96c5a815966fed00039f41225:docs/DELIVERY.md"
+    role: "Canonical target delivery constraints covering environments/configuration, deployment/migration/rollback, backup/restore, compatibility/versioning/platforms and operational ownership."
+    precedence: 4
+  - source: "phatnguyen03022001/ilets@b7f2c6eae55f17c96c5a815966fed00039f41225:apps/web/package.json, apps/web/next.config.ts, services/core-api/internal/httpapi/auth.go, verify"
+    role: "Exact target stack and existing evidence-supplier boundaries: Next.js 16.3.2, Clerk 7.8.2, Playwright/axe, Core Clerk bearer verification and repository-native verification."
+    precedence: 5
+  - source: "W3C WCAG 2.2 Recommendation, latest published Recommendation 2024-12-12"
+    role: "Versioned accessibility source identity; use as a conformance/proof reference without copying the full criterion catalog."
+    precedence: 6
+  - source: "OWASP ASVS 5.0.0, released 2025-05-30"
+    role: "Versioned web application security verification source identity."
+    precedence: 7
+  - source: "OWASP Top 10 2025"
+    role: "Current web application security risk-awareness source identity."
+    precedence: 8
+  - source: "OWASP API Security Top 10 2023"
+    role: "Current API security risk-awareness source identity for the public/internal API surface."
+    precedence: 9
+  - source: "web.dev Core Web Vitals thresholds, article last updated 2025-05-07"
+    role: "Current external performance benchmark identity: good LCP <= 2.5s, INP <= 200ms, CLS <= 0.1 at the 75th percentile; benchmark only, not an internal SLO guarantee."
+    precedence: 10
+  - source: "Next.js App Router Production guide and CSP guide, last updated 2026-02-27"
+    role: "Framework-specific production/security proof guidance for the exact target family."
+    precedence: 11
+  - source: "Clerk Next.js protect-content/resource guidance, last updated 2026-09-04"
+    role: "Auth integration guidance: protect each resource that reads or mutates protected data; client checks are not a security boundary."
+    precedence: 12
+
+structure_authority:
+  status: RESOLVED
+  source: "Architect Phase-4 target-local assurance boundary"
+  rationale: "The smallest sufficient shape is one non-runtime target-owned assurance profile plus one bounded validator/test helper integrated into the existing root verify contract. This does not create a product authority, status database, matrix service, workflow engine or generic cross-repository framework."
+
+objective: "Materialize a finite WEB_PRODUCTION_V1 Domain Constraint Profile for this target that closes assurance applicability inventory across ten evidence-relevant production domains, preserves versioned external source identities and canonical target-owner references, and mechanically prevents inventory coverage from being mistaken for PASS/readiness."
+
+scope:
+  required_changes:
+    - "Fresh-bind TASK-0050 revision 1 at the exact handoff base and prove all required EXECUTION capabilities before mutation. Inspect current QUALITY, DELIVERY, stack/config/auth and root verify surfaces before choosing HOW."
+    - "Create exactly one target-owned profile at assurance/domain-constraint-profile.yaml. It is authoritative only for target assurance applicability/inventory; it is not product/feature authority and is not implementation, release or standards-conformance status authority."
+    - "Profile identity must be WEB_PRODUCTION_V1 and must declare inventory coverage COMPLETE separately from any assessment result. COMPLETE means the Architect-owned finite domain inventory is closed for this profile revision; it must not mean implementation PASS, standards conformance, release readiness or feature completion."
+    - "Represent exactly ten stable constraint families, each with a unique DCP-* id, concise title, applicability, exact canonical target owner_ref(s), versioned external source identities where materially relevant, and finite required evidence classes suitable for later derived assessment."
+    - "The ten families are: accessibility; authentication/authorization resource boundary; web application security baseline; API security baseline; browser/client security and secret exposure; privacy/external data egress; performance/Core Web Vitals; reliability/idempotency/recovery; deployment/migration/backup/restore/version compatibility; observability/operational provenance. Do not split them into copied external checklist rows."
+    - "Accessibility must reference WCAG 2.2 AA as the target external conformance baseline and require both automated and non-automated evidence classes; existing axe automation must never be represented as blanket WCAG conformance proof."
+    - "Web security must reference ASVS 5.0.0 plus OWASP Top 10 2025 as source identities. API security must reference OWASP API Security Top 10 2023. Do not copy ASVS/Top-10 requirement catalogs into the target profile."
+    - "Authentication/authorization must preserve target Core ownership and the resource-side authorization principle. Clerk/client/middleware state may supply identity/session evidence but cannot become Core product authorization authority."
+    - "Performance must preserve current Core Web Vitals external good benchmarks (LCP <= 2500 ms, INP <= 200 ms, CLS <= 0.1 at p75) explicitly as reference benchmarks, not repository SLOs, release gates or guarantees. Distinguish lab/build evidence from production field evidence."
+    - "Deployment/production guidance may reference current Next.js production/CSP guidance, but must preserve canonical target DELIVERY ownership and must not choose a new hosting product, rollout topology, numeric SLO/RPO/RTO or infrastructure layer."
+    - "Define the only allowed future derived assessment states as PASS, PARTIAL, GAP, UNKNOWN, N/A and EXCEPTION. Define their semantics mechanically, but do not author a current state for any constraint in the profile. N/A requires explicit target applicability reason; EXCEPTION requires an exact separately authorized exception reference and cannot be self-issued by the derived assessor."
+    - "Create the smallest deterministic validator/test helper under tools/assurance/ that validates profile identity, exact ten-family closure, unique ids, allowed applicability/source/evidence vocabulary, owner_ref shape, source identity references, benchmark shape, and the separation between coverage and assessment."
+    - "The validator must fail closed if any constraint contains manual current-status/readiness/completion/maturity/percentage fields, if coverage COMPLETE is missing, if any required family is absent/duplicated, if an external source identity is unknown/unversioned where required, or if evidence requirements are empty/malformed."
+    - "Integrate only the profile validator/tests into the existing root ./verify contract so future target changes cannot silently corrupt the profile. Do not add or modify CI workflows."
+    - "Run focused assurance-profile tests/validation and full repository-native ./verify on the exact implementation candidate. Publish candidate and canonical report non-force to dev, then stop NEEDS_REVIEW."
+  allowed_existing_files_or_components:
+    - assurance/
+    - tools/assurance/
+    - verify
+  expected_files_are_restrictive: true
+
+invariants:
+  - "docs/catalog/project.json plus canonical target docs retain all product/feature/QUALITY/DELIVERY authority. The assurance profile owns only target-specific assurance applicability and evidence expectations."
+  - "Inventory coverage COMPLETE is not PASS and cannot be used as a release/readiness/completion claim."
+  - "No current per-constraint assessment status is stored in assurance/domain-constraint-profile.yaml."
+  - "PASS/PARTIAL/GAP/UNKNOWN/N/A/EXCEPTION are derived-assessment vocabulary only."
+  - "External standards/guides remain external source identities. Their full checklists are not vendored, copied or re-authored into this repository."
+  - "Tools are validation/evidence suppliers only and do not become product or assurance-policy authority."
+  - "Existing root ./verify remains the one repository-native verification contract."
+  - "No support repository mutation is authorized."
+  - "No feature delivery graph, cross-cutting assurance projection, release readiness calculation or percentage is implemented in this task. Those belong to later phases."
+
+forbidden_changes:
+  - "Do not modify docs/, contracts/, apps/, services/, migrations, package manifests, lockfiles, provider configuration or workflows."
+  - "Do not introduce a status registry, feature matrix, assurance matrix, database, dashboard, workflow engine, planner, queue, generic policy engine, external-standard mirror or generated conformance report."
+  - "Do not claim WCAG, ASVS, OWASP, Core Web Vitals, production readiness, release readiness or deployment readiness PASS in this task."
+  - "Do not add a current status field to any DCP constraint."
+  - "Do not invent numeric SLO/RPO/RTO/capacity thresholds; the Core Web Vitals numbers are external reference benchmarks only."
+  - "Do not create/delete/rename branches, force-push, mutate main, promote, deploy, tag or publish a release."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Target-owned domain applicability inventory is finite and closed without becoming a status registry."
+    evidence_required: "assurance/domain-constraint-profile.yaml identifies WEB_PRODUCTION_V1, coverage COMPLETE, and exactly the ten specified unique DCP families; no constraint contains a current PASS/PARTIAL/GAP/UNKNOWN/N/A/EXCEPTION assessment or readiness/completion/percentage field."
+  - id: AC-2
+    requirement: "Canonical target ownership and external source identities remain correctly separated."
+    evidence_required: "Each constraint has exact target owner_ref(s) into existing QUALITY/DELIVERY authority and only concise versioned external source identities where relevant. WCAG 2.2 AA, ASVS 5.0.0, OWASP Top 10 2025, OWASP API Security Top 10 2023, current Core Web Vitals benchmarks, Next.js production/CSP guidance and Clerk resource-protection guidance are referenced without copying their full requirement catalogs."
+  - id: AC-3
+    requirement: "Evidence expectations are sufficient for later deterministic assessment without overclaiming."
+    evidence_required: "Each family has non-empty finite evidence classes. Accessibility requires automated plus manual/non-automated proof; performance distinguishes lab/build from production-field evidence; N/A and EXCEPTION semantics require explicit reasons/references; axe/test/tool presence alone cannot satisfy blanket conformance."
+  - id: AC-4
+    requirement: "Profile validation fails closed."
+    evidence_required: "Focused tests prove rejection of duplicate/missing families, malformed/unknown ids or sources, empty evidence requirements, invalid applicability, status/readiness/percentage authoring, invalid benchmark form, unversioned required source identities, and misuse of COMPLETE as an assessment field."
+  - id: AC-5
+    requirement: "Existing target verification owns assurance-profile drift detection."
+    evidence_required: "Root ./verify invokes the bounded tools/assurance validation/tests without adding a second correctness command or workflow; focused validation passes and full ./verify passes on the exact candidate."
+  - id: AC-6
+    requirement: "No later-phase architecture leaks into Phase 4."
+    evidence_required: "Candidate contains no delivery graph, assurance projection, feature matrix, readiness score, percentage, current assurance result, CI workflow or generic cross-repository framework."
+  - id: AC-7
+    requirement: "Publication remains bounded and independently reviewable."
+    evidence_required: "Implementation candidate is a direct child of exact handoff base and changes only assurance/**, tools/assurance/** and verify; report is a direct child adding only .agent/tasks/TASK-0050/report.yaml; both are pushed non-force to dev; main remains e707aeee43411cc8f99448b63220eb8beff552b6 and topology remains exactly dev/main before stopping NEEDS_REVIEW."
+
+verification:
+  authoritative_verification:
+    required: false
+    rationale: "This is target-local assurance-profile materialization. Deterministic focused validation plus the existing full repository-native ./verify is sufficient; independent remote CI is not required."
+  required_checks:
+    - "Focused tools/assurance tests"
+    - "Deterministic validation of assurance/domain-constraint-profile.yaml"
+    - "Negative tests for manual status/readiness authoring and incomplete/invalid inventory"
+    - "./verify"
+
+capability_requirements:
+  EXECUTION:
+    required:
+      - repository_content_read
+      - repository_content_write
+      - native_repository_execution
+      - git_history_read
+      - git_commit
+      - git_push
+      - remote_ref_read
+  REVIEW:
+    required:
+      - repository_content_read
+      - repository_content_write
+      - git_history_read
+      - git_commit
+      - git_push
+      - remote_ref_read
+
+git_authority:
+  commit: true
+  push: true
+  create_branch: false
+  promote: false
+  force_push: false
+  tag: false
+  release: false
+
+execution_ready: true
