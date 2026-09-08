@@ -1,0 +1,83 @@
+protocol_version: 3
+
+task_id: TASK-0047
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0047/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "cdb594441aad8d534a39dc007c7dc68cc5af744a"
+  final_execution_head: "189dec35ded52aeaf16e5f9f6da94abf3f42195c"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "3c4a31598da4c4e12cb0925bee1b471f160d3b4e"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: ""
+  evidence: ""
+
+pushed: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Before any target-document mutation, agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 tools/validate.py was run against exact target base cdb594441aad8d534a39dc007c7dc68cc5af744a. It exited 1 with DOCS_READY = FALSE and [REFERENCE_ERROR] ACT-005.doc_ref missing heading token Guardian-or-legal-representative. ACT-005 still had name Guardian or legal representative, kind HUMAN, and the malformed docs/PRODUCT.md#Guardian-or-legal-representative reference; docs/PRODUCT.md contained exactly one canonical heading Guardian or legal representative."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Candidate 189dec35ded52aeaf16e5f9f6da94abf3f42195c has sole parent cdb594441aad8d534a39dc007c7dc68cc5af744a and changes only docs/catalog/project.json. Byte-for-byte comparison proves the candidate equals the base file with exactly one replacement of docs/PRODUCT.md#Guardian-or-legal-representative by docs/PRODUCT.md#Guardian; docs/PRODUCT.md is unchanged and git diff --check passed. No other catalog or product semantics changed."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "The same exact agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 tools/validate.py was rerun after the correction and again on exact candidate 189dec35ded52aeaf16e5f9f6da94abf3f42195c; both runs exited 0 with DOCS_READY = TRUE."
+  - criterion_id: AC-4
+    status: NOT_PROVEN
+    evidence: "The implementation candidate was non-force pushed to dev before report authorship and remote main remained e707aeee43411cc8f99448b63220eb8beff552b6 with topology exactly dev/main. This report commit, its direct-child lineage from the candidate, report-only diff, its own non-force publication, and final remote/local identity are post-authorship predicates and are intentionally left for fresh post-publication proof rather than self-attested here."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh canonical resolution proved remote dev = cdb594441aad8d534a39dc007c7dc68cc5af744a, main = e707aeee43411cc8f99448b63220eb8beff552b6, and topology exactly dev/main before mutation. The designated local repository matched phatnguyen03022001/ilets and was clean. It had no local dev branch, and task authority forbids branch creation, so execution used a detached exact origin/dev checkout without creating or mutating a local branch. Local HEAD, origin/dev, and remote dev were exact-base aligned before mutation. All seven required EXECUTION semantic capabilities were available, including native execution, commit, non-force push, and remote-ref reads."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Exact pinned agent-documents validator reproduction on the exact base returned exit 1, DOCS_READY = FALSE, and the required ACT-005.doc_ref missing-heading-token error for Guardian-or-legal-representative before the target correction."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Only docs/catalog/project.json was modified for implementation. Byte-level comparison against the exact base proves one and only one replacement: ACT-005.doc_ref changed from docs/PRODUCT.md#Guardian-or-legal-representative to docs/PRODUCT.md#Guardian. git diff --check passed and docs/PRODUCT.md remained unchanged."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "The same pinned agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82 validator returned DOCS_READY = TRUE with exit 0 on the modified checkout and on exact candidate 189dec35ded52aeaf16e5f9f6da94abf3f42195c."
+  - check_id: CHECK-5
+    result: NOT_PROVEN
+    evidence: "Candidate 189dec35ded52aeaf16e5f9f6da94abf3f42195c is already non-force published to dev with main unchanged and exact dev/main topology. The report commit and its publication do not yet exist at report authorship time; direct-child lineage, report-only diff, final remote dev identity, unchanged main/topology, clean local state, and final local/origin-dev alignment are proven immediately after report publication."
+
+result: NEEDS_REVIEW
