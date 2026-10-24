@@ -180,7 +180,7 @@ Conflicting or insufficient support remains unresolved until the owning domain h
 
 External IELTS reality and Band semantics belong to the canonical PRODUCT owner `docs/product/ielts-exam-and-bands.md`; pedagogical interpretation belongs in the smallest applicable canonical `docs/**` owner.
 
-External platform/legal policies such as YouTube remain external authority. The applicable canonical `docs/**` owner records the product interpretation and re-check requirement; repository documentation does not pretend to replace those external policies.
+External platform/legal policies remain external authority for any supported integration. The applicable canonical `docs/**` owner records the product interpretation and re-check requirement; repository documentation does not pretend to replace those external policies.
 
 ## 12. Research-led change
 

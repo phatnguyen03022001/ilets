@@ -47,7 +47,6 @@ Before external data egress, the selected relationship must be eligible for the 
 | Realtime speech conversation | Web + bounded AI/audio capability | `SELECTED_FOR_IMPLEMENTATION` | optional tutor/Speaking interaction only; provider-neutral and non-authoritative for evidence |
 | Pure VI↔EN translation | Evaluator | `SELECTED_FOR_IMPLEMENTATION` | assistance only; translation output does not establish learner ability |
 | Text-to-speech / generated audio | content/media capability | `SELECTED_FOR_IMPLEMENTATION` | static/lesson audio when demand requires; normal content gates apply |
-| YouTube playback/metadata | Web + Core | `SELECTED_FOR_IMPLEMENTATION` | supported embed/Data API path; no arbitrary extraction; activation still gated |
 | Transactional email | Core | `SELECTED_FOR_IMPLEMENTATION` | transport only; delivery is not product-state authority |
 | Product analytics | Web/Core | `SELECTED_FOR_IMPLEMENTATION` | minimized/classified events; no raw learner-content shadow authority |
 | Operational observability | all runtime units | `SELECTED_FOR_IMPLEMENTATION` | non-authoritative operational evidence |
@@ -58,6 +57,8 @@ Before external data egress, the selected relationship must be eligible for the 
 | Provider callbacks / webhooks | Core | `SELECTED_FOR_IMPLEMENTATION` | selected initially for payOS ingress only; provider auth/replay/association/Core reconciliation required |
 | Additional queue / broker / PubSub | Core dispatch | `DEFERRED` | Cloud Tasks remains sole selected bounded dispatcher; no second broker retained |
 | Feature flags | Core/Web | `DEFERRED` | bounded first-party flags initially sufficient; flags never hidden semantic authority |
+
+No video or YouTube provider relationship is selected or eligible for activation. External audio/image source references are subject to the same rights, privacy, access and failure gates as internally managed media; an external URL never makes video eligible.
 
 Strategic portability boundaries remain Database, consequential AI/model capability, and Identity. Portability requires a narrow replaceable boundary and credible export/exit, not generic multi-provider machinery or multiple active adapters without demonstrated need.
 

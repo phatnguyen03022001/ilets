@@ -120,7 +120,7 @@ This decomposition intentionally does **not** inflate the FTR catalog with neigh
 - **Today, Skills, Practice, Review, Media, Progress, Mock** remain navigation/information architecture, not seven extra feature identities;
 - the 28 `PM-*` modes remain practice packaging under `design/02-practice-catalog.md`, not 28 FTRs;
 - Skill Leaves / learner-visible micro-skills and Knowledge Objects remain learning ontology, not product-feature identities;
-- media sources, transcript/rights states, and source providers remain source/dependency state under `design/03-media-youtube.md` and their owning domains;
+- audio/image media sources, transcript/rights states, and source providers remain source/dependency state under `docs/behavior/practice-and-media.md`, `docs/DATA.md`, and `docs/interfaces/provider-lifecycle-and-routes.md`;
 - `FREE`/`PRO` remain commercial entitlement states, not features or roles;
 - individual AI/LLM/STT/TTS providers or model routes remain replaceable dependencies/capabilities, not features;
 - AI tutoring remains a cross-feature delivery/assistance overlay and `FTR-006` remains its bounded macro support anchor, not a duplicate detailed feature.
@@ -129,9 +129,11 @@ Academic/General Training and delivery differences configure the same detailed f
 
 The exact detailed names, source aliases, flow grouping, and acceptance grouping are owned by `docs/BEHAVIOR.md` plus `docs/catalog/project.json`. Detailed DATA/IFC/EXT/CAP relations were resolved by the bounded relation-domain migrations in `TASK-0014..TASK-0017`; those mappings preserve exact accepted refs or demonstrated N/A only where supported and introduce no speculative neighboring-domain relation.
 
-**Sources:** `design/01-skill-features.md`; `design/02-practice-catalog.md`; `design/03-media-youtube.md`; `design/04-application-flows.md`.
+**Sources:** `design/01-skill-features.md`; `design/02-practice-catalog.md` (historical practice inventory); `docs/behavior/practice-and-media.md` (current media eligibility); `design/04-application-flows.md`.
 
 ## Scope
+
+**Media eligibility:** audio and image are the only supported media kinds for managed bytes and external references. There is no supported video or YouTube upload, storage, ingestion, link-as-video, embed/player/stream, extraction, transcript-from-video, or provider route. Text passages, Writing inputs, authorized audio transcripts/captions/answer keys, and structured chart/diagram data remain valid non-video content and are not required to be audio/image binaries. Media-based learning remains rights/provenance and evidence gated.
 
 Current mutable documentation milestone scope state is owned exclusively by `docs/catalog/project.json`; this Markdown intentionally does not restate `OPEN`, `FROZEN`, or `SCOPE_OPEN`. The bounded DATA/IFC/EXT/CAP relation work and `UNK-001..UNK-009` are resolved. `DOCS_READY` is derived by the pinned documentation model from the combined canonical set and catalog state; it is not owned or stored by this document.
 

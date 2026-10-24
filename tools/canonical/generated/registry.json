@@ -1,12 +1,12 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:63ab4bc8dd5b6666eb48b1ace15b4711c977f114d790acc95c58dbeacabe22cf",
+  "canonical_source_revision": "canonical-source-revision/v1:bbe1162ca704265b2f7cba37d95f5424b3a92b2b406f9d295cbce3630df51726",
   "entries": [
     {
       "cells": [],
       "id": "ASSESSMENT",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -17,7 +17,7 @@
       "cells": [],
       "id": "TRAINING",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Primary activity purpose"
@@ -72,7 +72,7 @@
       "cells": [],
       "id": "ASSESSMENT_MAY_ADMIT",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
@@ -83,7 +83,7 @@
       "cells": [],
       "id": "NOT_EVIDENCE_CANDIDATE",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "#### Evidence candidacy"
@@ -98,7 +98,7 @@
       ],
       "id": "L-F03",
       "source": {
-        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
+        "git_blob": "0434b73a986dbc2bf3fdbdc485cdbc352bd5f0dc",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Listening gist feature"
@@ -113,7 +113,7 @@
       ],
       "id": "L-F04",
       "source": {
-        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
+        "git_blob": "0434b73a986dbc2bf3fdbdc485cdbc352bd5f0dc",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Listening detail and completion feature"
@@ -128,7 +128,7 @@
       ],
       "id": "R-F04",
       "source": {
-        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
+        "git_blob": "0434b73a986dbc2bf3fdbdc485cdbc352bd5f0dc",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "### FTR-018 R-F04 \u2014 T/F/NG + Y/N/NG Lab"
@@ -143,7 +143,7 @@
       ],
       "id": "R-F05",
       "source": {
-        "git_blob": "ab9925ec8737431191336a9c2e55ec5b32558653",
+        "git_blob": "0434b73a986dbc2bf3fdbdc485cdbc352bd5f0dc",
         "owner": "docs/BEHAVIOR.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading headings and structure feature"
@@ -224,7 +224,7 @@
       ],
       "id": "PM-L02",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Listening gist sprint mode"
@@ -240,7 +240,7 @@
       ],
       "id": "PM-L03",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Listening detail and completion mode"
@@ -256,7 +256,7 @@
       ],
       "id": "PM-R03",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading classification mode"
@@ -272,7 +272,7 @@
       ],
       "id": "PM-R04",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Reading headings and structure mode"
@@ -289,7 +289,7 @@
       ],
       "id": "PT-12",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 Listening gist speed practice type"
@@ -306,7 +306,7 @@
       ],
       "id": "PT-13",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"
@@ -323,7 +323,7 @@
       ],
       "id": "PT-16",
       "source": {
-        "git_blob": "8e50c61a496493a881f18a1576a3ed81e1b40ed0",
+        "git_blob": "8c5fa72c44e5022d43d75880182a7c2830b240da",
         "owner": "docs/behavior/practice-and-media.md",
         "parent_section": null,
         "section": "### Canonical materializer anchor \u2014 receptive classification practice types"

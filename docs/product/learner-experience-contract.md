@@ -28,7 +28,7 @@ Imagery is sparse and high quality. Background depth may support hierarchy, but 
 
 ## Motion
 
-Motion is used only when it clarifies state change, hierarchy, feedback, or navigation. It is not a spectacle layer. Avoid parallax, ambient decorative video, long blocking animation, and movement that destabilizes reading or controls.
+Motion is used only when it clarifies state change, hierarchy, feedback, or navigation. It is not a spectacle layer. Avoid parallax, ambient decorative motion, long blocking animation, and movement that destabilizes reading or controls.
 
 Reduced-motion preference, accessibility, responsive behavior, stable layout, and task continuity outrank animation. A no-motion or reduced-motion path must preserve the same product meaning and actionability.
 

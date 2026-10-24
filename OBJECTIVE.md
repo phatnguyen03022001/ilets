@@ -133,7 +133,7 @@ Current mutable documentation coverage/support state is owned by the canonical `
 
 ### Media
 
-The design covers media as an eligible source substrate without making media providers part of learning truth. Transcript/rights eligibility, safe media failure behavior, and the prohibition on assumed arbitrary extraction/download must be explicit.
+Only audio and image are eligible media sources, whether internally held or externally referenced. Video—including third-party URLs, YouTube playback/embedding, upload/storage, streaming, extraction and transcription from video—is outside product scope. Ordinary text, authorized audio transcripts/answer keys, Reading passages, Writing inputs, and structured chart/diagram data remain content rather than additional binary media kinds. Transcript/rights eligibility, safe source-failure handling, and the prohibition on assumed arbitrary extraction/download remain required.
 
 ### Application/runtime design
 

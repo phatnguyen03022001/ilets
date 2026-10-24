@@ -73,6 +73,19 @@ class ContractValidatorTests(unittest.TestCase):
         self.assertIn("HTTP_CONTRACTS_VALID", result.stdout)
         self.assertIn("HTTP_CONTRACT_AUTHORITIES_AUDITED", result.stdout)
 
+    def test_media_wire_contract_exposes_only_audio_and_image(self) -> None:
+        evaluator = EVALUATOR.read_text(encoding="utf-8")
+        media_schema = evaluator.split("\n    InternalMediaReference:\n", 1)[1].split("\n    Internal", 1)[0]
+        self.assertIn("        media_kind:\n          type: string\n          enum: [AUDIO, IMAGE]", media_schema)
+        self.assertNotIn("VIDEO", media_schema)
+
+        public = PUBLIC.read_text(encoding="utf-8")
+        media_route = public.split(
+            "\n  /v1/practice-activities/{practice_activity_id}/media/{media_reference}:\n", 1
+        )[1].split("\n  /", 1)[0]
+        self.assertIn("audio/ogg:", media_route)
+        self.assertNotIn("video/", media_route)
+
     def test_rejects_public_internal_route(self) -> None:
         public = minimal_spec("/internal/v1/oops", "oops", "ClerkBearer")
         evaluator = minimal_spec("/internal/v1/health", "getEvaluatorHealth", "GoogleOidcBearer")

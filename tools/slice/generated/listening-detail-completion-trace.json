@@ -1,7 +1,7 @@
 {
   "artifact": "DERIVED_IMPLEMENTATION_TRACE",
-  "canonical_registry_sha256": "672daa3762c0b04e68425f32cef29ee5a63c47c53d21b5b222537ea232875252",
-  "canonical_source_revision": "canonical-source-revision/v1:63ab4bc8dd5b6666eb48b1ace15b4711c977f114d790acc95c58dbeacabe22cf",
+  "canonical_registry_sha256": "67338b2eaa2f4a1d9ab26be51938c515e114f96a781768fd45ed3f69727b7a7e",
+  "canonical_source_revision": "canonical-source-revision/v1:bbe1162ca704265b2f7cba37d95f5424b3a92b2b406f9d295cbce3630df51726",
   "schema_version": 1,
   "slice": {
     "content_context_id": "CTX-LISTENING-SHARED",

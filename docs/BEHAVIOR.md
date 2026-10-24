@@ -76,7 +76,7 @@ Lets the learner review permitted transcript/evidence detail and classified erro
 
 ### FTR-014 L-F08 — Media Listening Lab
 
-Uses an eligible media source as a substrate for bounded listening tasks through existing practice semantics. Source, rights, transcript state, provider, and media difficulty remain source/dependency properties rather than new feature or IELTS-skill identities.
+Uses eligible audio as the listening substrate, with eligible images (such as map/diagram prompts) where relevant, through existing practice semantics. Source, rights, authorized audio-transcript state, provider, and difficulty remain source/dependency properties rather than new feature or IELTS-skill identities.
 
 ### FTR-015 R-F01 — Reading Workspace
 
@@ -174,11 +174,11 @@ Supports pronunciation-focused discrimination/production and feedback only to th
 
 ### FTR-036 S-F05 — Shadowing
 
-Supports rhythm, connected speech, stress, intonation, and fluency imitation from eligible source material. A media/player source remains a substrate and imitation performance does not by itself certify independent Speaking ability.
+Supports rhythm, connected speech, stress, intonation, and fluency imitation from eligible audio. Audio playback remains a substrate and imitation performance does not by itself certify independent Speaking ability.
 
 ### FTR-037 S-F06 — Retell & Summarize
 
-Supports spoken meaning reconstruction and summarization from eligible prompts or media without requiring copied transcript material when no authorized transcript exists. Evaluation consequence remains bounded by actual capture and provenance quality.
+Supports spoken meaning reconstruction and summarization from eligible prompts or audio without requiring copied transcript material when no authorized audio transcript exists. Evaluation consequence remains bounded by actual capture and provenance quality.
 
 ### FTR-038 S-F07 — Transcript & Fluency Analysis
 
@@ -210,7 +210,7 @@ Supports vocabulary, grammar, and phonology acquisition plus spaced retrieval an
 
 ### FTR-045 X-F05 — Media Lesson Creator
 
-Turns an eligible media/source context into a target-linked lesson proposal using existing practice modes only when rights/transcript/product-safety conditions permit it. Media URL, provider, transcript state, generated prompt, and source metadata are not feature identities.
+Turns eligible audio or image sources into target-linked lesson proposals using existing practice modes only when rights, authorized audio-transcript requirements (if applicable), and product-safety conditions permit. Media URL/provider, transcript state, generated prompt, and source metadata are not feature identities; video links or embeds are never eligible.
 
 ### FTR-046 X-F06 — Full IELTS Mock
 
@@ -250,7 +250,7 @@ Primary navigation remains **Today, Skills, Practice, Review, Media, Progress, M
 
 The 28 `PM-*` practice modes package learning actions and remain orthogonal to feature identity. Skill Leaves/micro-skills and Knowledge Objects remain learning ontology. Media source/transcript states remain source state. `FREE`/`PRO` remain commercial entitlement. Provider/model routes remain dependencies/capabilities. AI tutoring remains a cross-feature delivery/assistance overlay bounded by `FTR-006`, not a 41st learner detailed capability.
 
-Sources for `FTR-007..FTR-046`: `design/01-skill-features.md`, with practice/media boundaries from `design/02-practice-catalog.md` and `design/03-media-youtube.md`. Sources for `FTR-047..FTR-053`: `design/04-application-flows.md` — Privileged operational mutation; Actor, capability, and RBAC model.
+Sources for `FTR-007..FTR-046`: `design/01-skill-features.md` (historical feature inventory), with current practice/media boundaries in `docs/behavior/practice-and-media.md`. Sources for `FTR-047..FTR-053`: `design/04-application-flows.md` — Privileged operational mutation; Actor, capability, and RBAC model.
 
 ### Entitlement-visible Speaking foundation
 

@@ -124,11 +124,11 @@ Sources: `spec/09-PROGRESSION.md` — Review state; `spec/04-KNOWLEDGE.md` — l
 
 ### DAT-015 MediaSource
 
-`MediaSource` is Core-owned persistent product state for an eligible media source reference and the material accepted metadata/provenance, current playability/embeddability, rights state, transcript state/reference, and source identity needed to govern media learning. It remains separate from the reusable `ContentRevision` that may reference it.
+`MediaSource` (`DAT-015`) is Core-owned persistent product state for an eligible audio or image source (managed or externally referenced). It preserves the media kind, source/provider identity and optional eligible URL, accepted metadata/provenance, current access/playability for audio or visibility for images, rights state, and authorized audio-transcript state/reference where applicable. Video sources, video URLs/embeds, video-derived transcripts and video bytes are never eligible. It remains separate from the reusable `ContentRevision` that may reference it; ordinary text and structured chart/diagram data remain content rather than extra media kinds.
 
 Source availability or rights/transcript eligibility may change without rewriting historical Attempts or turning source loss into learner regression. External bytes/provider state do not become product authority merely because a source is referenced.
 
-Sources: `design/03-media-youtube.md` — MediaSource product contract and source removal/failure; `design/06-implementation-stack.md` — media-source product state.
+Sources: `docs/behavior/practice-and-media.md` — current media eligibility and source-failure behavior; `design/06-implementation-stack.md` — historical source-state design.
 
 ### DAT-016 ContentCandidate
 
@@ -250,7 +250,7 @@ Current authority defines deletion/retention boundaries but does not define a un
 
 No `N/A` is claimed for unresolved retention detail, and this section creates no provider identity or exact retention schedule.
 
-Source: `design/06-implementation-stack.md` — Data lifecycle and deletion boundary; `design/03-media-youtube.md` — source removal/failure.
+Sources: `design/06-implementation-stack.md` — historical data lifecycle; `docs/behavior/practice-and-media.md` — current source loss and eligibility.
 
 ## DATA-CONSISTENCY Consistency and transaction boundaries
 
@@ -325,7 +325,7 @@ Required provenance stays attached at the owning layer: exact content revision a
 
 Missing, stale, conflicting, pending/unusable, below-requirement, supported, provider/runtime-failure, product-coverage, entitlement, authorization, content-eligibility, and privileged-work conditions are not interchangeable data-quality labels. Missing evidence is not negative evidence; technical/product failure is not learner evidence; a downstream projection never rewrites its upstream history.
 
-Sources: `spec/01-LEARNER-MODEL.md`; `spec/08-ASSESSMENT.md`; `spec/09-PROGRESSION.md`; `spec/10-CONTENT-MODEL.md`; `design/03-media-youtube.md`; `design/04-application-flows.md`; `design/06-implementation-stack.md`; `design/08-coverage-and-support.md`.
+Sources: `spec/01-LEARNER-MODEL.md`; `spec/08-ASSESSMENT.md`; `spec/09-PROGRESSION.md`; `spec/10-CONTENT-MODEL.md`; `docs/behavior/practice-and-media.md`; `design/04-application-flows.md`; `design/06-implementation-stack.md`; `design/08-coverage-and-support.md`.
 
 ## Authority and closure boundary
 
