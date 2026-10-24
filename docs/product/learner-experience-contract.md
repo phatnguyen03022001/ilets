@@ -1,56 +1,56 @@
-# LEARNER-EXPERIENCE-CONTRACT Learner-facing product-quality contract
+# LEARNER-EXPERIENCE-CONTRACT Hợp đồng chất lượng sản phẩm dành cho người học
 
-> **CANONICAL PRODUCT AUTHORITY**
+> **THẨM QUYỀN PRODUCT CHÍNH THỨC**
 >
-> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. This shard owns durable learner-facing experience semantics only; it does not freeze pixel tokens, a final brand system, a component library, or implementation-specific layout.
+> Tài liệu này có thẩm quyền trong domain PRODUCT theo `docs/catalog/project.json`. Shard này chỉ quy định các ngữ nghĩa trải nghiệm bền vững hướng tới người học; không ấn định pixel, hệ thống thương hiệu cuối cùng, thư viện component hay bố cục phụ thuộc cách triển khai.
 
-## Mental model and progressive disclosure
+## Mô hình tư duy và hiển thị thông tin theo mức độ
 
-The default learner experience is a simple surface over a deep system. It exposes the learner's declared target, current evidence-backed state, a small number of material blockers or unknowns, and the next eligible action without requiring the learner to understand internal ontology, provider, schema, or policy machinery.
+Trải nghiệm mặc định là giao diện đơn giản đặt trên hệ thống có chiều sâu. Giao diện thể hiện mục tiêu do người học khai báo, trạng thái hiện tại dựa trên bằng chứng, một số ít trở ngại quan trọng hoặc điều chưa biết, cùng hành động hợp lệ tiếp theo; người học không phải hiểu ontology, nhà cung cấp, schema hay cơ chế chính sách nội bộ.
 
-Primary navigation centers on **Today, Skills, Practice, Review, Media, Progress, and Mock**, with Target/Diagnostic, Vocabulary, and Profile available where context requires them. The default view should answer what matters now. Progressive disclosure may reveal skill/gap maps, Knowledge Objects, attempt/evidence history, policy, provenance, or deeper explanation on demand.
+Điều hướng chính tập trung vào **Today, Skills, Practice, Review, Media, Progress và Mock**; Target/Diagnostic, Vocabulary và Profile được hiển thị khi ngữ cảnh cần. Màn hình mặc định phải trả lời được điều gì quan trọng lúc này. Có thể mở dần bản đồ kỹ năng/khoảng trống, Knowledge Objects, lịch sử lần làm bài/bằng chứng, chính sách, nguồn gốc hoặc giải thích sâu hơn khi người học yêu cầu.
 
-Internal IDs, graph mechanics, evaluator/provider plumbing, implementation state, and migration/catalog details are not normal learner chrome. A surface must not invent a global completeness percentage when material evidence, product coverage, or applicability remains unresolved.
+ID nội bộ, cơ chế đồ thị, kết nối evaluator/nhà cung cấp, trạng thái triển khai và chi tiết migration/catalog không thuộc giao diện thông thường. Không được tự tạo tỷ lệ hoàn thành tổng thể khi bằng chứng quan trọng, phạm vi hỗ trợ sản phẩm hoặc điều kiện áp dụng vẫn chưa được xác định.
 
-## Visual character and learner language
+## Đặc trưng thị giác và ngôn ngữ dành cho người học
 
-The durable character is typography-led, content-first, calm, and legible. Hierarchy, spacing, readable text, state clarity, and learner action outrank decorative density.
+Phong cách bền vững lấy kiểu chữ làm chủ đạo, ưu tiên nội dung, điềm tĩnh và dễ đọc. Phân cấp, khoảng cách, chữ rõ ràng, trạng thái minh bạch và hành động học tập quan trọng hơn mật độ trang trí.
 
-Avoid product-wide patterns that obscure the learning task or make the system feel like spectacle: childish edtech treatment, decorative gamification, excessive gradients/glass, futuristic AI glow, dashboard mosaics, badge/icon clutter, ontology-shaped navigation, and generic AI-branded chrome.
+Tránh các mẫu thiết kế áp dụng toàn sản phẩm làm lu mờ nhiệm vụ học hoặc biến hệ thống thành màn trình diễn: phong cách edtech trẻ con, game hóa trang trí, gradient/kính mờ quá mức, hiệu ứng AI phát sáng tương lai, các ô dashboard chằng chịt, huy hiệu/icon rối mắt, điều hướng theo ontology và giao diện gắn thương hiệu AI chung chung.
 
-Learner-facing copy names the **capability, action, result, state, blocker, uncertainty, or recovery path first**. AI or provider branding does not replace a meaningful product label. Privacy, provenance, source, evaluator/AI use, or other disclosures still appear when legally or materially required; capability-first language is not a reason to hide consequential provenance.
+Nội dung giao diện phải nêu **năng lực, hành động, kết quả, trạng thái, trở ngại, điều chưa chắc chắn hoặc cách khôi phục trước tiên**. Thương hiệu AI hay nhà cung cấp không thay thế được nhãn sản phẩm có ý nghĩa. Vẫn phải công bố thông tin về quyền riêng tư, nguồn gốc, nguồn nội dung, evaluator/AI hoặc yếu tố khác khi pháp luật hay hậu quả thực tế yêu cầu; ưu tiên ngôn ngữ về năng lực không đồng nghĩa che giấu nguồn gốc quan trọng.
 
-## Iconography, imagery, and depth
+## Biểu tượng, hình ảnh và chiều sâu
 
-Icons are functional, restrained, coherent, and paired with text or another accessible fallback where meaning would otherwise be ambiguous. Do not use emoji, cartoon iconography, mixed visual packs, or icons on every surface merely as decoration.
+Icon phải có chức năng rõ ràng, tiết chế, nhất quán, đi kèm chữ hoặc phương án hỗ trợ tiếp cận khi ý nghĩa có thể mơ hồ. Không dùng emoji, icon hoạt hình, bộ biểu tượng trộn lẫn hay đặt icon khắp nơi chỉ để trang trí.
 
-Imagery is sparse and high quality. Background depth may support hierarchy, but content remains foreground and no required meaning is carried only by background treatment. Stock-tech spectacle, futuristic robots, and hero imagery that competes with the learner's task are excluded from the durable product language.
+Hình ảnh được dùng ít nhưng chất lượng cao. Chiều sâu nền có thể hỗ trợ phân cấp, nhưng nội dung phải ở lớp trước và không thông tin bắt buộc nào chỉ được truyền tải qua nền. Loại trừ hình công nghệ sáo rỗng, robot tương lai và ảnh hero cạnh tranh sự chú ý với nhiệm vụ học tập.
 
-## Motion
+## Chuyển động
 
-Motion is used only when it clarifies state change, hierarchy, feedback, or navigation. It is not a spectacle layer. Avoid parallax, ambient decorative motion, long blocking animation, and movement that destabilizes reading or controls.
+Chỉ sử dụng chuyển động khi làm rõ thay đổi trạng thái, phân cấp, phản hồi hoặc điều hướng; không dùng làm màn trình diễn. Tránh parallax, chuyển động trang trí liên tục, hiệu ứng dài cản trở thao tác và chuyển động gây mất ổn định khi đọc hay điều khiển.
 
-Reduced-motion preference, accessibility, responsive behavior, stable layout, and task continuity outrank animation. A no-motion or reduced-motion path must preserve the same product meaning and actionability.
+Ưu tiên giảm chuyển động, khả năng tiếp cận, giao diện thích ứng, bố cục ổn định và sự liên tục của nhiệm vụ hơn hiệu ứng. Chế độ không chuyển động hoặc giảm chuyển động phải giữ nguyên ý nghĩa sản phẩm và khả năng thực hiện hành động.
 
-## Interaction micro-quality
+## Chất lượng tương tác ở mức chi tiết
 
-Learner-facing state distinctions remain explicit and usable:
+Những trạng thái hiển thị cho người học phải được phân biệt rõ và sử dụng được:
 
-- loading and skeleton states preserve layout and do not pretend unknown content is already known;
-- an empty state states what is absent and the next valid action when one exists;
-- error, degraded, disabled, pending, and unavailable are distinct states rather than one generic failure;
-- hover, focus, pressed, selected, expanded, and disabled controls are perceivable and consistent where the input modality supports them;
-- keyboard use, focus order/visibility, and screen-reader semantics remain valid; color or an icon alone never carries a required distinction;
-- concise copy preserves uncertainty rather than manufacturing certainty for visual cleanliness;
-- primary, secondary, and recovery actions remain distinguishable; and
-- responsive/mobile layouts preserve hierarchy, readability, stable controls, and safe capture/input behavior instead of merely shrinking a desktop dashboard.
+- trạng thái đang tải và skeleton giữ ổn định bố cục, không giả vờ rằng nội dung chưa biết đã được xác định;
+- trạng thái trống cho biết thứ gì đang thiếu và hành động hợp lệ tiếp theo nếu có;
+- lỗi, suy giảm chất lượng, bị vô hiệu hóa, đang chờ và không khả dụng là các trạng thái khác nhau, không gom thành một lỗi chung;
+- hover, focus, nhấn, chọn, mở rộng và vô hiệu hóa phải dễ nhận biết, nhất quán với phương thức nhập liệu hỗ trợ chúng;
+- thao tác bàn phím, thứ tự/khả năng nhìn thấy focus và ngữ nghĩa trình đọc màn hình phải hợp lệ; chỉ màu sắc hoặc icon không đủ truyền đạt khác biệt bắt buộc;
+- câu chữ ngắn gọn vẫn phải thể hiện sự chưa chắc chắn, không dựng lên sự chắc chắn chỉ để giao diện gọn;
+- hành động chính, phụ và khôi phục phải phân biệt được; và
+- bố cục responsive/mobile phải giữ phân cấp, khả năng đọc, điều khiển ổn định và thu/nhập liệu an toàn, thay vì chỉ thu nhỏ dashboard máy tính.
 
-Micro-quality is part of product truth when a missing or ambiguous interaction state could cause a learner to misunderstand evidence, product availability, eligibility, capture success, or the next valid action.
+Chất lượng tương tác chi tiết là một phần của tính đúng đắn sản phẩm khi trạng thái thiếu hoặc mơ hồ có thể khiến người học hiểu sai bằng chứng, mức hỗ trợ, tính đủ điều kiện, việc thu dữ liệu thành công hay hành động hợp lệ kế tiếp.
 
-## Simple-surface / deep-system invariant
+## Bất biến: giao diện đơn giản, hệ thống chuyên sâu
 
-The system may maintain deep evidence, prerequisite, coverage, content, provider, lifecycle, and provenance machinery internally, but the learner-facing default remains small and consequential: target, current state, material blocker/unknown, and next eligible action.
+Nội bộ có thể duy trì cơ chế chuyên sâu về bằng chứng, điều kiện tiên quyết, độ bao phủ, nội dung, nhà cung cấp, vòng đời và nguồn gốc; nhưng giao diện mặc định vẫn tập trung vào những điểm ngắn gọn và quan trọng: mục tiêu, trạng thái hiện tại, trở ngại/điều chưa biết quan trọng và hành động hợp lệ kế tiếp.
 
-Deeper explanation is available progressively when it helps the learner understand why a recommendation exists, what evidence supports a state, what remains unresolved, or how to recover. Progressive disclosure never hides a blocker that changes what the learner may validly do, and simplicity never collapses materially different states into one friendly-looking score.
+Thông tin giải thích sâu được mở dần khi giúp người học hiểu vì sao có đề xuất, bằng chứng nào hỗ trợ trạng thái, điều gì chưa được giải quyết hoặc cách khôi phục. Việc mở dần thông tin không được che giấu trở ngại làm thay đổi hành động hợp lệ; sự đơn giản không được gộp những trạng thái khác nhau về bản chất thành một điểm số thân thiện.
 
-This contract governs durable product-quality semantics. Exact font sizes, colors, radii, spacing scales, animation timings, breakpoints, component implementation, final artwork, and brand tokens remain implementation/design-system choices so long as they preserve these semantics.
+Hợp đồng này quản lý ngữ nghĩa chất lượng sản phẩm mang tính bền vững. Cỡ chữ, màu sắc, bo góc, thang khoảng cách, thời gian chuyển động, breakpoint, triển khai component, đồ họa cuối cùng và token thương hiệu là lựa chọn của implementation/design system, miễn giữ nguyên các ngữ nghĩa này.

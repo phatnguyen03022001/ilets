@@ -1,121 +1,121 @@
-# KNOWLEDGE-OBJECT-ONTOLOGY — Knowledge Objects
+# KNOWLEDGE-OBJECT-ONTOLOGY — Đối tượng kiến thức (Knowledge Objects)
 
-> **CANONICAL PRODUCT AUTHORITY**
+> **THẨM QUYỀN PRODUCT CHÍNH THỨC**
 >
-> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
+> Có thẩm quyền trong domain PRODUCT theo `docs/catalog/project.json`. `CONSTITUTION.md` và `OBJECTIVE.md` giữ thẩm quyền riêng; `contracts/**` có thẩm quyền đối với machine contract chính xác trong phạm vi của nó. Các tham chiếu tới `spec/**` hoặc `design/**` bên dưới, kể cả cách dùng từ “canonical” trong lịch sử, chỉ là nguồn gốc tham khảo, không tạo thẩm quyền ngang hàng.
 
-## Purpose and ownership
+## Mục đích và quyền sở hữu
 
-Define **what must be known** to support the capabilities preserved in `docs/product/skill-leaves.md` from historical `spec/03-SKILLS.md` provenance.
+Xác định **những điều cần biết** để hỗ trợ các năng lực được giữ trong `docs/product/skill-leaves.md`, có nguồn gốc lịch sử từ `spec/03-SKILLS.md`.
 
-Knowledge is enabling language content, not a fifth IELTS skill. The canonical domains are Grammar, Vocabulary, and Phonology.
+Kiến thức là nội dung ngôn ngữ nền tảng, không phải kỹ năng IELTS thứ năm. Các domain kiến thức chính thức là Grammar (ngữ pháp), Vocabulary (từ vựng) và Phonology (âm vị học).
 
-This shard preserves enabling language knowledge, atomic Knowledge Object identity, concise definitions, Knowledge-to-Knowledge prerequisite edges, and Skill-to-Knowledge resolution.
+Shard này lưu giữ kiến thức nền tảng, định danh nguyên tử của Knowledge Object, định nghĩa ngắn gọn, các cạnh tiên quyết từ Knowledge sang Knowledge và ánh xạ từ Skill sang Knowledge.
 
-The active inventory contains **46 stable atomic Knowledge Objects**:
+Danh mục hiện hành có **46 Knowledge Objects nguyên tử với ID ổn định**:
 
 - Grammar: 29;
 - Vocabulary: 9;
 - Phonology: 8.
 
-## Atomic Knowledge Object rule
+## Quy tắc Knowledge Object nguyên tử
 
-A Knowledge Object represents one independently learnable concept. Decompose while a concept still contains multiple independently learnable units. Stop when further splitting no longer improves learning, prerequisite reasoning, remediation, or reuse.
+Một Knowledge Object thể hiện một khái niệm có thể học độc lập. Tiếp tục tách khi khái niệm vẫn chứa nhiều đơn vị có thể học độc lập. Dừng khi việc tách nhỏ hơn không còn cải thiện học tập, suy luận điều kiện tiên quyết, khắc phục lỗi hoặc tái sử dụng.
 
-## Canonical Knowledge Object fields
+## Trường chính thức của Knowledge Object
 
-A Knowledge Object canonically owns:
+Mỗi Knowledge Object sở hữu các trường chính thức:
 
-- stable `id`;
-- name;
+- `id` ổn định;
+- tên;
 - domain;
-- concise definition;
-- explicit `requires` edges to prerequisite Knowledge Objects.
+- định nghĩa ngắn gọn;
+- các cạnh `requires` tường minh trỏ đến Knowledge Objects tiên quyết.
 
-The following are intentionally not canonical object fields unless future evidence promotes them:
+Những mục sau cố ý **không** là trường chính thức của đối tượng, trừ khi bằng chứng trong tương lai nâng cấp chúng:
 
-- examples and worked instances → historical `spec/10-CONTENT-MODEL.md` provenance and current DATA/content authority;
-- misconception/remediation catalogs → historical `spec/10-CONTENT-MODEL.md` provenance and current DATA/content authority;
-- soft `related_to` associations with no gating/selection consequence → historical/supporting graph only;
-- band relevance → current IELTS/Bands and Curriculum PRODUCT shards;
-- learner acquisition state → current DATA/BEHAVIOR authority.
+- ví dụ và bài giải mẫu → nguồn gốc lịch sử `spec/10-CONTENT-MODEL.md` và thẩm quyền DATA/nội dung hiện hành;
+- danh mục nhận thức sai/cách khắc phục → nguồn gốc lịch sử `spec/10-CONTENT-MODEL.md` và thẩm quyền DATA/nội dung hiện hành;
+- liên hệ mềm `related_to` không ảnh hưởng cổng điều kiện/lựa chọn → chỉ thuộc đồ thị lịch sử/hỗ trợ;
+- mức Band liên quan → các shard PRODUCT về IELTS/Bands và Curriculum;
+- trạng thái tiếp thu của người học → thẩm quyền DATA/BEHAVIOR hiện hành.
 
-## Grammar graph
+## Đồ thị ngữ pháp (Grammar)
 
-| ID | Object | Canonical definition | Requires |
+| ID | Đối tượng | Định nghĩa chính thức | Yêu cầu tiên quyết |
 |---|---|---|---|
-| `K-GRA-010` | Word classes / parts of speech | Noun, verb, adjective, adverb, preposition, conjunction, determiner, pronoun and related functional categories. | — |
-| `K-GRA-061` | Noun countability & pluralization | Countable/uncountable noun behavior, regular/irregular plurals, and number marking. | `K-GRA-010` |
-| `K-GRA-001` | Clause structure | Core clause elements such as subject, verb, object, complement, adjunct and their basic ordering. | `K-GRA-010` |
-| `K-GRA-002` | Simple sentence | A complete sentence built from one independent clause. | `K-GRA-001` |
-| `K-GRA-003` | Compound sentence / coordination | Two or more independent clauses joined by coordination. | `K-GRA-002`, `K-GRA-020` |
-| `K-GRA-004` | Complex sentence / subordination | An independent clause combined with one or more subordinate clauses. | `K-GRA-002`, `K-GRA-021` |
-| `K-GRA-005` | Relative clauses | Clauses that modify a noun using relative forms, including defining and non-defining patterns. | `K-GRA-004`, `K-GRA-031` |
-| `K-GRA-006` | Conditional clauses | Conditional relationships expressed through if/conditional clause patterns, including common mixed forms. | `K-GRA-004` |
-| `K-GRA-007` | Noun clauses | Subordinate clauses functioning as noun-like constituents. | `K-GRA-004` |
-| `K-GRA-020` | Coordinating conjunctions | Coordinators such as and/but/or/so that join equal grammatical units. | `K-GRA-010` |
-| `K-GRA-021` | Subordinating conjunctions | Subordinators such as although/because/if/while that introduce dependent clauses. | `K-GRA-010` |
-| `K-GRA-022` | Linking adverbials / conjuncts | Sentence/discourse transitions such as however, therefore, moreover and consequently. | `K-GRA-010` |
-| `K-GRA-030` | Pronouns | Personal, possessive, demonstrative, reflexive and related pronoun systems. | `K-GRA-010` |
-| `K-GRA-031` | Relative pronouns | Relative forms such as who, whom, which, that and whose. | `K-GRA-030` |
-| `K-GRA-032` | Determiners | Articles, demonstratives, quantifiers, possessives and other noun-phrase specifiers. | `K-GRA-010` |
-| `K-GRA-033` | Reference & substitution for cohesion | Reference and substitution devices used to link discourse and avoid unnecessary repetition. | `K-GRA-030`, `K-GRA-032` |
-| `K-GRA-040` | Articles: a / an / the | Core indefinite and definite article forms and basic use. | `K-GRA-032` |
-| `K-GRA-041` | Definite / indefinite / zero article rules | Conditions governing article choice, including zero article and generic/specific reference. | `K-GRA-040` |
-| `K-GRA-050` | Present simple | Present-simple form and its core uses for facts, habits, states and generalizations. | `K-GRA-002` |
-| `K-GRA-051` | Past simple | Past-simple form and its core uses for completed past events/states. | `K-GRA-002` |
-| `K-GRA-052` | Present perfect | Present-perfect form connecting prior events/states to present relevance. | `K-GRA-051` |
-| `K-GRA-053` | Past perfect | Past-perfect form for an earlier past event/state relative to another past reference point. | `K-GRA-052` |
-| `K-GRA-054` | Progressive / continuous aspect | `be + -ing` aspect for ongoing or temporally bounded situations across time references. | `K-GRA-050`, `K-GRA-051` |
-| `K-GRA-055` | Future forms | Common future-reference forms including will, going to and present-continuous patterns. | `K-GRA-002` |
-| `K-GRA-060` | Subject–verb agreement | Agreement of finite verb form with subject person/number, including common complex cases. | `K-GRA-002`, `K-GRA-061` |
-| `K-GRA-062` | Modal verbs | Modal auxiliaries such as can, could, must, should, may, might and would and their core meanings. | `K-GRA-002` |
-| `K-GRA-063` | Passive voice | Passive construction using an appropriate form of `be` plus past participle to background the agent/focus the affected entity. | `K-GRA-002`, `K-GRA-061` |
-| `K-GRA-064` | Comparatives & superlatives | Comparative and superlative morphology/syntax for adjectives and adverbs. | `K-GRA-010` |
-| `K-GRA-065` | Negation & question forms | Core negation plus yes/no and wh-question formation, including auxiliary behavior and word order. | `K-GRA-002` |
+| `K-GRA-010` | Loại từ / từ loại | Danh từ, động từ, tính từ, trạng từ, giới từ, liên từ, từ hạn định, đại từ và các nhóm chức năng liên quan. | — |
+| `K-GRA-061` | Danh từ đếm được và số nhiều | Cách dùng danh từ đếm được/không đếm được, số nhiều có/không theo quy tắc và đánh dấu số lượng. | `K-GRA-010` |
+| `K-GRA-001` | Cấu trúc mệnh đề | Thành phần cốt lõi như chủ ngữ, động từ, tân ngữ, bổ ngữ, trạng ngữ và trật tự cơ bản. | `K-GRA-010` |
+| `K-GRA-002` | Câu đơn | Câu hoàn chỉnh gồm một mệnh đề độc lập. | `K-GRA-001` |
+| `K-GRA-003` | Câu ghép / phối hợp | Từ hai mệnh đề độc lập trở lên được nối bằng phép phối hợp. | `K-GRA-002`, `K-GRA-020` |
+| `K-GRA-004` | Câu phức / phụ thuộc | Mệnh đề độc lập kết hợp với một hoặc nhiều mệnh đề phụ. | `K-GRA-002`, `K-GRA-021` |
+| `K-GRA-005` | Mệnh đề quan hệ | Mệnh đề bổ nghĩa danh từ bằng dạng quan hệ, gồm dạng xác định và không xác định. | `K-GRA-004`, `K-GRA-031` |
+| `K-GRA-006` | Mệnh đề điều kiện | Quan hệ điều kiện biểu đạt qua mẫu câu if/điều kiện, gồm cả các dạng hỗn hợp thông dụng. | `K-GRA-004` |
+| `K-GRA-007` | Mệnh đề danh từ | Mệnh đề phụ hoạt động như thành phần danh từ. | `K-GRA-004` |
+| `K-GRA-020` | Liên từ đẳng lập | Các từ nối như and/but/or/so liên kết những đơn vị ngữ pháp ngang hàng. | `K-GRA-010` |
+| `K-GRA-021` | Liên từ phụ thuộc | Các từ nối như although/because/if/while mở đầu mệnh đề phụ thuộc. | `K-GRA-010` |
+| `K-GRA-022` | Trạng ngữ liên kết / từ nối | Chuyển ý trong câu/diễn ngôn như however, therefore, moreover và consequently. | `K-GRA-010` |
+| `K-GRA-030` | Đại từ | Hệ thống đại từ nhân xưng, sở hữu, chỉ định, phản thân và các loại liên quan. | `K-GRA-010` |
+| `K-GRA-031` | Đại từ quan hệ | Các dạng quan hệ như who, whom, which, that và whose. | `K-GRA-030` |
+| `K-GRA-032` | Từ hạn định | Mạo từ, từ chỉ định, lượng từ, từ sở hữu và thành phần giới hạn cụm danh từ khác. | `K-GRA-010` |
+| `K-GRA-033` | Quy chiếu và thay thế tạo liên kết | Phương tiện quy chiếu/thay thế liên kết diễn ngôn và tránh lặp lại không cần thiết. | `K-GRA-030`, `K-GRA-032` |
+| `K-GRA-040` | Mạo từ: a / an / the | Các dạng mạo từ xác định, không xác định và cách dùng cơ bản. | `K-GRA-032` |
+| `K-GRA-041` | Quy tắc mạo từ xác định / không xác định / không mạo từ | Điều kiện lựa chọn mạo từ, gồm không dùng mạo từ và quy chiếu chung/riêng. | `K-GRA-040` |
+| `K-GRA-050` | Thì hiện tại đơn | Dạng hiện tại đơn và cách dùng chính cho sự thật, thói quen, trạng thái và khái quát. | `K-GRA-002` |
+| `K-GRA-051` | Thì quá khứ đơn | Dạng quá khứ đơn và cách dùng chính cho sự kiện/trạng thái đã hoàn tất trong quá khứ. | `K-GRA-002` |
+| `K-GRA-052` | Thì hiện tại hoàn thành | Dạng hiện tại hoàn thành nối sự kiện/trạng thái trước đó với ý nghĩa hiện tại. | `K-GRA-051` |
+| `K-GRA-053` | Thì quá khứ hoàn thành | Dạng quá khứ hoàn thành cho sự kiện/trạng thái trước một mốc quá khứ khác. | `K-GRA-052` |
+| `K-GRA-054` | Thể tiếp diễn | Thể `be + -ing` cho tình huống đang diễn ra hoặc bị giới hạn thời gian tại những mốc khác nhau. | `K-GRA-050`, `K-GRA-051` |
+| `K-GRA-055` | Dạng chỉ tương lai | Các dạng chỉ tương lai thông dụng như will, going to và mẫu hiện tại tiếp diễn. | `K-GRA-002` |
+| `K-GRA-060` | Hòa hợp chủ ngữ–động từ | Dạng động từ hữu hạn phù hợp với ngôi/số của chủ ngữ, gồm tình huống phức tạp thường gặp. | `K-GRA-002`, `K-GRA-061` |
+| `K-GRA-062` | Động từ khiếm khuyết | Trợ động từ như can, could, must, should, may, might và would cùng nghĩa cốt lõi. | `K-GRA-002` |
+| `K-GRA-063` | Thể bị động | Cấu trúc bị động với dạng `be` phù hợp và quá khứ phân từ để giảm nhấn tác nhân/tập trung vào đối tượng chịu tác động. | `K-GRA-002`, `K-GRA-061` |
+| `K-GRA-064` | So sánh hơn và so sánh nhất | Hình thái/cú pháp so sánh hơn và nhất của tính từ, trạng từ. | `K-GRA-010` |
+| `K-GRA-065` | Phủ định và dạng câu hỏi | Phủ định cơ bản, câu hỏi yes/no và wh-, gồm cách dùng trợ động từ và trật tự từ. | `K-GRA-002` |
 
-## Vocabulary graph
+## Đồ thị từ vựng (Vocabulary)
 
-| ID | Object | Canonical definition | Requires |
+| ID | Đối tượng | Định nghĩa chính thức | Yêu cầu tiên quyết |
 |---|---|---|---|
-| `K-VOC-010` | High-frequency / core vocabulary | High-frequency general English word families required for basic comprehension and production. | — |
-| `K-VOC-011` | Academic vocabulary | Formal/academic lexical resource common in academic reading and writing. | `K-VOC-010` |
-| `K-VOC-012` | Topic-specific word sets | Reusable lexical sets organized around common IELTS-relevant topics. | `K-VOC-010` |
-| `K-VOC-020` | Collocations | Conventional recurrent word partnerships and their usage constraints. | `K-VOC-010` |
-| `K-VOC-021` | Idioms & fixed expressions | Fixed or semi-fixed multiword expressions whose meaning/use is conventionalized. | `K-VOC-010` |
-| `K-VOC-030` | Word formation / affixation | Productive relationships among word-family forms through prefixes, suffixes and derivation. | `K-VOC-010` |
-| `K-VOC-031` | Spelling rules & patterns | English orthographic conventions and recurring spelling patterns needed for accurate written production. | `K-VOC-010` |
-| `K-VOC-040` | Register & formality | Lexical choice according to formal, neutral, informal and context-appropriate register. | `K-VOC-010` |
-| `K-VOC-041` | Synonymy & paraphrase resources | Lexical alternatives, connotation and usage constraints used to re-express meaning accurately. | `K-VOC-010` |
+| `K-VOC-010` | Từ vựng cốt lõi / tần suất cao | Các họ từ tiếng Anh thông dụng cần cho hiểu và diễn đạt cơ bản. | — |
+| `K-VOC-011` | Từ vựng học thuật | Vốn từ trang trọng/học thuật thường gặp trong đọc và viết học thuật. | `K-VOC-010` |
+| `K-VOC-012` | Bộ từ theo chủ đề | Các bộ từ có thể tái sử dụng, tổ chức theo chủ đề thường liên quan IELTS. | `K-VOC-010` |
+| `K-VOC-020` | Collocations (kết hợp từ) | Các tổ hợp từ thường đi với nhau theo quy ước và giới hạn cách dùng. | `K-VOC-010` |
+| `K-VOC-021` | Thành ngữ và cụm cố định | Cụm nhiều từ cố định/bán cố định với nghĩa hoặc cách dùng theo quy ước. | `K-VOC-010` |
+| `K-VOC-030` | Cấu tạo từ / phụ tố | Quan hệ tạo dạng giữa các từ cùng họ qua tiền tố, hậu tố và phái sinh. | `K-VOC-010` |
+| `K-VOC-031` | Quy tắc và mẫu chính tả | Quy ước chính tả tiếng Anh và mẫu lặp lại cần cho viết chính xác. | `K-VOC-010` |
+| `K-VOC-040` | Sắc thái và mức độ trang trọng | Lựa chọn từ theo văn phong trang trọng, trung tính, thân mật và ngữ cảnh. | `K-VOC-010` |
+| `K-VOC-041` | Từ đồng nghĩa và diễn đạt lại | Các cách dùng từ thay thế, sắc thái nghĩa và giới hạn sử dụng để diễn đạt chính xác cùng ý. | `K-VOC-010` |
 
-`K-VOC-012` represents the topic-set system. Individual topic lexicons are concrete content under the current DATA/content authority, not new canonical domains.
+`K-VOC-012` đại diện cho hệ thống bộ từ theo chủ đề. Danh sách từ của từng chủ đề là nội dung cụ thể theo thẩm quyền DATA/nội dung hiện hành, không phải domain chính thức mới.
 
-Learner-saved words, phrases, collocations, examples, and personal review cards are also concrete content/review instances. They may reference one or more canonical Knowledge Objects, but saving an item never creates a new `K-*` identity.
+Từ, cụm từ, collocation, ví dụ và thẻ ôn tập cá nhân người học lưu cũng là các thể hiện nội dung/ôn tập cụ thể. Chúng có thể tham chiếu một hoặc nhiều Knowledge Objects chính thức, nhưng hành động lưu không tạo ID `K-*` mới.
 
-## Phonology graph
+## Đồ thị âm vị học (Phonology)
 
-| ID | Object | Canonical definition | Requires |
+| ID | Đối tượng | Định nghĩa chính thức | Yêu cầu tiên quyết |
 |---|---|---|---|
-| `K-PHON-010` | Consonant phonemes | English consonant sound inventory and articulatory distinctions relevant to intelligible production/perception. | — |
-| `K-PHON-011` | Vowel phonemes | English monophthong/diphthong inventory and contrastive vowel distinctions. | — |
-| `K-PHON-012` | Phoneme contrasts & minimal pairs | Contrastive sound pairs used to perceive and produce meaning-distinguishing phonemes. | `K-PHON-010`, `K-PHON-011` |
-| `K-PHON-020` | Word stress | Placement of primary lexical stress and common stress shifts across word families. | `K-PHON-011` |
-| `K-PHON-021` | Sentence stress | Prominence patterns across utterances, including content/function-word stress behavior. | `K-PHON-020` |
-| `K-PHON-030` | Intonation patterns | Pitch contours and their discourse, pragmatic, or attitudinal functions. | `K-PHON-021` |
-| `K-PHON-040` | Connected speech | Linking, reduction, assimilation, elision and weak-form behavior across word boundaries. | `K-PHON-010`, `K-PHON-011` |
-| `K-PHON-041` | Rhythm & chunking | Grouping speech into sense units and maintaining intelligible rhythmic organization. | `K-PHON-021`, `K-PHON-040` |
+| `K-PHON-010` | Âm vị phụ âm | Tập âm phụ âm tiếng Anh và phân biệt cấu âm cần cho nói/nghe dễ hiểu. | — |
+| `K-PHON-011` | Âm vị nguyên âm | Hệ thống nguyên âm đơn/đôi tiếng Anh và các đối lập nguyên âm có ý nghĩa. | — |
+| `K-PHON-012` | Đối lập âm vị và cặp tối thiểu | Các cặp âm đối lập giúp nhận biết và tạo âm vị phân biệt nghĩa. | `K-PHON-010`, `K-PHON-011` |
+| `K-PHON-020` | Trọng âm từ | Vị trí trọng âm chính và biến đổi trọng âm phổ biến giữa các từ cùng họ. | `K-PHON-011` |
+| `K-PHON-021` | Trọng âm câu | Mẫu nhấn nổi bật trong phát ngôn, gồm nhấn từ nội dung/từ chức năng. | `K-PHON-020` |
+| `K-PHON-030` | Ngữ điệu | Đường cao độ và chức năng diễn ngôn, ngữ dụng hoặc thái độ. | `K-PHON-021` |
+| `K-PHON-040` | Nối âm trong lời nói | Nối âm, giảm âm, đồng hóa, lược âm và dạng yếu qua ranh giới từ. | `K-PHON-010`, `K-PHON-011` |
+| `K-PHON-041` | Nhịp điệu và chia cụm | Nhóm lời nói thành đơn vị nghĩa và giữ tổ chức nhịp điệu dễ hiểu. | `K-PHON-021`, `K-PHON-040` |
 
-The phonology graph is L1-agnostic. L1-specific contrast priorities belong to localized/remediation content, not this graph.
+Đồ thị âm vị học độc lập với L1 (ngôn ngữ thứ nhất). Ưu tiên đối lập âm theo L1 thuộc nội dung bản địa hóa/khắc phục, không thuộc đồ thị này.
 
-## Skill→Knowledge resolution
+## Phân giải Skill→Knowledge
 
-This is the sole PRODUCT authority for the mapping from Skill Leaf knowledge needs to Knowledge Objects. Historical `spec/04-KNOWLEDGE.md` remains provenance only.
+Đây là thẩm quyền PRODUCT duy nhất cho ánh xạ nhu cầu kiến thức từ Skill Leaf sang Knowledge Objects. `spec/04-KNOWLEDGE.md` chỉ là nguồn gốc lịch sử.
 
-An edge in this mapping means the Knowledge Object is a **universal intrinsic prerequisite for the Skill Leaf across the leaf's applicable canonical scope**. It is therefore eligible to become a Required prerequisite downstream. Knowledge that is useful only for a particular variant, topic, presentation class, prompt, stimulus, or content instance does **not** belong in this universal mapping; Curriculum/Content may select it explicitly where material.
+Một cạnh trong ánh xạ nghĩa là Knowledge Object là **điều kiện tiên quyết nội tại, phổ quát của Skill Leaf trong toàn bộ phạm vi chính thức áp dụng cho leaf đó**. Vì vậy cạnh có thể trở thành điều kiện Required ở bước sau. Kiến thức chỉ hữu ích với một biến thể, chủ đề, kiểu trình bày, prompt, stimulus hay nội dung cụ thể **không** thuộc ánh xạ phổ quát này; Curriculum/Content có thể chọn tường minh khi cần.
 
 ### Writing
 
-| Skill Leaf | Resolved Knowledge Objects |
+| Skill Leaf | Knowledge Objects được phân giải |
 |---|---|
 | `W-CC-03` | `K-GRA-020`, `K-GRA-021`, `K-GRA-022` |
 | `W-CC-04` | `K-GRA-030`, `K-GRA-032`, `K-GRA-033` |
@@ -131,13 +131,13 @@ An edge in this mapping means the Knowledge Object is a **universal intrinsic pr
 | `W-GRA-07` | `K-GRA-005`, `K-GRA-006`, `K-GRA-007`, `K-GRA-062`, `K-GRA-063` |
 | `W-GT1-02` | `K-VOC-040` |
 
-`W-GT1-01` and `W-GT1-03` are task-capability leaves whose direct knowledge needs are covered by the shared lexical/grammar/cohesion targets selected for the concrete letter; they do not require a new letter-specific Knowledge Object.
+`W-GT1-01` và `W-GT1-03` là leaf năng lực thực hiện nhiệm vụ; nhu cầu kiến thức trực tiếp đã được bao phủ bởi các mục tiêu từ vựng/ngữ pháp/liên kết chung được chọn cho lá thư cụ thể. Không cần Knowledge Object riêng cho thư.
 
-`W-TA-03` has no universal single Knowledge prerequisite beyond shared Writing knowledge. Comparatives (`K-GRA-064`), tense/aspect, data language, process language, and spatial language are selected when the concrete Academic Task-1 presentation/stimulus makes them material; a process/map task must not be hard-gated by comparatives merely because another Task-1 presentation uses them heavily.
+`W-TA-03` không có một điều kiện tiên quyết Knowledge đơn lẻ phổ quát ngoài kiến thức Writing chung. So sánh (`K-GRA-064`), thì/thể, ngôn ngữ số liệu, quy trình và không gian được chọn khi kiểu trình bày/stimulus cụ thể của Academic Task 1 khiến chúng cần thiết; không được chặn cứng bài process/map chỉ vì dạng Task 1 khác sử dụng nhiều so sánh.
 
 ### Speaking
 
-| Skill Leaf | Resolved Knowledge Objects |
+| Skill Leaf | Knowledge Objects được phân giải |
 |---|---|
 | `S-FC-03` | `K-GRA-020`, `K-GRA-021`, `K-GRA-022` |
 | `S-LR-01` | `K-VOC-012` |
@@ -151,18 +151,18 @@ An edge in this mapping means the Knowledge Object is a **universal intrinsic pr
 
 ### Reading
 
-No Reading Skill Leaf currently has an additional **universal variant-independent** Knowledge prerequisite in this mapping.
+Chưa có Reading Skill Leaf nào cần thêm điều kiện tiên quyết Knowledge **phổ quát, không phụ thuộc biến thể** trong ánh xạ hiện tại.
 
-In particular, shared `R-COMP-06` does not universally require `K-VOC-011` Academic vocabulary: Academic and General Training reuse the leaf, while their corpus/context vocabulary differs. The Academic route may explicitly schedule `K-VOC-011`; GT uses the applicable general/topic/workplace lexical content and context distribution without inheriting a hidden Academic-vocabulary hard gate.
+Đặc biệt, `R-COMP-06` dùng chung không bắt buộc phổ quát `K-VOC-011` Academic vocabulary: Academic và General Training dùng chung leaf này nhưng vốn từ corpus/ngữ cảnh khác nhau. Lộ trình Academic có thể xếp lịch `K-VOC-011` tường minh; GT dùng nội dung từ vựng chung/theo chủ đề/nơi làm việc và phân bố ngữ cảnh phù hợp, không kế thừa cổng cứng từ vựng Academic ẩn.
 
-General Training Reading context diversity is a curriculum/content/evidence condition, not a separate Knowledge Object.
+Độ đa dạng ngữ cảnh Reading của General Training là điều kiện curriculum/content/evidence, không phải Knowledge Object riêng.
 
-Listening currently has no explicit Knowledge prerequisite edge in the frozen graph; its direct prerequisites are intra-skill capability edges in `docs/product/skill-leaves.md`.
+Listening hiện không có cạnh điều kiện Knowledge tường minh trong đồ thị đã đóng băng; các điều kiện trực tiếp là cạnh năng lực trong cùng kỹ năng ở `docs/product/skill-leaves.md`.
 
-## Dependency semantics
+## Ngữ nghĩa phụ thuộc
 
-This shard preserves universal Knowledge prerequisite edges. The Curriculum PRODUCT authority may add explicit context/variant learning targets and Recommended node ordering, but it may not reinterpret a context-specific useful Knowledge Object as an intrinsic Required edge for every instance of a shared Skill Leaf.
+Shard này giữ các cạnh điều kiện tiên quyết Knowledge phổ quát. Thẩm quyền Curriculum PRODUCT có thể thêm mục tiêu học theo ngữ cảnh/biến thể và thứ tự node Recommended tường minh, nhưng không được diễn giải Knowledge Object chỉ hữu ích trong một ngữ cảnh thành cạnh Required nội tại cho mọi trường hợp của Skill Leaf dùng chung.
 
-Required / Recommended / Independent gate semantics are consumed by the Curriculum PRODUCT authority and enforced by BEHAVIOR/DATA progression semantics.
+Ngữ nghĩa cổng Required / Recommended / Independent được sử dụng bởi thẩm quyền Curriculum PRODUCT và được thực thi theo ngữ nghĩa progression của BEHAVIOR/DATA.
 
-Object identity and prerequisite semantics are canonical. Difficulty, time-to-learn, frequency, examples, misconceptions, localization priority, context-specific lexical sets, and remediation catalogs are empirical/content concerns unless future evidence explicitly promotes them.
+Định danh đối tượng và ngữ nghĩa điều kiện tiên quyết là chính thức. Độ khó, thời gian học, tần suất, ví dụ, hiểu lầm phổ biến, ưu tiên bản địa hóa, bộ từ theo ngữ cảnh và danh mục khắc phục thuộc vấn đề thực nghiệm/nội dung, trừ khi bằng chứng tương lai nâng cấp tường minh chúng.

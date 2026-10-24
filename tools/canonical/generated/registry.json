@@ -1,6 +1,6 @@
 {
   "artifact": "DERIVED_CANONICAL_REGISTRY",
-  "canonical_source_revision": "canonical-source-revision/v1:bbe1162ca704265b2f7cba37d95f5424b3a92b2b406f9d295cbce3630df51726",
+  "canonical_source_revision": "canonical-source-revision/v1:4528057a3d5ae194065ec18dbe61b48611393af97b6b1e4f0e7dfb2dd5ae6a21",
   "entries": [
     {
       "cells": [],
@@ -152,11 +152,11 @@
     },
     {
       "cells": [
-        "Listening \u2014 Multiple choice"
+        "Listening \u2014 tr\u1eafc nghi\u1ec7m"
       ],
       "id": "IELTS-L-QF-01",
       "source": {
-        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
+        "git_blob": "809797829b2311105a9ed439fa6afcce990e6a25",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Listening multiple-choice family"
@@ -165,11 +165,11 @@
     },
     {
       "cells": [
-        "Listening \u2014 Form / note / table / flow-chart / summary completion"
+        "Listening \u2014 \u0111i\u1ec1n form / note / table / flow-chart / summary"
       ],
       "id": "IELTS-L-QF-04",
       "source": {
-        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
+        "git_blob": "809797829b2311105a9ed439fa6afcce990e6a25",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Listening completion family"
@@ -178,11 +178,11 @@
     },
     {
       "cells": [
-        "Identifying information \u2014 True / False / Not Given"
+        "X\u00e1c \u0111\u1ecbnh th\u00f4ng tin \u2014 True / False / Not Given"
       ],
       "id": "IELTS-R-QF-02",
       "source": {
-        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
+        "git_blob": "809797829b2311105a9ed439fa6afcce990e6a25",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -191,11 +191,11 @@
     },
     {
       "cells": [
-        "Identifying writer views/claims \u2014 Yes / No / Not Given"
+        "X\u00e1c \u0111\u1ecbnh quan \u0111i\u1ec3m/lu\u1eadn \u0111i\u1ec3m t\u00e1c gi\u1ea3 \u2014 Yes / No / Not Given"
       ],
       "id": "IELTS-R-QF-03",
       "source": {
-        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
+        "git_blob": "809797829b2311105a9ed439fa6afcce990e6a25",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading classification families"
@@ -204,11 +204,11 @@
     },
     {
       "cells": [
-        "Reading \u2014 Matching headings"
+        "Reading \u2014 gh\u00e9p ti\u00eau \u0111\u1ec1"
       ],
       "id": "IELTS-R-QF-05",
       "source": {
-        "git_blob": "c86317b512a851f45792d10e81129ec30e2aefe8",
+        "git_blob": "809797829b2311105a9ed439fa6afcce990e6a25",
         "owner": "docs/product/ielts-exam-and-bands.md",
         "parent_section": null,
         "section": "#### Canonical materializer anchor \u2014 Reading matching headings family"
@@ -332,12 +332,12 @@
     },
     {
       "cells": [
-        "Main ideas / gist",
-        "Identify the central idea of spoken input."
+        "\u00dd ch\u00ednh / \u0111\u1ea1i \u00fd",
+        "X\u00e1c \u0111\u1ecbnh \u00fd trung t\u00e2m c\u1ee7a l\u1eddi n\u00f3i \u0111\u01b0\u1ee3c nghe."
       ],
       "id": "L-COMP-01",
       "source": {
-        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "git_blob": "41d5b6f85ee773dfbb1cbd19f47f352da371cde0",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Listening",
         "section": "### Canonical materializer anchor \u2014 Listening main-idea capability"
@@ -346,12 +346,12 @@
     },
     {
       "cells": [
-        "Specific details",
-        "Capture targeted factual details accurately."
+        "Chi ti\u1ebft c\u1ee5 th\u1ec3",
+        "N\u1eafm b\u1eaft ch\u00ednh x\u00e1c nh\u1eefng th\u00f4ng tin th\u1ef1c t\u1ebf \u0111\u01b0\u1ee3c y\u00eau c\u1ea7u."
       ],
       "id": "L-COMP-02",
       "source": {
-        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "git_blob": "41d5b6f85ee773dfbb1cbd19f47f352da371cde0",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Listening",
         "section": "### Canonical materializer anchor \u2014 Listening specific details capability"
@@ -360,12 +360,12 @@
     },
     {
       "cells": [
-        "Form/note/table/flow-chart/summary completion",
-        "Fill structured completion gaps from the recording while respecting layout, grammar, and stated word limits."
+        "\u0110i\u1ec1n form/note/table/flow-chart/summary",
+        "\u0110i\u1ec1n ch\u1ed7 tr\u1ed1ng c\u00f3 c\u1ea5u tr\u00fac t\u1eeb audio, tu\u00e2n th\u1ee7 b\u1ed1 c\u1ee5c, ng\u1eef ph\u00e1p v\u00e0 gi\u1edbi h\u1ea1n t\u1eeb \u0111\u01b0\u1ee3c n\u00eau."
       ],
       "id": "L-QT-01",
       "source": {
-        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "git_blob": "41d5b6f85ee773dfbb1cbd19f47f352da371cde0",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Listening",
         "section": "### Canonical materializer anchor \u2014 Listening completion question type"
@@ -375,11 +375,11 @@
     {
       "cells": [
         "Matching headings",
-        "Match paragraph meaning to headings by main idea rather than keyword coincidence."
+        "Gh\u00e9p ti\u00eau \u0111\u1ec1 theo \u00fd ch\u00ednh c\u1ee7a \u0111o\u1ea1n, kh\u00f4ng ch\u1ec9 tr\u00f9ng t\u1eeb kh\u00f3a."
       ],
       "id": "R-QT-01",
       "source": {
-        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "git_blob": "41d5b6f85ee773dfbb1cbd19f47f352da371cde0",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -389,11 +389,11 @@
     {
       "cells": [
         "True / False / Not Given",
-        "Distinguish supported, contradicted, and absent factual information."
+        "Ph\u00e2n bi\u1ec7t th\u00f4ng tin th\u1ef1c t\u1ebf \u0111\u01b0\u1ee3c ch\u1ee9ng minh, b\u1ecb b\u00e1c b\u1ecf v\u00e0 kh\u00f4ng \u0111\u01b0\u1ee3c \u0111\u1ec1 c\u1eadp."
       ],
       "id": "R-QT-02",
       "source": {
-        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "git_blob": "41d5b6f85ee773dfbb1cbd19f47f352da371cde0",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"
@@ -403,11 +403,11 @@
     {
       "cells": [
         "Yes / No / Not Given",
-        "Distinguish agreement, disagreement, and absence for writer views/claims."
+        "Ph\u00e2n bi\u1ec7t \u0111\u1ed3ng t\u00ecnh, kh\u00f4ng \u0111\u1ed3ng t\u00ecnh v\u00e0 kh\u00f4ng c\u00f3 th\u00f4ng tin v\u1ec1 quan \u0111i\u1ec3m/lu\u1eadn \u0111i\u1ec3m t\u00e1c gi\u1ea3."
       ],
       "id": "R-QT-03",
       "source": {
-        "git_blob": "d08ac7eda99458c6c9f9fa144fb5bb1b76641b49",
+        "git_blob": "41d5b6f85ee773dfbb1cbd19f47f352da371cde0",
         "owner": "docs/product/skill-leaves.md",
         "parent_section": "## Reading",
         "section": "### Question-type strategies"

@@ -1,101 +1,101 @@
-# SKILL-LEAF-ONTOLOGY — Skill Leaves
+# SKILL-LEAF-ONTOLOGY — Các năng lực Skill Leaf
 
-> **CANONICAL PRODUCT AUTHORITY**
+> **THẨM QUYỀN PRODUCT CHÍNH THỨC**
 >
-> Canonical within the PRODUCT authority domain under `docs/catalog/project.json`. `CONSTITUTION.md` and `OBJECTIVE.md` retain distinct authority, and `contracts/**` retains scoped exact machine-contract authority. References below to `spec/**` or `design/**`, including historical uses of “canonical”, are provenance only and do not create equal authority.
+> Có thẩm quyền trong domain PRODUCT theo `docs/catalog/project.json`. `CONSTITUTION.md` và `OBJECTIVE.md` giữ thẩm quyền riêng; `contracts/**` quản lý machine contract chính xác trong phạm vi của nó. Tham chiếu tới `spec/**` hoặc `design/**` bên dưới, kể cả cách gọi “canonical” trong lịch sử, chỉ nhằm truy nguyên nguồn gốc, không tạo thẩm quyền ngang hàng.
 
-## Purpose and ownership
+## Mục đích và quyền sở hữu
 
-Define **what the learner must be able to demonstrate** across Listening, Reading, Writing, and Speaking.
+Xác định **những gì người học phải chứng minh có thể làm được** trong Listening, Reading, Writing và Speaking.
 
-This shard preserves the four-skill capability taxonomy, Skill Leaf identity, atomic objectives, skill/component membership, variant-specific capability overlays, and Skill-to-Skill prerequisite edges. Vocabulary, grammar, and phonology are enabling knowledge and are preserved in `docs/product/knowledge-objects.md` from canonical `spec/04-KNOWLEDGE.md`.
+Shard này lưu giữ hệ phân loại năng lực bốn kỹ năng, định danh Skill Leaf, mục tiêu nguyên tử, quan hệ thành viên giữa kỹ năng/thành phần, các phần mở rộng theo biến thể và cạnh điều kiện tiên quyết Skill→Skill. Vocabulary, grammar và phonology là kiến thức hỗ trợ, được giữ trong `docs/product/knowledge-objects.md` với nguồn gốc từ `spec/04-KNOWLEDGE.md`.
 
-Official IELTS task/question families are external exam identities owned by canonical `spec/02-IELTS-MODEL.md`. A Skill Leaf may support several official families; family/content coverage must not be inferred from leaf existence alone.
+Các dạng nhiệm vụ/câu hỏi IELTS chính thức là định danh bài thi bên ngoài, thuộc `spec/02-IELTS-MODEL.md` lịch sử và owner PRODUCT hiện hành. Một Skill Leaf có thể hỗ trợ nhiều dạng chính thức; không được suy ra độ bao phủ dạng câu hỏi/nội dung chỉ từ sự tồn tại của leaf.
 
-The first-class IELTS skills are exactly Listening, Reading, Writing, and Speaking.
+Bốn kỹ năng IELTS cấp một chính xác là Listening, Reading, Writing và Speaking.
 
-The active inventory contains **67 stable Skill Leaves**:
+Danh mục hiện hành có **67 Skill Leaves với ID ổn định**:
 
 - Listening: 11;
 - Reading: 12;
 - Speaking: 18;
-- Writing shared/Academic: 23;
-- Writing General Training Task 1 overlay: 3.
+- Writing dùng chung/Academic: 23;
+- Phần mở rộng Writing General Training Task 1: 3.
 
-General Training does not create a fifth skill and does not duplicate shared Reading/Writing capability. Variant-specific leaves exist only where the external construct genuinely differs.
+General Training không tạo kỹ năng thứ năm và không nhân đôi năng lực Reading/Writing dùng chung. Leaf theo biến thể chỉ tồn tại khi cấu trúc bài thi bên ngoài khác nhau thực sự.
 
-## Atomic Skill Leaf rule
+## Quy tắc Skill Leaf nguyên tử
 
-A Skill Leaf represents one independently useful capability. Decompose further only while a node still contains multiple independent objectives or cannot be independently taught, practiced, assessed, and remediated. Stop when further splitting no longer improves those properties. Do not split a capability merely to mirror every exam UI/question-family label.
+Skill Leaf thể hiện một năng lực hữu ích độc lập. Chỉ tách tiếp khi node còn nhiều mục tiêu độc lập hoặc không thể dạy, luyện tập, đánh giá và khắc phục một cách độc lập. Dừng khi tách nhỏ hơn không còn cải thiện các đặc tính đó. Không chia năng lực chỉ để phản chiếu mọi nhãn giao diện/dạng câu hỏi của bài thi.
 
-## Canonical Skill Leaf fields
+## Trường chính thức của Skill Leaf
 
-A Skill Leaf canonically owns only:
+Skill Leaf chỉ sở hữu các trường chính thức:
 
-- stable `id`;
-- human-readable name;
-- IELTS skill and component;
-- applicable variant when not shared;
-- one atomic capability objective;
-- Skill-to-Skill prerequisite edges when another capability must precede it.
+- `id` ổn định;
+- tên dễ hiểu;
+- kỹ năng IELTS và thành phần;
+- biến thể áp dụng nếu không dùng chung;
+- một mục tiêu năng lực nguyên tử;
+- cạnh tiên quyết Skill→Skill khi một năng lực khác phải có trước.
 
-The following are intentionally not identity-level Skill authority:
+Những mục sau cố ý **không** thuộc thẩm quyền định danh Skill:
 
-- official task/question family identity → canonical `spec/02-IELTS-MODEL.md`;
-- band relevance or Band-N mastery quality → canonical `spec/05-BANDS.md`;
-- enabling Knowledge Object resolution → `docs/product/knowledge-objects.md`, preserving canonical `spec/04-KNOWLEDGE.md`;
-- practice binding → canonical `spec/07-PRACTICE.md`;
-- assessment strategy/evidence → canonical `spec/08-ASSESSMENT.md`;
-- learner mastery state → canonical `spec/09-PROGRESSION.md`;
-- curriculum position → canonical `spec/06-CURRICULUM.md`;
-- concrete family/subformat content coverage → canonical `spec/10-CONTENT-MODEL.md` plus `design/08-coverage-and-support.md`;
-- common errors, examples, remediation scripts, scaffold choices → canonical `spec/10-CONTENT-MODEL.md`;
-- cognitive-level and learning-load estimates → optional planning metadata unless future evidence promotes them to canonical policy.
+- định danh dạng nhiệm vụ/câu hỏi chính thức → `spec/02-IELTS-MODEL.md` (nguồn lịch sử);
+- mức Band liên quan hoặc chất lượng thành thạo Band-N → `spec/05-BANDS.md` (nguồn lịch sử);
+- ánh xạ Knowledge Object hỗ trợ → `docs/product/knowledge-objects.md`, kế thừa `spec/04-KNOWLEDGE.md`;
+- ánh xạ thực hành → `spec/07-PRACTICE.md` (nguồn lịch sử);
+- chiến lược đánh giá/bằng chứng → `spec/08-ASSESSMENT.md` (nguồn lịch sử);
+- trạng thái thành thạo của người học → `spec/09-PROGRESSION.md` (nguồn lịch sử);
+- vị trí trong chương trình học → `spec/06-CURRICULUM.md` (nguồn lịch sử);
+- bao phủ nội dung cụ thể theo dạng/định dạng phụ → `spec/10-CONTENT-MODEL.md` và `design/08-coverage-and-support.md` (nguồn lịch sử);
+- lỗi phổ biến, ví dụ, kịch bản khắc phục và chọn scaffold → `spec/10-CONTENT-MODEL.md` (nguồn lịch sử);
+- ước lượng mức nhận thức và tải học tập → metadata lập kế hoạch tùy chọn, trừ khi bằng chứng tương lai nâng lên thành chính sách.
 
 ## Listening
 
-### Comprehension
+### Năng lực hiểu nội dung
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `L-COMP-01` | Main ideas / gist | Identify the central idea of spoken input. |
-| `L-COMP-02` | Specific details | Capture targeted factual details accurately. |
-| `L-COMP-03` | Purpose / attitude / opinion | Infer speaker purpose, attitude, or opinion from language and delivery. |
-| `L-COMP-04` | Paraphrase & signposting | Recognize rewording, discourse signals, and answer-relevant signposts. |
-| `L-COMP-05` | Distractor management | Reject plausible but unsupported or superseded options. |
-| `L-COMP-06` | Extended academic speech | Follow dense, extended academic monologue without losing the discourse thread. |
+| `L-COMP-01` | Ý chính / đại ý | Xác định ý trung tâm của lời nói được nghe. |
+| `L-COMP-02` | Chi tiết cụ thể | Nắm bắt chính xác những thông tin thực tế được yêu cầu. |
+| `L-COMP-03` | Mục đích / thái độ / quan điểm | Suy ra mục đích, thái độ hoặc quan điểm người nói từ ngôn ngữ và cách thể hiện. |
+| `L-COMP-04` | Diễn đạt lại và dấu hiệu chuyển ý | Nhận ra cách diễn đạt khác, tín hiệu diễn ngôn và dấu hiệu dẫn đến đáp án. |
+| `L-COMP-05` | Xử lý phương án gây nhiễu | Loại bỏ lựa chọn nghe hợp lý nhưng thiếu căn cứ hoặc đã bị thông tin sau thay thế. |
+| `L-COMP-06` | Bài nói học thuật dài | Theo dõi độc thoại học thuật dài, dày thông tin mà không mất mạch diễn ngôn. |
 
 ### Canonical materializer anchor — Listening main-idea capability
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `L-COMP-01` | Main ideas / gist | Identify the central idea of spoken input. |
+| `L-COMP-01` | Ý chính / đại ý | Xác định ý trung tâm của lời nói được nghe. |
 
-### Question-type strategies
+### Chiến lược theo dạng câu hỏi
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `L-QT-01` | Form/note/table/flow-chart/summary completion | Fill structured completion gaps from the recording while respecting layout, grammar, and stated word limits. |
-| `L-QT-02` | Multiple choice | Select correct single or multiple options while managing distractors. |
-| `L-QT-03` | Matching | Match recorded information to speakers, categories, or options. |
-| `L-QT-04` | Map/plan/diagram labelling | Apply spatial and directional language to a visual. |
-| `L-QT-05` | Sentence completion & short answer | Produce concise answers from the recording within stated limits. |
+| `L-QT-01` | Điền form/note/table/flow-chart/summary | Điền chỗ trống có cấu trúc từ audio, tuân thủ bố cục, ngữ pháp và giới hạn từ được nêu. |
+| `L-QT-02` | Trắc nghiệm | Chọn đúng một hoặc nhiều phương án đồng thời xử lý phương án gây nhiễu. |
+| `L-QT-03` | Ghép nối | Ghép thông tin nghe được với người nói, danh mục hoặc lựa chọn. |
+| `L-QT-04` | Gắn nhãn bản đồ/sơ đồ/mặt bằng | Áp dụng ngôn ngữ không gian và chỉ hướng vào hình minh họa. |
+| `L-QT-05` | Hoàn thành câu và trả lời ngắn | Tạo câu trả lời ngắn từ audio trong giới hạn đã nêu. |
 
 ### Canonical materializer anchor — Listening specific details capability
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `L-COMP-02` | Specific details | Capture targeted factual details accurately. |
+| `L-COMP-02` | Chi tiết cụ thể | Nắm bắt chính xác những thông tin thực tế được yêu cầu. |
 
 ### Canonical materializer anchor — Listening completion question type
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `L-QT-01` | Form/note/table/flow-chart/summary completion | Fill structured completion gaps from the recording while respecting layout, grammar, and stated word limits. |
+| `L-QT-01` | Điền form/note/table/flow-chart/summary | Điền chỗ trống có cấu trúc từ audio, tuân thủ bố cục, ngữ pháp và giới hạn từ được nêu. |
 
-### Listening prerequisite edges
+### Các cạnh tiên quyết của Listening
 
-| Dependent | Requires Skill Leaves |
+| Leaf phụ thuộc | Skill Leaves tiên quyết |
 |---|---|
 | `L-COMP-03` | `L-COMP-01` |
 | `L-COMP-04` | `L-COMP-01` |
@@ -107,35 +107,35 @@ The following are intentionally not identity-level Skill authority:
 | `L-QT-04` | `L-COMP-02` |
 | `L-QT-05` | `L-COMP-02` |
 
-Listening decomposition separates comprehension capability from question-type execution strategy. Receptive analytic decomposition is Blueprint inference grounded in the official test format; official score/family truth remains in canonical `spec/02-IELTS-MODEL.md` and Band interpretation in canonical `spec/05-BANDS.md`.
+Phân rã Listening tách năng lực hiểu khỏi chiến lược làm dạng câu hỏi. Việc phân rã phân tích kỹ năng tiếp nhận là suy luận Blueprint dựa trên cấu trúc bài thi chính thức; sự thật về điểm/dạng thi và diễn giải Band vẫn thuộc owner IELTS/Band PRODUCT hiện hành, có nguồn lịch sử ở `spec/02-IELTS-MODEL.md` và `spec/05-BANDS.md`.
 
 ## Reading
 
-### Comprehension
+### Năng lực hiểu nội dung
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `R-COMP-01` | Skim for gist | Identify main idea and global topic efficiently. |
-| `R-COMP-02` | Scan for detail | Locate targeted facts or references quickly. |
-| `R-COMP-03` | Detailed comprehension | Understand explicit information accurately across a passage. |
-| `R-COMP-04` | Inference / writer views | Infer implications, claims, stance, or meaning beyond literal wording. |
-| `R-COMP-05` | Text structure / paragraph purpose | Recognize rhetorical organization and paragraph function. |
-| `R-COMP-06` | Dense/abstract/complex passages | Maintain comprehension through demanding vocabulary, syntax, and argument. |
+| `R-COMP-01` | Đọc lướt tìm ý chính | Xác định nhanh ý chính và chủ đề chung. |
+| `R-COMP-02` | Đọc quét tìm chi tiết | Nhanh chóng xác định sự kiện hoặc tham chiếu mục tiêu. |
+| `R-COMP-03` | Hiểu chi tiết | Hiểu chính xác thông tin tường minh trong bài đọc. |
+| `R-COMP-04` | Suy luận / quan điểm tác giả | Suy ra hàm ý, luận điểm, lập trường hoặc ý nghĩa vượt ngoài câu chữ. |
+| `R-COMP-05` | Cấu trúc văn bản / mục đích đoạn | Nhận biết bố cục lập luận và chức năng đoạn văn. |
+| `R-COMP-06` | Bài đọc dày đặc/trừu tượng/phức tạp | Duy trì mức hiểu trước từ vựng, cú pháp và lập luận khó. |
 
 ### Question-type strategies
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `R-QT-01` | Matching headings | Match paragraph meaning to headings by main idea rather than keyword coincidence. |
-| `R-QT-02` | True / False / Not Given | Distinguish supported, contradicted, and absent factual information. |
-| `R-QT-03` | Yes / No / Not Given | Distinguish agreement, disagreement, and absence for writer views/claims. |
-| `R-QT-04` | Matching distributed information | Map information accurately across matching-information, matching-features, and matching-sentence-ending task structures. |
-| `R-QT-05` | Completion & short answer | Extract and fit text evidence within grammatical, structural, and word-limit constraints. |
-| `R-QT-06` | Multiple choice | Evaluate options against passage evidence, including inferential variants. |
+| `R-QT-01` | Matching headings | Ghép tiêu đề theo ý chính của đoạn, không chỉ trùng từ khóa. |
+| `R-QT-02` | True / False / Not Given | Phân biệt thông tin thực tế được chứng minh, bị bác bỏ và không được đề cập. |
+| `R-QT-03` | Yes / No / Not Given | Phân biệt đồng tình, không đồng tình và không có thông tin về quan điểm/luận điểm tác giả. |
+| `R-QT-04` | Ghép thông tin phân tán | Ánh xạ chính xác thông tin trong matching-information, matching-features và matching-sentence-ending. |
+| `R-QT-05` | Điền chỗ trống và trả lời ngắn | Trích xuất, điều chỉnh bằng chứng văn bản theo giới hạn ngữ pháp, cấu trúc và số từ. |
+| `R-QT-06` | Trắc nghiệm | Đánh giá lựa chọn theo bằng chứng từ bài đọc, kể cả dạng suy luận. |
 
-### Reading prerequisite edges
+### Các cạnh tiên quyết của Reading
 
-| Dependent | Requires Skill Leaves |
+| Leaf phụ thuộc | Skill Leaves tiên quyết |
 |---|---|
 | `R-COMP-03` | `R-COMP-01` |
 | `R-COMP-04` | `R-COMP-03` |
@@ -148,55 +148,55 @@ Listening decomposition separates comprehension capability from question-type ex
 | `R-QT-05` | `R-COMP-03` |
 | `R-QT-06` | `R-COMP-03`, `R-COMP-04` |
 
-`R-QT-02` and `R-QT-03` remain distinct because one targets factual information and the other writer stance.
+`R-QT-02` và `R-QT-03` vẫn tách biệt vì dạng đầu đánh giá thông tin thực tế, dạng sau đánh giá lập trường tác giả.
 
-`R-QT-04` and `R-QT-05` deliberately group transferable cognitive strategy rather than duplicating Skill Leaves for every official UI family. Canonical `spec/02-IELTS-MODEL.md` keeps those official families distinct and canonical `spec/10-CONTENT-MODEL.md` keeps their executable content coverage independently checkable.
+`R-QT-04` và `R-QT-05` chủ ý gom các chiến lược nhận thức có thể chuyển giao, thay vì nhân đôi Skill Leaves cho từng dạng giao diện thi chính thức. `spec/02-IELTS-MODEL.md` lưu sự phân biệt các dạng thi trong nguồn lịch sử, còn `spec/10-CONTENT-MODEL.md` lưu yêu cầu kiểm tra độc lập độ bao phủ nội dung chạy được.
 
-Academic and General Training reuse these Reading leaves. Their difference is external corpus/context distribution and score conversion, not a second reading-cognition ontology. GT context-transfer requirements are owned by canonical `spec/06-CURRICULUM.md` and concrete variant/context tagging by canonical `spec/10-CONTENT-MODEL.md`.
+Academic và General Training dùng chung các Reading leaves này. Sự khác nhau nằm ở phân bố corpus/ngữ cảnh và chuyển đổi điểm, không phải ontology nhận thức đọc thứ hai. Yêu cầu chuyển giao ngữ cảnh GT thuộc Curriculum hiện hành (nguồn lịch sử `spec/06-CURRICULUM.md`), còn gắn nhãn biến thể/ngữ cảnh cụ thể thuộc Content (nguồn lịch sử `spec/10-CONTENT-MODEL.md`).
 
 ## Speaking
 
 ### Fluency & Coherence
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `S-FC-01` | Sustained speech | Continue speaking without excessive breakdown. |
-| `S-FC-02` | Long-turn production | Produce a coherent extended Part-2 response. |
-| `S-FC-03` | Spoken discourse markers | Use connectives and spoken discourse markers appropriately. |
-| `S-FC-04` | Coherent topic development | Extend and organize ideas coherently and relevantly. |
-| `S-FC-05` | Hesitation/self-correction management | Keep hesitation and correction from disrupting communication. |
+| `S-FC-01` | Nói liên tục | Tiếp tục nói mà không bị gián đoạn quá mức. |
+| `S-FC-02` | Phát triển lượt nói dài | Tạo câu trả lời Part 2 dài, mạch lạc. |
+| `S-FC-03` | Dấu hiệu liên kết lời nói | Sử dụng từ nối và dấu hiệu diễn ngôn nói phù hợp. |
+| `S-FC-04` | Phát triển chủ đề mạch lạc | Mở rộng, sắp xếp ý hợp lý và đúng trọng tâm. |
+| `S-FC-05` | Quản lý ngập ngừng/tự sửa | Không để ngập ngừng hoặc sửa lời cản trở giao tiếp. |
 
 ### Lexical Resource
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `S-LR-01` | Topic vocabulary | Sustain discussion with relevant vocabulary across common topics. |
-| `S-LR-02` | Oral paraphrase | Circumlocute or re-express meaning when exact wording is unavailable. |
-| `S-LR-03` | Less-common / idiomatic resource | Use less-common and idiomatic language naturally and appropriately. |
-| `S-LR-04` | Word-choice accuracy | Select vocabulary with accurate meaning, collocation, and register. |
+| `S-LR-01` | Từ vựng chủ đề | Duy trì trao đổi bằng từ vựng phù hợp ở các chủ đề thông dụng. |
+| `S-LR-02` | Diễn đạt lại khi nói | Nói vòng hoặc diễn đạt khác khi thiếu từ chính xác. |
+| `S-LR-03` | Từ ít thông dụng / thành ngữ | Dùng từ ít thông dụng và thành ngữ tự nhiên, phù hợp. |
+| `S-LR-04` | Chọn từ chính xác | Chọn từ đúng nghĩa, collocation và sắc thái văn phong. |
 
 ### Grammatical Range & Accuracy
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `S-GRA-01` | Simple/short sentence accuracy | Produce accurate simple spoken structures under real-time load. |
-| `S-GRA-02` | Complex spoken sentence forms | Produce a useful mix of simple and complex spoken structures. |
-| `S-GRA-03` | Structural variety & flexibility | Use a broad range of structures flexibly in extended speech. |
-| `S-GRA-04` | Grammatical accuracy | Keep grammatical errors infrequent enough to preserve clear communication. |
+| `S-GRA-01` | Độ chính xác câu đơn/ngắn | Tạo cấu trúc nói đơn giản đúng ngay khi chịu tải thời gian thực. |
+| `S-GRA-02` | Dạng câu nói phức | Kết hợp hữu ích câu đơn và câu phức khi nói. |
+| `S-GRA-03` | Đa dạng và linh hoạt cấu trúc | Dùng linh hoạt nhiều cấu trúc khi nói dài. |
+| `S-GRA-04` | Độ chính xác ngữ pháp | Giữ lỗi ngữ pháp đủ hiếm để giao tiếp rõ ràng. |
 
 ### Pronunciation
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `S-P-01` | Phoneme accuracy | Produce individual English sounds clearly enough for intelligibility. |
-| `S-P-02` | Word stress | Place lexical stress appropriately. |
-| `S-P-03` | Sentence stress & intonation | Use prominence and pitch movement to convey meaning. |
-| `S-P-04` | Chunking / connected speech / rhythm | Group speech into natural sense units with effective connected speech. |
-| `S-P-05` | Overall intelligibility | Be understood without undue listener effort. |
+| `S-P-01` | Phát âm vị chính xác | Phát ra âm tiếng Anh đủ rõ để người nghe hiểu. |
+| `S-P-02` | Trọng âm từ | Đặt trọng âm từ phù hợp. |
+| `S-P-03` | Trọng âm câu và ngữ điệu | Dùng độ nổi bật và biến đổi cao độ để truyền đạt nghĩa. |
+| `S-P-04` | Chia cụm / nối âm / nhịp điệu | Chia lời nói thành đơn vị nghĩa tự nhiên, sử dụng nối âm hiệu quả. |
+| `S-P-05` | Mức dễ hiểu tổng thể | Người nghe hiểu được mà không phải gắng sức quá mức. |
 
-### Speaking prerequisite edges
+### Các cạnh tiên quyết của Speaking
 
-| Dependent | Requires Skill Leaves |
+| Leaf phụ thuộc | Skill Leaves tiên quyết |
 |---|---|
 | `S-FC-02` | `S-FC-01` |
 | `S-FC-04` | `S-FC-01` |
@@ -210,73 +210,73 @@ Academic and General Training reuse these Reading leaves. Their difference is ex
 | `S-P-04` | `S-P-01` |
 | `S-P-05` | `S-P-01`, `S-P-03` |
 
-Other Speaking dependencies are enabling Knowledge Objects and are resolved in `docs/product/knowledge-objects.md`, preserving canonical `spec/04-KNOWLEDGE.md`.
+Các phụ thuộc Speaking khác là Knowledge Objects hỗ trợ và được phân giải trong `docs/product/knowledge-objects.md`, kế thừa `spec/04-KNOWLEDGE.md`.
 
-## Writing — shared and Academic Task 1
+## Writing — dùng chung và Academic Task 1
 
 ### Task Achievement — Academic Task 1
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `W-TA-01` | Identify key visual features | Select the most important trends, differences, stages, changes, or comparisons in an Academic Task-1 visual. |
-| `W-TA-02` | Write an Academic overview | Summarize the main patterns/features clearly and separately from supporting detail. |
-| `W-TA-03` | Report features with supporting detail | Support selected visual features with accurate, relevant figures or non-numeric details as the visual requires. |
+| `W-TA-01` | Nhận diện đặc điểm hình quan trọng | Chọn xu hướng, khác biệt, giai đoạn, thay đổi hoặc so sánh quan trọng nhất trong hình Academic Task 1. |
+| `W-TA-02` | Viết overview Academic | Tóm tắt rõ mẫu/đặc điểm chính, tách khỏi các chi tiết hỗ trợ. |
+| `W-TA-03` | Trình bày đặc điểm kèm chi tiết | Bổ trợ đặc điểm đã chọn bằng số liệu chính xác, liên quan hoặc chi tiết không số khi hình yêu cầu. |
 
-### Task Response — Task 2 shared core
+### Task Response — phần chung Task 2
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `W-TR-01` | Analyse the prompt | Identify every prompt requirement and the response task. |
-| `W-TR-02` | Formulate a clear position | State a position that directly answers the question. |
-| `W-TR-03` | Develop ideas with support | Extend main ideas with relevant reasons, examples, or evidence. |
-| `W-TR-04` | Maintain relevance | Keep content focused on the prompt and avoid padding or repetition. |
+| `W-TR-01` | Phân tích đề | Nhận diện mọi yêu cầu đề bài và nhiệm vụ trả lời. |
+| `W-TR-02` | Hình thành lập trường rõ ràng | Nêu quan điểm trả lời trực tiếp câu hỏi. |
+| `W-TR-03` | Phát triển ý có hỗ trợ | Mở rộng ý chính bằng lý do, ví dụ hoặc bằng chứng liên quan. |
+| `W-TR-04` | Duy trì tính liên quan | Bám sát đề, tránh kéo dài hoặc lặp ý. |
 
 ### Coherence & Cohesion
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `W-CC-01` | Paragraphing | Group content into logical paragraphs with clear purpose. |
-| `W-CC-02` | Logical progression | Sequence information and ideas into a clear overall progression. |
-| `W-CC-03` | Cohesive devices | Use linking devices accurately and non-mechanically. |
-| `W-CC-04` | Reference & substitution | Link ideas and reduce repetition through clear reference and substitution. |
+| `W-CC-01` | Chia đoạn | Gom nội dung thành đoạn hợp lý với mục đích rõ. |
+| `W-CC-02` | Tiến triển logic | Sắp xếp thông tin, ý tưởng theo mạch tổng thể rõ ràng. |
+| `W-CC-03` | Phương tiện liên kết | Dùng từ/cấu trúc liên kết chính xác, không máy móc. |
+| `W-CC-04` | Quy chiếu và thay thế | Nối ý, giảm lặp bằng quy chiếu/thay thế rõ ràng. |
 
 ### Lexical Resource
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `W-LR-01` | Topic-specific vocabulary | Use adequate, relevant vocabulary for the task topic. |
-| `W-LR-02` | Collocation | Use natural and accurate word partnerships. |
-| `W-LR-03` | Paraphrase | Re-express prompts, data, and ideas without meaning distortion. |
-| `W-LR-04` | Precise / less-common / idiomatic vocabulary | Use sophisticated lexis when it improves precision and remains appropriate. |
-| `W-LR-05` | Spelling & word formation | Control spelling and word-family form accurately. |
+| `W-LR-01` | Từ vựng theo chủ đề | Dùng đủ từ vựng phù hợp với chủ đề đề bài. |
+| `W-LR-02` | Collocation | Dùng các tổ hợp từ tự nhiên, chính xác. |
+| `W-LR-03` | Diễn đạt lại | Diễn đạt lại đề, số liệu và ý mà không làm méo nghĩa. |
+| `W-LR-04` | Từ chính xác / ít thông dụng / thành ngữ | Dùng vốn từ nâng cao khi tăng độ chính xác và vẫn phù hợp. |
+| `W-LR-05` | Chính tả và cấu tạo từ | Kiểm soát chính xác chính tả và dạng từ trong họ. |
 
 ### Grammatical Range & Accuracy
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `W-GRA-01` | Simple sentence accuracy | Produce accurate simple sentence structures. |
-| `W-GRA-02` | Compound sentences | Coordinate independent clauses accurately. |
-| `W-GRA-03` | Complex sentences | Use subordination and complex structures effectively. |
-| `W-GRA-04` | Tense & aspect | Select tense/aspect appropriate to communicative purpose. |
-| `W-GRA-05` | Articles & determiners | Control article, determiner, and countability choices. |
-| `W-GRA-06` | Punctuation | Use punctuation to support grammatical and discourse clarity. |
-| `W-GRA-07` | Structural flexibility & variety | Use a broad structural repertoire without sacrificing accuracy. |
+| `W-GRA-01` | Độ chính xác câu đơn | Tạo câu đơn đúng cấu trúc. |
+| `W-GRA-02` | Câu ghép | Phối hợp chính xác các mệnh đề độc lập. |
+| `W-GRA-03` | Câu phức | Sử dụng hiệu quả mệnh đề phụ và cấu trúc phức. |
+| `W-GRA-04` | Thì và thể | Chọn thì/thể phù hợp mục đích giao tiếp. |
+| `W-GRA-05` | Mạo từ và từ hạn định | Kiểm soát mạo từ, từ hạn định và danh từ đếm được. |
+| `W-GRA-06` | Dấu câu | Dùng dấu câu giúp rõ cấu trúc ngữ pháp và diễn ngôn. |
+| `W-GRA-07` | Linh hoạt và đa dạng cấu trúc | Dùng nhiều cấu trúc mà không đánh đổi độ chính xác. |
 
-## Writing — General Training Task 1 overlay
+## Writing — phần mở rộng General Training Task 1
 
-General Training Task 1 is not represented by Academic visual-feature leaves. It has three dedicated leaves while reusing shared coherence, lexical, grammar, and general productive capability.
+General Training Task 1 không dùng các leaf đặc điểm hình Academic. Dạng này có ba leaf riêng và vẫn dùng chung năng lực liên kết, từ vựng, ngữ pháp và diễn đạt.
 
-| ID | Capability | Atomic objective |
+| ID | Năng lực | Mục tiêu nguyên tử |
 |---|---|---|
-| `W-GT1-01` | Situation / recipient / purpose analysis | Identify the relationship to the recipient, communicative purpose, and all required prompt bullet points. |
-| `W-GT1-02` | Letter register & relationship control | Select and sustain personal, semi-formal, or formal style appropriate to recipient and purpose, including suitable openings/closings and tone. |
-| `W-GT1-03` | Purpose and required-point fulfilment | Achieve the letter's communicative purpose and cover every required bullet point with relevant, sufficiently developed information. |
+| `W-GT1-01` | Phân tích tình huống / người nhận / mục đích | Xác định quan hệ với người nhận, mục đích giao tiếp và mọi gạch đầu dòng yêu cầu trong đề. |
+| `W-GT1-02` | Kiểm soát văn phong và quan hệ trong thư | Chọn, duy trì văn phong thân mật, bán trang trọng hoặc trang trọng phù hợp người nhận/mục đích, gồm mở/kết thư và giọng điệu. |
+| `W-GT1-03` | Đáp ứng mục đích và yêu cầu | Đạt mục đích giao tiếp của thư và bao phủ từng gạch đầu dòng bằng thông tin liên quan, phát triển đủ. |
 
-These leaves are active only when the Writing Task-1 variant is General Training. They are assessed through the normal Writing criteria and do not create duplicate lexical/grammar/cohesion definitions.
+Các leaf này chỉ hoạt động khi biến thể Writing Task 1 là General Training. Chúng được đánh giá theo tiêu chí Writing thông thường và không tạo bản sao định nghĩa từ vựng/ngữ pháp/liên kết.
 
-### Writing prerequisite edges
+### Các cạnh tiên quyết của Writing
 
-| Dependent | Requires Skill Leaves |
+| Leaf phụ thuộc | Skill Leaves tiên quyết |
 |---|---|
 | `W-TA-02` | `W-TA-01` |
 | `W-TA-03` | `W-TA-01` |
@@ -295,27 +295,27 @@ These leaves are active only when the Writing Task-1 variant is General Training
 | `W-GT1-02` | `W-GT1-01` |
 | `W-GT1-03` | `W-GT1-01` |
 
-GT register knowledge resolves through `K-VOC-040` in `docs/product/knowledge-objects.md`, preserving canonical `spec/04-KNOWLEDGE.md`; letter capability remains a Skill because the learner must select and use that knowledge appropriately under a communicative task.
+Kiến thức về văn phong GT được phân giải qua `K-VOC-040` trong `docs/product/knowledge-objects.md`, kế thừa `spec/04-KNOWLEDGE.md`; năng lực viết thư vẫn là Skill vì người học phải chọn và dùng kiến thức đó phù hợp với nhiệm vụ giao tiếp.
 
-Writing leaves with only Knowledge prerequisites are resolved in `docs/product/knowledge-objects.md`. Length and exam-format compliance are external task constraints, not Skill Leaves.
+Các Writing leaves chỉ có điều kiện Knowledge được phân giải trong `docs/product/knowledge-objects.md`. Độ dài và tuân thủ định dạng thi là ràng buộc nhiệm vụ bên ngoài, không phải Skill Leaves.
 
-## Variant inclusion invariant
+## Bất biến về bao gồm theo biến thể
 
-For `Academic` Writing Task 1, required Task-1 capability includes `W-TA-01`, `W-TA-02`, and `W-TA-03` plus applicable shared Writing leaves.
+Với Writing Task 1 `Academic`, năng lực Task 1 bắt buộc gồm `W-TA-01`, `W-TA-02` và `W-TA-03`, cộng những Writing leaves dùng chung phù hợp.
 
-For `General Training` Writing Task 1, required Task-1 capability includes `W-GT1-01`, `W-GT1-02`, and `W-GT1-03` plus applicable shared Writing leaves; `W-TA-*` visual-specific leaves are not prerequisites for GT Task 1.
+Với Writing Task 1 `General Training`, năng lực Task 1 bắt buộc gồm `W-GT1-01`, `W-GT1-02` và `W-GT1-03`, cộng Writing leaves dùng chung; các leaf trực quan `W-TA-*` không phải điều kiện tiên quyết GT Task 1.
 
-Task 2 uses the shared `W-TR-*` and shared Writing criteria/capabilities for both variants unless canonical `spec/02-IELTS-MODEL.md` later identifies a genuine construct difference requiring a separate leaf.
+Task 2 dùng `W-TR-*` chung và các tiêu chí/năng lực Writing chung cho cả hai biến thể, trừ khi owner IELTS chính thức (nguồn lịch sử `spec/02-IELTS-MODEL.md`) sau này xác định khác biệt cấu trúc thật sự cần leaf riêng.
 
-## Ownership invariants
+## Bất biến về quyền sở hữu
 
-- canonical `spec/02-IELTS-MODEL.md` owns official exam task/question-family identity;
-- `docs/product/knowledge-objects.md`, preserving canonical `spec/04-KNOWLEDGE.md`, is the sole owner inside the successor PRODUCT representation of Skill→Knowledge resolution;
-- canonical `spec/05-BANDS.md` is the sole owner of Band-N quality/exit thresholds, including variant-specific Task-1 overlays;
-- canonical `spec/06-CURRICULUM.md` may sequence Skill Leaves but may not redefine them;
-- canonical `spec/07-PRACTICE.md` may bind Practice Types to leaves but may not redefine them;
-- canonical `spec/08-ASSESSMENT.md` may measure leaves but may not redefine them;
-- canonical `spec/09-PROGRESSION.md` tracks learner state by leaf ID but may not redefine the target capability;
-- canonical `spec/10-CONTENT-MODEL.md` tracks executable family/context/subformat content without creating parallel Skill definitions.
+- `spec/02-IELTS-MODEL.md` là nguồn lịch sử về định danh dạng nhiệm vụ/câu hỏi IELTS chính thức;
+- `docs/product/knowledge-objects.md`, kế thừa `spec/04-KNOWLEDGE.md`, là owner duy nhất của ánh xạ Skill→Knowledge trong biểu diễn PRODUCT kế nhiệm;
+- `spec/05-BANDS.md` là nguồn lịch sử về ngưỡng chất lượng/đầu ra Band-N, gồm phần mở rộng Task 1 theo biến thể;
+- `spec/06-CURRICULUM.md` là nguồn lịch sử về sắp xếp Skill Leaves nhưng không được định nghĩa lại;
+- `spec/07-PRACTICE.md` là nguồn lịch sử về ánh xạ Practice Types sang leaves nhưng không được định nghĩa lại;
+- `spec/08-ASSESSMENT.md` là nguồn lịch sử về đo lường leaves nhưng không được định nghĩa lại;
+- `spec/09-PROGRESSION.md` là nguồn lịch sử về trạng thái người học theo leaf ID nhưng không được định nghĩa lại năng lực đích;
+- `spec/10-CONTENT-MODEL.md` là nguồn lịch sử về bao phủ nội dung chạy được theo dạng/ngữ cảnh/định dạng phụ mà không tạo định nghĩa Skill song song.
 
-No downstream owner may create a parallel Skill Leaf definition.
+Không owner nào ở bước sau được tạo định nghĩa Skill Leaf song song.
