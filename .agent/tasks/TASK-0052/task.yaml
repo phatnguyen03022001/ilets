@@ -1,0 +1,143 @@
+protocol_version: 3
+
+task_id: TASK-0052
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: VIETNAMESE-CANONICAL-DOCUMENTATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "65a7921aba25bcb23620d7fb3bd24ad243dfbc54"
+
+architect_analysis_skills:
+  - architect
+
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended:
+    - simplicity
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "Current operator request, 2026-10-24: translate all docs/**/*.md Markdown documentation into Vietnamese."
+    role: "Explicit documentation language preference overriding the older English-prose convention for current canonical docs only. Source code, contracts, machine identifiers and task/report/review artifacts remain English."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@85c6f98ab6164a15cce499f05af0b8f2299ada26:CONSTITUTION.md, README.md, OBJECTIVE.md"
+    role: "Canonical documentation hierarchy, product intent, eight domain roots and legal shards, non-canonical legacy and machine-contract ownership."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@85c6f98ab6164a15cce499f05af0b8f2299ada26:docs/PRODUCT.md, docs/product/**, docs/catalog/project.json, tools/canonical/source-map.json, tools/canonical/materialize.py, tools/canonical/test_materialize.py, verify"
+    role: "Exact current PRODUCT-domain wording, referenced identities/headings, materialization contracts, deterministic checks and generated provenance."
+    precedence: 3
+  - source: "phatnguyen03022001/ilets@85c6f98ab6164a15cce499f05af0b8f2299ada26:.agent/tasks/TASK-0051/review.yaml"
+    role: "Accepted previous media-scope change and still-unproven Docker-backed integration gate; do not misstate full verifier completion."
+    precedence: 4
+  - source: "phatnguyen03022001/agent-foundation@65a7921aba25bcb23620d7fb3bd24ad243dfbc54:skills/protocols/TASK_PROTOCOL.md"
+    role: "Current protocol-v3 bounded Executor and Architect artifact ownership."
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing PRODUCT domain root plus five legal PRODUCT shards and existing canonical materializer/source-map owners."
+  rationale: "A language-only translation uses current semantic owner documents and existing exact-heading/source-map relationships. No new glossary authority, translated duplicate docs tree, runtime unit, schema or framework is justified."
+
+objective: "Translate all current human-readable canonical PRODUCT-domain Markdown prose into clear, natural Vietnamese while preserving exact product/IELTS semantics, canonical identity, machine-readable references and cross-domain invariants. This is the first independently reviewable domain slice of the operator's request to translate all 18 docs/**/*.md files."
+
+scope:
+  required_changes:
+    - "Translate the complete narrative prose, descriptions, headings, human-readable table cells, notes, examples and learner-facing explanations in exactly docs/PRODUCT.md and the five current docs/product/*.md files into faithful, consistent Vietnamese. Do not summarize, omit, silently narrow or add policies."
+    - "Preserve the canonical eight-domain authority hierarchy. The translation is language-only: IELTS Academic/General Training, Band 3-9, product/support eligibility, official external IELTS facts, learner roles, curriculum, skill leaves, knowledge objects and previously accepted audio/image-only media scope retain their existing precise meaning."
+    - "Preserve all canonical ID tokens, schema and wire identifiers, legal refs, file paths, anchors referenced by docs/catalog/project.json, source citations/URLs, numbered facts, formulas, enum literals, contract/status tokens, code snippets, JSON/YAML literals and proper names needed for interoperability. Keep established English technical/IELTS terms where translation would change a formal construct or make it ambiguous; otherwise write Vietnamese prose."
+    - "Maintain machine-referenced heading and section identity exactly when viable. If a human-facing heading must change, update the smallest affected existing canonical reference(s) and tools/canonical/source-map.json consistently; preserve all stable IDs and all owning-domain relationships. Do not break existing doc_ref anchors, parser lookup, duplicate detection or feature alias validation."
+    - "When the translation changes source-owner bytes or configured headings, regenerate only relevant existing tools/canonical/generated/** and tools/slice/generated/** outputs using the target's existing materializer. Do not manually edit generated output or introduce a new generator."
+    - "Check all six scoped Markdown documents for untranslated ordinary English prose (excluding required invariant technical tokens, external source quotations and cited official text), semantic drift, accidentally missing paragraphs/table rows, inappropriate literal translations of formal IELTS/learning terms, and changed external-fact attribution. Preserve existing Markdown navigation and accessibility."
+    - "Preserve parent-level English filenames, exact in-repo names, source-code/public contracts, tasks/reports/reviews, and other domain owner documents. If an incidental cross-domain consumer or parser must change, stop for Architect rather than expanding this task beyond the declared product boundary."
+    - "Run focused canonical/materializer/reference tests, source-map check and translation coverage/semantic audit on the exact candidate, then attempt the repository-native ./verify. Report any Docker/OrbStack or other environment block truthfully; never assert full PASS for skipped stages."
+    - "Publish one bounded candidate and canonical report by non-force push to dev, then stop for Architect review. Do not create the next domain translation task, rebase or modify main."
+  allowed_existing_files_or_components:
+    - docs/PRODUCT.md
+    - docs/product/
+    - tools/canonical/source-map.json
+    - tools/canonical/generated/
+    - tools/slice/generated/
+    - tools/canonical/test_materialize.py
+
+invariants:
+  - "All PRODUCT semantic policies, external IELTS facts/claim provenance and downstream applicability remain identical; only human-readable language changes."
+  - "Every canonical FTR/DAT/PM/PT/IELTS/Skill Leaf/Knowledge Object/catalog token, machine enum and official construct retains its exact identity and references."
+  - "No English-to-Vietnamese change may relax product-support or evidence gates, conflate official claims and product inference, or reintroduce video/YouTube."
+  - "Markdown links, table row identities, heading uniqueness, source-map/materializer output and existing trace provenance remain correct."
+  - "Source documents remain the sole canonical PRODUCT authority; no Vietnamese mirror, glossary authority or parallel documentation hierarchy is introduced."
+  - "Historical tasks/reviews and unrelated documents stay intact; the accepted audio/image-only scope from TASK-0051 is preserved."
+
+forbidden_changes:
+  - "No translation or mutation of README.md, CONSTITUTION.md, OBJECTIVE.md, docs/BEHAVIOR.md, docs/DATA.md, docs/ARCHITECTURE.md, docs/INTERFACES.md, docs/QUALITY.md, docs/DELIVERY.md, docs/DECISIONS.md or other non-PRODUCT domains in this task."
+  - "No changes to docs/catalog/project.json unless an exact scoped product reference cannot be preserved without it; report such a material cross-owner change as an authority gap before mutation."
+  - "Do not edit contracts/**, apps/**, services/**, migrations, deps, lockfiles, runtime configuration or CI/workflows."
+  - "No new translation service, localization runtime, extra Markdown copy, glossary registry or general-purpose heading-rewrite framework."
+  - "No changes to machine identifiers, enum values, external IELTS facts, official scoring standards, feature/capability counts or evidence semantics."
+  - "Do not rewrite historical .agent/tasks/**, create/delete/rename branches, force-push, change main, deploy, promote, tag or release."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Six existing PRODUCT canonical Markdown owners are fully translated into natural, accurate Vietnamese prose."
+    evidence_required: "All paragraphs, headings not tied to immutable machine anchors, tables, explanatory examples and product descriptions are covered; remaining English is attributable to protected canonical terms, external quotes, code/path/reference tokens or required unchanged anchors."
+  - id: AC-2
+    requirement: "No product, IELTS or learner-support semantic regression."
+    evidence_required: "Side-by-side source-to-target semantic audit of all six documents shows preserved content, classification/roles, Band/variant rules, media boundary and authoritative external citations; no missing or invented substantive rule."
+  - id: AC-3
+    requirement: "Cross-reference, catalog, source-map and generated registry identity remain valid."
+    evidence_required: "Canonical source-map headings/parent scopes and catalog doc_ref anchors still resolve uniquely; configured canonical rows and stable IDs remain; deterministic materializer check and tests pass after regeneration of necessary derived artifacts."
+  - id: AC-4
+    requirement: "Candidate has only product-language changes and required derived/verification companions."
+    evidence_required: "Exact remote candidate diff includes only six scoped PRODUCT Markdown files, permitted source-map/test companions and mechanical generated revisions; no runtime, authority-domain, dependency, ID or public-contract change."
+  - id: AC-5
+    requirement: "Verification is truthful and the bounded candidate is independently reviewable."
+    evidence_required: "Focused checks and ./verify attempted with exact candidate/command/environment outcomes. A blocked Docker-backed integration or E2E phase remains NOT_PROVEN and is never reported as PASS; final implementation/report lineage meets task protocol."
+
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
