@@ -1,0 +1,69 @@
+protocol_version: 3
+
+task_id: TASK-0052
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0052/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "d555ef8cfc38f5798cebca99a3f7eed283b3cfb9"
+  final_execution_head: "2e58491933252c6621c078851c0d4d76d10e7a20"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "65a7921aba25bcb23620d7fb3bd24ad243dfbc54"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0052 specifies focused repository-owned checks and ./verify rather than a separate authoritative verifier. The full verifier was attempted on the exact implementation candidate, but stopped at Docker-backed integration; no full-suite PASS is claimed."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Candidate 2e58491933252c6621c078851c0d4d76d10e7a20 translates all six canonical PRODUCT Markdown owners in place: docs/PRODUCT.md and the five existing docs/product/*.md shards. Narrative paragraphs, learner explanations, non-protected headings and human-readable table cells are Vietnamese. Protected English includes canonical root heading anchors, source-map lookup headings and parent scopes, stable IDs, formal IELTS criteria/constructs, enum/selector tokens, technical terminology, code blocks and provenance identifiers. An exact-base comparison found no unchanged ordinary English-only prose lines above the audit threshold."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "A source-to-target line-aligned review preserved all six documents' line counts, heading counts, Markdown table-row counts, code-fence counts, inline code token sequences and link destinations. It preserved 44 Curriculum Nodes, 67 Skill Leaves, 46 Knowledge Objects, official IELTS family IDs and external-fact numeric anchors, both Academic/GT variants, Band 3-9 distinctions, learner roles and safety/entitlement rules. The IELTS Online external examiner-video fact remains explicitly historical external-exam truth, not product video capability. Product media eligibility remains audio/image only and forbids video/YouTube product routes; no evidence, support or rights gate was intentionally modified. Faithful semantic equivalence remains subject to Architect's independent editorial review."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "All source-map exact-section and parent scopes in the six translated files still resolve without modifying tools/canonical/source-map.json. All 25 PRODUCT-related catalog reference occurrences resolve to unchanged machine-visible heading prefixes; inline code and stable ID tokens remain positionally identical. The existing materializer regenerated only tools/canonical/generated/registry.json and four tools/slice/generated/*trace.json files. tools/canonical/materialize.py --check and 36 canonical tests passed on the exact candidate. No catalog or machine identifier edits occurred."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "The exact candidate is the sole direct child of d555ef8cfc38f5798cebca99a3f7eed283b3cfb9 and changes only eleven files: six scoped PRODUCT Markdown files plus five mechanically regenerated canonical/trace artifacts. It does not change any other documentation domain, source map, catalog, runtime code, contract, dependency, infrastructure, task history or branch topology. git diff --check and post-verifier tracked-worktree cleanliness passed."
+  - criterion_id: AC-5
+    status: NOT_PROVEN
+    evidence: "Focused checks passed: 36 canonical materializer tests, materialize.py --check, exact base-to-candidate Markdown structure/inline-code/link audit for six files, source-map lookup checks, 25 PRODUCT catalog reference checks and git diff --check. Repository-native ./verify ran on exact candidate 2e58491933252c6621c078851c0d4d76d10e7a20 under Node v24.19.0, Go v1.27.0 and CI=true. Before Docker it passed 24 affected-classifier tests, 36 canonical tests, 6 contract tests, generated-binding checks, pnpm install, Prettier, ESLint (zero errors, two existing generated-code warnings), TypeScript typecheck, 18 Web unit tests, Next.js production build, Go vet/tests/build and generated-drift checks. ./verify exited 1 when Docker Compose could not reach the OrbStack Docker API socket at /Users/tienphat/.orbstack/run/docker.sock to start postgres:17.6. Docker-backed database migration/seed and remaining integration/E2E steps were not reached and are NOT_PROVEN. No complete root verification PASS is asserted. The prepublication report records exact candidate and truthful partial verification; remote publication and report-commit lineage require post-publication observation."
+
+result: NEEDS_REVIEW
