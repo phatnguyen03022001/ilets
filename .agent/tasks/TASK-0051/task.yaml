@@ -1,0 +1,145 @@
+protocol_version: 3
+
+task_id: TASK-0051
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: MEDIA-AUDIO-IMAGE-ONLY
+
+architect_binding:
+  target_repository: phatnguyen03022001/ilets
+
+target:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "65a7921aba25bcb23620d7fb3bd24ad243dfbc54"
+
+architect_analysis_skills:
+  - architect
+
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended:
+    - simplicity
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "Current operator decision, 2026-10-24: no video; remove it from the IELTS repository; media comprises audio and image."
+    role: "Explicit product-scope override: remove both first-party video capability and third-party video/YouTube playback or embedding."
+    precedence: 1
+  - source: "phatnguyen03022001/ilets@dca52bc71f02f87f3f21e3a249d83ea1ca24d1ff:CONSTITUTION.md, OBJECTIVE.md, docs/PRODUCT.md, docs/BEHAVIOR.md, docs/behavior/practice-and-media.md, docs/DATA.md, docs/INTERFACES.md, docs/interfaces/provider-lifecycle-and-routes.md, docs/catalog/project.json"
+    role: "Current canonical product and media semantics, stable identifiers, provider lifecycle and ownership to update consistently."
+    precedence: 2
+  - source: "phatnguyen03022001/ilets@dca52bc71f02f87f3f21e3a249d83ea1ca24d1ff:README.md, docs/ARCHITECTURE.md, docs/QUALITY.md, docs/DELIVERY.md, verify"
+    role: "Repository authority, existing runtime boundaries and verification entry point."
+    precedence: 3
+  - source: "phatnguyen03022001/agent-foundation@65a7921aba25bcb23620d7fb3bd24ad243dfbc54:skills/protocols/TASK_PROTOCOL.md"
+    role: "Active protocol-v3 task, binding and evidence semantics."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing eight canonical docs domains, catalog, provider-lifecycle shard, Web/Core/Evaluator implementation owners and root verify."
+  rationale: "Removing a media category uses existing owners and stable identities. No new service, type hierarchy, storage subsystem, repository top-level directory or shared abstraction is justified."
+
+objective: "Remove all product-supported video and YouTube capabilities (including external URL/embed/playback) from the IELTS learning system; retain only audio and image as eligible media, with text/transcripts and structured IELTS content kept as data."
+
+scope:
+  required_changes:
+    - "Apply the explicit operator decision to canonical PRODUCT/BEHAVIOR/DATA/INTERFACES and their existing legal shards. Define eligible media as audio or image only; video uploads, storage, ingestion, links used as video, video playback/embed/stream, extraction, transcript-from-video and third-party video-provider routing are unsupported."
+    - "Remove the selected YouTube playback/metadata relationship from provider lifecycle. Remove current video/YouTube learning promises and obsolete video-only rules from canonical docs; replace with precise audio/image behavior and rights/provenance rules, without removing general text/transcript controls that audio learning needs."
+    - "Keep ordinary text, Reading passages, Writing inputs, audio transcripts/answer keys, captions if they are authorized text for audio, and structured chart/diagram data as non-video content; do not force all material into image/audio binary storage."
+    - "Preserve existing canonical feature and data identities including FTR-014 Media Listening Lab, FTR-045 Media Lesson Creator and DAT-015 MediaSource when those behaviors can operate on eligible audio/images. Adjust semantics/relations only where needed; do not invent replacement IDs or renumber existing ones."
+    - "Inspect currently reachable Web/Core/Evaluator media ingress, types, validators, UI and provider integrations. Remove or reject any real user-visible video path inside the bounded existing owners; do not edit generated third-party code or add code solely to prohibit a capability that is not implemented."
+    - "Keep canonical catalog, feature relations, provider source references, current decision/acceptance claims and relevant verification consistent with the changed scope. Remove misleading current video-origin claims where they purport to be active authority; keep historical provenance readable in Git history."
+    - "Add or update only focused deterministic tests/checks needed to prove audio/image media acceptance, video rejection where a runnable media boundary exists, no active YouTube route, no broken catalog cross-references, and unaffected Listening/Speaking/Reading/Writing paths."
+    - "Run the smallest relevant focused checks first, then the repository-native ./verify on the exact implementation candidate. If host toolchain, Docker or another required resource blocks the full verifier, report truthful BLOCKED/PARTIAL evidence and do not assert PASS."
+    - "Publish one bounded non-force implementation candidate and its canonical Executor report to dev; stop for Architect review."
+  allowed_existing_files_or_components:
+    - CONSTITUTION.md
+    - OBJECTIVE.md
+    - README.md
+    - docs/
+    - contracts/
+    - apps/web/
+    - services/core-api/
+    - services/evaluator/
+    - tools/
+    - verify
+
+invariants:
+  - "Audio and image are the only eligible media types, whether internally managed or externally referenced; no external video exception exists."
+  - "Text/transcript/structured content is not a third video/media binary type; valid audio transcription and trusted answer-key requirements remain intact."
+  - "IELTS Academic and General Training coverage, stable canonical IDs and the three logical Web/Core/Evaluator responsibilities remain unchanged."
+  - "Rights, privacy, content eligibility, source failure handling and learner evidence truth are not weakened."
+  - "Historical task/report/review evidence and Git history remain intact; no retrospective historical rewrite."
+  - "The product's canonical docs/catalog and scoped machine contracts remain authoritative at their existing ownership boundaries."
+
+forbidden_changes:
+  - "Do not retain video through external embeds, YouTube URL, player, provider metadata or an opt-in hidden route."
+  - "Do not remove audio/image learning features, transcripts, reading/writing content, or structured chart data merely because they are associated with media."
+  - "Do not delete or rewrite historical .agent/tasks/** reports/reviews, or rewrite git history."
+  - "Do not add new packages, dependencies, cloud services, media pipeline, broker, service, storage platform or paid route."
+  - "Do not manually modify generated SDK/tool output or create new canonical authority domains."
+  - "Do not modify unrelated application behavior or change the existing three-unit architecture."
+  - "Do not create/rename/delete branches, force-push, modify main, promote, deploy, tag or release."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Active product scope accepts audio and image media only."
+    evidence_required: "Canonical docs and applicable media source semantics explicitly exclude internal and external video/YouTube playback, upload, embed, extraction and storage without excluding ordinary text/structured content."
+  - id: AC-2
+    requirement: "Previously approved audio/image learning behavior and stable identities remain sound."
+    evidence_required: "FTR-014, FTR-045, DAT-015 and applicable practice/Listening/Speaking/Reading/Writing paths remain valid with audio/image; catalog identity/relation validation passes."
+  - id: AC-3
+    requirement: "No active provider or application video capability remains."
+    evidence_required: "YouTube route is removed from live provider selection; bounded scans and tests show no product-owned video integration or exposed route; any existing media input validation explicitly rejects video where the path exists. Historical material and third-party generated generic MIME handling are distinguished from active product support."
+  - id: AC-4
+    requirement: "No unrelated infrastructure or authority drift."
+    evidence_required: "Exact candidate diff contains only scoped media docs/catalog/implementation/verification changes; no new dependencies, services, feature identities, external cost or branch topology changes."
+  - id: AC-5
+    requirement: "Verification evidence and handoff are truthful."
+    evidence_required: "Focused relevant checks and canonical ./verify are run with observed results, and candidate/report identities are exact; any environment block is reported without claiming verification PASS."
+
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
