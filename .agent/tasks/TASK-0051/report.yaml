@@ -1,0 +1,69 @@
+protocol_version: 3
+
+task_id: TASK-0051
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0051/task.yaml
+
+execution:
+  repository: phatnguyen03022001/ilets
+  branch:
+    name: dev
+    role: primary-development
+  authorized_base_head: "15bdd094d88f585cd616e3f36ec534743f812493"
+  final_execution_head: "e455f09fc5ec1485a1188263d422a190c02b59cc"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "65a7921aba25bcb23620d7fb3bd24ad243dfbc54"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0051 requires focused checks plus repository-native ./verify on the exact candidate, but designates no separate authoritative verifier. The required full ./verify was attempted and stopped at Docker integration; it is not reported as a PASS."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "At candidate e455f09fc5ec1485a1188263d422a190c02b59cc, OBJECTIVE.md and canonical PRODUCT/BEHAVIOR/DATA/INTERFACES owners and practice/media/provider shards restrict managed and external media to audio or image. They exclude first-party and third-party video/YouTube playback, upload, storage, streaming, provider route, extraction and video-origin transcripts, while retaining ordinary Reading/Writing text, authorized audio transcripts/keys/captions and structured chart/diagram data. Rights/privacy/source-failure and evidence admission remain explicit."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "FTR-014 Media Listening Lab, FTR-045 Media Lesson Creator and DAT-015 MediaSource identities and catalog relations were preserved. A focused catalog check verified all 53 FTRs, 27 DATs and feature-relation references. Canonical materializer unit tests (36/36) and materialize.py --check passed after expected generated registry/trace revisions; existing Web 18/18 unit tests and Core Go unit/integration-test package tests passed in the root verifier before Docker startup."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "The selected YouTube playback/metadata provider row and legacy active YouTube integration instructions were removed. Focused scans of product-owned Web/Core/Evaluator sources and exact HTTP contracts found no active video/YouTube path. Existing Core media-serving code is an authenticated fixed Ogg-audio GET and no user-controlled media upload/ingress was found; no speculative rejection code was added. The existing Evaluator InternalMediaReference.media_kind enum is exactly AUDIO/IMAGE, protected by a new deterministic regression test (6/6 contract tests passed). External IELTS Online examiner-video format facts and generic generated third-party MIME handling are not product video capabilities."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Candidate e455f09fc5ec1485a1188263d422a190c02b59cc is a sole direct child of exact base 15bdd094d88f585cd616e3f36ec534743f812493 and changes exactly 15 authorized paths: nine current authority documents, one focused existing contract test, and five regenerated canonical registry/slice traces. No runtime services, migrations, dependencies, topology, feature/data IDs, machine contracts, provider activation, paid routes or generated third-party bindings changed. git diff --check passed."
+  - criterion_id: AC-5
+    status: NOT_PROVEN
+    evidence: "Focused checks PASS: contracts validator and 6 tests, 36 canonical tests, generated materializer check, 53-feature/27-data catalog-reference check, product-owned active-video scan and git diff --check. The full repository-native ./verify was run on exact candidate e455f09fc5ec1485a1188263d422a190c02b59cc with pinned Node v24.19.0 and Go 1.27.0: 24 affected-classifier tests, 36 canonical tests, 6 contract tests, supply-chain lockfile audit, generated binding checks, Prettier, ESLint (0 errors, 2 generated-code warnings), TypeScript, 18 Web tests, Next.js production build, Go vet/tests/build all completed successfully. The terminal command exited 1 at Docker Compose PostgreSQL startup because no Docker socket existed at the configured OrbStack path; Docker-backed database migrations/seed and remaining E2E stages were not reached. An initial non-TTY pnpm-install refusal was resolved by rerunning with CI=true; neither attempt produced a tracked worktree diff. Thus full ./verify PASS and the unexecuted integration gates are NOT_PROVEN. The report preserves exact candidate identity and partial/blocking verification evidence for Architect review."
+
+result: NEEDS_REVIEW
